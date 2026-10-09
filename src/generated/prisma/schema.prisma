@@ -256,6 +256,16 @@ enum MasterDataStatus {
   ARCHIVED
 }
 
+/// Master Data Change Request status.
+enum MasterDataChangeStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  CANCELLED
+  EXPIRED
+}
+
 // ---- Audit ------------------------------------------------------------------
 
 enum AuditAction {
@@ -323,6 +333,8 @@ enum AuditEntityType {
   FUNDING_SOURCE
   CURRENCY
   EXCHANGE_RATE
+  MASTER_DATA_CHANGE_REQUEST
+  MASTER_DATA_VERSION
 }
 
 enum AuditResult {
@@ -485,13 +497,15 @@ model User {
   loginHistory            LoginHistory[]
   mfaDevices              MfaDevice[]
   userRoles               UserRole[]
-  delegationsGranted      Delegation[]             @relation("DelegationGrantor")
-  delegationsReceived     Delegation[]             @relation("DelegationGrantee")
+  delegationsGranted      Delegation[]              @relation("DelegationGrantor")
+  delegationsReceived     Delegation[]              @relation("DelegationGrantee")
   accessReviewItems       AccessReviewItem[]
   notifications           Notification[]
   notificationPreferences NotificationPreference[]
-  createdUsers            User[]                   @relation("UserCreatedBy")
-  updatedUsers            User[]                   @relation("UserUpdatedBy")
+  createdUsers            User[]                    @relation("UserCreatedBy")
+  updatedUsers            User[]                    @relation("UserUpdatedBy")
+  changeRequestsRequested MasterDataChangeRequest[] @relation("ChangeRequestRequestedBy")
+  changeRequestsApproved  MasterDataChangeRequest[] @relation("ChangeRequestApprovedBy")
 
   @@index([status, isActive])
   @@index([primaryLocationId])
@@ -827,12 +841,13 @@ model Organization {
   createdAt            DateTime           @default(now()) @map("created_at")
   updatedAt            DateTime           @updatedAt @map("updated_at")
 
-  memberships    OrganizationMembership[]
-  locations      Location[]
-  departments    Department[]
-  costCentres    CostCentre[]
-  projects       Project[]
-  fundingSources FundingSource[]
+  memberships              OrganizationMembership[]
+  locations                Location[]
+  departments              Department[]
+  costCentres              CostCentre[]
+  projects                 Project[]
+  fundingSources           FundingSource[]
+  masterDataChangeRequests MasterDataChangeRequest[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -977,6 +992,53 @@ model ExchangeRate {
   @@unique([baseCurrencyId, quoteCurrencyId, rateDate])
   @@index([rateDate])
   @@map("exchange_rates")
+}
+
+model MasterDataChangeRequest {
+  id              String                 @id @default(cuid())
+  organizationId  String                 @map("organization_id")
+  organization    Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  entityType      AuditEntityType        @map("entity_type")
+  entityId        String?                @map("entity_id")
+  proposedChanges Json                   @map("proposed_changes")
+  reason          String
+  status          MasterDataChangeStatus @default(DRAFT) @map("status")
+  requestedById   String                 @map("requested_by_id")
+  requestedBy     User                   @relation("ChangeRequestRequestedBy", fields: [requestedById], references: [id])
+  approvedById    String?                @map("approved_by_id")
+  approvedBy      User?                  @relation("ChangeRequestApprovedBy", fields: [approvedById], references: [id])
+  approvedAt      DateTime?              @map("approved_at")
+  effectiveDate   DateTime?              @map("effective_date")
+  expiresAt       DateTime?              @map("expires_at")
+  createdAt       DateTime               @default(now()) @map("created_at")
+  updatedAt       DateTime               @updatedAt @map("updated_at")
+
+  versions MasterDataVersion[]
+
+  @@index([organizationId, status])
+  @@index([entityType, entityId])
+  @@index([requestedById])
+  @@index([status, effectiveDate])
+  @@map("master_data_change_requests")
+}
+
+model MasterDataVersion {
+  id              String                  @id @default(cuid())
+  changeRequestId String                  @map("change_request_id")
+  changeRequest   MasterDataChangeRequest @relation(fields: [changeRequestId], references: [id], onDelete: Cascade)
+  entityType      AuditEntityType         @map("entity_type")
+  entityId        String?                 @map("entity_id")
+  versionNumber   Int                     @map("version_number")
+  snapshot        Json                    @map("snapshot")
+  changedFields   Json?                   @map("changed_fields")
+  effectiveFrom   DateTime                @map("effective_from")
+  effectiveTo     DateTime?               @map("effective_to")
+  createdAt       DateTime                @default(now()) @map("created_at")
+
+  @@unique([changeRequestId, versionNumber])
+  @@index([entityType, entityId])
+  @@index([effectiveFrom])
+  @@map("master_data_versions")
 }
 
 model OrganizationMembership {

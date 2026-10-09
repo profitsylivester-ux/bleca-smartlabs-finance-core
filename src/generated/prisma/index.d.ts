@@ -122,6 +122,16 @@ export type Currency = $Result.DefaultSelection<Prisma.$CurrencyPayload>
  */
 export type ExchangeRate = $Result.DefaultSelection<Prisma.$ExchangeRatePayload>
 /**
+ * Model MasterDataChangeRequest
+ * 
+ */
+export type MasterDataChangeRequest = $Result.DefaultSelection<Prisma.$MasterDataChangeRequestPayload>
+/**
+ * Model MasterDataVersion
+ * 
+ */
+export type MasterDataVersion = $Result.DefaultSelection<Prisma.$MasterDataVersionPayload>
+/**
  * Model OrganizationMembership
  * 
  */
@@ -428,6 +438,18 @@ export const MasterDataStatus: {
 export type MasterDataStatus = (typeof MasterDataStatus)[keyof typeof MasterDataStatus]
 
 
+export const MasterDataChangeStatus: {
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED'
+};
+
+export type MasterDataChangeStatus = (typeof MasterDataChangeStatus)[keyof typeof MasterDataChangeStatus]
+
+
 export const AuditAction: {
   LOGIN: 'LOGIN',
   LOGOUT: 'LOGOUT',
@@ -495,7 +517,9 @@ export const AuditEntityType: {
   PROJECT: 'PROJECT',
   FUNDING_SOURCE: 'FUNDING_SOURCE',
   CURRENCY: 'CURRENCY',
-  EXCHANGE_RATE: 'EXCHANGE_RATE'
+  EXCHANGE_RATE: 'EXCHANGE_RATE',
+  MASTER_DATA_CHANGE_REQUEST: 'MASTER_DATA_CHANGE_REQUEST',
+  MASTER_DATA_VERSION: 'MASTER_DATA_VERSION'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -701,6 +725,10 @@ export const FxDifferenceTreatment: typeof $Enums.FxDifferenceTreatment
 export type MasterDataStatus = $Enums.MasterDataStatus
 
 export const MasterDataStatus: typeof $Enums.MasterDataStatus
+
+export type MasterDataChangeStatus = $Enums.MasterDataChangeStatus
+
+export const MasterDataChangeStatus: typeof $Enums.MasterDataChangeStatus
 
 export type AuditAction = $Enums.AuditAction
 
@@ -1077,6 +1105,26 @@ export class PrismaClient<
     * ```
     */
   get exchangeRate(): Prisma.ExchangeRateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.masterDataChangeRequest`: Exposes CRUD operations for the **MasterDataChangeRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MasterDataChangeRequests
+    * const masterDataChangeRequests = await prisma.masterDataChangeRequest.findMany()
+    * ```
+    */
+  get masterDataChangeRequest(): Prisma.MasterDataChangeRequestDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.masterDataVersion`: Exposes CRUD operations for the **MasterDataVersion** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MasterDataVersions
+    * const masterDataVersions = await prisma.masterDataVersion.findMany()
+    * ```
+    */
+  get masterDataVersion(): Prisma.MasterDataVersionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.organizationMembership`: Exposes CRUD operations for the **OrganizationMembership** model.
@@ -1619,6 +1667,8 @@ export namespace Prisma {
     FundingSource: 'FundingSource',
     Currency: 'Currency',
     ExchangeRate: 'ExchangeRate',
+    MasterDataChangeRequest: 'MasterDataChangeRequest',
+    MasterDataVersion: 'MasterDataVersion',
     OrganizationMembership: 'OrganizationMembership',
     AuditLog: 'AuditLog',
     AuditChainHead: 'AuditChainHead',
@@ -1645,7 +1695,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3203,6 +3253,154 @@ export namespace Prisma {
           }
         }
       }
+      MasterDataChangeRequest: {
+        payload: Prisma.$MasterDataChangeRequestPayload<ExtArgs>
+        fields: Prisma.MasterDataChangeRequestFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MasterDataChangeRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MasterDataChangeRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload>
+          }
+          findFirst: {
+            args: Prisma.MasterDataChangeRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MasterDataChangeRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload>
+          }
+          findMany: {
+            args: Prisma.MasterDataChangeRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload>[]
+          }
+          create: {
+            args: Prisma.MasterDataChangeRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload>
+          }
+          createMany: {
+            args: Prisma.MasterDataChangeRequestCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MasterDataChangeRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload>[]
+          }
+          delete: {
+            args: Prisma.MasterDataChangeRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload>
+          }
+          update: {
+            args: Prisma.MasterDataChangeRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload>
+          }
+          deleteMany: {
+            args: Prisma.MasterDataChangeRequestDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MasterDataChangeRequestUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MasterDataChangeRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload>[]
+          }
+          upsert: {
+            args: Prisma.MasterDataChangeRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataChangeRequestPayload>
+          }
+          aggregate: {
+            args: Prisma.MasterDataChangeRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMasterDataChangeRequest>
+          }
+          groupBy: {
+            args: Prisma.MasterDataChangeRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MasterDataChangeRequestGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MasterDataChangeRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<MasterDataChangeRequestCountAggregateOutputType> | number
+          }
+        }
+      }
+      MasterDataVersion: {
+        payload: Prisma.$MasterDataVersionPayload<ExtArgs>
+        fields: Prisma.MasterDataVersionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MasterDataVersionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MasterDataVersionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload>
+          }
+          findFirst: {
+            args: Prisma.MasterDataVersionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MasterDataVersionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload>
+          }
+          findMany: {
+            args: Prisma.MasterDataVersionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload>[]
+          }
+          create: {
+            args: Prisma.MasterDataVersionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload>
+          }
+          createMany: {
+            args: Prisma.MasterDataVersionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MasterDataVersionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload>[]
+          }
+          delete: {
+            args: Prisma.MasterDataVersionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload>
+          }
+          update: {
+            args: Prisma.MasterDataVersionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload>
+          }
+          deleteMany: {
+            args: Prisma.MasterDataVersionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MasterDataVersionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MasterDataVersionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload>[]
+          }
+          upsert: {
+            args: Prisma.MasterDataVersionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MasterDataVersionPayload>
+          }
+          aggregate: {
+            args: Prisma.MasterDataVersionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMasterDataVersion>
+          }
+          groupBy: {
+            args: Prisma.MasterDataVersionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MasterDataVersionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MasterDataVersionCountArgs<ExtArgs>
+            result: $Utils.Optional<MasterDataVersionCountAggregateOutputType> | number
+          }
+        }
+      }
       OrganizationMembership: {
         payload: Prisma.$OrganizationMembershipPayload<ExtArgs>
         fields: Prisma.OrganizationMembershipFieldRefs
@@ -3912,6 +4110,8 @@ export namespace Prisma {
     fundingSource?: FundingSourceOmit
     currency?: CurrencyOmit
     exchangeRate?: ExchangeRateOmit
+    masterDataChangeRequest?: MasterDataChangeRequestOmit
+    masterDataVersion?: MasterDataVersionOmit
     organizationMembership?: OrganizationMembershipOmit
     auditLog?: AuditLogOmit
     auditChainHead?: AuditChainHeadOmit
@@ -4012,6 +4212,8 @@ export namespace Prisma {
     notificationPreferences: number
     createdUsers: number
     updatedUsers: number
+    changeRequestsRequested: number
+    changeRequestsApproved: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4027,6 +4229,8 @@ export namespace Prisma {
     notificationPreferences?: boolean | UserCountOutputTypeCountNotificationPreferencesArgs
     createdUsers?: boolean | UserCountOutputTypeCountCreatedUsersArgs
     updatedUsers?: boolean | UserCountOutputTypeCountUpdatedUsersArgs
+    changeRequestsRequested?: boolean | UserCountOutputTypeCountChangeRequestsRequestedArgs
+    changeRequestsApproved?: boolean | UserCountOutputTypeCountChangeRequestsApprovedArgs
   }
 
   // Custom InputTypes
@@ -4122,6 +4326,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountUpdatedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountChangeRequestsRequestedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MasterDataChangeRequestWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountChangeRequestsApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MasterDataChangeRequestWhereInput
   }
 
 
@@ -4274,6 +4492,7 @@ export namespace Prisma {
     costCentres: number
     projects: number
     fundingSources: number
+    masterDataChangeRequests: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4283,6 +4502,7 @@ export namespace Prisma {
     costCentres?: boolean | OrganizationCountOutputTypeCountCostCentresArgs
     projects?: boolean | OrganizationCountOutputTypeCountProjectsArgs
     fundingSources?: boolean | OrganizationCountOutputTypeCountFundingSourcesArgs
+    masterDataChangeRequests?: boolean | OrganizationCountOutputTypeCountMasterDataChangeRequestsArgs
   }
 
   // Custom InputTypes
@@ -4336,6 +4556,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountFundingSourcesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FundingSourceWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountMasterDataChangeRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MasterDataChangeRequestWhereInput
   }
 
 
@@ -4465,6 +4692,37 @@ export namespace Prisma {
    */
   export type CurrencyCountOutputTypeCountExchangeRatesQuoteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ExchangeRateWhereInput
+  }
+
+
+  /**
+   * Count Type MasterDataChangeRequestCountOutputType
+   */
+
+  export type MasterDataChangeRequestCountOutputType = {
+    versions: number
+  }
+
+  export type MasterDataChangeRequestCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    versions?: boolean | MasterDataChangeRequestCountOutputTypeCountVersionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * MasterDataChangeRequestCountOutputType without action
+   */
+  export type MasterDataChangeRequestCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequestCountOutputType
+     */
+    select?: MasterDataChangeRequestCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * MasterDataChangeRequestCountOutputType without action
+   */
+  export type MasterDataChangeRequestCountOutputTypeCountVersionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MasterDataVersionWhereInput
   }
 
 
@@ -4937,6 +5195,8 @@ export namespace Prisma {
     notificationPreferences?: boolean | User$notificationPreferencesArgs<ExtArgs>
     createdUsers?: boolean | User$createdUsersArgs<ExtArgs>
     updatedUsers?: boolean | User$updatedUsersArgs<ExtArgs>
+    changeRequestsRequested?: boolean | User$changeRequestsRequestedArgs<ExtArgs>
+    changeRequestsApproved?: boolean | User$changeRequestsApprovedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5074,6 +5334,8 @@ export namespace Prisma {
     notificationPreferences?: boolean | User$notificationPreferencesArgs<ExtArgs>
     createdUsers?: boolean | User$createdUsersArgs<ExtArgs>
     updatedUsers?: boolean | User$updatedUsersArgs<ExtArgs>
+    changeRequestsRequested?: boolean | User$changeRequestsRequestedArgs<ExtArgs>
+    changeRequestsApproved?: boolean | User$changeRequestsApprovedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5108,6 +5370,8 @@ export namespace Prisma {
       notificationPreferences: Prisma.$NotificationPreferencePayload<ExtArgs>[]
       createdUsers: Prisma.$UserPayload<ExtArgs>[]
       updatedUsers: Prisma.$UserPayload<ExtArgs>[]
+      changeRequestsRequested: Prisma.$MasterDataChangeRequestPayload<ExtArgs>[]
+      changeRequestsApproved: Prisma.$MasterDataChangeRequestPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5564,6 +5828,8 @@ export namespace Prisma {
     notificationPreferences<T extends User$notificationPreferencesArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationPreferencesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdUsers<T extends User$createdUsersArgs<ExtArgs> = {}>(args?: Subset<T, User$createdUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     updatedUsers<T extends User$updatedUsersArgs<ExtArgs> = {}>(args?: Subset<T, User$updatedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    changeRequestsRequested<T extends User$changeRequestsRequestedArgs<ExtArgs> = {}>(args?: Subset<T, User$changeRequestsRequestedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    changeRequestsApproved<T extends User$changeRequestsApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$changeRequestsApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6383,6 +6649,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User.changeRequestsRequested
+   */
+  export type User$changeRequestsRequestedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    where?: MasterDataChangeRequestWhereInput
+    orderBy?: MasterDataChangeRequestOrderByWithRelationInput | MasterDataChangeRequestOrderByWithRelationInput[]
+    cursor?: MasterDataChangeRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MasterDataChangeRequestScalarFieldEnum | MasterDataChangeRequestScalarFieldEnum[]
+  }
+
+  /**
+   * User.changeRequestsApproved
+   */
+  export type User$changeRequestsApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    where?: MasterDataChangeRequestWhereInput
+    orderBy?: MasterDataChangeRequestOrderByWithRelationInput | MasterDataChangeRequestOrderByWithRelationInput[]
+    cursor?: MasterDataChangeRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MasterDataChangeRequestScalarFieldEnum | MasterDataChangeRequestScalarFieldEnum[]
   }
 
   /**
@@ -20829,6 +21143,7 @@ export namespace Prisma {
     costCentres?: boolean | Organization$costCentresArgs<ExtArgs>
     projects?: boolean | Organization$projectsArgs<ExtArgs>
     fundingSources?: boolean | Organization$fundingSourcesArgs<ExtArgs>
+    masterDataChangeRequests?: boolean | Organization$masterDataChangeRequestsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -20900,6 +21215,7 @@ export namespace Prisma {
     costCentres?: boolean | Organization$costCentresArgs<ExtArgs>
     projects?: boolean | Organization$projectsArgs<ExtArgs>
     fundingSources?: boolean | Organization$fundingSourcesArgs<ExtArgs>
+    masterDataChangeRequests?: boolean | Organization$masterDataChangeRequestsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -20914,6 +21230,7 @@ export namespace Prisma {
       costCentres: Prisma.$CostCentrePayload<ExtArgs>[]
       projects: Prisma.$ProjectPayload<ExtArgs>[]
       fundingSources: Prisma.$FundingSourcePayload<ExtArgs>[]
+      masterDataChangeRequests: Prisma.$MasterDataChangeRequestPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -21339,6 +21656,7 @@ export namespace Prisma {
     costCentres<T extends Organization$costCentresArgs<ExtArgs> = {}>(args?: Subset<T, Organization$costCentresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CostCentrePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     projects<T extends Organization$projectsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     fundingSources<T extends Organization$fundingSourcesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$fundingSourcesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    masterDataChangeRequests<T extends Organization$masterDataChangeRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$masterDataChangeRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -21914,6 +22232,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FundingSourceScalarFieldEnum | FundingSourceScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.masterDataChangeRequests
+   */
+  export type Organization$masterDataChangeRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    where?: MasterDataChangeRequestWhereInput
+    orderBy?: MasterDataChangeRequestOrderByWithRelationInput | MasterDataChangeRequestOrderByWithRelationInput[]
+    cursor?: MasterDataChangeRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MasterDataChangeRequestScalarFieldEnum | MasterDataChangeRequestScalarFieldEnum[]
   }
 
   /**
@@ -30165,6 +30507,2391 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ExchangeRateInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MasterDataChangeRequest
+   */
+
+  export type AggregateMasterDataChangeRequest = {
+    _count: MasterDataChangeRequestCountAggregateOutputType | null
+    _min: MasterDataChangeRequestMinAggregateOutputType | null
+    _max: MasterDataChangeRequestMaxAggregateOutputType | null
+  }
+
+  export type MasterDataChangeRequestMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    entityType: $Enums.AuditEntityType | null
+    entityId: string | null
+    reason: string | null
+    status: $Enums.MasterDataChangeStatus | null
+    requestedById: string | null
+    approvedById: string | null
+    approvedAt: Date | null
+    effectiveDate: Date | null
+    expiresAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MasterDataChangeRequestMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    entityType: $Enums.AuditEntityType | null
+    entityId: string | null
+    reason: string | null
+    status: $Enums.MasterDataChangeStatus | null
+    requestedById: string | null
+    approvedById: string | null
+    approvedAt: Date | null
+    effectiveDate: Date | null
+    expiresAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MasterDataChangeRequestCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    entityType: number
+    entityId: number
+    proposedChanges: number
+    reason: number
+    status: number
+    requestedById: number
+    approvedById: number
+    approvedAt: number
+    effectiveDate: number
+    expiresAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MasterDataChangeRequestMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    entityType?: true
+    entityId?: true
+    reason?: true
+    status?: true
+    requestedById?: true
+    approvedById?: true
+    approvedAt?: true
+    effectiveDate?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MasterDataChangeRequestMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    entityType?: true
+    entityId?: true
+    reason?: true
+    status?: true
+    requestedById?: true
+    approvedById?: true
+    approvedAt?: true
+    effectiveDate?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MasterDataChangeRequestCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    entityType?: true
+    entityId?: true
+    proposedChanges?: true
+    reason?: true
+    status?: true
+    requestedById?: true
+    approvedById?: true
+    approvedAt?: true
+    effectiveDate?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MasterDataChangeRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MasterDataChangeRequest to aggregate.
+     */
+    where?: MasterDataChangeRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MasterDataChangeRequests to fetch.
+     */
+    orderBy?: MasterDataChangeRequestOrderByWithRelationInput | MasterDataChangeRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MasterDataChangeRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MasterDataChangeRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MasterDataChangeRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MasterDataChangeRequests
+    **/
+    _count?: true | MasterDataChangeRequestCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MasterDataChangeRequestMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MasterDataChangeRequestMaxAggregateInputType
+  }
+
+  export type GetMasterDataChangeRequestAggregateType<T extends MasterDataChangeRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateMasterDataChangeRequest]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMasterDataChangeRequest[P]>
+      : GetScalarType<T[P], AggregateMasterDataChangeRequest[P]>
+  }
+
+
+
+
+  export type MasterDataChangeRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MasterDataChangeRequestWhereInput
+    orderBy?: MasterDataChangeRequestOrderByWithAggregationInput | MasterDataChangeRequestOrderByWithAggregationInput[]
+    by: MasterDataChangeRequestScalarFieldEnum[] | MasterDataChangeRequestScalarFieldEnum
+    having?: MasterDataChangeRequestScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MasterDataChangeRequestCountAggregateInputType | true
+    _min?: MasterDataChangeRequestMinAggregateInputType
+    _max?: MasterDataChangeRequestMaxAggregateInputType
+  }
+
+  export type MasterDataChangeRequestGroupByOutputType = {
+    id: string
+    organizationId: string
+    entityType: $Enums.AuditEntityType
+    entityId: string | null
+    proposedChanges: JsonValue
+    reason: string
+    status: $Enums.MasterDataChangeStatus
+    requestedById: string
+    approvedById: string | null
+    approvedAt: Date | null
+    effectiveDate: Date | null
+    expiresAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: MasterDataChangeRequestCountAggregateOutputType | null
+    _min: MasterDataChangeRequestMinAggregateOutputType | null
+    _max: MasterDataChangeRequestMaxAggregateOutputType | null
+  }
+
+  type GetMasterDataChangeRequestGroupByPayload<T extends MasterDataChangeRequestGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MasterDataChangeRequestGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MasterDataChangeRequestGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MasterDataChangeRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], MasterDataChangeRequestGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MasterDataChangeRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    proposedChanges?: boolean
+    reason?: boolean
+    status?: boolean
+    requestedById?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    effectiveDate?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | MasterDataChangeRequest$approvedByArgs<ExtArgs>
+    versions?: boolean | MasterDataChangeRequest$versionsArgs<ExtArgs>
+    _count?: boolean | MasterDataChangeRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["masterDataChangeRequest"]>
+
+  export type MasterDataChangeRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    proposedChanges?: boolean
+    reason?: boolean
+    status?: boolean
+    requestedById?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    effectiveDate?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | MasterDataChangeRequest$approvedByArgs<ExtArgs>
+  }, ExtArgs["result"]["masterDataChangeRequest"]>
+
+  export type MasterDataChangeRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    proposedChanges?: boolean
+    reason?: boolean
+    status?: boolean
+    requestedById?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    effectiveDate?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | MasterDataChangeRequest$approvedByArgs<ExtArgs>
+  }, ExtArgs["result"]["masterDataChangeRequest"]>
+
+  export type MasterDataChangeRequestSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    proposedChanges?: boolean
+    reason?: boolean
+    status?: boolean
+    requestedById?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    effectiveDate?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MasterDataChangeRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "entityType" | "entityId" | "proposedChanges" | "reason" | "status" | "requestedById" | "approvedById" | "approvedAt" | "effectiveDate" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["masterDataChangeRequest"]>
+  export type MasterDataChangeRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | MasterDataChangeRequest$approvedByArgs<ExtArgs>
+    versions?: boolean | MasterDataChangeRequest$versionsArgs<ExtArgs>
+    _count?: boolean | MasterDataChangeRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type MasterDataChangeRequestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | MasterDataChangeRequest$approvedByArgs<ExtArgs>
+  }
+  export type MasterDataChangeRequestIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | MasterDataChangeRequest$approvedByArgs<ExtArgs>
+  }
+
+  export type $MasterDataChangeRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MasterDataChangeRequest"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      requestedBy: Prisma.$UserPayload<ExtArgs>
+      approvedBy: Prisma.$UserPayload<ExtArgs> | null
+      versions: Prisma.$MasterDataVersionPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      entityType: $Enums.AuditEntityType
+      entityId: string | null
+      proposedChanges: Prisma.JsonValue
+      reason: string
+      status: $Enums.MasterDataChangeStatus
+      requestedById: string
+      approvedById: string | null
+      approvedAt: Date | null
+      effectiveDate: Date | null
+      expiresAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["masterDataChangeRequest"]>
+    composites: {}
+  }
+
+  type MasterDataChangeRequestGetPayload<S extends boolean | null | undefined | MasterDataChangeRequestDefaultArgs> = $Result.GetResult<Prisma.$MasterDataChangeRequestPayload, S>
+
+  type MasterDataChangeRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MasterDataChangeRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MasterDataChangeRequestCountAggregateInputType | true
+    }
+
+  export interface MasterDataChangeRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MasterDataChangeRequest'], meta: { name: 'MasterDataChangeRequest' } }
+    /**
+     * Find zero or one MasterDataChangeRequest that matches the filter.
+     * @param {MasterDataChangeRequestFindUniqueArgs} args - Arguments to find a MasterDataChangeRequest
+     * @example
+     * // Get one MasterDataChangeRequest
+     * const masterDataChangeRequest = await prisma.masterDataChangeRequest.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MasterDataChangeRequestFindUniqueArgs>(args: SelectSubset<T, MasterDataChangeRequestFindUniqueArgs<ExtArgs>>): Prisma__MasterDataChangeRequestClient<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MasterDataChangeRequest that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MasterDataChangeRequestFindUniqueOrThrowArgs} args - Arguments to find a MasterDataChangeRequest
+     * @example
+     * // Get one MasterDataChangeRequest
+     * const masterDataChangeRequest = await prisma.masterDataChangeRequest.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MasterDataChangeRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, MasterDataChangeRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MasterDataChangeRequestClient<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MasterDataChangeRequest that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataChangeRequestFindFirstArgs} args - Arguments to find a MasterDataChangeRequest
+     * @example
+     * // Get one MasterDataChangeRequest
+     * const masterDataChangeRequest = await prisma.masterDataChangeRequest.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MasterDataChangeRequestFindFirstArgs>(args?: SelectSubset<T, MasterDataChangeRequestFindFirstArgs<ExtArgs>>): Prisma__MasterDataChangeRequestClient<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MasterDataChangeRequest that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataChangeRequestFindFirstOrThrowArgs} args - Arguments to find a MasterDataChangeRequest
+     * @example
+     * // Get one MasterDataChangeRequest
+     * const masterDataChangeRequest = await prisma.masterDataChangeRequest.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MasterDataChangeRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, MasterDataChangeRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__MasterDataChangeRequestClient<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MasterDataChangeRequests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataChangeRequestFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MasterDataChangeRequests
+     * const masterDataChangeRequests = await prisma.masterDataChangeRequest.findMany()
+     * 
+     * // Get first 10 MasterDataChangeRequests
+     * const masterDataChangeRequests = await prisma.masterDataChangeRequest.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const masterDataChangeRequestWithIdOnly = await prisma.masterDataChangeRequest.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MasterDataChangeRequestFindManyArgs>(args?: SelectSubset<T, MasterDataChangeRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MasterDataChangeRequest.
+     * @param {MasterDataChangeRequestCreateArgs} args - Arguments to create a MasterDataChangeRequest.
+     * @example
+     * // Create one MasterDataChangeRequest
+     * const MasterDataChangeRequest = await prisma.masterDataChangeRequest.create({
+     *   data: {
+     *     // ... data to create a MasterDataChangeRequest
+     *   }
+     * })
+     * 
+     */
+    create<T extends MasterDataChangeRequestCreateArgs>(args: SelectSubset<T, MasterDataChangeRequestCreateArgs<ExtArgs>>): Prisma__MasterDataChangeRequestClient<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MasterDataChangeRequests.
+     * @param {MasterDataChangeRequestCreateManyArgs} args - Arguments to create many MasterDataChangeRequests.
+     * @example
+     * // Create many MasterDataChangeRequests
+     * const masterDataChangeRequest = await prisma.masterDataChangeRequest.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MasterDataChangeRequestCreateManyArgs>(args?: SelectSubset<T, MasterDataChangeRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MasterDataChangeRequests and returns the data saved in the database.
+     * @param {MasterDataChangeRequestCreateManyAndReturnArgs} args - Arguments to create many MasterDataChangeRequests.
+     * @example
+     * // Create many MasterDataChangeRequests
+     * const masterDataChangeRequest = await prisma.masterDataChangeRequest.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MasterDataChangeRequests and only return the `id`
+     * const masterDataChangeRequestWithIdOnly = await prisma.masterDataChangeRequest.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MasterDataChangeRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, MasterDataChangeRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MasterDataChangeRequest.
+     * @param {MasterDataChangeRequestDeleteArgs} args - Arguments to delete one MasterDataChangeRequest.
+     * @example
+     * // Delete one MasterDataChangeRequest
+     * const MasterDataChangeRequest = await prisma.masterDataChangeRequest.delete({
+     *   where: {
+     *     // ... filter to delete one MasterDataChangeRequest
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MasterDataChangeRequestDeleteArgs>(args: SelectSubset<T, MasterDataChangeRequestDeleteArgs<ExtArgs>>): Prisma__MasterDataChangeRequestClient<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MasterDataChangeRequest.
+     * @param {MasterDataChangeRequestUpdateArgs} args - Arguments to update one MasterDataChangeRequest.
+     * @example
+     * // Update one MasterDataChangeRequest
+     * const masterDataChangeRequest = await prisma.masterDataChangeRequest.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MasterDataChangeRequestUpdateArgs>(args: SelectSubset<T, MasterDataChangeRequestUpdateArgs<ExtArgs>>): Prisma__MasterDataChangeRequestClient<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MasterDataChangeRequests.
+     * @param {MasterDataChangeRequestDeleteManyArgs} args - Arguments to filter MasterDataChangeRequests to delete.
+     * @example
+     * // Delete a few MasterDataChangeRequests
+     * const { count } = await prisma.masterDataChangeRequest.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MasterDataChangeRequestDeleteManyArgs>(args?: SelectSubset<T, MasterDataChangeRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MasterDataChangeRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataChangeRequestUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MasterDataChangeRequests
+     * const masterDataChangeRequest = await prisma.masterDataChangeRequest.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MasterDataChangeRequestUpdateManyArgs>(args: SelectSubset<T, MasterDataChangeRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MasterDataChangeRequests and returns the data updated in the database.
+     * @param {MasterDataChangeRequestUpdateManyAndReturnArgs} args - Arguments to update many MasterDataChangeRequests.
+     * @example
+     * // Update many MasterDataChangeRequests
+     * const masterDataChangeRequest = await prisma.masterDataChangeRequest.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MasterDataChangeRequests and only return the `id`
+     * const masterDataChangeRequestWithIdOnly = await prisma.masterDataChangeRequest.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MasterDataChangeRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, MasterDataChangeRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MasterDataChangeRequest.
+     * @param {MasterDataChangeRequestUpsertArgs} args - Arguments to update or create a MasterDataChangeRequest.
+     * @example
+     * // Update or create a MasterDataChangeRequest
+     * const masterDataChangeRequest = await prisma.masterDataChangeRequest.upsert({
+     *   create: {
+     *     // ... data to create a MasterDataChangeRequest
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MasterDataChangeRequest we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MasterDataChangeRequestUpsertArgs>(args: SelectSubset<T, MasterDataChangeRequestUpsertArgs<ExtArgs>>): Prisma__MasterDataChangeRequestClient<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MasterDataChangeRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataChangeRequestCountArgs} args - Arguments to filter MasterDataChangeRequests to count.
+     * @example
+     * // Count the number of MasterDataChangeRequests
+     * const count = await prisma.masterDataChangeRequest.count({
+     *   where: {
+     *     // ... the filter for the MasterDataChangeRequests we want to count
+     *   }
+     * })
+    **/
+    count<T extends MasterDataChangeRequestCountArgs>(
+      args?: Subset<T, MasterDataChangeRequestCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MasterDataChangeRequestCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MasterDataChangeRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataChangeRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MasterDataChangeRequestAggregateArgs>(args: Subset<T, MasterDataChangeRequestAggregateArgs>): Prisma.PrismaPromise<GetMasterDataChangeRequestAggregateType<T>>
+
+    /**
+     * Group by MasterDataChangeRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataChangeRequestGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MasterDataChangeRequestGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MasterDataChangeRequestGroupByArgs['orderBy'] }
+        : { orderBy?: MasterDataChangeRequestGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MasterDataChangeRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMasterDataChangeRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MasterDataChangeRequest model
+   */
+  readonly fields: MasterDataChangeRequestFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MasterDataChangeRequest.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MasterDataChangeRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    requestedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    approvedBy<T extends MasterDataChangeRequest$approvedByArgs<ExtArgs> = {}>(args?: Subset<T, MasterDataChangeRequest$approvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    versions<T extends MasterDataChangeRequest$versionsArgs<ExtArgs> = {}>(args?: Subset<T, MasterDataChangeRequest$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MasterDataChangeRequest model
+   */
+  interface MasterDataChangeRequestFieldRefs {
+    readonly id: FieldRef<"MasterDataChangeRequest", 'String'>
+    readonly organizationId: FieldRef<"MasterDataChangeRequest", 'String'>
+    readonly entityType: FieldRef<"MasterDataChangeRequest", 'AuditEntityType'>
+    readonly entityId: FieldRef<"MasterDataChangeRequest", 'String'>
+    readonly proposedChanges: FieldRef<"MasterDataChangeRequest", 'Json'>
+    readonly reason: FieldRef<"MasterDataChangeRequest", 'String'>
+    readonly status: FieldRef<"MasterDataChangeRequest", 'MasterDataChangeStatus'>
+    readonly requestedById: FieldRef<"MasterDataChangeRequest", 'String'>
+    readonly approvedById: FieldRef<"MasterDataChangeRequest", 'String'>
+    readonly approvedAt: FieldRef<"MasterDataChangeRequest", 'DateTime'>
+    readonly effectiveDate: FieldRef<"MasterDataChangeRequest", 'DateTime'>
+    readonly expiresAt: FieldRef<"MasterDataChangeRequest", 'DateTime'>
+    readonly createdAt: FieldRef<"MasterDataChangeRequest", 'DateTime'>
+    readonly updatedAt: FieldRef<"MasterDataChangeRequest", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MasterDataChangeRequest findUnique
+   */
+  export type MasterDataChangeRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which MasterDataChangeRequest to fetch.
+     */
+    where: MasterDataChangeRequestWhereUniqueInput
+  }
+
+  /**
+   * MasterDataChangeRequest findUniqueOrThrow
+   */
+  export type MasterDataChangeRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which MasterDataChangeRequest to fetch.
+     */
+    where: MasterDataChangeRequestWhereUniqueInput
+  }
+
+  /**
+   * MasterDataChangeRequest findFirst
+   */
+  export type MasterDataChangeRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which MasterDataChangeRequest to fetch.
+     */
+    where?: MasterDataChangeRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MasterDataChangeRequests to fetch.
+     */
+    orderBy?: MasterDataChangeRequestOrderByWithRelationInput | MasterDataChangeRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MasterDataChangeRequests.
+     */
+    cursor?: MasterDataChangeRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MasterDataChangeRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MasterDataChangeRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MasterDataChangeRequests.
+     */
+    distinct?: MasterDataChangeRequestScalarFieldEnum | MasterDataChangeRequestScalarFieldEnum[]
+  }
+
+  /**
+   * MasterDataChangeRequest findFirstOrThrow
+   */
+  export type MasterDataChangeRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which MasterDataChangeRequest to fetch.
+     */
+    where?: MasterDataChangeRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MasterDataChangeRequests to fetch.
+     */
+    orderBy?: MasterDataChangeRequestOrderByWithRelationInput | MasterDataChangeRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MasterDataChangeRequests.
+     */
+    cursor?: MasterDataChangeRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MasterDataChangeRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MasterDataChangeRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MasterDataChangeRequests.
+     */
+    distinct?: MasterDataChangeRequestScalarFieldEnum | MasterDataChangeRequestScalarFieldEnum[]
+  }
+
+  /**
+   * MasterDataChangeRequest findMany
+   */
+  export type MasterDataChangeRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which MasterDataChangeRequests to fetch.
+     */
+    where?: MasterDataChangeRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MasterDataChangeRequests to fetch.
+     */
+    orderBy?: MasterDataChangeRequestOrderByWithRelationInput | MasterDataChangeRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MasterDataChangeRequests.
+     */
+    cursor?: MasterDataChangeRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MasterDataChangeRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MasterDataChangeRequests.
+     */
+    skip?: number
+    distinct?: MasterDataChangeRequestScalarFieldEnum | MasterDataChangeRequestScalarFieldEnum[]
+  }
+
+  /**
+   * MasterDataChangeRequest create
+   */
+  export type MasterDataChangeRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MasterDataChangeRequest.
+     */
+    data: XOR<MasterDataChangeRequestCreateInput, MasterDataChangeRequestUncheckedCreateInput>
+  }
+
+  /**
+   * MasterDataChangeRequest createMany
+   */
+  export type MasterDataChangeRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MasterDataChangeRequests.
+     */
+    data: MasterDataChangeRequestCreateManyInput | MasterDataChangeRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MasterDataChangeRequest createManyAndReturn
+   */
+  export type MasterDataChangeRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * The data used to create many MasterDataChangeRequests.
+     */
+    data: MasterDataChangeRequestCreateManyInput | MasterDataChangeRequestCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MasterDataChangeRequest update
+   */
+  export type MasterDataChangeRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MasterDataChangeRequest.
+     */
+    data: XOR<MasterDataChangeRequestUpdateInput, MasterDataChangeRequestUncheckedUpdateInput>
+    /**
+     * Choose, which MasterDataChangeRequest to update.
+     */
+    where: MasterDataChangeRequestWhereUniqueInput
+  }
+
+  /**
+   * MasterDataChangeRequest updateMany
+   */
+  export type MasterDataChangeRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MasterDataChangeRequests.
+     */
+    data: XOR<MasterDataChangeRequestUpdateManyMutationInput, MasterDataChangeRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which MasterDataChangeRequests to update
+     */
+    where?: MasterDataChangeRequestWhereInput
+    /**
+     * Limit how many MasterDataChangeRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MasterDataChangeRequest updateManyAndReturn
+   */
+  export type MasterDataChangeRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * The data used to update MasterDataChangeRequests.
+     */
+    data: XOR<MasterDataChangeRequestUpdateManyMutationInput, MasterDataChangeRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which MasterDataChangeRequests to update
+     */
+    where?: MasterDataChangeRequestWhereInput
+    /**
+     * Limit how many MasterDataChangeRequests to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MasterDataChangeRequest upsert
+   */
+  export type MasterDataChangeRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MasterDataChangeRequest to update in case it exists.
+     */
+    where: MasterDataChangeRequestWhereUniqueInput
+    /**
+     * In case the MasterDataChangeRequest found by the `where` argument doesn't exist, create a new MasterDataChangeRequest with this data.
+     */
+    create: XOR<MasterDataChangeRequestCreateInput, MasterDataChangeRequestUncheckedCreateInput>
+    /**
+     * In case the MasterDataChangeRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MasterDataChangeRequestUpdateInput, MasterDataChangeRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * MasterDataChangeRequest delete
+   */
+  export type MasterDataChangeRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+    /**
+     * Filter which MasterDataChangeRequest to delete.
+     */
+    where: MasterDataChangeRequestWhereUniqueInput
+  }
+
+  /**
+   * MasterDataChangeRequest deleteMany
+   */
+  export type MasterDataChangeRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MasterDataChangeRequests to delete
+     */
+    where?: MasterDataChangeRequestWhereInput
+    /**
+     * Limit how many MasterDataChangeRequests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MasterDataChangeRequest.approvedBy
+   */
+  export type MasterDataChangeRequest$approvedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * MasterDataChangeRequest.versions
+   */
+  export type MasterDataChangeRequest$versionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
+    where?: MasterDataVersionWhereInput
+    orderBy?: MasterDataVersionOrderByWithRelationInput | MasterDataVersionOrderByWithRelationInput[]
+    cursor?: MasterDataVersionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MasterDataVersionScalarFieldEnum | MasterDataVersionScalarFieldEnum[]
+  }
+
+  /**
+   * MasterDataChangeRequest without action
+   */
+  export type MasterDataChangeRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataChangeRequest
+     */
+    select?: MasterDataChangeRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataChangeRequest
+     */
+    omit?: MasterDataChangeRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataChangeRequestInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MasterDataVersion
+   */
+
+  export type AggregateMasterDataVersion = {
+    _count: MasterDataVersionCountAggregateOutputType | null
+    _avg: MasterDataVersionAvgAggregateOutputType | null
+    _sum: MasterDataVersionSumAggregateOutputType | null
+    _min: MasterDataVersionMinAggregateOutputType | null
+    _max: MasterDataVersionMaxAggregateOutputType | null
+  }
+
+  export type MasterDataVersionAvgAggregateOutputType = {
+    versionNumber: number | null
+  }
+
+  export type MasterDataVersionSumAggregateOutputType = {
+    versionNumber: number | null
+  }
+
+  export type MasterDataVersionMinAggregateOutputType = {
+    id: string | null
+    changeRequestId: string | null
+    entityType: $Enums.AuditEntityType | null
+    entityId: string | null
+    versionNumber: number | null
+    effectiveFrom: Date | null
+    effectiveTo: Date | null
+    createdAt: Date | null
+  }
+
+  export type MasterDataVersionMaxAggregateOutputType = {
+    id: string | null
+    changeRequestId: string | null
+    entityType: $Enums.AuditEntityType | null
+    entityId: string | null
+    versionNumber: number | null
+    effectiveFrom: Date | null
+    effectiveTo: Date | null
+    createdAt: Date | null
+  }
+
+  export type MasterDataVersionCountAggregateOutputType = {
+    id: number
+    changeRequestId: number
+    entityType: number
+    entityId: number
+    versionNumber: number
+    snapshot: number
+    changedFields: number
+    effectiveFrom: number
+    effectiveTo: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type MasterDataVersionAvgAggregateInputType = {
+    versionNumber?: true
+  }
+
+  export type MasterDataVersionSumAggregateInputType = {
+    versionNumber?: true
+  }
+
+  export type MasterDataVersionMinAggregateInputType = {
+    id?: true
+    changeRequestId?: true
+    entityType?: true
+    entityId?: true
+    versionNumber?: true
+    effectiveFrom?: true
+    effectiveTo?: true
+    createdAt?: true
+  }
+
+  export type MasterDataVersionMaxAggregateInputType = {
+    id?: true
+    changeRequestId?: true
+    entityType?: true
+    entityId?: true
+    versionNumber?: true
+    effectiveFrom?: true
+    effectiveTo?: true
+    createdAt?: true
+  }
+
+  export type MasterDataVersionCountAggregateInputType = {
+    id?: true
+    changeRequestId?: true
+    entityType?: true
+    entityId?: true
+    versionNumber?: true
+    snapshot?: true
+    changedFields?: true
+    effectiveFrom?: true
+    effectiveTo?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type MasterDataVersionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MasterDataVersion to aggregate.
+     */
+    where?: MasterDataVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MasterDataVersions to fetch.
+     */
+    orderBy?: MasterDataVersionOrderByWithRelationInput | MasterDataVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MasterDataVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MasterDataVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MasterDataVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MasterDataVersions
+    **/
+    _count?: true | MasterDataVersionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MasterDataVersionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MasterDataVersionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MasterDataVersionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MasterDataVersionMaxAggregateInputType
+  }
+
+  export type GetMasterDataVersionAggregateType<T extends MasterDataVersionAggregateArgs> = {
+        [P in keyof T & keyof AggregateMasterDataVersion]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMasterDataVersion[P]>
+      : GetScalarType<T[P], AggregateMasterDataVersion[P]>
+  }
+
+
+
+
+  export type MasterDataVersionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MasterDataVersionWhereInput
+    orderBy?: MasterDataVersionOrderByWithAggregationInput | MasterDataVersionOrderByWithAggregationInput[]
+    by: MasterDataVersionScalarFieldEnum[] | MasterDataVersionScalarFieldEnum
+    having?: MasterDataVersionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MasterDataVersionCountAggregateInputType | true
+    _avg?: MasterDataVersionAvgAggregateInputType
+    _sum?: MasterDataVersionSumAggregateInputType
+    _min?: MasterDataVersionMinAggregateInputType
+    _max?: MasterDataVersionMaxAggregateInputType
+  }
+
+  export type MasterDataVersionGroupByOutputType = {
+    id: string
+    changeRequestId: string
+    entityType: $Enums.AuditEntityType
+    entityId: string | null
+    versionNumber: number
+    snapshot: JsonValue
+    changedFields: JsonValue | null
+    effectiveFrom: Date
+    effectiveTo: Date | null
+    createdAt: Date
+    _count: MasterDataVersionCountAggregateOutputType | null
+    _avg: MasterDataVersionAvgAggregateOutputType | null
+    _sum: MasterDataVersionSumAggregateOutputType | null
+    _min: MasterDataVersionMinAggregateOutputType | null
+    _max: MasterDataVersionMaxAggregateOutputType | null
+  }
+
+  type GetMasterDataVersionGroupByPayload<T extends MasterDataVersionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MasterDataVersionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MasterDataVersionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MasterDataVersionGroupByOutputType[P]>
+            : GetScalarType<T[P], MasterDataVersionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MasterDataVersionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    changeRequestId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    versionNumber?: boolean
+    snapshot?: boolean
+    changedFields?: boolean
+    effectiveFrom?: boolean
+    effectiveTo?: boolean
+    createdAt?: boolean
+    changeRequest?: boolean | MasterDataChangeRequestDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["masterDataVersion"]>
+
+  export type MasterDataVersionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    changeRequestId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    versionNumber?: boolean
+    snapshot?: boolean
+    changedFields?: boolean
+    effectiveFrom?: boolean
+    effectiveTo?: boolean
+    createdAt?: boolean
+    changeRequest?: boolean | MasterDataChangeRequestDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["masterDataVersion"]>
+
+  export type MasterDataVersionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    changeRequestId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    versionNumber?: boolean
+    snapshot?: boolean
+    changedFields?: boolean
+    effectiveFrom?: boolean
+    effectiveTo?: boolean
+    createdAt?: boolean
+    changeRequest?: boolean | MasterDataChangeRequestDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["masterDataVersion"]>
+
+  export type MasterDataVersionSelectScalar = {
+    id?: boolean
+    changeRequestId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    versionNumber?: boolean
+    snapshot?: boolean
+    changedFields?: boolean
+    effectiveFrom?: boolean
+    effectiveTo?: boolean
+    createdAt?: boolean
+  }
+
+  export type MasterDataVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "changeRequestId" | "entityType" | "entityId" | "versionNumber" | "snapshot" | "changedFields" | "effectiveFrom" | "effectiveTo" | "createdAt", ExtArgs["result"]["masterDataVersion"]>
+  export type MasterDataVersionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    changeRequest?: boolean | MasterDataChangeRequestDefaultArgs<ExtArgs>
+  }
+  export type MasterDataVersionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    changeRequest?: boolean | MasterDataChangeRequestDefaultArgs<ExtArgs>
+  }
+  export type MasterDataVersionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    changeRequest?: boolean | MasterDataChangeRequestDefaultArgs<ExtArgs>
+  }
+
+  export type $MasterDataVersionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MasterDataVersion"
+    objects: {
+      changeRequest: Prisma.$MasterDataChangeRequestPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      changeRequestId: string
+      entityType: $Enums.AuditEntityType
+      entityId: string | null
+      versionNumber: number
+      snapshot: Prisma.JsonValue
+      changedFields: Prisma.JsonValue | null
+      effectiveFrom: Date
+      effectiveTo: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["masterDataVersion"]>
+    composites: {}
+  }
+
+  type MasterDataVersionGetPayload<S extends boolean | null | undefined | MasterDataVersionDefaultArgs> = $Result.GetResult<Prisma.$MasterDataVersionPayload, S>
+
+  type MasterDataVersionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MasterDataVersionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MasterDataVersionCountAggregateInputType | true
+    }
+
+  export interface MasterDataVersionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MasterDataVersion'], meta: { name: 'MasterDataVersion' } }
+    /**
+     * Find zero or one MasterDataVersion that matches the filter.
+     * @param {MasterDataVersionFindUniqueArgs} args - Arguments to find a MasterDataVersion
+     * @example
+     * // Get one MasterDataVersion
+     * const masterDataVersion = await prisma.masterDataVersion.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MasterDataVersionFindUniqueArgs>(args: SelectSubset<T, MasterDataVersionFindUniqueArgs<ExtArgs>>): Prisma__MasterDataVersionClient<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MasterDataVersion that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MasterDataVersionFindUniqueOrThrowArgs} args - Arguments to find a MasterDataVersion
+     * @example
+     * // Get one MasterDataVersion
+     * const masterDataVersion = await prisma.masterDataVersion.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MasterDataVersionFindUniqueOrThrowArgs>(args: SelectSubset<T, MasterDataVersionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MasterDataVersionClient<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MasterDataVersion that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataVersionFindFirstArgs} args - Arguments to find a MasterDataVersion
+     * @example
+     * // Get one MasterDataVersion
+     * const masterDataVersion = await prisma.masterDataVersion.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MasterDataVersionFindFirstArgs>(args?: SelectSubset<T, MasterDataVersionFindFirstArgs<ExtArgs>>): Prisma__MasterDataVersionClient<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MasterDataVersion that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataVersionFindFirstOrThrowArgs} args - Arguments to find a MasterDataVersion
+     * @example
+     * // Get one MasterDataVersion
+     * const masterDataVersion = await prisma.masterDataVersion.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MasterDataVersionFindFirstOrThrowArgs>(args?: SelectSubset<T, MasterDataVersionFindFirstOrThrowArgs<ExtArgs>>): Prisma__MasterDataVersionClient<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MasterDataVersions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataVersionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MasterDataVersions
+     * const masterDataVersions = await prisma.masterDataVersion.findMany()
+     * 
+     * // Get first 10 MasterDataVersions
+     * const masterDataVersions = await prisma.masterDataVersion.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const masterDataVersionWithIdOnly = await prisma.masterDataVersion.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MasterDataVersionFindManyArgs>(args?: SelectSubset<T, MasterDataVersionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MasterDataVersion.
+     * @param {MasterDataVersionCreateArgs} args - Arguments to create a MasterDataVersion.
+     * @example
+     * // Create one MasterDataVersion
+     * const MasterDataVersion = await prisma.masterDataVersion.create({
+     *   data: {
+     *     // ... data to create a MasterDataVersion
+     *   }
+     * })
+     * 
+     */
+    create<T extends MasterDataVersionCreateArgs>(args: SelectSubset<T, MasterDataVersionCreateArgs<ExtArgs>>): Prisma__MasterDataVersionClient<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MasterDataVersions.
+     * @param {MasterDataVersionCreateManyArgs} args - Arguments to create many MasterDataVersions.
+     * @example
+     * // Create many MasterDataVersions
+     * const masterDataVersion = await prisma.masterDataVersion.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MasterDataVersionCreateManyArgs>(args?: SelectSubset<T, MasterDataVersionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MasterDataVersions and returns the data saved in the database.
+     * @param {MasterDataVersionCreateManyAndReturnArgs} args - Arguments to create many MasterDataVersions.
+     * @example
+     * // Create many MasterDataVersions
+     * const masterDataVersion = await prisma.masterDataVersion.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MasterDataVersions and only return the `id`
+     * const masterDataVersionWithIdOnly = await prisma.masterDataVersion.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MasterDataVersionCreateManyAndReturnArgs>(args?: SelectSubset<T, MasterDataVersionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MasterDataVersion.
+     * @param {MasterDataVersionDeleteArgs} args - Arguments to delete one MasterDataVersion.
+     * @example
+     * // Delete one MasterDataVersion
+     * const MasterDataVersion = await prisma.masterDataVersion.delete({
+     *   where: {
+     *     // ... filter to delete one MasterDataVersion
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MasterDataVersionDeleteArgs>(args: SelectSubset<T, MasterDataVersionDeleteArgs<ExtArgs>>): Prisma__MasterDataVersionClient<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MasterDataVersion.
+     * @param {MasterDataVersionUpdateArgs} args - Arguments to update one MasterDataVersion.
+     * @example
+     * // Update one MasterDataVersion
+     * const masterDataVersion = await prisma.masterDataVersion.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MasterDataVersionUpdateArgs>(args: SelectSubset<T, MasterDataVersionUpdateArgs<ExtArgs>>): Prisma__MasterDataVersionClient<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MasterDataVersions.
+     * @param {MasterDataVersionDeleteManyArgs} args - Arguments to filter MasterDataVersions to delete.
+     * @example
+     * // Delete a few MasterDataVersions
+     * const { count } = await prisma.masterDataVersion.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MasterDataVersionDeleteManyArgs>(args?: SelectSubset<T, MasterDataVersionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MasterDataVersions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataVersionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MasterDataVersions
+     * const masterDataVersion = await prisma.masterDataVersion.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MasterDataVersionUpdateManyArgs>(args: SelectSubset<T, MasterDataVersionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MasterDataVersions and returns the data updated in the database.
+     * @param {MasterDataVersionUpdateManyAndReturnArgs} args - Arguments to update many MasterDataVersions.
+     * @example
+     * // Update many MasterDataVersions
+     * const masterDataVersion = await prisma.masterDataVersion.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MasterDataVersions and only return the `id`
+     * const masterDataVersionWithIdOnly = await prisma.masterDataVersion.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MasterDataVersionUpdateManyAndReturnArgs>(args: SelectSubset<T, MasterDataVersionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MasterDataVersion.
+     * @param {MasterDataVersionUpsertArgs} args - Arguments to update or create a MasterDataVersion.
+     * @example
+     * // Update or create a MasterDataVersion
+     * const masterDataVersion = await prisma.masterDataVersion.upsert({
+     *   create: {
+     *     // ... data to create a MasterDataVersion
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MasterDataVersion we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MasterDataVersionUpsertArgs>(args: SelectSubset<T, MasterDataVersionUpsertArgs<ExtArgs>>): Prisma__MasterDataVersionClient<$Result.GetResult<Prisma.$MasterDataVersionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MasterDataVersions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataVersionCountArgs} args - Arguments to filter MasterDataVersions to count.
+     * @example
+     * // Count the number of MasterDataVersions
+     * const count = await prisma.masterDataVersion.count({
+     *   where: {
+     *     // ... the filter for the MasterDataVersions we want to count
+     *   }
+     * })
+    **/
+    count<T extends MasterDataVersionCountArgs>(
+      args?: Subset<T, MasterDataVersionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MasterDataVersionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MasterDataVersion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataVersionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MasterDataVersionAggregateArgs>(args: Subset<T, MasterDataVersionAggregateArgs>): Prisma.PrismaPromise<GetMasterDataVersionAggregateType<T>>
+
+    /**
+     * Group by MasterDataVersion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MasterDataVersionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MasterDataVersionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MasterDataVersionGroupByArgs['orderBy'] }
+        : { orderBy?: MasterDataVersionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MasterDataVersionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMasterDataVersionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MasterDataVersion model
+   */
+  readonly fields: MasterDataVersionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MasterDataVersion.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MasterDataVersionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    changeRequest<T extends MasterDataChangeRequestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MasterDataChangeRequestDefaultArgs<ExtArgs>>): Prisma__MasterDataChangeRequestClient<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MasterDataVersion model
+   */
+  interface MasterDataVersionFieldRefs {
+    readonly id: FieldRef<"MasterDataVersion", 'String'>
+    readonly changeRequestId: FieldRef<"MasterDataVersion", 'String'>
+    readonly entityType: FieldRef<"MasterDataVersion", 'AuditEntityType'>
+    readonly entityId: FieldRef<"MasterDataVersion", 'String'>
+    readonly versionNumber: FieldRef<"MasterDataVersion", 'Int'>
+    readonly snapshot: FieldRef<"MasterDataVersion", 'Json'>
+    readonly changedFields: FieldRef<"MasterDataVersion", 'Json'>
+    readonly effectiveFrom: FieldRef<"MasterDataVersion", 'DateTime'>
+    readonly effectiveTo: FieldRef<"MasterDataVersion", 'DateTime'>
+    readonly createdAt: FieldRef<"MasterDataVersion", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MasterDataVersion findUnique
+   */
+  export type MasterDataVersionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which MasterDataVersion to fetch.
+     */
+    where: MasterDataVersionWhereUniqueInput
+  }
+
+  /**
+   * MasterDataVersion findUniqueOrThrow
+   */
+  export type MasterDataVersionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which MasterDataVersion to fetch.
+     */
+    where: MasterDataVersionWhereUniqueInput
+  }
+
+  /**
+   * MasterDataVersion findFirst
+   */
+  export type MasterDataVersionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which MasterDataVersion to fetch.
+     */
+    where?: MasterDataVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MasterDataVersions to fetch.
+     */
+    orderBy?: MasterDataVersionOrderByWithRelationInput | MasterDataVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MasterDataVersions.
+     */
+    cursor?: MasterDataVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MasterDataVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MasterDataVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MasterDataVersions.
+     */
+    distinct?: MasterDataVersionScalarFieldEnum | MasterDataVersionScalarFieldEnum[]
+  }
+
+  /**
+   * MasterDataVersion findFirstOrThrow
+   */
+  export type MasterDataVersionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which MasterDataVersion to fetch.
+     */
+    where?: MasterDataVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MasterDataVersions to fetch.
+     */
+    orderBy?: MasterDataVersionOrderByWithRelationInput | MasterDataVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MasterDataVersions.
+     */
+    cursor?: MasterDataVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MasterDataVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MasterDataVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MasterDataVersions.
+     */
+    distinct?: MasterDataVersionScalarFieldEnum | MasterDataVersionScalarFieldEnum[]
+  }
+
+  /**
+   * MasterDataVersion findMany
+   */
+  export type MasterDataVersionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which MasterDataVersions to fetch.
+     */
+    where?: MasterDataVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MasterDataVersions to fetch.
+     */
+    orderBy?: MasterDataVersionOrderByWithRelationInput | MasterDataVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MasterDataVersions.
+     */
+    cursor?: MasterDataVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MasterDataVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MasterDataVersions.
+     */
+    skip?: number
+    distinct?: MasterDataVersionScalarFieldEnum | MasterDataVersionScalarFieldEnum[]
+  }
+
+  /**
+   * MasterDataVersion create
+   */
+  export type MasterDataVersionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MasterDataVersion.
+     */
+    data: XOR<MasterDataVersionCreateInput, MasterDataVersionUncheckedCreateInput>
+  }
+
+  /**
+   * MasterDataVersion createMany
+   */
+  export type MasterDataVersionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MasterDataVersions.
+     */
+    data: MasterDataVersionCreateManyInput | MasterDataVersionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MasterDataVersion createManyAndReturn
+   */
+  export type MasterDataVersionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * The data used to create many MasterDataVersions.
+     */
+    data: MasterDataVersionCreateManyInput | MasterDataVersionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MasterDataVersion update
+   */
+  export type MasterDataVersionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MasterDataVersion.
+     */
+    data: XOR<MasterDataVersionUpdateInput, MasterDataVersionUncheckedUpdateInput>
+    /**
+     * Choose, which MasterDataVersion to update.
+     */
+    where: MasterDataVersionWhereUniqueInput
+  }
+
+  /**
+   * MasterDataVersion updateMany
+   */
+  export type MasterDataVersionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MasterDataVersions.
+     */
+    data: XOR<MasterDataVersionUpdateManyMutationInput, MasterDataVersionUncheckedUpdateManyInput>
+    /**
+     * Filter which MasterDataVersions to update
+     */
+    where?: MasterDataVersionWhereInput
+    /**
+     * Limit how many MasterDataVersions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MasterDataVersion updateManyAndReturn
+   */
+  export type MasterDataVersionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * The data used to update MasterDataVersions.
+     */
+    data: XOR<MasterDataVersionUpdateManyMutationInput, MasterDataVersionUncheckedUpdateManyInput>
+    /**
+     * Filter which MasterDataVersions to update
+     */
+    where?: MasterDataVersionWhereInput
+    /**
+     * Limit how many MasterDataVersions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MasterDataVersion upsert
+   */
+  export type MasterDataVersionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MasterDataVersion to update in case it exists.
+     */
+    where: MasterDataVersionWhereUniqueInput
+    /**
+     * In case the MasterDataVersion found by the `where` argument doesn't exist, create a new MasterDataVersion with this data.
+     */
+    create: XOR<MasterDataVersionCreateInput, MasterDataVersionUncheckedCreateInput>
+    /**
+     * In case the MasterDataVersion was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MasterDataVersionUpdateInput, MasterDataVersionUncheckedUpdateInput>
+  }
+
+  /**
+   * MasterDataVersion delete
+   */
+  export type MasterDataVersionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
+    /**
+     * Filter which MasterDataVersion to delete.
+     */
+    where: MasterDataVersionWhereUniqueInput
+  }
+
+  /**
+   * MasterDataVersion deleteMany
+   */
+  export type MasterDataVersionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MasterDataVersions to delete
+     */
+    where?: MasterDataVersionWhereInput
+    /**
+     * Limit how many MasterDataVersions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MasterDataVersion without action
+   */
+  export type MasterDataVersionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MasterDataVersion
+     */
+    select?: MasterDataVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MasterDataVersion
+     */
+    omit?: MasterDataVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MasterDataVersionInclude<ExtArgs> | null
   }
 
 
@@ -39808,6 +42535,42 @@ export namespace Prisma {
   export type ExchangeRateScalarFieldEnum = (typeof ExchangeRateScalarFieldEnum)[keyof typeof ExchangeRateScalarFieldEnum]
 
 
+  export const MasterDataChangeRequestScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    entityType: 'entityType',
+    entityId: 'entityId',
+    proposedChanges: 'proposedChanges',
+    reason: 'reason',
+    status: 'status',
+    requestedById: 'requestedById',
+    approvedById: 'approvedById',
+    approvedAt: 'approvedAt',
+    effectiveDate: 'effectiveDate',
+    expiresAt: 'expiresAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MasterDataChangeRequestScalarFieldEnum = (typeof MasterDataChangeRequestScalarFieldEnum)[keyof typeof MasterDataChangeRequestScalarFieldEnum]
+
+
+  export const MasterDataVersionScalarFieldEnum: {
+    id: 'id',
+    changeRequestId: 'changeRequestId',
+    entityType: 'entityType',
+    entityId: 'entityId',
+    versionNumber: 'versionNumber',
+    snapshot: 'snapshot',
+    changedFields: 'changedFields',
+    effectiveFrom: 'effectiveFrom',
+    effectiveTo: 'effectiveTo',
+    createdAt: 'createdAt'
+  };
+
+  export type MasterDataVersionScalarFieldEnum = (typeof MasterDataVersionScalarFieldEnum)[keyof typeof MasterDataVersionScalarFieldEnum]
+
+
   export const OrganizationMembershipScalarFieldEnum: {
     organizationId: 'organizationId',
     userId: 'userId',
@@ -39968,6 +42731,13 @@ export namespace Prisma {
   };
 
   export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -40344,6 +43114,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AuditEntityType'
+   */
+  export type EnumAuditEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEntityType'>
+    
+
+
+  /**
+   * Reference to a field of type 'AuditEntityType[]'
+   */
+  export type ListEnumAuditEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEntityType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'MasterDataChangeStatus'
+   */
+  export type EnumMasterDataChangeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MasterDataChangeStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'MasterDataChangeStatus[]'
+   */
+  export type ListEnumMasterDataChangeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MasterDataChangeStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'BigInt'
    */
   export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
@@ -40368,20 +43166,6 @@ export namespace Prisma {
    * Reference to a field of type 'AuditAction[]'
    */
   export type ListEnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'AuditEntityType'
-   */
-  export type EnumAuditEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEntityType'>
-    
-
-
-  /**
-   * Reference to a field of type 'AuditEntityType[]'
-   */
-  export type ListEnumAuditEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEntityType[]'>
     
 
 
@@ -40595,6 +43379,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceListRelationFilter
     createdUsers?: UserListRelationFilter
     updatedUsers?: UserListRelationFilter
+    changeRequestsRequested?: MasterDataChangeRequestListRelationFilter
+    changeRequestsApproved?: MasterDataChangeRequestListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -40647,6 +43433,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceOrderByRelationAggregateInput
     createdUsers?: UserOrderByRelationAggregateInput
     updatedUsers?: UserOrderByRelationAggregateInput
+    changeRequestsRequested?: MasterDataChangeRequestOrderByRelationAggregateInput
+    changeRequestsApproved?: MasterDataChangeRequestOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -40702,6 +43490,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceListRelationFilter
     createdUsers?: UserListRelationFilter
     updatedUsers?: UserListRelationFilter
+    changeRequestsRequested?: MasterDataChangeRequestListRelationFilter
+    changeRequestsApproved?: MasterDataChangeRequestListRelationFilter
   }, "id" | "emailNormalized" | "passwordResetToken">
 
   export type UserOrderByWithAggregationInput = {
@@ -41903,6 +44693,7 @@ export namespace Prisma {
     costCentres?: CostCentreListRelationFilter
     projects?: ProjectListRelationFilter
     fundingSources?: FundingSourceListRelationFilter
+    masterDataChangeRequests?: MasterDataChangeRequestListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -41929,6 +44720,7 @@ export namespace Prisma {
     costCentres?: CostCentreOrderByRelationAggregateInput
     projects?: ProjectOrderByRelationAggregateInput
     fundingSources?: FundingSourceOrderByRelationAggregateInput
+    masterDataChangeRequests?: MasterDataChangeRequestOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -41958,6 +44750,7 @@ export namespace Prisma {
     costCentres?: CostCentreListRelationFilter
     projects?: ProjectListRelationFilter
     fundingSources?: FundingSourceListRelationFilter
+    masterDataChangeRequests?: MasterDataChangeRequestListRelationFilter
   }, "id" | "code">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -42621,6 +45414,198 @@ export namespace Prisma {
     differenceTreatment?: EnumFxDifferenceTreatmentWithAggregatesFilter<"ExchangeRate"> | $Enums.FxDifferenceTreatment
     createdAt?: DateTimeWithAggregatesFilter<"ExchangeRate"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ExchangeRate"> | Date | string
+  }
+
+  export type MasterDataChangeRequestWhereInput = {
+    AND?: MasterDataChangeRequestWhereInput | MasterDataChangeRequestWhereInput[]
+    OR?: MasterDataChangeRequestWhereInput[]
+    NOT?: MasterDataChangeRequestWhereInput | MasterDataChangeRequestWhereInput[]
+    id?: StringFilter<"MasterDataChangeRequest"> | string
+    organizationId?: StringFilter<"MasterDataChangeRequest"> | string
+    entityType?: EnumAuditEntityTypeFilter<"MasterDataChangeRequest"> | $Enums.AuditEntityType
+    entityId?: StringNullableFilter<"MasterDataChangeRequest"> | string | null
+    proposedChanges?: JsonFilter<"MasterDataChangeRequest">
+    reason?: StringFilter<"MasterDataChangeRequest"> | string
+    status?: EnumMasterDataChangeStatusFilter<"MasterDataChangeRequest"> | $Enums.MasterDataChangeStatus
+    requestedById?: StringFilter<"MasterDataChangeRequest"> | string
+    approvedById?: StringNullableFilter<"MasterDataChangeRequest"> | string | null
+    approvedAt?: DateTimeNullableFilter<"MasterDataChangeRequest"> | Date | string | null
+    effectiveDate?: DateTimeNullableFilter<"MasterDataChangeRequest"> | Date | string | null
+    expiresAt?: DateTimeNullableFilter<"MasterDataChangeRequest"> | Date | string | null
+    createdAt?: DateTimeFilter<"MasterDataChangeRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"MasterDataChangeRequest"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    requestedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    versions?: MasterDataVersionListRelationFilter
+  }
+
+  export type MasterDataChangeRequestOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrderInput | SortOrder
+    proposedChanges?: SortOrder
+    reason?: SortOrder
+    status?: SortOrder
+    requestedById?: SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    effectiveDate?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    requestedBy?: UserOrderByWithRelationInput
+    approvedBy?: UserOrderByWithRelationInput
+    versions?: MasterDataVersionOrderByRelationAggregateInput
+  }
+
+  export type MasterDataChangeRequestWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MasterDataChangeRequestWhereInput | MasterDataChangeRequestWhereInput[]
+    OR?: MasterDataChangeRequestWhereInput[]
+    NOT?: MasterDataChangeRequestWhereInput | MasterDataChangeRequestWhereInput[]
+    organizationId?: StringFilter<"MasterDataChangeRequest"> | string
+    entityType?: EnumAuditEntityTypeFilter<"MasterDataChangeRequest"> | $Enums.AuditEntityType
+    entityId?: StringNullableFilter<"MasterDataChangeRequest"> | string | null
+    proposedChanges?: JsonFilter<"MasterDataChangeRequest">
+    reason?: StringFilter<"MasterDataChangeRequest"> | string
+    status?: EnumMasterDataChangeStatusFilter<"MasterDataChangeRequest"> | $Enums.MasterDataChangeStatus
+    requestedById?: StringFilter<"MasterDataChangeRequest"> | string
+    approvedById?: StringNullableFilter<"MasterDataChangeRequest"> | string | null
+    approvedAt?: DateTimeNullableFilter<"MasterDataChangeRequest"> | Date | string | null
+    effectiveDate?: DateTimeNullableFilter<"MasterDataChangeRequest"> | Date | string | null
+    expiresAt?: DateTimeNullableFilter<"MasterDataChangeRequest"> | Date | string | null
+    createdAt?: DateTimeFilter<"MasterDataChangeRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"MasterDataChangeRequest"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    requestedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    versions?: MasterDataVersionListRelationFilter
+  }, "id">
+
+  export type MasterDataChangeRequestOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrderInput | SortOrder
+    proposedChanges?: SortOrder
+    reason?: SortOrder
+    status?: SortOrder
+    requestedById?: SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    effectiveDate?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MasterDataChangeRequestCountOrderByAggregateInput
+    _max?: MasterDataChangeRequestMaxOrderByAggregateInput
+    _min?: MasterDataChangeRequestMinOrderByAggregateInput
+  }
+
+  export type MasterDataChangeRequestScalarWhereWithAggregatesInput = {
+    AND?: MasterDataChangeRequestScalarWhereWithAggregatesInput | MasterDataChangeRequestScalarWhereWithAggregatesInput[]
+    OR?: MasterDataChangeRequestScalarWhereWithAggregatesInput[]
+    NOT?: MasterDataChangeRequestScalarWhereWithAggregatesInput | MasterDataChangeRequestScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MasterDataChangeRequest"> | string
+    organizationId?: StringWithAggregatesFilter<"MasterDataChangeRequest"> | string
+    entityType?: EnumAuditEntityTypeWithAggregatesFilter<"MasterDataChangeRequest"> | $Enums.AuditEntityType
+    entityId?: StringNullableWithAggregatesFilter<"MasterDataChangeRequest"> | string | null
+    proposedChanges?: JsonWithAggregatesFilter<"MasterDataChangeRequest">
+    reason?: StringWithAggregatesFilter<"MasterDataChangeRequest"> | string
+    status?: EnumMasterDataChangeStatusWithAggregatesFilter<"MasterDataChangeRequest"> | $Enums.MasterDataChangeStatus
+    requestedById?: StringWithAggregatesFilter<"MasterDataChangeRequest"> | string
+    approvedById?: StringNullableWithAggregatesFilter<"MasterDataChangeRequest"> | string | null
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"MasterDataChangeRequest"> | Date | string | null
+    effectiveDate?: DateTimeNullableWithAggregatesFilter<"MasterDataChangeRequest"> | Date | string | null
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"MasterDataChangeRequest"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"MasterDataChangeRequest"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"MasterDataChangeRequest"> | Date | string
+  }
+
+  export type MasterDataVersionWhereInput = {
+    AND?: MasterDataVersionWhereInput | MasterDataVersionWhereInput[]
+    OR?: MasterDataVersionWhereInput[]
+    NOT?: MasterDataVersionWhereInput | MasterDataVersionWhereInput[]
+    id?: StringFilter<"MasterDataVersion"> | string
+    changeRequestId?: StringFilter<"MasterDataVersion"> | string
+    entityType?: EnumAuditEntityTypeFilter<"MasterDataVersion"> | $Enums.AuditEntityType
+    entityId?: StringNullableFilter<"MasterDataVersion"> | string | null
+    versionNumber?: IntFilter<"MasterDataVersion"> | number
+    snapshot?: JsonFilter<"MasterDataVersion">
+    changedFields?: JsonNullableFilter<"MasterDataVersion">
+    effectiveFrom?: DateTimeFilter<"MasterDataVersion"> | Date | string
+    effectiveTo?: DateTimeNullableFilter<"MasterDataVersion"> | Date | string | null
+    createdAt?: DateTimeFilter<"MasterDataVersion"> | Date | string
+    changeRequest?: XOR<MasterDataChangeRequestScalarRelationFilter, MasterDataChangeRequestWhereInput>
+  }
+
+  export type MasterDataVersionOrderByWithRelationInput = {
+    id?: SortOrder
+    changeRequestId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrderInput | SortOrder
+    versionNumber?: SortOrder
+    snapshot?: SortOrder
+    changedFields?: SortOrderInput | SortOrder
+    effectiveFrom?: SortOrder
+    effectiveTo?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    changeRequest?: MasterDataChangeRequestOrderByWithRelationInput
+  }
+
+  export type MasterDataVersionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    changeRequestId_versionNumber?: MasterDataVersionChangeRequestIdVersionNumberCompoundUniqueInput
+    AND?: MasterDataVersionWhereInput | MasterDataVersionWhereInput[]
+    OR?: MasterDataVersionWhereInput[]
+    NOT?: MasterDataVersionWhereInput | MasterDataVersionWhereInput[]
+    changeRequestId?: StringFilter<"MasterDataVersion"> | string
+    entityType?: EnumAuditEntityTypeFilter<"MasterDataVersion"> | $Enums.AuditEntityType
+    entityId?: StringNullableFilter<"MasterDataVersion"> | string | null
+    versionNumber?: IntFilter<"MasterDataVersion"> | number
+    snapshot?: JsonFilter<"MasterDataVersion">
+    changedFields?: JsonNullableFilter<"MasterDataVersion">
+    effectiveFrom?: DateTimeFilter<"MasterDataVersion"> | Date | string
+    effectiveTo?: DateTimeNullableFilter<"MasterDataVersion"> | Date | string | null
+    createdAt?: DateTimeFilter<"MasterDataVersion"> | Date | string
+    changeRequest?: XOR<MasterDataChangeRequestScalarRelationFilter, MasterDataChangeRequestWhereInput>
+  }, "id" | "changeRequestId_versionNumber">
+
+  export type MasterDataVersionOrderByWithAggregationInput = {
+    id?: SortOrder
+    changeRequestId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrderInput | SortOrder
+    versionNumber?: SortOrder
+    snapshot?: SortOrder
+    changedFields?: SortOrderInput | SortOrder
+    effectiveFrom?: SortOrder
+    effectiveTo?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: MasterDataVersionCountOrderByAggregateInput
+    _avg?: MasterDataVersionAvgOrderByAggregateInput
+    _max?: MasterDataVersionMaxOrderByAggregateInput
+    _min?: MasterDataVersionMinOrderByAggregateInput
+    _sum?: MasterDataVersionSumOrderByAggregateInput
+  }
+
+  export type MasterDataVersionScalarWhereWithAggregatesInput = {
+    AND?: MasterDataVersionScalarWhereWithAggregatesInput | MasterDataVersionScalarWhereWithAggregatesInput[]
+    OR?: MasterDataVersionScalarWhereWithAggregatesInput[]
+    NOT?: MasterDataVersionScalarWhereWithAggregatesInput | MasterDataVersionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MasterDataVersion"> | string
+    changeRequestId?: StringWithAggregatesFilter<"MasterDataVersion"> | string
+    entityType?: EnumAuditEntityTypeWithAggregatesFilter<"MasterDataVersion"> | $Enums.AuditEntityType
+    entityId?: StringNullableWithAggregatesFilter<"MasterDataVersion"> | string | null
+    versionNumber?: IntWithAggregatesFilter<"MasterDataVersion"> | number
+    snapshot?: JsonWithAggregatesFilter<"MasterDataVersion">
+    changedFields?: JsonNullableWithAggregatesFilter<"MasterDataVersion">
+    effectiveFrom?: DateTimeWithAggregatesFilter<"MasterDataVersion"> | Date | string
+    effectiveTo?: DateTimeNullableWithAggregatesFilter<"MasterDataVersion"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"MasterDataVersion"> | Date | string
   }
 
   export type OrganizationMembershipWhereInput = {
@@ -43405,6 +46390,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -43453,6 +46440,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUpdateInput = {
@@ -43501,6 +46490,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -43549,6 +46540,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -44914,6 +47907,7 @@ export namespace Prisma {
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -44940,6 +47934,7 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -44966,6 +47961,7 @@ export namespace Prisma {
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -44992,6 +47988,7 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -45728,6 +48725,216 @@ export namespace Prisma {
     differenceTreatment?: EnumFxDifferenceTreatmentFieldUpdateOperationsInput | $Enums.FxDifferenceTreatment
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MasterDataChangeRequestCreateInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutMasterDataChangeRequestsInput
+    requestedBy: UserCreateNestedOneWithoutChangeRequestsRequestedInput
+    approvedBy?: UserCreateNestedOneWithoutChangeRequestsApprovedInput
+    versions?: MasterDataVersionCreateNestedManyWithoutChangeRequestInput
+  }
+
+  export type MasterDataChangeRequestUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    requestedById: string
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    versions?: MasterDataVersionUncheckedCreateNestedManyWithoutChangeRequestInput
+  }
+
+  export type MasterDataChangeRequestUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutMasterDataChangeRequestsNestedInput
+    requestedBy?: UserUpdateOneRequiredWithoutChangeRequestsRequestedNestedInput
+    approvedBy?: UserUpdateOneWithoutChangeRequestsApprovedNestedInput
+    versions?: MasterDataVersionUpdateManyWithoutChangeRequestNestedInput
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    requestedById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    versions?: MasterDataVersionUncheckedUpdateManyWithoutChangeRequestNestedInput
+  }
+
+  export type MasterDataChangeRequestCreateManyInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    requestedById: string
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MasterDataChangeRequestUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    requestedById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MasterDataVersionCreateInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    versionNumber: number
+    snapshot: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom: Date | string
+    effectiveTo?: Date | string | null
+    createdAt?: Date | string
+    changeRequest: MasterDataChangeRequestCreateNestedOneWithoutVersionsInput
+  }
+
+  export type MasterDataVersionUncheckedCreateInput = {
+    id?: string
+    changeRequestId: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    versionNumber: number
+    snapshot: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom: Date | string
+    effectiveTo?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type MasterDataVersionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    versionNumber?: IntFieldUpdateOperationsInput | number
+    snapshot?: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    changeRequest?: MasterDataChangeRequestUpdateOneRequiredWithoutVersionsNestedInput
+  }
+
+  export type MasterDataVersionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    changeRequestId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    versionNumber?: IntFieldUpdateOperationsInput | number
+    snapshot?: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MasterDataVersionCreateManyInput = {
+    id?: string
+    changeRequestId: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    versionNumber: number
+    snapshot: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom: Date | string
+    effectiveTo?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type MasterDataVersionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    versionNumber?: IntFieldUpdateOperationsInput | number
+    snapshot?: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MasterDataVersionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    changeRequestId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    versionNumber?: IntFieldUpdateOperationsInput | number
+    snapshot?: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrganizationMembershipCreateInput = {
@@ -46748,6 +49955,12 @@ export namespace Prisma {
     none?: UserWhereInput
   }
 
+  export type MasterDataChangeRequestListRelationFilter = {
+    every?: MasterDataChangeRequestWhereInput
+    some?: MasterDataChangeRequestWhereInput
+    none?: MasterDataChangeRequestWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -46790,6 +50003,10 @@ export namespace Prisma {
   }
 
   export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MasterDataChangeRequestOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -48495,6 +51712,201 @@ export namespace Prisma {
     _max?: NestedEnumFxDifferenceTreatmentFilter<$PrismaModel>
   }
 
+  export type EnumAuditEntityTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AuditEntityType | EnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAuditEntityTypeFilter<$PrismaModel> | $Enums.AuditEntityType
+  }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type EnumMasterDataChangeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MasterDataChangeStatus | EnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MasterDataChangeStatus[] | ListEnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MasterDataChangeStatus[] | ListEnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMasterDataChangeStatusFilter<$PrismaModel> | $Enums.MasterDataChangeStatus
+  }
+
+  export type MasterDataVersionListRelationFilter = {
+    every?: MasterDataVersionWhereInput
+    some?: MasterDataVersionWhereInput
+    none?: MasterDataVersionWhereInput
+  }
+
+  export type MasterDataVersionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MasterDataChangeRequestCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    proposedChanges?: SortOrder
+    reason?: SortOrder
+    status?: SortOrder
+    requestedById?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    effectiveDate?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MasterDataChangeRequestMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    reason?: SortOrder
+    status?: SortOrder
+    requestedById?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    effectiveDate?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MasterDataChangeRequestMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    reason?: SortOrder
+    status?: SortOrder
+    requestedById?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    effectiveDate?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumAuditEntityTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AuditEntityType | EnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAuditEntityTypeWithAggregatesFilter<$PrismaModel> | $Enums.AuditEntityType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
+    _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type EnumMasterDataChangeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MasterDataChangeStatus | EnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MasterDataChangeStatus[] | ListEnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MasterDataChangeStatus[] | ListEnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMasterDataChangeStatusWithAggregatesFilter<$PrismaModel> | $Enums.MasterDataChangeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMasterDataChangeStatusFilter<$PrismaModel>
+    _max?: NestedEnumMasterDataChangeStatusFilter<$PrismaModel>
+  }
+
+  export type MasterDataChangeRequestScalarRelationFilter = {
+    is?: MasterDataChangeRequestWhereInput
+    isNot?: MasterDataChangeRequestWhereInput
+  }
+
+  export type MasterDataVersionChangeRequestIdVersionNumberCompoundUniqueInput = {
+    changeRequestId: string
+    versionNumber: number
+  }
+
+  export type MasterDataVersionCountOrderByAggregateInput = {
+    id?: SortOrder
+    changeRequestId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    versionNumber?: SortOrder
+    snapshot?: SortOrder
+    changedFields?: SortOrder
+    effectiveFrom?: SortOrder
+    effectiveTo?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MasterDataVersionAvgOrderByAggregateInput = {
+    versionNumber?: SortOrder
+  }
+
+  export type MasterDataVersionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    changeRequestId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    versionNumber?: SortOrder
+    effectiveFrom?: SortOrder
+    effectiveTo?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MasterDataVersionMinOrderByAggregateInput = {
+    id?: SortOrder
+    changeRequestId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    versionNumber?: SortOrder
+    effectiveFrom?: SortOrder
+    effectiveTo?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MasterDataVersionSumOrderByAggregateInput = {
+    versionNumber?: SortOrder
+  }
+
   export type OrganizationMembershipOrganizationIdUserIdCompoundUniqueInput = {
     organizationId: string
     userId: string
@@ -48537,13 +51949,6 @@ export namespace Prisma {
     in?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
     notIn?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
     not?: NestedEnumAuditActionFilter<$PrismaModel> | $Enums.AuditAction
-  }
-
-  export type EnumAuditEntityTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.AuditEntityType | EnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumAuditEntityTypeFilter<$PrismaModel> | $Enums.AuditEntityType
   }
 
   export type EnumAuditChannelFilter<$PrismaModel = never> = {
@@ -48685,16 +52090,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAuditActionFilter<$PrismaModel>
     _max?: NestedEnumAuditActionFilter<$PrismaModel>
-  }
-
-  export type EnumAuditEntityTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.AuditEntityType | EnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumAuditEntityTypeWithAggregatesFilter<$PrismaModel> | $Enums.AuditEntityType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
-    _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
   }
 
   export type EnumAuditChannelWithAggregatesFilter<$PrismaModel = never> = {
@@ -49342,6 +52737,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
+  export type MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutRequestedByInput, MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput> | MasterDataChangeRequestCreateWithoutRequestedByInput[] | MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutRequestedByInput | MasterDataChangeRequestCreateOrConnectWithoutRequestedByInput[]
+    createMany?: MasterDataChangeRequestCreateManyRequestedByInputEnvelope
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+  }
+
+  export type MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutApprovedByInput, MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput> | MasterDataChangeRequestCreateWithoutApprovedByInput[] | MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput | MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput[]
+    createMany?: MasterDataChangeRequestCreateManyApprovedByInputEnvelope
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -49424,6 +52833,20 @@ export namespace Prisma {
     connectOrCreate?: UserCreateOrConnectWithoutUpdatedByInput | UserCreateOrConnectWithoutUpdatedByInput[]
     createMany?: UserCreateManyUpdatedByInputEnvelope
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutRequestedByInput, MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput> | MasterDataChangeRequestCreateWithoutRequestedByInput[] | MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutRequestedByInput | MasterDataChangeRequestCreateOrConnectWithoutRequestedByInput[]
+    createMany?: MasterDataChangeRequestCreateManyRequestedByInputEnvelope
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+  }
+
+  export type MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutApprovedByInput, MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput> | MasterDataChangeRequestCreateWithoutApprovedByInput[] | MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput | MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput[]
+    createMany?: MasterDataChangeRequestCreateManyApprovedByInputEnvelope
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -49675,6 +53098,34 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutRequestedByInput, MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput> | MasterDataChangeRequestCreateWithoutRequestedByInput[] | MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutRequestedByInput | MasterDataChangeRequestCreateOrConnectWithoutRequestedByInput[]
+    upsert?: MasterDataChangeRequestUpsertWithWhereUniqueWithoutRequestedByInput | MasterDataChangeRequestUpsertWithWhereUniqueWithoutRequestedByInput[]
+    createMany?: MasterDataChangeRequestCreateManyRequestedByInputEnvelope
+    set?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    disconnect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    delete?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    update?: MasterDataChangeRequestUpdateWithWhereUniqueWithoutRequestedByInput | MasterDataChangeRequestUpdateWithWhereUniqueWithoutRequestedByInput[]
+    updateMany?: MasterDataChangeRequestUpdateManyWithWhereWithoutRequestedByInput | MasterDataChangeRequestUpdateManyWithWhereWithoutRequestedByInput[]
+    deleteMany?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
+  }
+
+  export type MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutApprovedByInput, MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput> | MasterDataChangeRequestCreateWithoutApprovedByInput[] | MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput | MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput[]
+    upsert?: MasterDataChangeRequestUpsertWithWhereUniqueWithoutApprovedByInput | MasterDataChangeRequestUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: MasterDataChangeRequestCreateManyApprovedByInputEnvelope
+    set?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    disconnect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    delete?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    update?: MasterDataChangeRequestUpdateWithWhereUniqueWithoutApprovedByInput | MasterDataChangeRequestUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: MasterDataChangeRequestUpdateManyWithWhereWithoutApprovedByInput | MasterDataChangeRequestUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -49841,6 +53292,34 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutUpdatedByInput | UserUpdateWithWhereUniqueWithoutUpdatedByInput[]
     updateMany?: UserUpdateManyWithWhereWithoutUpdatedByInput | UserUpdateManyWithWhereWithoutUpdatedByInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutRequestedByInput, MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput> | MasterDataChangeRequestCreateWithoutRequestedByInput[] | MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutRequestedByInput | MasterDataChangeRequestCreateOrConnectWithoutRequestedByInput[]
+    upsert?: MasterDataChangeRequestUpsertWithWhereUniqueWithoutRequestedByInput | MasterDataChangeRequestUpsertWithWhereUniqueWithoutRequestedByInput[]
+    createMany?: MasterDataChangeRequestCreateManyRequestedByInputEnvelope
+    set?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    disconnect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    delete?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    update?: MasterDataChangeRequestUpdateWithWhereUniqueWithoutRequestedByInput | MasterDataChangeRequestUpdateWithWhereUniqueWithoutRequestedByInput[]
+    updateMany?: MasterDataChangeRequestUpdateManyWithWhereWithoutRequestedByInput | MasterDataChangeRequestUpdateManyWithWhereWithoutRequestedByInput[]
+    deleteMany?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutApprovedByInput, MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput> | MasterDataChangeRequestCreateWithoutApprovedByInput[] | MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput | MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput[]
+    upsert?: MasterDataChangeRequestUpsertWithWhereUniqueWithoutApprovedByInput | MasterDataChangeRequestUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: MasterDataChangeRequestCreateManyApprovedByInputEnvelope
+    set?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    disconnect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    delete?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    update?: MasterDataChangeRequestUpdateWithWhereUniqueWithoutApprovedByInput | MasterDataChangeRequestUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: MasterDataChangeRequestUpdateManyWithWhereWithoutApprovedByInput | MasterDataChangeRequestUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutMfaDevicesInput = {
@@ -50494,6 +53973,13 @@ export namespace Prisma {
     connect?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
   }
 
+  export type MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutOrganizationInput, MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput> | MasterDataChangeRequestCreateWithoutOrganizationInput[] | MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput | MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput[]
+    createMany?: MasterDataChangeRequestCreateManyOrganizationInputEnvelope
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -50534,6 +54020,13 @@ export namespace Prisma {
     connectOrCreate?: FundingSourceCreateOrConnectWithoutOrganizationInput | FundingSourceCreateOrConnectWithoutOrganizationInput[]
     createMany?: FundingSourceCreateManyOrganizationInputEnvelope
     connect?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
+  }
+
+  export type MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutOrganizationInput, MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput> | MasterDataChangeRequestCreateWithoutOrganizationInput[] | MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput | MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput[]
+    createMany?: MasterDataChangeRequestCreateManyOrganizationInputEnvelope
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
   }
 
   export type EnumOrganizationTypeFieldUpdateOperationsInput = {
@@ -50628,6 +54121,20 @@ export namespace Prisma {
     deleteMany?: FundingSourceScalarWhereInput | FundingSourceScalarWhereInput[]
   }
 
+  export type MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutOrganizationInput, MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput> | MasterDataChangeRequestCreateWithoutOrganizationInput[] | MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput | MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput[]
+    upsert?: MasterDataChangeRequestUpsertWithWhereUniqueWithoutOrganizationInput | MasterDataChangeRequestUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: MasterDataChangeRequestCreateManyOrganizationInputEnvelope
+    set?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    disconnect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    delete?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    update?: MasterDataChangeRequestUpdateWithWhereUniqueWithoutOrganizationInput | MasterDataChangeRequestUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: MasterDataChangeRequestUpdateManyWithWhereWithoutOrganizationInput | MasterDataChangeRequestUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -50710,6 +54217,20 @@ export namespace Prisma {
     update?: FundingSourceUpdateWithWhereUniqueWithoutOrganizationInput | FundingSourceUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: FundingSourceUpdateManyWithWhereWithoutOrganizationInput | FundingSourceUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: FundingSourceScalarWhereInput | FundingSourceScalarWhereInput[]
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutOrganizationInput, MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput> | MasterDataChangeRequestCreateWithoutOrganizationInput[] | MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput | MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput[]
+    upsert?: MasterDataChangeRequestUpsertWithWhereUniqueWithoutOrganizationInput | MasterDataChangeRequestUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: MasterDataChangeRequestCreateManyOrganizationInputEnvelope
+    set?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    disconnect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    delete?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+    update?: MasterDataChangeRequestUpdateWithWhereUniqueWithoutOrganizationInput | MasterDataChangeRequestUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: MasterDataChangeRequestUpdateManyWithWhereWithoutOrganizationInput | MasterDataChangeRequestUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutLocationsInput = {
@@ -51180,6 +54701,114 @@ export namespace Prisma {
     update?: XOR<XOR<CurrencyUpdateToOneWithWhereWithoutExchangeRatesQuoteInput, CurrencyUpdateWithoutExchangeRatesQuoteInput>, CurrencyUncheckedUpdateWithoutExchangeRatesQuoteInput>
   }
 
+  export type OrganizationCreateNestedOneWithoutMasterDataChangeRequestsInput = {
+    create?: XOR<OrganizationCreateWithoutMasterDataChangeRequestsInput, OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutMasterDataChangeRequestsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutChangeRequestsRequestedInput = {
+    create?: XOR<UserCreateWithoutChangeRequestsRequestedInput, UserUncheckedCreateWithoutChangeRequestsRequestedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChangeRequestsRequestedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutChangeRequestsApprovedInput = {
+    create?: XOR<UserCreateWithoutChangeRequestsApprovedInput, UserUncheckedCreateWithoutChangeRequestsApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChangeRequestsApprovedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type MasterDataVersionCreateNestedManyWithoutChangeRequestInput = {
+    create?: XOR<MasterDataVersionCreateWithoutChangeRequestInput, MasterDataVersionUncheckedCreateWithoutChangeRequestInput> | MasterDataVersionCreateWithoutChangeRequestInput[] | MasterDataVersionUncheckedCreateWithoutChangeRequestInput[]
+    connectOrCreate?: MasterDataVersionCreateOrConnectWithoutChangeRequestInput | MasterDataVersionCreateOrConnectWithoutChangeRequestInput[]
+    createMany?: MasterDataVersionCreateManyChangeRequestInputEnvelope
+    connect?: MasterDataVersionWhereUniqueInput | MasterDataVersionWhereUniqueInput[]
+  }
+
+  export type MasterDataVersionUncheckedCreateNestedManyWithoutChangeRequestInput = {
+    create?: XOR<MasterDataVersionCreateWithoutChangeRequestInput, MasterDataVersionUncheckedCreateWithoutChangeRequestInput> | MasterDataVersionCreateWithoutChangeRequestInput[] | MasterDataVersionUncheckedCreateWithoutChangeRequestInput[]
+    connectOrCreate?: MasterDataVersionCreateOrConnectWithoutChangeRequestInput | MasterDataVersionCreateOrConnectWithoutChangeRequestInput[]
+    createMany?: MasterDataVersionCreateManyChangeRequestInputEnvelope
+    connect?: MasterDataVersionWhereUniqueInput | MasterDataVersionWhereUniqueInput[]
+  }
+
+  export type EnumAuditEntityTypeFieldUpdateOperationsInput = {
+    set?: $Enums.AuditEntityType
+  }
+
+  export type EnumMasterDataChangeStatusFieldUpdateOperationsInput = {
+    set?: $Enums.MasterDataChangeStatus
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutMasterDataChangeRequestsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutMasterDataChangeRequestsInput, OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutMasterDataChangeRequestsInput
+    upsert?: OrganizationUpsertWithoutMasterDataChangeRequestsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutMasterDataChangeRequestsInput, OrganizationUpdateWithoutMasterDataChangeRequestsInput>, OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutChangeRequestsRequestedNestedInput = {
+    create?: XOR<UserCreateWithoutChangeRequestsRequestedInput, UserUncheckedCreateWithoutChangeRequestsRequestedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChangeRequestsRequestedInput
+    upsert?: UserUpsertWithoutChangeRequestsRequestedInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutChangeRequestsRequestedInput, UserUpdateWithoutChangeRequestsRequestedInput>, UserUncheckedUpdateWithoutChangeRequestsRequestedInput>
+  }
+
+  export type UserUpdateOneWithoutChangeRequestsApprovedNestedInput = {
+    create?: XOR<UserCreateWithoutChangeRequestsApprovedInput, UserUncheckedCreateWithoutChangeRequestsApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutChangeRequestsApprovedInput
+    upsert?: UserUpsertWithoutChangeRequestsApprovedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutChangeRequestsApprovedInput, UserUpdateWithoutChangeRequestsApprovedInput>, UserUncheckedUpdateWithoutChangeRequestsApprovedInput>
+  }
+
+  export type MasterDataVersionUpdateManyWithoutChangeRequestNestedInput = {
+    create?: XOR<MasterDataVersionCreateWithoutChangeRequestInput, MasterDataVersionUncheckedCreateWithoutChangeRequestInput> | MasterDataVersionCreateWithoutChangeRequestInput[] | MasterDataVersionUncheckedCreateWithoutChangeRequestInput[]
+    connectOrCreate?: MasterDataVersionCreateOrConnectWithoutChangeRequestInput | MasterDataVersionCreateOrConnectWithoutChangeRequestInput[]
+    upsert?: MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput | MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput[]
+    createMany?: MasterDataVersionCreateManyChangeRequestInputEnvelope
+    set?: MasterDataVersionWhereUniqueInput | MasterDataVersionWhereUniqueInput[]
+    disconnect?: MasterDataVersionWhereUniqueInput | MasterDataVersionWhereUniqueInput[]
+    delete?: MasterDataVersionWhereUniqueInput | MasterDataVersionWhereUniqueInput[]
+    connect?: MasterDataVersionWhereUniqueInput | MasterDataVersionWhereUniqueInput[]
+    update?: MasterDataVersionUpdateWithWhereUniqueWithoutChangeRequestInput | MasterDataVersionUpdateWithWhereUniqueWithoutChangeRequestInput[]
+    updateMany?: MasterDataVersionUpdateManyWithWhereWithoutChangeRequestInput | MasterDataVersionUpdateManyWithWhereWithoutChangeRequestInput[]
+    deleteMany?: MasterDataVersionScalarWhereInput | MasterDataVersionScalarWhereInput[]
+  }
+
+  export type MasterDataVersionUncheckedUpdateManyWithoutChangeRequestNestedInput = {
+    create?: XOR<MasterDataVersionCreateWithoutChangeRequestInput, MasterDataVersionUncheckedCreateWithoutChangeRequestInput> | MasterDataVersionCreateWithoutChangeRequestInput[] | MasterDataVersionUncheckedCreateWithoutChangeRequestInput[]
+    connectOrCreate?: MasterDataVersionCreateOrConnectWithoutChangeRequestInput | MasterDataVersionCreateOrConnectWithoutChangeRequestInput[]
+    upsert?: MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput | MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput[]
+    createMany?: MasterDataVersionCreateManyChangeRequestInputEnvelope
+    set?: MasterDataVersionWhereUniqueInput | MasterDataVersionWhereUniqueInput[]
+    disconnect?: MasterDataVersionWhereUniqueInput | MasterDataVersionWhereUniqueInput[]
+    delete?: MasterDataVersionWhereUniqueInput | MasterDataVersionWhereUniqueInput[]
+    connect?: MasterDataVersionWhereUniqueInput | MasterDataVersionWhereUniqueInput[]
+    update?: MasterDataVersionUpdateWithWhereUniqueWithoutChangeRequestInput | MasterDataVersionUpdateWithWhereUniqueWithoutChangeRequestInput[]
+    updateMany?: MasterDataVersionUpdateManyWithWhereWithoutChangeRequestInput | MasterDataVersionUpdateManyWithWhereWithoutChangeRequestInput[]
+    deleteMany?: MasterDataVersionScalarWhereInput | MasterDataVersionScalarWhereInput[]
+  }
+
+  export type MasterDataChangeRequestCreateNestedOneWithoutVersionsInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutVersionsInput, MasterDataChangeRequestUncheckedCreateWithoutVersionsInput>
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutVersionsInput
+    connect?: MasterDataChangeRequestWhereUniqueInput
+  }
+
+  export type MasterDataChangeRequestUpdateOneRequiredWithoutVersionsNestedInput = {
+    create?: XOR<MasterDataChangeRequestCreateWithoutVersionsInput, MasterDataChangeRequestUncheckedCreateWithoutVersionsInput>
+    connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutVersionsInput
+    upsert?: MasterDataChangeRequestUpsertWithoutVersionsInput
+    connect?: MasterDataChangeRequestWhereUniqueInput
+    update?: XOR<XOR<MasterDataChangeRequestUpdateToOneWithWhereWithoutVersionsInput, MasterDataChangeRequestUpdateWithoutVersionsInput>, MasterDataChangeRequestUncheckedUpdateWithoutVersionsInput>
+  }
+
   export type OrganizationCreateNestedOneWithoutMembershipsInput = {
     create?: XOR<OrganizationCreateWithoutMembershipsInput, OrganizationUncheckedCreateWithoutMembershipsInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutMembershipsInput
@@ -51241,10 +54870,6 @@ export namespace Prisma {
 
   export type EnumAuditActionFieldUpdateOperationsInput = {
     set?: $Enums.AuditAction
-  }
-
-  export type EnumAuditEntityTypeFieldUpdateOperationsInput = {
-    set?: $Enums.AuditEntityType
   }
 
   export type EnumAuditChannelFieldUpdateOperationsInput = {
@@ -51953,6 +55578,63 @@ export namespace Prisma {
     _max?: NestedEnumFxDifferenceTreatmentFilter<$PrismaModel>
   }
 
+  export type NestedEnumAuditEntityTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AuditEntityType | EnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAuditEntityTypeFilter<$PrismaModel> | $Enums.AuditEntityType
+  }
+
+  export type NestedEnumMasterDataChangeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MasterDataChangeStatus | EnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MasterDataChangeStatus[] | ListEnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MasterDataChangeStatus[] | ListEnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMasterDataChangeStatusFilter<$PrismaModel> | $Enums.MasterDataChangeStatus
+  }
+
+  export type NestedEnumAuditEntityTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AuditEntityType | EnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAuditEntityTypeWithAggregatesFilter<$PrismaModel> | $Enums.AuditEntityType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
+    _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
+  }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumMasterDataChangeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MasterDataChangeStatus | EnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MasterDataChangeStatus[] | ListEnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MasterDataChangeStatus[] | ListEnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMasterDataChangeStatusWithAggregatesFilter<$PrismaModel> | $Enums.MasterDataChangeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMasterDataChangeStatusFilter<$PrismaModel>
+    _max?: NestedEnumMasterDataChangeStatusFilter<$PrismaModel>
+  }
+
   export type NestedBigIntFilter<$PrismaModel = never> = {
     equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
@@ -51969,13 +55651,6 @@ export namespace Prisma {
     in?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
     notIn?: $Enums.AuditAction[] | ListEnumAuditActionFieldRefInput<$PrismaModel>
     not?: NestedEnumAuditActionFilter<$PrismaModel> | $Enums.AuditAction
-  }
-
-  export type NestedEnumAuditEntityTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.AuditEntityType | EnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumAuditEntityTypeFilter<$PrismaModel> | $Enums.AuditEntityType
   }
 
   export type NestedEnumAuditChannelFilter<$PrismaModel = never> = {
@@ -52016,16 +55691,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAuditActionFilter<$PrismaModel>
     _max?: NestedEnumAuditActionFilter<$PrismaModel>
-  }
-
-  export type NestedEnumAuditEntityTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.AuditEntityType | EnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumAuditEntityTypeWithAggregatesFilter<$PrismaModel> | $Enums.AuditEntityType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
-    _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
   }
 
   export type NestedEnumAuditChannelWithAggregatesFilter<$PrismaModel = never> = {
@@ -52374,6 +56039,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedUsersInput = {
@@ -52421,6 +56088,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedUsersInput = {
@@ -52473,6 +56142,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedUsersInput = {
@@ -52520,6 +56191,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedUsersInput = {
@@ -52942,6 +56615,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedByInput = {
@@ -52989,6 +56664,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedByInput = {
@@ -53046,6 +56723,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedByInput = {
@@ -53093,6 +56772,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedByInput = {
@@ -53102,6 +56783,94 @@ export namespace Prisma {
 
   export type UserCreateManyUpdatedByInputEnvelope = {
     data: UserCreateManyUpdatedByInput | UserCreateManyUpdatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MasterDataChangeRequestCreateWithoutRequestedByInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutMasterDataChangeRequestsInput
+    approvedBy?: UserCreateNestedOneWithoutChangeRequestsApprovedInput
+    versions?: MasterDataVersionCreateNestedManyWithoutChangeRequestInput
+  }
+
+  export type MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    versions?: MasterDataVersionUncheckedCreateNestedManyWithoutChangeRequestInput
+  }
+
+  export type MasterDataChangeRequestCreateOrConnectWithoutRequestedByInput = {
+    where: MasterDataChangeRequestWhereUniqueInput
+    create: XOR<MasterDataChangeRequestCreateWithoutRequestedByInput, MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput>
+  }
+
+  export type MasterDataChangeRequestCreateManyRequestedByInputEnvelope = {
+    data: MasterDataChangeRequestCreateManyRequestedByInput | MasterDataChangeRequestCreateManyRequestedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MasterDataChangeRequestCreateWithoutApprovedByInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutMasterDataChangeRequestsInput
+    requestedBy: UserCreateNestedOneWithoutChangeRequestsRequestedInput
+    versions?: MasterDataVersionCreateNestedManyWithoutChangeRequestInput
+  }
+
+  export type MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    requestedById: string
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    versions?: MasterDataVersionUncheckedCreateNestedManyWithoutChangeRequestInput
+  }
+
+  export type MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput = {
+    where: MasterDataChangeRequestWhereUniqueInput
+    create: XOR<MasterDataChangeRequestCreateWithoutApprovedByInput, MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type MasterDataChangeRequestCreateManyApprovedByInputEnvelope = {
+    data: MasterDataChangeRequestCreateManyApprovedByInput | MasterDataChangeRequestCreateManyApprovedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -53247,6 +57016,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedUsersInput = {
@@ -53294,6 +57065,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUpsertWithoutUpdatedUsersInput = {
@@ -53352,6 +57125,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedUsersInput = {
@@ -53399,6 +57174,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutUserInput = {
@@ -53788,6 +57565,58 @@ export namespace Prisma {
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutUpdatedByInput>
   }
 
+  export type MasterDataChangeRequestUpsertWithWhereUniqueWithoutRequestedByInput = {
+    where: MasterDataChangeRequestWhereUniqueInput
+    update: XOR<MasterDataChangeRequestUpdateWithoutRequestedByInput, MasterDataChangeRequestUncheckedUpdateWithoutRequestedByInput>
+    create: XOR<MasterDataChangeRequestCreateWithoutRequestedByInput, MasterDataChangeRequestUncheckedCreateWithoutRequestedByInput>
+  }
+
+  export type MasterDataChangeRequestUpdateWithWhereUniqueWithoutRequestedByInput = {
+    where: MasterDataChangeRequestWhereUniqueInput
+    data: XOR<MasterDataChangeRequestUpdateWithoutRequestedByInput, MasterDataChangeRequestUncheckedUpdateWithoutRequestedByInput>
+  }
+
+  export type MasterDataChangeRequestUpdateManyWithWhereWithoutRequestedByInput = {
+    where: MasterDataChangeRequestScalarWhereInput
+    data: XOR<MasterDataChangeRequestUpdateManyMutationInput, MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByInput>
+  }
+
+  export type MasterDataChangeRequestScalarWhereInput = {
+    AND?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
+    OR?: MasterDataChangeRequestScalarWhereInput[]
+    NOT?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
+    id?: StringFilter<"MasterDataChangeRequest"> | string
+    organizationId?: StringFilter<"MasterDataChangeRequest"> | string
+    entityType?: EnumAuditEntityTypeFilter<"MasterDataChangeRequest"> | $Enums.AuditEntityType
+    entityId?: StringNullableFilter<"MasterDataChangeRequest"> | string | null
+    proposedChanges?: JsonFilter<"MasterDataChangeRequest">
+    reason?: StringFilter<"MasterDataChangeRequest"> | string
+    status?: EnumMasterDataChangeStatusFilter<"MasterDataChangeRequest"> | $Enums.MasterDataChangeStatus
+    requestedById?: StringFilter<"MasterDataChangeRequest"> | string
+    approvedById?: StringNullableFilter<"MasterDataChangeRequest"> | string | null
+    approvedAt?: DateTimeNullableFilter<"MasterDataChangeRequest"> | Date | string | null
+    effectiveDate?: DateTimeNullableFilter<"MasterDataChangeRequest"> | Date | string | null
+    expiresAt?: DateTimeNullableFilter<"MasterDataChangeRequest"> | Date | string | null
+    createdAt?: DateTimeFilter<"MasterDataChangeRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"MasterDataChangeRequest"> | Date | string
+  }
+
+  export type MasterDataChangeRequestUpsertWithWhereUniqueWithoutApprovedByInput = {
+    where: MasterDataChangeRequestWhereUniqueInput
+    update: XOR<MasterDataChangeRequestUpdateWithoutApprovedByInput, MasterDataChangeRequestUncheckedUpdateWithoutApprovedByInput>
+    create: XOR<MasterDataChangeRequestCreateWithoutApprovedByInput, MasterDataChangeRequestUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type MasterDataChangeRequestUpdateWithWhereUniqueWithoutApprovedByInput = {
+    where: MasterDataChangeRequestWhereUniqueInput
+    data: XOR<MasterDataChangeRequestUpdateWithoutApprovedByInput, MasterDataChangeRequestUncheckedUpdateWithoutApprovedByInput>
+  }
+
+  export type MasterDataChangeRequestUpdateManyWithWhereWithoutApprovedByInput = {
+    where: MasterDataChangeRequestScalarWhereInput
+    data: XOR<MasterDataChangeRequestUpdateManyMutationInput, MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByInput>
+  }
+
   export type UserCreateWithoutMfaDevicesInput = {
     id?: string
     email: string
@@ -53833,6 +57662,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutMfaDevicesInput = {
@@ -53880,6 +57711,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutMfaDevicesInput = {
@@ -53943,6 +57776,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMfaDevicesInput = {
@@ -53990,6 +57825,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -54037,6 +57874,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -54084,6 +57923,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -54147,6 +57988,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -54194,6 +58037,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserCreateWithoutLoginHistoryInput = {
@@ -54241,6 +58086,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutLoginHistoryInput = {
@@ -54288,6 +58135,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutLoginHistoryInput = {
@@ -54351,6 +58200,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLoginHistoryInput = {
@@ -54398,6 +58249,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type RolePermissionCreateWithoutRoleInput = {
@@ -54944,6 +58797,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -54991,6 +58846,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -55101,6 +58958,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -55148,6 +59007,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type RoleUpsertWithoutUserRolesInput = {
@@ -55404,6 +59265,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsGrantedInput = {
@@ -55451,6 +59314,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsGrantedInput = {
@@ -55503,6 +59368,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsReceivedInput = {
@@ -55550,6 +59417,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsReceivedInput = {
@@ -55660,6 +59529,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsGrantedInput = {
@@ -55707,6 +59578,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUpsertWithoutDelegationsReceivedInput = {
@@ -55765,6 +59638,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsReceivedInput = {
@@ -55812,6 +59687,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type RoleUpsertWithoutDelegationsInput = {
@@ -55995,6 +59872,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutAccessReviewItemsInput = {
@@ -56042,6 +59921,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutAccessReviewItemsInput = {
@@ -56191,6 +60072,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccessReviewItemsInput = {
@@ -56238,6 +60121,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type RoleUpsertWithoutAccessReviewItemsInput = {
@@ -56503,6 +60388,50 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MasterDataChangeRequestCreateWithoutOrganizationInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    requestedBy: UserCreateNestedOneWithoutChangeRequestsRequestedInput
+    approvedBy?: UserCreateNestedOneWithoutChangeRequestsApprovedInput
+    versions?: MasterDataVersionCreateNestedManyWithoutChangeRequestInput
+  }
+
+  export type MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    requestedById: string
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    versions?: MasterDataVersionUncheckedCreateNestedManyWithoutChangeRequestInput
+  }
+
+  export type MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput = {
+    where: MasterDataChangeRequestWhereUniqueInput
+    create: XOR<MasterDataChangeRequestCreateWithoutOrganizationInput, MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type MasterDataChangeRequestCreateManyOrganizationInputEnvelope = {
+    data: MasterDataChangeRequestCreateManyOrganizationInput | MasterDataChangeRequestCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: OrganizationMembershipWhereUniqueInput
     update: XOR<OrganizationMembershipUpdateWithoutOrganizationInput, OrganizationMembershipUncheckedUpdateWithoutOrganizationInput>
@@ -56683,6 +60612,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FundingSource"> | Date | string
   }
 
+  export type MasterDataChangeRequestUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: MasterDataChangeRequestWhereUniqueInput
+    update: XOR<MasterDataChangeRequestUpdateWithoutOrganizationInput, MasterDataChangeRequestUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<MasterDataChangeRequestCreateWithoutOrganizationInput, MasterDataChangeRequestUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type MasterDataChangeRequestUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: MasterDataChangeRequestWhereUniqueInput
+    data: XOR<MasterDataChangeRequestUpdateWithoutOrganizationInput, MasterDataChangeRequestUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type MasterDataChangeRequestUpdateManyWithWhereWithoutOrganizationInput = {
+    where: MasterDataChangeRequestScalarWhereInput
+    data: XOR<MasterDataChangeRequestUpdateManyMutationInput, MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
   export type OrganizationCreateWithoutLocationsInput = {
     id?: string
     code: string
@@ -56706,6 +60651,7 @@ export namespace Prisma {
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -56731,6 +60677,7 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -56874,6 +60821,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutPrimaryLocationInput = {
@@ -56921,6 +60870,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutPrimaryLocationInput = {
@@ -56967,6 +60918,7 @@ export namespace Prisma {
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -56992,6 +60944,7 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type LocationUpsertWithoutChildrenInput = {
@@ -57098,6 +61051,7 @@ export namespace Prisma {
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -57123,6 +61077,7 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -57242,6 +61197,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutHomeDepartmentInput = {
@@ -57289,6 +61246,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutHomeDepartmentInput = {
@@ -57367,6 +61326,7 @@ export namespace Prisma {
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -57392,6 +61352,7 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutChildrenInput = {
@@ -57502,6 +61463,7 @@ export namespace Prisma {
     departments?: DepartmentCreateNestedManyWithoutOrganizationInput
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCostCentresInput = {
@@ -57527,6 +61489,7 @@ export namespace Prisma {
     departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCostCentresInput = {
@@ -57599,6 +61562,7 @@ export namespace Prisma {
     departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCostCentresInput = {
@@ -57624,6 +61588,7 @@ export namespace Prisma {
     departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutCostCentresInput = {
@@ -57686,6 +61651,7 @@ export namespace Prisma {
     departments?: DepartmentCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProjectsInput = {
@@ -57711,6 +61677,7 @@ export namespace Prisma {
     departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProjectsInput = {
@@ -57752,6 +61719,7 @@ export namespace Prisma {
     departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProjectsInput = {
@@ -57777,6 +61745,7 @@ export namespace Prisma {
     departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutFundingSourcesInput = {
@@ -57802,6 +61771,7 @@ export namespace Prisma {
     departments?: DepartmentCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFundingSourcesInput = {
@@ -57827,6 +61797,7 @@ export namespace Prisma {
     departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFundingSourcesInput = {
@@ -57868,6 +61839,7 @@ export namespace Prisma {
     departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFundingSourcesInput = {
@@ -57893,6 +61865,7 @@ export namespace Prisma {
     departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ExchangeRateCreateWithoutBaseCurrencyInput = {
@@ -58150,6 +62123,700 @@ export namespace Prisma {
     exchangeRatesBase?: ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput
   }
 
+  export type OrganizationCreateWithoutMasterDataChangeRequestsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutMasterDataChangeRequestsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutMasterDataChangeRequestsInput, OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput>
+  }
+
+  export type UserCreateWithoutChangeRequestsRequestedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+  }
+
+  export type UserUncheckedCreateWithoutChangeRequestsRequestedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  }
+
+  export type UserCreateOrConnectWithoutChangeRequestsRequestedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutChangeRequestsRequestedInput, UserUncheckedCreateWithoutChangeRequestsRequestedInput>
+  }
+
+  export type UserCreateWithoutChangeRequestsApprovedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+  }
+
+  export type UserUncheckedCreateWithoutChangeRequestsApprovedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  }
+
+  export type UserCreateOrConnectWithoutChangeRequestsApprovedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutChangeRequestsApprovedInput, UserUncheckedCreateWithoutChangeRequestsApprovedInput>
+  }
+
+  export type MasterDataVersionCreateWithoutChangeRequestInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    versionNumber: number
+    snapshot: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom: Date | string
+    effectiveTo?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type MasterDataVersionUncheckedCreateWithoutChangeRequestInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    versionNumber: number
+    snapshot: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom: Date | string
+    effectiveTo?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type MasterDataVersionCreateOrConnectWithoutChangeRequestInput = {
+    where: MasterDataVersionWhereUniqueInput
+    create: XOR<MasterDataVersionCreateWithoutChangeRequestInput, MasterDataVersionUncheckedCreateWithoutChangeRequestInput>
+  }
+
+  export type MasterDataVersionCreateManyChangeRequestInputEnvelope = {
+    data: MasterDataVersionCreateManyChangeRequestInput | MasterDataVersionCreateManyChangeRequestInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganizationUpsertWithoutMasterDataChangeRequestsInput = {
+    update: XOR<OrganizationUpdateWithoutMasterDataChangeRequestsInput, OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput>
+    create: XOR<OrganizationCreateWithoutMasterDataChangeRequestsInput, OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutMasterDataChangeRequestsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutMasterDataChangeRequestsInput, OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput>
+  }
+
+  export type OrganizationUpdateWithoutMasterDataChangeRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type UserUpsertWithoutChangeRequestsRequestedInput = {
+    update: XOR<UserUpdateWithoutChangeRequestsRequestedInput, UserUncheckedUpdateWithoutChangeRequestsRequestedInput>
+    create: XOR<UserCreateWithoutChangeRequestsRequestedInput, UserUncheckedCreateWithoutChangeRequestsRequestedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutChangeRequestsRequestedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutChangeRequestsRequestedInput, UserUncheckedUpdateWithoutChangeRequestsRequestedInput>
+  }
+
+  export type UserUpdateWithoutChangeRequestsRequestedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutChangeRequestsRequestedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  }
+
+  export type UserUpsertWithoutChangeRequestsApprovedInput = {
+    update: XOR<UserUpdateWithoutChangeRequestsApprovedInput, UserUncheckedUpdateWithoutChangeRequestsApprovedInput>
+    create: XOR<UserCreateWithoutChangeRequestsApprovedInput, UserUncheckedCreateWithoutChangeRequestsApprovedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutChangeRequestsApprovedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutChangeRequestsApprovedInput, UserUncheckedUpdateWithoutChangeRequestsApprovedInput>
+  }
+
+  export type UserUpdateWithoutChangeRequestsApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutChangeRequestsApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  }
+
+  export type MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput = {
+    where: MasterDataVersionWhereUniqueInput
+    update: XOR<MasterDataVersionUpdateWithoutChangeRequestInput, MasterDataVersionUncheckedUpdateWithoutChangeRequestInput>
+    create: XOR<MasterDataVersionCreateWithoutChangeRequestInput, MasterDataVersionUncheckedCreateWithoutChangeRequestInput>
+  }
+
+  export type MasterDataVersionUpdateWithWhereUniqueWithoutChangeRequestInput = {
+    where: MasterDataVersionWhereUniqueInput
+    data: XOR<MasterDataVersionUpdateWithoutChangeRequestInput, MasterDataVersionUncheckedUpdateWithoutChangeRequestInput>
+  }
+
+  export type MasterDataVersionUpdateManyWithWhereWithoutChangeRequestInput = {
+    where: MasterDataVersionScalarWhereInput
+    data: XOR<MasterDataVersionUpdateManyMutationInput, MasterDataVersionUncheckedUpdateManyWithoutChangeRequestInput>
+  }
+
+  export type MasterDataVersionScalarWhereInput = {
+    AND?: MasterDataVersionScalarWhereInput | MasterDataVersionScalarWhereInput[]
+    OR?: MasterDataVersionScalarWhereInput[]
+    NOT?: MasterDataVersionScalarWhereInput | MasterDataVersionScalarWhereInput[]
+    id?: StringFilter<"MasterDataVersion"> | string
+    changeRequestId?: StringFilter<"MasterDataVersion"> | string
+    entityType?: EnumAuditEntityTypeFilter<"MasterDataVersion"> | $Enums.AuditEntityType
+    entityId?: StringNullableFilter<"MasterDataVersion"> | string | null
+    versionNumber?: IntFilter<"MasterDataVersion"> | number
+    snapshot?: JsonFilter<"MasterDataVersion">
+    changedFields?: JsonNullableFilter<"MasterDataVersion">
+    effectiveFrom?: DateTimeFilter<"MasterDataVersion"> | Date | string
+    effectiveTo?: DateTimeNullableFilter<"MasterDataVersion"> | Date | string | null
+    createdAt?: DateTimeFilter<"MasterDataVersion"> | Date | string
+  }
+
+  export type MasterDataChangeRequestCreateWithoutVersionsInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutMasterDataChangeRequestsInput
+    requestedBy: UserCreateNestedOneWithoutChangeRequestsRequestedInput
+    approvedBy?: UserCreateNestedOneWithoutChangeRequestsApprovedInput
+  }
+
+  export type MasterDataChangeRequestUncheckedCreateWithoutVersionsInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    requestedById: string
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MasterDataChangeRequestCreateOrConnectWithoutVersionsInput = {
+    where: MasterDataChangeRequestWhereUniqueInput
+    create: XOR<MasterDataChangeRequestCreateWithoutVersionsInput, MasterDataChangeRequestUncheckedCreateWithoutVersionsInput>
+  }
+
+  export type MasterDataChangeRequestUpsertWithoutVersionsInput = {
+    update: XOR<MasterDataChangeRequestUpdateWithoutVersionsInput, MasterDataChangeRequestUncheckedUpdateWithoutVersionsInput>
+    create: XOR<MasterDataChangeRequestCreateWithoutVersionsInput, MasterDataChangeRequestUncheckedCreateWithoutVersionsInput>
+    where?: MasterDataChangeRequestWhereInput
+  }
+
+  export type MasterDataChangeRequestUpdateToOneWithWhereWithoutVersionsInput = {
+    where?: MasterDataChangeRequestWhereInput
+    data: XOR<MasterDataChangeRequestUpdateWithoutVersionsInput, MasterDataChangeRequestUncheckedUpdateWithoutVersionsInput>
+  }
+
+  export type MasterDataChangeRequestUpdateWithoutVersionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutMasterDataChangeRequestsNestedInput
+    requestedBy?: UserUpdateOneRequiredWithoutChangeRequestsRequestedNestedInput
+    approvedBy?: UserUpdateOneWithoutChangeRequestsApprovedNestedInput
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateWithoutVersionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    requestedById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrganizationCreateWithoutMembershipsInput = {
     id?: string
     code: string
@@ -58173,6 +62840,7 @@ export namespace Prisma {
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -58198,6 +62866,7 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -58250,6 +62919,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutOrganizationMembershipsInput = {
@@ -58297,6 +62968,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutOrganizationMembershipsInput = {
@@ -58338,6 +63011,7 @@ export namespace Prisma {
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -58363,6 +63037,7 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganizationMembershipsInput = {
@@ -58421,6 +63096,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganizationMembershipsInput = {
@@ -58468,6 +63145,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type SecurityEventCreateWithoutAuditLogInput = {
@@ -58737,6 +63416,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -58784,6 +63465,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -58847,6 +63530,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -58894,6 +63579,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserCreateWithoutNotificationPreferencesInput = {
@@ -58941,6 +63628,8 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationPreferencesInput = {
@@ -58988,6 +63677,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationPreferencesInput = {
@@ -59051,6 +63742,8 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationPreferencesInput = {
@@ -59098,6 +63791,8 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type OrganizationMembershipCreateManyUserInput = {
@@ -59303,6 +63998,38 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+  }
+
+  export type MasterDataChangeRequestCreateManyRequestedByInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MasterDataChangeRequestCreateManyApprovedByInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    requestedById: string
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type OrganizationMembershipUpdateWithoutUserInput = {
@@ -59755,6 +64482,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedByInput = {
@@ -59802,6 +64531,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCreatedByInput = {
@@ -59884,6 +64615,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedByInput = {
@@ -59931,6 +64664,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutUpdatedByInput = {
@@ -59966,6 +64701,106 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type MasterDataChangeRequestUpdateWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutMasterDataChangeRequestsNestedInput
+    approvedBy?: UserUpdateOneWithoutChangeRequestsApprovedNestedInput
+    versions?: MasterDataVersionUpdateManyWithoutChangeRequestNestedInput
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    versions?: MasterDataVersionUncheckedUpdateManyWithoutChangeRequestNestedInput
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MasterDataChangeRequestUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutMasterDataChangeRequestsNestedInput
+    requestedBy?: UserUpdateOneRequiredWithoutChangeRequestsRequestedNestedInput
+    versions?: MasterDataVersionUpdateManyWithoutChangeRequestNestedInput
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    requestedById?: StringFieldUpdateOperationsInput | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    versions?: MasterDataVersionUncheckedUpdateManyWithoutChangeRequestNestedInput
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    requestedById?: StringFieldUpdateOperationsInput | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RolePermissionCreateManyRoleInput = {
@@ -60362,6 +65197,22 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type MasterDataChangeRequestCreateManyOrganizationInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    proposedChanges: JsonNullValueInput | InputJsonValue
+    reason: string
+    status?: $Enums.MasterDataChangeStatus
+    requestedById: string
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    effectiveDate?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrganizationMembershipUpdateWithoutOrganizationInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60582,6 +65433,56 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MasterDataChangeRequestUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requestedBy?: UserUpdateOneRequiredWithoutChangeRequestsRequestedNestedInput
+    approvedBy?: UserUpdateOneWithoutChangeRequestsApprovedNestedInput
+    versions?: MasterDataVersionUpdateManyWithoutChangeRequestNestedInput
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    requestedById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    versions?: MasterDataVersionUncheckedUpdateManyWithoutChangeRequestNestedInput
+  }
+
+  export type MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedChanges?: JsonNullValueInput | InputJsonValue
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumMasterDataChangeStatusFieldUpdateOperationsInput | $Enums.MasterDataChangeStatus
+    requestedById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LocationCreateManyParentInput = {
     id?: string
     organizationId: string
@@ -60734,6 +65635,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPrimaryLocationInput = {
@@ -60781,6 +65684,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutPrimaryLocationInput = {
@@ -60955,6 +65860,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHomeDepartmentInput = {
@@ -61002,6 +65909,8 @@ export namespace Prisma {
     notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutHomeDepartmentInput = {
@@ -61158,6 +66067,54 @@ export namespace Prisma {
     differenceTreatment?: EnumFxDifferenceTreatmentFieldUpdateOperationsInput | $Enums.FxDifferenceTreatment
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MasterDataVersionCreateManyChangeRequestInput = {
+    id?: string
+    entityType: $Enums.AuditEntityType
+    entityId?: string | null
+    versionNumber: number
+    snapshot: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom: Date | string
+    effectiveTo?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type MasterDataVersionUpdateWithoutChangeRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    versionNumber?: IntFieldUpdateOperationsInput | number
+    snapshot?: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MasterDataVersionUncheckedUpdateWithoutChangeRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    versionNumber?: IntFieldUpdateOperationsInput | number
+    snapshot?: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MasterDataVersionUncheckedUpdateManyWithoutChangeRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    versionNumber?: IntFieldUpdateOperationsInput | number
+    snapshot?: JsonNullValueInput | InputJsonValue
+    changedFields?: NullableJsonNullValueInput | InputJsonValue
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SecurityEventCreateManyAuditLogInput = {

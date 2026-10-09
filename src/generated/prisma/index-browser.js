@@ -445,6 +445,36 @@ exports.Prisma.ExchangeRateScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.MasterDataChangeRequestScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  proposedChanges: 'proposedChanges',
+  reason: 'reason',
+  status: 'status',
+  requestedById: 'requestedById',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  effectiveDate: 'effectiveDate',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MasterDataVersionScalarFieldEnum = {
+  id: 'id',
+  changeRequestId: 'changeRequestId',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  versionNumber: 'versionNumber',
+  snapshot: 'snapshot',
+  changedFields: 'changedFields',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.OrganizationMembershipScalarFieldEnum = {
   organizationId: 'organizationId',
   userId: 'userId',
@@ -574,6 +604,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -779,6 +813,40 @@ exports.FxDifferenceTreatment = exports.$Enums.FxDifferenceTreatment = {
   SUSPENSE: 'SUSPENSE'
 };
 
+exports.AuditEntityType = exports.$Enums.AuditEntityType = {
+  USER: 'USER',
+  ROLE: 'ROLE',
+  PERMISSION: 'PERMISSION',
+  SESSION: 'SESSION',
+  ORGANIZATION: 'ORGANIZATION',
+  AUTH_POLICY: 'AUTH_POLICY',
+  DELEGATION: 'DELEGATION',
+  ACCESS_REVIEW: 'ACCESS_REVIEW',
+  AUDIT_LOG: 'AUDIT_LOG',
+  SECURITY_EVENT: 'SECURITY_EVENT',
+  NOTIFICATION: 'NOTIFICATION',
+  API_KEY: 'API_KEY',
+  SYSTEM: 'SYSTEM',
+  LOCATION: 'LOCATION',
+  DEPARTMENT: 'DEPARTMENT',
+  COST_CENTRE: 'COST_CENTRE',
+  PROJECT: 'PROJECT',
+  FUNDING_SOURCE: 'FUNDING_SOURCE',
+  CURRENCY: 'CURRENCY',
+  EXCHANGE_RATE: 'EXCHANGE_RATE',
+  MASTER_DATA_CHANGE_REQUEST: 'MASTER_DATA_CHANGE_REQUEST',
+  MASTER_DATA_VERSION: 'MASTER_DATA_VERSION'
+};
+
+exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED'
+};
+
 exports.AuditAction = exports.$Enums.AuditAction = {
   LOGIN: 'LOGIN',
   LOGOUT: 'LOGOUT',
@@ -821,29 +889,6 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   RETENTION_APPLIED: 'RETENTION_APPLIED',
   OFFLINE_QUEUE_REPLAY_ATTEMPT: 'OFFLINE_QUEUE_REPLAY_ATTEMPT',
   SYSTEM: 'SYSTEM'
-};
-
-exports.AuditEntityType = exports.$Enums.AuditEntityType = {
-  USER: 'USER',
-  ROLE: 'ROLE',
-  PERMISSION: 'PERMISSION',
-  SESSION: 'SESSION',
-  ORGANIZATION: 'ORGANIZATION',
-  AUTH_POLICY: 'AUTH_POLICY',
-  DELEGATION: 'DELEGATION',
-  ACCESS_REVIEW: 'ACCESS_REVIEW',
-  AUDIT_LOG: 'AUDIT_LOG',
-  SECURITY_EVENT: 'SECURITY_EVENT',
-  NOTIFICATION: 'NOTIFICATION',
-  API_KEY: 'API_KEY',
-  SYSTEM: 'SYSTEM',
-  LOCATION: 'LOCATION',
-  DEPARTMENT: 'DEPARTMENT',
-  COST_CENTRE: 'COST_CENTRE',
-  PROJECT: 'PROJECT',
-  FUNDING_SOURCE: 'FUNDING_SOURCE',
-  CURRENCY: 'CURRENCY',
-  EXCHANGE_RATE: 'EXCHANGE_RATE'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -958,6 +1003,8 @@ exports.Prisma.ModelName = {
   FundingSource: 'FundingSource',
   Currency: 'Currency',
   ExchangeRate: 'ExchangeRate',
+  MasterDataChangeRequest: 'MasterDataChangeRequest',
+  MasterDataVersion: 'MasterDataVersion',
   OrganizationMembership: 'OrganizationMembership',
   AuditLog: 'AuditLog',
   AuditChainHead: 'AuditChainHead',
