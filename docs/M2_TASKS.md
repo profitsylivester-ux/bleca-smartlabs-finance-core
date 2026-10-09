@@ -1,0 +1,11 @@
+# M2 Sub-tasks
+
+1. **Organisation setup + Location/Department/Cost Centre CRUD** — Prisma models (`organizations`, `locations`, `departments`, `cost_centres`), API routes (`/api/v1/locations`, `/departments`, `/cost-centres`), UI (`/settings/organization`, `/master-data` tabs for locations/departments/cost-centres), and tests for NOT_REGISTERED org with nullable TIN, UNIVERSITY_FACILITY/PERMITTED_USE location types, and hierarchical dimensions.
+
+2. **Projects & Funding Sources** — Prisma models (`projects`, `funding_sources`), seed Iventika and Uzanite as active projects, seed restricted grant funding source, API routes (`/api/v1/projects`, `/funding-sources`), UI tabs in `/master-data`, tests for project dimension extraction and restricted funding scope enforcement.
+
+3. **Currencies & FX Library** — Prisma models (`currencies`, `exchange_rates`), seed TZS (base), USD, EUR, GBP, `lib/fx` conversion with configurable rounding and FX-difference treatment (EXPENSE/INCOME/SUSPENSE), transaction-date rate lookup with explicit error on missing rate, API routes (`/api/v1/currencies`, `/exchange-rates`), UI for rate entry/import, tests for reproducible historical conversion and idempotent rate import.
+
+4. **Master Data Change Requests** — Prisma models (`master_data_change_requests`, `master_data_versions`), approval workflow (create → approve), version history with old/new values, effective date, reason, audit trail, API routes (`POST /api/v1/master-data/changes`, `/changes/:id/approve`), UI (`/master-data/history`), tests for approval-gated edits, version snapshots, effective dating, and audit on rejected changes.
+
+5. **Reason Codes + Product/Service Catalogue + Verification Doc** — Prisma models (`reason_codes`, `products_services`), seed reason code catalogue, lightweight product/service catalogue for revenue linkage, API routes (`/api/v1/reason-codes`, `/products-services`), UI tabs in `/master-data`, write `docs/M2_VERIFICATION.md` with step-by-step verification (Iventika/Uzanite usable, TZS/USD/EUR/GBP configured, FX conversion reproducible, unauthorised master-data edit rejected and audited).

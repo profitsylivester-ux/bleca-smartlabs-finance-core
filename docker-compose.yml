@@ -1,0 +1,95 @@
+# BLECA SmartLabs Finance — local development services.
+#
+# Production runs on Supabase Postgres (see PHASE_1_PLAN.md Q12). This compose file
+# exists so that local development and CI match production semantics as closely as
+# possible: real Postgres (never SQLite), an S3-compatible store, and a real SMTP sink.
+#
+# Nothing here is used in production. No credential in this file is a real secret.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bleca-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bleca
+      POSTGRES_PASSWORD: bleca_local_dev_only
+      POSTGRES_DB: bleca_finance
+      # Deterministic collation so ordering does not depend on the host OS.
+      POSTGRES_INITDB_ARGS: '--locale=C --encoding=UTF8'
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U bleca -d bleca_finance']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [bleca]
+
+  # Test database. Kept separate so an integration test can TRUNCATE freely.
+  postgres-test:
+    image: postgres:16-alpine
+    container_name: bleca-postgres-test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bleca
+      POSTGRES_PASSWORD: bleca_local_dev_only
+      POSTGRES_DB: bleca_finance_test
+      POSTGRES_INITDB_ARGS: '--locale=C --encoding=UTF8'
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U bleca -d bleca_finance_test']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [bleca]
+
+  # S3-compatible object storage for local development.
+  #
+  # NOTE: this is `adobe/s3mock`, not MinIO. MinIO removed its Docker Hub images,
+  # and `minio/minio` now fails with "pull access denied". The application talks to
+  # object storage exclusively through the S3 driver in `lib/documents/storage`, so
+  # the choice of local emulator has no effect on application code or on the
+  # production target (Supabase Storage / any S3-compatible provider).
+  s3mock:
+    image: adobe/s3mock:latest
+    container_name: bleca-s3mock
+    restart: unless-stopped
+    environment:
+      # Create the private bucket on boot. Documents are NEVER public: they are
+      # served through short-lived signed URLs only (PHASE_1_PLAN.md 2.5, PDF 28).
+      initialBuckets: bleca-documents
+      retainFilesOnExit: 'false'
+      debug: 'false'
+    ports:
+      - '4566:9090'
+    networks: [bleca]
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: bleca-mailpit
+    restart: unless-stopped
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+      MP_DATABASE: /data/mailpit.db
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+    volumes:
+      - mailpit-data:/data
+    networks: [bleca]
+
+volumes:
+  postgres-data:
+  postgres-test-data:
+  mailpit-data:
+
+networks:
+  bleca:
+    driver: bridge

@@ -1,0 +1,8 @@
+node_modules
+.next
+package-lock.json
+src/generated
+public
+e2e
+*.md
+coverage

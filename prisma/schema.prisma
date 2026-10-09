@@ -1,0 +1,1070 @@
+// ============================================================================
+// BLECA SmartLabs Finance — Prisma schema
+//
+// Milestone 1 scope: identity, authentication, RBAC, organisation root, audit.
+// Accounting, treasury, budgets and sales models land in M2+.
+//
+// CONVENTIONS ENFORCED HERE (see PHASE_1_PLAN.md 3.8):
+//
+//   1. Table and COLUMN names are snake_case via @map/@@map. Prisma's camelCase
+//      default is fine until you write raw SQL - and from M1 onward this project
+//      writes raw SQL for every guarantee Prisma cannot express (audit
+//      append-only, hash-chain linkage, journal immutability, period lock).
+//      Quoted "camelCase" identifiers in those triggers would be unreadable and
+//      error-prone. Settled now, while there is no data, rather than after go-live.
+//
+//   2. Money is Decimal(20,6). Never Float.
+//
+//   3. Every business table carries organization_id for tenant isolation.
+//
+//   4. Soft delete only. Hard delete is allowed only for import_row,
+//      notification, session and idempotency_key after retention expiry.
+//
+//   5. No Tanzanian tax value and no bank file format may appear in this file.
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+// ---- Identity & access ------------------------------------------------------
+
+enum UserStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+/// WEBAUTHN is reserved for a later milestone and is not wired in Phase 1.
+enum MfaMethod {
+  TOTP
+  WEBAUTHN
+}
+
+enum MfaDeviceStatus {
+  PENDING
+  ACTIVE
+  DISABLED
+  REVOKED
+}
+
+enum SessionRevokeReason {
+  LOGOUT
+  TIMEOUT_IDLE
+  TIMEOUT_ABSOLUTE
+  PASSWORD_CHANGED
+  MFA_CHANGED
+  ADMIN_REVOKED
+  SUSPECTED_COMPROMISE
+}
+
+enum LoginOutcome {
+  SUCCESS
+  FAILURE_BAD_CREDENTIALS
+  FAILURE_MFA
+  FAILURE_LOCKED
+  FAILURE_INACTIVE
+  FAILURE_EXPIRED_PASSWORD
+  BLOCKED_RATE_LIMIT
+}
+
+enum PasswordHashAlgorithm {
+  ARGON2ID
+  BCRYPT
+}
+
+enum DelegationKind {
+  APPROVAL_AUTHORITY
+  TEMPORARY_ACCESS
+  ACTING_CAPACITY
+}
+
+// ---- RBAC -------------------------------------------------------------------
+
+/// The 11 actions from PDF 5. Not extensible without a migration, by design:
+/// adding an action must be a reviewed decision, not a typo.
+enum PermissionAction {
+  VIEW
+  CREATE
+  EDIT
+  SUBMIT
+  APPROVE
+  REJECT
+  POST
+  REVERSE
+  EXPORT
+  CONFIGURE
+  ADMINISTER
+}
+
+enum ModuleKey {
+  DASHBOARD_CEO
+  DASHBOARD_FINANCE
+  USERS_ROLES
+  CHART_OF_ACCOUNTS
+  JOURNAL_ENTRIES
+  GENERAL_LEDGER
+  TRIAL_BALANCE
+  TRANSACTIONS
+  APPROVALS
+  PERIODS
+  FINANCIAL_CLOSE
+  CASH
+  BANK
+  MOBILE_MONEY
+  PAYMENT_GATEWAYS
+  TREASURY_TRANSFERS
+  STATEMENT_IMPORT
+  RECONCILIATION
+  BUDGETS
+  COMMITMENTS
+  CUSTOMERS
+  SUPPLIERS
+  QUOTATIONS
+  INVOICES
+  PAYMENTS
+  RECEIPTS
+  CREDIT_NOTES
+  DOCUMENTS
+  MASTER_DATA
+  REPORTS
+  EXPORTS
+  AUDIT_TRAIL
+  TAX_COMPLIANCE
+  IMPORTS
+  ANOMALY_DETECTION
+  NOTIFICATIONS
+  SEARCH
+  BACKUP_ADMIN
+  API_ADMIN
+
+  // Reserved Phase 2+ keys. Present now so permission grants and the
+  // "module not available in Phase 1" gate can be expressed without a later
+  // migration (PDF 17.17).
+  PROCUREMENT
+  INVENTORY
+  ASSETS
+  FUNDING
+  PROJECTS_FULL
+  CRM
+}
+
+enum ScopeDimension {
+  PROJECT
+  DEPARTMENT
+  COST_CENTRE
+  LOCATION
+  FUNDING_SOURCE
+  ACCOUNT
+}
+
+enum RoleType {
+  SYSTEM
+  STANDARD
+  TEMPORARY
+}
+
+enum AccessReviewStatus {
+  OPEN
+  IN_REVIEW
+  COMPLETED
+  CANCELLED
+}
+
+// ---- Organisation -----------------------------------------------------------
+
+/// Multi-entity is Phase 4 (PDF 51). Single-valued on purpose so the migration
+/// path is explicit rather than accidental.
+enum OrganizationType {
+  SINGLE_ENTITY
+}
+
+/// PDF 2: BLECA is not yet registered. Compliance code must tolerate this.
+enum RegistrationStatus {
+  NOT_REGISTERED
+  PENDING
+  REGISTERED
+}
+
+/// PDF 2: university facilities with permission; PERMITTED_USE for third-party
+/// locations without ownership.
+enum LocationType {
+  HEAD_OFFICE
+  OFFICE
+  LAB
+  WAREHOUSE
+  PROJECT_SITE
+  UNIVERSITY_FACILITY
+  PERMITTED_USE
+  REMOTE
+  OTHER
+}
+
+/// Master data lifecycle status (PDF 62).
+enum MasterDataStatus {
+  DRAFT
+  PENDING_APPROVAL
+  ACTIVE
+  REJECTED
+  INACTIVE
+  ARCHIVED
+}
+
+// ---- Audit ------------------------------------------------------------------
+
+enum AuditAction {
+  LOGIN
+  LOGOUT
+  LOGIN_FAILED
+  SESSION_REVOKED
+  PASSWORD_CHANGED
+  PASSWORD_RESET_REQUESTED
+  PASSWORD_RESET_COMPLETED
+  MFA_ENROLLED
+  MFA_VERIFIED
+  MFA_DISABLED
+  USER_CREATED
+  USER_UPDATED
+  USER_ACTIVATED
+  USER_DEACTIVATED
+  USER_SUSPENDED
+  ROLE_ASSIGNED
+  ROLE_REMOVED
+  PERMISSION_GRANTED
+  PERMISSION_REVOKED
+  ROLE_CREATED
+  ROLE_UPDATED
+  DELEGATION_GRANTED
+  DELEGATION_REVOKED
+  DELEGATION_EXPIRED
+  ACCESS_REVIEW_COMPLETED
+  CONFIGURATION_CHANGES
+  EXPORT
+  DOCUMENT_UPLOADED
+  DOCUMENT_DOWNLOADED
+  REPORT_GENERATED
+  SECURITY_EVENT
+  RATE_LIMIT_TRIPPED
+  ACCESS_DENIED
+  SOD_VIOLATION_ATTEMPT
+  SCOPE_VIOLATION
+  API_KEY_CREATED
+  API_KEY_REVOKED
+  IDEMPOTENCY_CONFLICT
+  RETENTION_APPLIED
+  OFFLINE_QUEUE_REPLAY_ATTEMPT
+  SYSTEM
+}
+
+enum AuditEntityType {
+  USER
+  ROLE
+  PERMISSION
+  SESSION
+  ORGANIZATION
+  AUTH_POLICY
+  DELEGATION
+  ACCESS_REVIEW
+  AUDIT_LOG
+  SECURITY_EVENT
+  NOTIFICATION
+  API_KEY
+  SYSTEM
+  LOCATION
+  DEPARTMENT
+  COST_CENTRE
+}
+
+enum AuditResult {
+  SUCCESS
+  FAILURE
+  DENIED
+  PARTIAL
+}
+
+enum AuditChannel {
+  WEB
+  API
+  CLI
+  SYSTEM
+  SYNC
+}
+
+enum SecurityEventSeverity {
+  INFO
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum SecurityEventType {
+  BRUTE_FORCE_ATTEMPT
+  CREDENTIAL_STUFFING_PATTERN
+  NEW_DEVICE_LOGIN
+  NEW_COUNTRY_LOGIN
+  PRIVILEGE_ESCALATION_ATTEMPT
+  SOD_VIOLATION_ATTEMPT
+  PERMISSION_DENIED_SPIKE
+  SCOPE_VIOLATION
+  IDEMPOTENCY_CONFLICT
+  MALFORMED_UPLOAD
+  VELOCITY_ANOMALY
+  TIME_ANOMALY
+  CONFIG_CHANGED_OUT_OF_BAND
+  AUDIT_CHAIN_BROKEN
+  AUDIT_CHAIN_VERIFIED
+  OFFLINE_QUEUE_REPLAY_ATTEMPT
+  RATE_LIMIT_TRIPPED
+  ACCOUNT_LOCKED
+  MFA_FAILED_REPEATEDLY
+  INSECURE_SESSION_POLICY
+}
+
+/// Where a daily audit-chain seal stands. A BROKEN checkpoint is a CRITICAL
+/// security event and notifies the CEO (PHASE_1_PLAN.md 7.4).
+enum ChainVerificationStatus {
+  PENDING
+  VERIFIED
+  BROKEN
+}
+
+// ---- Notifications ----------------------------------------------------------
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  // Architected only in Phase 1. Q1 deferred SMS and push to Phase 2.
+  SMS
+  PUSH
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  DELIVERED
+  FAILED
+  READ
+  ARCHIVED
+  SUPPRESSED
+}
+
+enum NotificationCategory {
+  APPROVAL
+  SECURITY_ALERT
+  ACCESS_REVIEW
+  SYSTEM
+  ACCOUNT
+}
+
+enum NotificationSeverity {
+  INFO
+  SUCCESS
+  WARNING
+  CRITICAL
+}
+
+// ---- Idempotency ------------------------------------------------------------
+
+enum IdempotencyKeyStatus {
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+// ============================================================================
+// B1. IDENTITY, ACCESS & AUTHENTICATION   (PDF 4, PDF 5)
+// ============================================================================
+
+model User {
+  id              String     @id @default(cuid())
+  email           String
+  emailNormalized String     @unique @map("email_normalized")
+  fullName        String     @map("full_name")
+  jobTitle        String?    @map("job_title")
+  phone           String?
+  avatarUrl       String?    @map("avatar_url")
+
+  status    UserStatus @default(INVITED)
+  isActive  Boolean    @default(true)
+  deactivatedAt      DateTime? @map("deactivated_at")
+  deactivationReason String?   @map("deactivation_reason")
+
+  // --- Credentials -----------------------------------------------------------
+  passwordHash           String?               @map("password_hash")
+  passwordAlgorithm      PasswordHashAlgorithm? @map("password_algorithm")
+  passwordChangedAt      DateTime?             @map("password_changed_at")
+  mustChangePassword     Boolean               @default(false) @map("must_change_password")
+  failedLoginCount       Int                   @default(0) @map("failed_login_count")
+  lockedUntil            DateTime?             @map("locked_until")
+  lastLoginAt            DateTime?             @map("last_login_at")
+  emailVerifiedAt        DateTime?             @map("email_verified_at")
+  passwordResetToken     String?               @unique @map("password_reset_token")
+  passwordResetExpiresAt DateTime?             @map("password_reset_expires_at")
+
+  /// Prior password hashes, retained so "do not reuse" can be enforced later
+  /// without losing history.
+  passwordHistory String[] @default([]) @map("password_history")
+
+  // --- MFA (PDF 4) -----------------------------------------------------------
+  /// Enforced for CEO and Finance Officer by default (BUILD_PROMPT 7). Seeded
+  /// from the ROLE, never from a client-supplied flag.
+  mfaEnforced   Boolean   @default(false) @map("mfa_enforced")
+  mfaVerifiedAt DateTime? @map("mfa_verified_at")
+
+  // --- Organisation context --------------------------------------------------
+  primaryLocationId String? @map("primary_location_id")
+  primaryLocation   Location? @relation("UserPrimaryLocation", fields: [primaryLocationId], references: [id])
+  homeDepartmentId  String? @map("home_department_id")
+  homeDepartment    Department? @relation("UserHomeDepartment", fields: [homeDepartmentId], references: [id])
+
+  /// PDF 56: classification for data-protection handling. Not a legal claim.
+  dataClassification String    @default("INTERNAL") @map("data_classification")
+  retentionReviewAt  DateTime? @map("retention_review_at")
+
+  createdById String? @map("created_by_id")
+  createdBy   User?   @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedById String? @map("updated_by_id")
+  updatedBy   User?   @relation("UserUpdatedBy", fields: [updatedById], references: [id])
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  organizationMemberships OrganizationMembership[]
+  sessions                Session[]
+  loginHistory            LoginHistory[]
+  mfaDevices              MfaDevice[]
+  userRoles               UserRole[]
+  delegationsGranted      Delegation[]            @relation("DelegationGrantor")
+  delegationsReceived     Delegation[]            @relation("DelegationGrantee")
+  accessReviewItems       AccessReviewItem[]
+  notifications           Notification[]
+  notificationPreferences NotificationPreference[]
+  createdUsers            User[]                  @relation("UserCreatedBy")
+  updatedUsers            User[]                  @relation("UserUpdatedBy")
+
+  @@index([status, isActive])
+  @@index([primaryLocationId])
+  @@index([homeDepartmentId])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model MfaDevice {
+  id     String    @id @default(cuid())
+  userId String    @map("user_id")
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  method MfaMethod @default(TOTP)
+  label  String
+  /// AES-256-GCM ciphertext. A plaintext TOTP secret must never reach the table.
+  secretEnc String @map("secret_enc")
+  recoveryCodesEnc String? @map("recovery_codes_enc")
+  status MfaDeviceStatus @default(PENDING)
+  confirmedAt DateTime? @map("confirmed_at")
+  lastUsedAt   DateTime? @map("last_used_at")
+  /// Replay protection: the last accepted counter. A TOTP code may not be reused.
+  lastUsedCounter Int       @default(-1) @map("last_used_counter")
+  failedAttempts  Int       @default(0) @map("failed_attempts")
+  lockedUntil     DateTime? @map("locked_until")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId, status])
+  @@map("mfa_devices")
+}
+
+model Session {
+  id           String  @id @default(cuid())
+  /// Referenced by the `sid` claim in the Auth.js JWT. Rotated on privilege change.
+  sessionToken String  @unique @map("session_token")
+  userId       String  @map("user_id")
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress         String? @map("ip_address")
+  userAgent         String? @map("user_agent")
+  deviceFingerprint String? @map("device_fingerprint")
+  deviceLabel       String? @map("device_label")
+  createdAt         DateTime @default(now()) @map("created_at")
+  lastActiveAt      DateTime @default(now()) @map("last_active_at")
+  /// Both timeouts are resolved from AuthPolicy at issue time and then enforced
+  /// against these absolute instants, so a later policy change cannot silently
+  /// extend a session that is already live.
+  idleTimeoutAt     DateTime? @map("idle_timeout_at")
+  absoluteExpiresAt DateTime  @map("absolute_expires_at")
+  revokedAt         DateTime? @map("revoked_at")
+  revokedReason     SessionRevokeReason? @map("revoked_reason")
+  mfaSatisfiedAt    DateTime? @map("mfa_satisfied_at")
+  /// Step-up authentication: set when the actor re-authenticated for a sensitive
+  /// action. Cleared once consumed.
+  stepUpSatisfiedAt DateTime? @map("step_up_satisfied_at")
+  stepUpExpiresAt   DateTime? @map("step_up_expires_at")
+
+  @@index([userId, lastActiveAt])
+  @@index([deviceFingerprint])
+  @@index([absoluteExpiresAt])
+  @@index([revokedAt])
+  @@map("sessions")
+}
+
+model LoginHistory {
+  id                String       @id @default(cuid())
+  userId            String?      @map("user_id")
+  user              User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  emailAttempted    String       @map("email_attempted")
+  outcome           LoginOutcome
+  ipAddress         String?      @map("ip_address")
+  userAgent         String?      @map("user_agent")
+  deviceFingerprint String?      @map("device_fingerprint")
+  mfaAttempted      Boolean      @default(false) @map("mfa_attempted")
+  failureReason     String?      @map("failure_reason")
+  sessionId         String?      @map("session_id")
+  occurredAt        DateTime     @default(now()) @map("occurred_at")
+
+  @@index([userId, occurredAt])
+  @@index([emailAttempted, occurredAt])
+  @@index([outcome, occurredAt])
+  @@map("login_history")
+}
+
+/// Lockout, rate limiting, password strength and session timeouts are CONFIG,
+/// not code (PDF 4). Changing one is an audited CONFIGURATION_CHANGES event.
+model AuthPolicy {
+  id       String @id @default(cuid())
+  name     String @unique
+  priority Int    @default(100)
+
+  maxFailedAttempts       Int @default(5) @map("max_failed_attempts")
+  lockoutDurationMinutes  Int @default(15) @map("lockout_duration_minutes")
+  rateLimitWindowSeconds  Int @default(60) @map("rate_limit_window_seconds")
+  maxAttemptsPerWindow     Int @default(10) @map("max_attempts_per_window")
+  ipRateLimitPerMinute     Int @default(20) @map("ip_rate_limit_per_minute")
+
+  sessionIdleTimeoutMinutes   Int @default(30) @map("session_idle_timeout_minutes")
+  sessionAbsoluteTimeoutHours Int @default(12) @map("session_absolute_timeout_hours")
+
+  passwordMinLength        Int     @default(12) @map("password_min_length")
+  passwordRequireUppercase Boolean @default(true) @map("password_require_uppercase")
+  passwordRequireLowercase Boolean @default(true) @map("password_require_lowercase")
+  passwordRequireNumber    Boolean @default(true) @map("password_require_number")
+  passwordRequireSymbol    Boolean @default(true) @map("password_require_symbol")
+
+  /// Role codes that must hold MFA. Seeded with CEO and FINANCE_OFFICER.
+  mfaRequiredRoleCodes String[] @default([]) @map("mfa_required_role_codes")
+  /// Lifetime of the pre-MFA challenge session.
+  mfaChallengeTimeoutMinutes Int @default(10) @map("mfa_challenge_timeout_minutes")
+  /// Lifetime of a step-up authentication grant.
+  stepUpTimeoutMinutes Int @default(5) @map("step_up_timeout_minutes")
+
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  updatedById String?  @map("updated_by_id")
+
+  @@index([isActive, priority])
+  @@map("auth_policies")
+}
+
+// ============================================================================
+// B2. RBAC   (PDF 5)
+// ============================================================================
+
+model Role {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  description String?
+  type        RoleType @default(STANDARD)
+  isSystem    Boolean  @default(false)
+  isActive    Boolean  @default(true)
+
+  /// CEO final authority (PDF 3.1).
+  isFinalApprover Boolean @default(false) @map("is_final_approver")
+  /// ALWAYS false in Phase 1. No role can bypass approval; the CEO path is a
+  /// recorded per-item waiver, not a standing bypass (Q3).
+  canBypassApproval Boolean @default(false) @map("can_bypass_approval")
+
+  /// Q2: every amount requires CEO approval in Phase 1. These columns exist for
+  /// the future configuration path and are NOT seeded with a band.
+  maxApprovalAmount Decimal? @db.Decimal(20, 6) @map("max_approval_amount")
+  approvalCurrency  String?  @db.Char(3) @map("approval_currency")
+
+  createdById String?  @map("created_by_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  rolePermissions RolePermission[]
+  scopeGrants     RoleScopeGrant[]
+  userRoles       UserRole[]
+  delegations     Delegation[]
+  accessReviewItems AccessReviewItem[]
+
+  @@index([isSystem, isActive])
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(cuid())
+  module      ModuleKey
+  action      PermissionAction
+  /// Optional sub-resource, e.g. "supplier.bank_details".
+  resource    String?
+  description String?
+  /// PDF 5: sensitive actions take additional authorization. Set on supplier bank
+  /// details, permission changes, period reopen and high-value exports.
+  requiresStepUpAuth Boolean @default(false) @map("requires_step_up_auth")
+
+  roles       RolePermission[]
+  scopeGrants RoleScopeGrant[]
+
+  @@unique([module, action, resource])
+  @@index([module])
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String     @map("role_id")
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permissionId String     @map("permission_id")
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  /// Extra constraints attached to this specific grant.
+  conditions Json?
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roleId String @map("role_id")
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  /// PDF 4: temporary access. `expiresAt` is mandatory whenever isTemporary.
+  isTemporary Boolean  @default(false) @map("is_temporary")
+  startsAt    DateTime @default(now()) @map("starts_at")
+  expiresAt   DateTime? @map("expires_at")
+  grantedById String?  @map("granted_by_id")
+  grantedAt   DateTime @default(now()) @map("granted_at")
+  revokedAt   DateTime? @map("revoked_at")
+  reason      String?
+
+  @@index([userId, revokedAt])
+  @@index([roleId])
+  @@index([expiresAt])
+  @@map("user_roles")
+}
+
+/// Dimension-scoped grants (PDF 5). dimension_value_id = NULL means "all values".
+/// DENY always wins over ALLOW (resolution order in lib/rbac/scope.ts).
+model RoleScopeGrant {
+  id               String          @id @default(cuid())
+  roleId           String          @map("role_id")
+  role             Role            @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permissionId     String?         @map("permission_id")
+  permission       Permission?     @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  dimension        ScopeDimension
+  dimensionValueId String?         @map("dimension_value_id")
+  includeChildren  Boolean         @default(false) @map("include_children")
+  effect           String          @default("ALLOW")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([roleId, dimension])
+  @@index([dimension, dimensionValueId])
+  @@map("role_scope_grants")
+}
+
+/// PDF 4: delegated authority. `expiresAt` is MANDATORY and validated in code -
+/// an open-ended delegation is rejected, not merely discouraged.
+model Delegation {
+  id        String @id @default(cuid())
+  grantorId String @map("grantor_id")
+  grantor   User   @relation("DelegationGrantor", fields: [grantorId], references: [id], onDelete: Cascade)
+  granteeId String @map("grantee_id")
+  grantee   User   @relation("DelegationGrantee", fields: [granteeId], references: [id], onDelete: Cascade)
+
+  kind  DelegationKind
+  roleId String? @map("role_id")
+  role   Role?   @relation(fields: [roleId], references: [id])
+  /// Dimension limits, amount ceilings, entity limits.
+  scope Json?
+  reason String
+  startsAt DateTime @map("starts_at")
+  /// Mandatory. Enforced in the service layer and by the "no unbounded
+  /// delegation" test.
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  revokedById String? @map("revoked_by_id")
+  revocationReason String? @map("revocation_reason")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([granteeId, expiresAt])
+  @@index([grantorId])
+  @@index([roleId])
+  @@map("delegations")
+}
+
+model AccessReview {
+  id            String             @id @default(cuid())
+  name          String
+  periodStart   DateTime           @map("period_start")
+  periodEnd     DateTime           @map("period_end")
+  status        AccessReviewStatus @default(OPEN)
+  scopeJson     Json?              @map("scope_json")
+  initiatedById String             @map("initiated_by_id")
+  completedAt   DateTime?          @map("completed_at")
+  summary       String?
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+
+  items AccessReviewItem[]
+
+  @@index([status])
+  @@map("access_reviews")
+}
+
+model AccessReviewItem {
+  id       String @id @default(cuid())
+  reviewId String @map("review_id")
+  review   AccessReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  userId   String @map("user_id")
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Held by plain id, deliberately: a review must show what was granted at the
+  /// time it was opened, so it reads the role as it is now but never joins to a
+  /// live user_role row.
+  roleId String @map("role_id")
+  role   Role   @relation(fields: [roleId], references: [id])
+  currentExpiresAt DateTime? @map("current_expires_at")
+  decision         String?
+  decisionReason   String? @map("decision_reason")
+  decidedById      String? @map("decided_by_id")
+  decidedAt        DateTime? @map("decided_at")
+  actionedAt       DateTime? @map("actioned_at")
+
+  @@unique([reviewId, userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+  @@map("access_review_items")
+}
+
+// ============================================================================
+// B3. ORGANISATION ROOT
+//
+// Only the root row lands in M1. Locations, Departments, CostCentres, Projects,
+// FundingSources and Currencies arrive in M2, which is why User.primary_location_id
+// and User.home_department_id are plain scalars for now.
+// ============================================================================
+
+model Organization {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  legalName String?  @map("legal_name")
+  type      OrganizationType @default(SINGLE_ENTITY)
+  /// PDF 2: BLECA is not yet registered.
+  registrationStatus RegistrationStatus @default(NOT_REGISTERED) @map("registration_status")
+  registrationNumber String?  @map("registration_number")
+  /// Nullable until registered. NEVER hardcoded.
+  tin               String? @map("tin")
+  baseCurrency      String  @default("TZS") @db.Char(3) @map("base_currency")
+  fiscalYearStartMonth Int @default(1) @map("fiscal_year_start_month")
+  fiscalYearEndDay     Int @default(31) @map("fiscal_year_end_day")
+  taxJurisdictions  Json?  @map("tax_jurisdictions")
+  defaultLocationId String? @map("default_location_id")
+  isActive          Boolean @default(true) @map("is_active")
+  settings          Json?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  memberships OrganizationMembership[]
+  locations     Location[]
+  departments   Department[]
+  costCentres   CostCentre[]
+
+  @@index([registrationStatus])
+  @@map("organizations")
+}
+
+model Location {
+  id                   String       @id @default(cuid())
+  organizationId       String       @map("organization_id")
+  organization         Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code                 String
+  name                 String
+  type                 LocationType
+  isOwned              Boolean      @default(false) @map("is_owned")
+  permissionReference  String?      @map("permission_reference")
+  parentId             String?      @map("parent_id")
+  parent               Location?    @relation("LocationHierarchy", fields: [parentId], references: [id])
+  children             Location[]   @relation("LocationHierarchy")
+  address              Json?
+  timezone             String       @default("Africa/Dar_es_Salaam")
+  isActive             Boolean      @default(true) @map("is_active")
+  effectiveFrom        DateTime?    @map("effective_from")
+  effectiveTo          DateTime?    @map("effective_to")
+  createdAt            DateTime     @default(now()) @map("created_at")
+  updatedAt            DateTime     @updatedAt @map("updated_at")
+
+  users User[] @relation("UserPrimaryLocation")
+
+  @@unique([organizationId, code])
+  @@index([type, isActive])
+  @@index([parentId])
+  @@map("locations")
+}
+
+model Department {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code           String
+  name           String
+  parentId       String?      @map("parent_id")
+  parent         Department?  @relation("DepartmentHierarchy", fields: [parentId], references: [id])
+  children       Department[] @relation("DepartmentHierarchy")
+  isActive       Boolean      @default(true) @map("is_active")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  users      User[]       @relation("UserHomeDepartment")
+  costCentres CostCentre[]
+
+  @@unique([organizationId, code])
+  @@index([parentId])
+  @@map("departments")
+}
+
+model CostCentre {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  departmentId   String?      @map("department_id")
+  department     Department?  @relation(fields: [departmentId], references: [id])
+  code           String
+  name           String
+  description    String?
+  isActive       Boolean      @default(true) @map("is_active")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  @@unique([organizationId, code])
+  @@index([departmentId])
+  @@map("cost_centres")
+}
+
+model OrganizationMembership {
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String       @map("user_id")
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isDefault      Boolean      @default(false) @map("is_default")
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  @@id([organizationId, userId])
+  @@index([userId])
+  @@map("organization_memberships")
+}
+
+// ============================================================================
+// B4. AUDIT TRAIL   (PDF 54, PHASE_1_PLAN.md 7)
+// ============================================================================
+
+/// Append-only. There is no update path and no delete path - enforced by
+/// database triggers (prisma/migrations/*_audit_guards), not by convention.
+model AuditLog {
+  id             String  @id @default(cuid())
+  organizationId String? @map("organization_id")
+
+  /// Total ordering across the chain.
+  sequence BigInt @unique @default(autoincrement())
+  previousHash String? @map("previous_hash")
+  /// sha256(previous_hash || sequence || actor_id || action || entity_type ||
+  /// entity_id || changes || occurred_at).
+  entryHash String @unique @map("entry_hash")
+  /// HMAC-SHA256 over entry_hash with the period key (PHASE_1_PLAN.md 3.8.5).
+  signature         String
+  /// Which key signed this entry, so rotation stays auditable.
+  signatureKeyVersion Int @default(1) @map("signature_key_version")
+
+  actorId   String? @map("actor_id")
+  /// Denormalised so the record survives user deletion.
+  actorName String? @map("actor_name")
+  /// Roles held at action time - survives later role changes.
+  actorRoleCodes String[] @default([]) @map("actor_role_codes")
+
+  action      AuditAction
+  entityType  AuditEntityType @map("entity_type")
+  entityId    String?         @map("entity_id")
+  entityLabel String?         @map("entity_label")
+  description String
+  /// { field: { from, to } } for every mutated field.
+  changes Json?
+  metadata Json?
+
+  ipAddress  String? @map("ip_address")
+  userAgent  String? @map("user_agent")
+  requestId  String? @map("request_id")
+  sessionId  String? @map("session_id")
+  channel    AuditChannel @default(WEB)
+  result     AuditResult   @default(SUCCESS)
+  errorMessage String? @map("error_message")
+
+  /// Event time. Client-supplied for offline sync, which is why divergence from
+  /// recorded_at is itself a signal.
+  occurredAt DateTime @map("occurred_at")
+  /// Server write time.
+  recordedAt DateTime @default(now()) @map("recorded_at")
+
+  securityEvents SecurityEvent[]
+
+  @@index([organizationId, occurredAt])
+  @@index([actorId, occurredAt])
+  @@index([entityType, entityId])
+  @@index([action, occurredAt])
+  @@index([result, occurredAt])
+  @@index([requestId])
+  @@map("audit_logs")
+}
+
+/// The single mutable row that anchors the hash chain. SELECT ... FOR UPDATE on
+/// this row serialises concurrent audit appends, which is what makes the chain
+/// gap-free: an aborted transaction rolls back the audit row and the head update
+/// together, so a sequence number can never be consumed by a lost write.
+model AuditChainHead {
+  id        Int      @id @default(1)
+  sequence  BigInt   @default(0)
+  entryHash String   @default("") @map("entry_hash")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("audit_chain_head")
+}
+
+/// Daily seals. Verification is incremental: start from the last checkpoint
+/// rather than replaying the whole chain every night.
+model AuditChainCheckpoint {
+  id                    String                 @id @default(cuid())
+  periodStart           DateTime               @map("period_start")
+  periodEnd             DateTime               @map("period_end")
+  sealedThroughSequence BigInt                 @map("sealed_through_sequence")
+  sealedEntryHash       String                 @map("sealed_entry_hash")
+  sealedAt              DateTime               @default(now()) @map("sealed_at")
+  verifiedAt            DateTime?              @map("verified_at")
+  status                ChainVerificationStatus @default(PENDING)
+  entriesChecked        Int                    @default(0) @map("entries_checked")
+  brokenAtSequence      BigInt?                @map("broken_at_sequence")
+  detail                String?
+
+  @@index([periodEnd])
+  @@index([status])
+  @@map("audit_chain_checkpoints")
+}
+
+model SecurityEvent {
+  id             String  @id @default(cuid())
+  organizationId String? @map("organization_id")
+  auditLogId     String? @map("audit_log_id")
+  auditLog       AuditLog? @relation(fields: [auditLogId], references: [id], onDelete: SetNull)
+  type           SecurityEventType
+  severity       SecurityEventSeverity
+  /// The subject is the RECORD, not a person (PDF 65). Kept deliberately: see
+  /// AnomalyFlag in M16, which has no accused-user column at all for this reason.
+  subjectType  AuditEntityType? @map("subject_type")
+  subjectId    String?          @map("subject_id")
+  subjectLabel String?          @map("subject_label")
+  description  String
+  detail       Json?
+  ipAddress    String? @map("ip_address")
+  userAgent    String? @map("user_agent")
+  requestId    String? @map("request_id")
+  /// Acknowledged by a named human before it has any effect on anything.
+  acknowledgedAt      DateTime? @map("acknowledged_at")
+  acknowledgedById    String?   @map("acknowledged_by_id")
+  acknowledgementNote String?   @map("acknowledgement_note")
+  resolvedAt          DateTime? @map("resolved_at")
+  occurredAt          DateTime  @default(now()) @map("occurred_at")
+
+  @@index([severity, occurredAt])
+  @@index([type, occurredAt])
+  @@index([acknowledgedAt])
+  @@map("security_events")
+}
+
+// ============================================================================
+// B5. INFRASTRUCTURE
+// ============================================================================
+
+/// All financial POST/PATCH/DELETE routes require an idempotency key so a
+/// double-click, a retry or a replayed offline action cannot post twice.
+model IdempotencyKey {
+  id             String               @id @default(cuid())
+  key            String
+  scope          String
+  actorId        String?              @map("actor_id")
+  requestHash    String               @map("request_hash")
+  status         IdempotencyKeyStatus @default(IN_PROGRESS)
+  responseStatus Int?                 @map("response_status")
+  responseBody   Json?                @map("response_body")
+  createdAt      DateTime             @default(now()) @map("created_at")
+  completedAt    DateTime?            @map("completed_at")
+  expiresAt      DateTime             @map("expires_at")
+
+  @@unique([key, scope])
+  @@index([expiresAt])
+  @@map("idempotency_keys")
+}
+
+// ============================================================================
+// B6. NOTIFICATIONS   (Q1: in-app + email live in Phase 1; SMS/PUSH Phase 2)
+// ============================================================================
+
+model Notification {
+  id             String  @id @default(cuid())
+  organizationId String? @map("organization_id")
+  userId         String  @map("user_id")
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category       NotificationCategory
+  severity       NotificationSeverity @default(INFO)
+  channel        NotificationChannel
+  status         NotificationStatus  @default(PENDING)
+  title          String
+  body           String
+  actionUrl      String?   @map("action_url")
+  /// Set when the recipient's preference suppresses this category.
+  suppressedReason String? @map("suppressed_reason")
+  dedupeKey      String?   @map("dedupe_key")
+  readAt         DateTime? @map("read_at")
+  sentAt         DateTime? @map("sent_at")
+  deliveredAt    DateTime? @map("delivered_at")
+  failedAt       DateTime? @map("failed_at")
+  failureReason  String?   @map("failure_reason")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  @@unique([userId, channel, dedupeKey])
+  @@index([userId, status, createdAt])
+  @@map("notifications")
+}
+
+model NotificationPreference {
+  id        String  @id @default(cuid())
+  userId    String  @map("user_id")
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category  NotificationCategory
+  channel   NotificationChannel
+  enabled   Boolean @default(true)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, category, channel])
+  @@map("notification_preferences")
+}

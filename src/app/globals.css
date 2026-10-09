@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/*
+ * Navy / slate palette (BUILD_PROMPT.md section 9).
+ *
+ * Finance UI, so the emphasis is on density and legibility rather than
+ * decoration: tabular figures for every number, a restrained accent, and
+ * status colours that survive being read by someone colour-blind - every
+ * status is also carried by text or an icon, never by hue alone.
+ */
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-navy-50: #f2f5fa;
+  --color-navy-100: #e2e9f4;
+  --color-navy-200: #c3d2e9;
+  --color-navy-300: #93add4;
+  --color-navy-400: #5d82b8;
+  --color-navy-500: #3a6099;
+  --color-navy-600: #2a4a7b;
+  --color-navy-700: #1f3a63;
+  --color-navy-800: #16294a;
+  --color-navy-900: #0e1b33;
+  --color-navy-950: #080f1f;
+
+  --radius-card: 0.5rem;
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+:root {
+  --background: #f6f7f9;
+  --foreground: #0e1b33;
+  --surface: #ffffff;
+  --surface-muted: #f1f4f8;
+  --border: #dfe4ec;
+  --border-strong: #c3ccda;
+  --muted-foreground: #5a6678;
+  --accent: #1f3a63;
+  --accent-foreground: #ffffff;
+  --positive: #14713d;
+  --warning: #8a5300;
+  --negative: #a11b2b;
+  --focus-ring: #3a6099;
+}
+
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border-subtle: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-positive: var(--positive);
+  --color-warning: var(--warning);
+  --color-negative: var(--negative);
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    var(--font-sans),
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/*
+ * Every figure in this system is money or a quantity. Tabular lining figures
+ * stop columns of numbers from shifting sideways as digits change, which is
+ * the difference between a ledger you can read and one you cannot.
+ */
+.tabular,
+table td,
+table th {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings:
+    'tnum' 1,
+    'lnum' 1;
+}
+
+.mono {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Reduce motion for people who ask for it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

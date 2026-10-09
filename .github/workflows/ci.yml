@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint, typecheck, test, build
+    runs-on: ubuntu-latest
+
+    services:
+      postgres-test:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: bleca
+          POSTGRES_PASSWORD: bleca_local_dev_only
+          POSTGRES_DB: bleca_finance_test
+          POSTGRES_INITDB_ARGS: '--locale=C --encoding=UTF8'
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U bleca -d bleca_finance_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      DATABASE_URL: postgresql://bleca:bleca_local_dev_only@localhost:5432/bleca_finance
+      TEST_DATABASE_URL: postgresql://bleca:bleca_local_dev_only@localhost:5433/bleca_finance_test
+      AUTH_SECRET: ci-only-not-a-real-secret-ci-only-not-a-real-secret
+      ENCRYPTION_KEY: Y2ktb25seS1wbGFjZWhvbGRlci1ub3QtcmVhbC0zMi1ieXRlcw==
+      AUDIT_HMAC_KEY: Y2ktb25seS1obWFjLWtleS1wbGFjZWhvbGRlci1ub3QtcmVhbC0zMmJ5dGVz
+      AUDIT_HMAC_KEY_VALID_FROM: '2026-01-01T00:00:00.000Z'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Integration tests
+        run: npm run test:integration
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Build
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+  e2e:
+    name: End-to-end (auth flows)
+    runs-on: ubuntu-latest
+    needs: verify
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: bleca
+          POSTGRES_PASSWORD: bleca_local_dev_only
+          POSTGRES_DB: bleca_finance
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U bleca -d bleca_finance"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      DATABASE_URL: postgresql://bleca:bleca_local_dev_only@localhost:5432/bleca_finance
+      TEST_DATABASE_URL: postgresql://bleca:bleca_local_dev_only@localhost:5432/bleca_finance
+      AUTH_SECRET: ci-only-not-a-real-secret-ci-only-not-a-real-secret
+      ENCRYPTION_KEY: Y2ktb25seS1wbGFjZWhvbGRlci1ub3QtcmVhbC0zMi1ieXRlcw==
+      AUDIT_HMAC_KEY: Y2ktb25seS1obWFjLWtleS1wbGFjZWhvbGRlci1ub3QtcmVhbC0zMmJ5dGVz
+      AUDIT_HMAC_KEY_VALID_FROM: '2026-01-01T00:00:00.000Z'
+      SEED_CEO_EMAIL: ceo@blecasmartlabs.co.tz
+      SEED_CEO_PASSWORD: ChangeMe!Bleca2026#Dev
+      E2E_CEO_EMAIL: ceo@blecasmartlabs.co.tz
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npx prisma generate
+
+      - name: Migrate and seed
+        run: |
+          npx prisma migrate deploy
+          npm run db:seed
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
