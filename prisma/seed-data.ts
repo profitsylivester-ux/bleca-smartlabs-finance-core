@@ -1,4 +1,4 @@
-import type { ModuleKey, PermissionAction } from '@/generated/prisma/client';
+import type { ModuleKey, PermissionAction, ProjectStatus, FundingSourceType } from '@/generated/prisma/client';
 
 /**
  * Permission catalogue.
@@ -353,3 +353,45 @@ export const AUTH_POLICY = {
   mfaChallengeTimeoutMinutes: 10,
   stepUpTimeoutMinutes: 5,
 };
+
+export const PROJECTS = [
+  {
+    code: 'IVENTIKA',
+    name: 'Iventika',
+    description: 'Iventika research and development project.',
+    status: 'ACTIVE' as ProjectStatus,
+    startDate: new Date('2024-01-01'),
+    endDate: new Date('2026-12-31'),
+    isActive: true,
+  },
+  {
+    code: 'UZANITE',
+    name: 'Uzanite',
+    description: 'Uzanite infrastructure project.',
+    status: 'ACTIVE' as ProjectStatus,
+    startDate: new Date('2024-01-01'),
+    endDate: new Date('2027-06-30'),
+    isActive: true,
+  },
+];
+
+export const FUNDING_SOURCES = [
+  {
+    code: 'UNRESTRICTED',
+    name: 'Unrestricted Funds',
+    type: 'UNRESTRICTED' as FundingSourceType,
+    description: 'General unrestricted operating funds.',
+    isRestricted: false,
+    restrictions: undefined,
+    isActive: true,
+  },
+  {
+    code: 'RESTRICTED-GRANT',
+    name: 'Restricted Grant',
+    type: 'RESTRICTED_GRANT' as FundingSourceType,
+    description: 'Externally restricted grant funding with specific use constraints.',
+    isRestricted: true,
+    restrictions: { allowedProjects: ['IVENTIKA', 'UZANITE'], allowedCostCategories: ['PERSONNEL', 'EQUIPMENT', 'TRAVEL'] },
+    isActive: true,
+  },
+];

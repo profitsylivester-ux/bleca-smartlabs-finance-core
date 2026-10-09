@@ -392,6 +392,34 @@ exports.Prisma.CostCentreScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ProjectScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  status: 'status',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FundingSourceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  type: 'type',
+  description: 'description',
+  isRestricted: 'isRestricted',
+  restrictions: 'restrictions',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.OrganizationMembershipScalarFieldEnum = {
   organizationId: 'organizationId',
   userId: 'userId',
@@ -695,6 +723,25 @@ exports.LocationType = exports.$Enums.LocationType = {
   OTHER: 'OTHER'
 };
 
+exports.ProjectStatus = exports.$Enums.ProjectStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  ON_HOLD: 'ON_HOLD',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.FundingSourceType = exports.$Enums.FundingSourceType = {
+  UNRESTRICTED: 'UNRESTRICTED',
+  RESTRICTED_GRANT: 'RESTRICTED_GRANT',
+  DESIGNATED: 'DESIGNATED',
+  ENDOWMENT: 'ENDOWMENT',
+  CONTRACT_REVENUE: 'CONTRACT_REVENUE',
+  INTERNAL_ALLOCATION: 'INTERNAL_ALLOCATION',
+  OTHER: 'OTHER'
+};
+
 exports.AuditAction = exports.$Enums.AuditAction = {
   LOGIN: 'LOGIN',
   LOGOUT: 'LOGOUT',
@@ -755,7 +802,9 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   SYSTEM: 'SYSTEM',
   LOCATION: 'LOCATION',
   DEPARTMENT: 'DEPARTMENT',
-  COST_CENTRE: 'COST_CENTRE'
+  COST_CENTRE: 'COST_CENTRE',
+  PROJECT: 'PROJECT',
+  FUNDING_SOURCE: 'FUNDING_SOURCE'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -866,6 +915,8 @@ exports.Prisma.ModelName = {
   Location: 'Location',
   Department: 'Department',
   CostCentre: 'CostCentre',
+  Project: 'Project',
+  FundingSource: 'FundingSource',
   OrganizationMembership: 'OrganizationMembership',
   AuditLog: 'AuditLog',
   AuditChainHead: 'AuditChainHead',

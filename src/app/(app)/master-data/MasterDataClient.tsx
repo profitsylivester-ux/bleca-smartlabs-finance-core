@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Badge, Button, Card, CardBody, CardHeader, PageHeader, Table, Td, Th } from '@/components/ui';
 import { cn } from '@/lib/format';
 
-type Tab = 'locations' | 'departments' | 'cost-centres';
+type Tab = 'locations' | 'departments' | 'cost-centres' | 'projects' | 'funding-sources';
 
 interface Location {
   id: string;
@@ -42,10 +42,34 @@ interface CostCentre {
   department?: { id: string; code: string; name: string } | null;
 }
 
+interface Project {
+  id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  status: string;
+  startDate: string | null;
+  endDate: string | null;
+  isActive: boolean;
+}
+
+interface FundingSource {
+  id: string;
+  code: string;
+  name: string;
+  type: string;
+  description: string | null;
+  isRestricted: boolean;
+  restrictions: Record<string, unknown> | null;
+  isActive: boolean;
+}
+
 interface MasterData {
   locations: Location[];
   departments: Department[];
   costCentres: CostCentre[];
+  projects: Project[];
+  fundingSources: FundingSource[];
 }
 
 export default function MasterDataPage({ initialData }: { initialData: MasterData }) {
@@ -53,11 +77,15 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
   const [locations, setLocations] = useState<Location[]>(initialData.locations);
   const [departments, setDepartments] = useState<Department[]>(initialData.departments);
   const [costCentres, setCostCentres] = useState<CostCentre[]>(initialData.costCentres);
+  const [projects, setProjects] = useState<Project[]>(initialData.projects);
+  const [fundingSources, setFundingSources] = useState<FundingSource[]>(initialData.fundingSources);
 
   const tabs: Array<{ id: Tab; label: string; count: number }> = [
     { id: 'locations', label: 'Locations', count: locations.length },
     { id: 'departments', label: 'Departments', count: departments.length },
     { id: 'cost-centres', label: 'Cost Centres', count: costCentres.length },
+    { id: 'projects', label: 'Projects', count: projects.length },
+    { id: 'funding-sources', label: 'Funding Sources', count: fundingSources.length },
   ];
 
   const typeBadges: Record<string, 'info' | 'success' | 'warning' | 'danger' | 'neutral'> = {
@@ -69,6 +97,25 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
     UNIVERSITY_FACILITY: 'success',
     PERMITTED_USE: 'info',
     REMOTE: 'neutral',
+    OTHER: 'neutral',
+  };
+
+  const projectStatusBadges: Record<string, 'info' | 'success' | 'warning' | 'danger' | 'neutral'> = {
+    DRAFT: 'neutral',
+    ACTIVE: 'success',
+    ON_HOLD: 'warning',
+    COMPLETED: 'info',
+    CANCELLED: 'danger',
+    ARCHIVED: 'neutral',
+  };
+
+  const fundingSourceTypeBadges: Record<string, 'info' | 'success' | 'warning' | 'danger' | 'neutral'> = {
+    UNRESTRICTED: 'success',
+    RESTRICTED_GRANT: 'warning',
+    DESIGNATED: 'info',
+    ENDOWMENT: 'info',
+    CONTRACT_REVENUE: 'success',
+    INTERNAL_ALLOCATION: 'neutral',
     OTHER: 'neutral',
   };
 
@@ -284,6 +331,126 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                           <Td className="text-muted-foreground text-xs max-w-md truncate">{cc.description ?? '-'}</Td>
                           <Td>
                             {cc.isActive ? (
+                              <Badge tone="success">Active</Badge>
+                            ) : (
+                              <Badge tone="warning">Inactive</Badge>
+                            )}
+                          </Td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                )}
+              </CardBody>
+            </Card>
+          )}
+
+          {activeTab === 'projects' && (
+            <Card>
+              <CardHeader
+                title="Projects"
+                description="Active projects including Iventika and Uzanite. Projects serve as a dimension for financial tracking."
+                actions={
+                  <Button size="sm" variant="outline">
+                    Add project
+                  </Button>
+                }
+              />
+              <CardBody className="px-0 py-0">
+                {projects.length === 0 ? (
+                  <div className="px-5 py-12 text-center">
+                    <p className="text-foreground text-sm font-medium">No projects yet</p>
+                    <p className="text-muted-foreground mt-1 max-w-md text-xs">
+                      Create your first project to track financial activity by project dimension.
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
+                    <thead>
+                      <tr>
+                        <Th>Code</Th>
+                        <Th>Name</Th>
+                        <Th>Status</Th>
+                        <Th>Start Date</Th>
+                        <Th>End Date</Th>
+                        <Th>Status</Th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {projects.map((proj) => (
+                        <tr key={proj.id}>
+                          <Td className="mono text-xs">{proj.code}</Td>
+                          <Td><span className="font-medium">{proj.name}</span></Td>
+                          <Td>
+                            <Badge tone={projectStatusBadges[proj.status] ?? 'neutral'}>{proj.status}</Badge>
+                          </Td>
+                          <Td className="text-muted-foreground text-xs">{proj.startDate ? new Date(proj.startDate).toISOString().split('T')[0] : '-'}</Td>
+                          <Td className="text-muted-foreground text-xs">{proj.endDate ? new Date(proj.endDate).toISOString().split('T')[0] : '-'}</Td>
+                          <Td>
+                            {proj.isActive ? (
+                              <Badge tone="success">Active</Badge>
+                            ) : (
+                              <Badge tone="warning">Inactive</Badge>
+                            )}
+                          </Td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                )}
+              </CardBody>
+            </Card>
+          )}
+
+          {activeTab === 'funding-sources' && (
+            <Card>
+              <CardHeader
+                title="Funding Sources"
+                description="Sources of funding including unrestricted, restricted grants, and internal allocations. Restricted sources enforce scope constraints."
+                actions={
+                  <Button size="sm" variant="outline">
+                    Add funding source
+                  </Button>
+                }
+              />
+              <CardBody className="px-0 py-0">
+                {fundingSources.length === 0 ? (
+                  <div className="px-5 py-12 text-center">
+                    <p className="text-foreground text-sm font-medium">No funding sources yet</p>
+                    <p className="text-muted-foreground mt-1 max-w-md text-xs">
+                      Create your first funding source to track financial activity by funding dimension.
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
+                    <thead>
+                      <tr>
+                        <Th>Code</Th>
+                        <Th>Name</Th>
+                        <Th>Type</Th>
+                        <Th>Restricted</Th>
+                        <Th>Description</Th>
+                        <Th>Status</Th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fundingSources.map((fs) => (
+                        <tr key={fs.id}>
+                          <Td className="mono text-xs">{fs.code}</Td>
+                          <Td><span className="font-medium">{fs.name}</span></Td>
+                          <Td>
+                            <Badge tone={fundingSourceTypeBadges[fs.type] ?? 'neutral'}>{fs.type}</Badge>
+                          </Td>
+                          <Td>
+                            {fs.isRestricted ? (
+                              <Badge tone="warning">Yes</Badge>
+                            ) : (
+                              <Badge tone="success">No</Badge>
+                            )}
+                          </Td>
+                          <Td className="text-muted-foreground text-xs max-w-md truncate">{fs.description ?? '-'}</Td>
+                          <Td>
+                            {fs.isActive ? (
                               <Badge tone="success">Active</Badge>
                             ) : (
                               <Badge tone="warning">Inactive</Badge>

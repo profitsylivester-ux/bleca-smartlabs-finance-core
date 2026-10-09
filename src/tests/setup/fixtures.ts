@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@/generated/prisma/client';
-import { PERMISSIONS, ROLES, ORG, AUTH_POLICY } from '../../../prisma/seed-data';
+import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, PROJECTS, FUNDING_SOURCES } from '../../../prisma/seed-data';
 
 /**
  * Reference data for the integration suite.
@@ -77,6 +77,24 @@ export async function seedTestFixtures(prisma: PrismaClient): Promise<void> {
     },
     update: {},
   });
+
+  const org = await prisma.organization.findUniqueOrThrow({ where: { code: ORG.code } });
+
+  for (const proj of PROJECTS) {
+    await prisma.project.upsert({
+      where: { organizationId_code: { organizationId: org.id, code: proj.code } },
+      create: { ...proj, organizationId: org.id },
+      update: { ...proj, organizationId: org.id },
+    });
+  }
+
+  for (const fs of FUNDING_SOURCES) {
+    await prisma.fundingSource.upsert({
+      where: { organizationId_code: { organizationId: org.id, code: fs.code } },
+      create: { ...fs, organizationId: org.id },
+      update: { ...fs, organizationId: org.id },
+    });
+  }
 }
 
 /**

@@ -12,7 +12,7 @@ export default async function MasterDataPage() {
     return <div>No organization context</div>;
   }
 
-  const [locations, departments, costCentres] = await Promise.all([
+  const [locations, departments, costCentres, projects, fundingSources] = await Promise.all([
     prisma.location.findMany({
       where: { organizationId: ctx.actor.organizationId },
       orderBy: [{ type: 'asc' }, { code: 'asc' }],
@@ -58,7 +58,46 @@ export default async function MasterDataPage() {
         department: { select: { id: true, code: true, name: true } },
       },
     }),
+    prisma.project.findMany({
+      where: { organizationId: ctx.actor.organizationId },
+      orderBy: [{ status: 'asc' }, { code: 'asc' }],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        description: true,
+        status: true,
+        startDate: true,
+        endDate: true,
+        isActive: true,
+      },
+    }),
+    prisma.fundingSource.findMany({
+      where: { organizationId: ctx.actor.organizationId },
+      orderBy: [{ type: 'asc' }, { code: 'asc' }],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        type: true,
+        description: true,
+        isRestricted: true,
+        restrictions: true,
+        isActive: true,
+      },
+    }),
   ]);
 
-  return <MasterDataClient initialData={{ locations, departments, costCentres }} />;
+  const projectsForClient = projects.map((p) => ({
+    ...p,
+    startDate: p.startDate?.toISOString() ?? null,
+    endDate: p.endDate?.toISOString() ?? null,
+  }));
+
+  const fundingSourcesForClient = fundingSources.map((fs) => ({
+    ...fs,
+    restrictions: fs.restrictions as Record<string, unknown> | null,
+  }));
+
+  return <MasterDataClient initialData={{ locations, departments, costCentres, projects: projectsForClient, fundingSources: fundingSourcesForClient }} />;
 }

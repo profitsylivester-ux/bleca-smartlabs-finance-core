@@ -102,6 +102,16 @@ export type Department = $Result.DefaultSelection<Prisma.$DepartmentPayload>
  */
 export type CostCentre = $Result.DefaultSelection<Prisma.$CostCentrePayload>
 /**
+ * Model Project
+ * 
+ */
+export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
+/**
+ * Model FundingSource
+ * 
+ */
+export type FundingSource = $Result.DefaultSelection<Prisma.$FundingSourcePayload>
+/**
  * Model OrganizationMembership
  * 
  */
@@ -353,6 +363,31 @@ export const LocationType: {
 export type LocationType = (typeof LocationType)[keyof typeof LocationType]
 
 
+export const ProjectStatus: {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  ON_HOLD: 'ON_HOLD',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
+
+
+export const FundingSourceType: {
+  UNRESTRICTED: 'UNRESTRICTED',
+  RESTRICTED_GRANT: 'RESTRICTED_GRANT',
+  DESIGNATED: 'DESIGNATED',
+  ENDOWMENT: 'ENDOWMENT',
+  CONTRACT_REVENUE: 'CONTRACT_REVENUE',
+  INTERNAL_ALLOCATION: 'INTERNAL_ALLOCATION',
+  OTHER: 'OTHER'
+};
+
+export type FundingSourceType = (typeof FundingSourceType)[keyof typeof FundingSourceType]
+
+
 export const MasterDataStatus: {
   DRAFT: 'DRAFT',
   PENDING_APPROVAL: 'PENDING_APPROVAL',
@@ -428,7 +463,9 @@ export const AuditEntityType: {
   SYSTEM: 'SYSTEM',
   LOCATION: 'LOCATION',
   DEPARTMENT: 'DEPARTMENT',
-  COST_CENTRE: 'COST_CENTRE'
+  COST_CENTRE: 'COST_CENTRE',
+  PROJECT: 'PROJECT',
+  FUNDING_SOURCE: 'FUNDING_SOURCE'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -614,6 +651,14 @@ export const RegistrationStatus: typeof $Enums.RegistrationStatus
 export type LocationType = $Enums.LocationType
 
 export const LocationType: typeof $Enums.LocationType
+
+export type ProjectStatus = $Enums.ProjectStatus
+
+export const ProjectStatus: typeof $Enums.ProjectStatus
+
+export type FundingSourceType = $Enums.FundingSourceType
+
+export const FundingSourceType: typeof $Enums.FundingSourceType
 
 export type MasterDataStatus = $Enums.MasterDataStatus
 
@@ -954,6 +999,26 @@ export class PrismaClient<
     * ```
     */
   get costCentre(): Prisma.CostCentreDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.project`: Exposes CRUD operations for the **Project** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Projects
+    * const projects = await prisma.project.findMany()
+    * ```
+    */
+  get project(): Prisma.ProjectDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.fundingSource`: Exposes CRUD operations for the **FundingSource** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FundingSources
+    * const fundingSources = await prisma.fundingSource.findMany()
+    * ```
+    */
+  get fundingSource(): Prisma.FundingSourceDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.organizationMembership`: Exposes CRUD operations for the **OrganizationMembership** model.
@@ -1492,6 +1557,8 @@ export namespace Prisma {
     Location: 'Location',
     Department: 'Department',
     CostCentre: 'CostCentre',
+    Project: 'Project',
+    FundingSource: 'FundingSource',
     OrganizationMembership: 'OrganizationMembership',
     AuditLog: 'AuditLog',
     AuditChainHead: 'AuditChainHead',
@@ -1518,7 +1585,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "organization" | "location" | "department" | "costCentre" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2780,6 +2847,154 @@ export namespace Prisma {
           }
         }
       }
+      Project: {
+        payload: Prisma.$ProjectPayload<ExtArgs>
+        fields: Prisma.ProjectFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProjectFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProjectFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          findFirst: {
+            args: Prisma.ProjectFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProjectFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          findMany: {
+            args: Prisma.ProjectFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>[]
+          }
+          create: {
+            args: Prisma.ProjectCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          createMany: {
+            args: Prisma.ProjectCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProjectCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>[]
+          }
+          delete: {
+            args: Prisma.ProjectDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          update: {
+            args: Prisma.ProjectUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProjectDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProjectUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProjectUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProjectUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProjectPayload>
+          }
+          aggregate: {
+            args: Prisma.ProjectAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProject>
+          }
+          groupBy: {
+            args: Prisma.ProjectGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProjectGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProjectCountArgs<ExtArgs>
+            result: $Utils.Optional<ProjectCountAggregateOutputType> | number
+          }
+        }
+      }
+      FundingSource: {
+        payload: Prisma.$FundingSourcePayload<ExtArgs>
+        fields: Prisma.FundingSourceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FundingSourceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FundingSourceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload>
+          }
+          findFirst: {
+            args: Prisma.FundingSourceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FundingSourceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload>
+          }
+          findMany: {
+            args: Prisma.FundingSourceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload>[]
+          }
+          create: {
+            args: Prisma.FundingSourceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload>
+          }
+          createMany: {
+            args: Prisma.FundingSourceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FundingSourceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload>[]
+          }
+          delete: {
+            args: Prisma.FundingSourceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload>
+          }
+          update: {
+            args: Prisma.FundingSourceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload>
+          }
+          deleteMany: {
+            args: Prisma.FundingSourceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FundingSourceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FundingSourceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload>[]
+          }
+          upsert: {
+            args: Prisma.FundingSourceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingSourcePayload>
+          }
+          aggregate: {
+            args: Prisma.FundingSourceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFundingSource>
+          }
+          groupBy: {
+            args: Prisma.FundingSourceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FundingSourceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FundingSourceCountArgs<ExtArgs>
+            result: $Utils.Optional<FundingSourceCountAggregateOutputType> | number
+          }
+        }
+      }
       OrganizationMembership: {
         payload: Prisma.$OrganizationMembershipPayload<ExtArgs>
         fields: Prisma.OrganizationMembershipFieldRefs
@@ -3485,6 +3700,8 @@ export namespace Prisma {
     location?: LocationOmit
     department?: DepartmentOmit
     costCentre?: CostCentreOmit
+    project?: ProjectOmit
+    fundingSource?: FundingSourceOmit
     organizationMembership?: OrganizationMembershipOmit
     auditLog?: AuditLogOmit
     auditChainHead?: AuditChainHeadOmit
@@ -3845,6 +4062,8 @@ export namespace Prisma {
     locations: number
     departments: number
     costCentres: number
+    projects: number
+    fundingSources: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3852,6 +4071,8 @@ export namespace Prisma {
     locations?: boolean | OrganizationCountOutputTypeCountLocationsArgs
     departments?: boolean | OrganizationCountOutputTypeCountDepartmentsArgs
     costCentres?: boolean | OrganizationCountOutputTypeCountCostCentresArgs
+    projects?: boolean | OrganizationCountOutputTypeCountProjectsArgs
+    fundingSources?: boolean | OrganizationCountOutputTypeCountFundingSourcesArgs
   }
 
   // Custom InputTypes
@@ -3891,6 +4112,20 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountCostCentresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CostCentreWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountProjectsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountFundingSourcesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingSourceWhereInput
   }
 
 
@@ -20342,6 +20577,8 @@ export namespace Prisma {
     locations?: boolean | Organization$locationsArgs<ExtArgs>
     departments?: boolean | Organization$departmentsArgs<ExtArgs>
     costCentres?: boolean | Organization$costCentresArgs<ExtArgs>
+    projects?: boolean | Organization$projectsArgs<ExtArgs>
+    fundingSources?: boolean | Organization$fundingSourcesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -20411,6 +20648,8 @@ export namespace Prisma {
     locations?: boolean | Organization$locationsArgs<ExtArgs>
     departments?: boolean | Organization$departmentsArgs<ExtArgs>
     costCentres?: boolean | Organization$costCentresArgs<ExtArgs>
+    projects?: boolean | Organization$projectsArgs<ExtArgs>
+    fundingSources?: boolean | Organization$fundingSourcesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -20423,6 +20662,8 @@ export namespace Prisma {
       locations: Prisma.$LocationPayload<ExtArgs>[]
       departments: Prisma.$DepartmentPayload<ExtArgs>[]
       costCentres: Prisma.$CostCentrePayload<ExtArgs>[]
+      projects: Prisma.$ProjectPayload<ExtArgs>[]
+      fundingSources: Prisma.$FundingSourcePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -20846,6 +21087,8 @@ export namespace Prisma {
     locations<T extends Organization$locationsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$locationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     departments<T extends Organization$departmentsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$departmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     costCentres<T extends Organization$costCentresArgs<ExtArgs> = {}>(args?: Subset<T, Organization$costCentresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CostCentrePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    projects<T extends Organization$projectsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    fundingSources<T extends Organization$fundingSourcesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$fundingSourcesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -21373,6 +21616,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CostCentreScalarFieldEnum | CostCentreScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.projects
+   */
+  export type Organization$projectsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    where?: ProjectWhereInput
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
+    cursor?: ProjectWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.fundingSources
+   */
+  export type Organization$fundingSourcesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    where?: FundingSourceWhereInput
+    orderBy?: FundingSourceOrderByWithRelationInput | FundingSourceOrderByWithRelationInput[]
+    cursor?: FundingSourceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FundingSourceScalarFieldEnum | FundingSourceScalarFieldEnum[]
   }
 
   /**
@@ -25007,6 +25298,2274 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CostCentreInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Project
+   */
+
+  export type AggregateProject = {
+    _count: ProjectCountAggregateOutputType | null
+    _min: ProjectMinAggregateOutputType | null
+    _max: ProjectMaxAggregateOutputType | null
+  }
+
+  export type ProjectMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    status: $Enums.ProjectStatus | null
+    startDate: Date | null
+    endDate: Date | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProjectMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    status: $Enums.ProjectStatus | null
+    startDate: Date | null
+    endDate: Date | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProjectCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    code: number
+    name: number
+    description: number
+    status: number
+    startDate: number
+    endDate: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ProjectMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    status?: true
+    startDate?: true
+    endDate?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProjectMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    status?: true
+    startDate?: true
+    endDate?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProjectCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    status?: true
+    startDate?: true
+    endDate?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ProjectAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Project to aggregate.
+     */
+    where?: ProjectWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Projects to fetch.
+     */
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProjectWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Projects from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Projects.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Projects
+    **/
+    _count?: true | ProjectCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProjectMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProjectMaxAggregateInputType
+  }
+
+  export type GetProjectAggregateType<T extends ProjectAggregateArgs> = {
+        [P in keyof T & keyof AggregateProject]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProject[P]>
+      : GetScalarType<T[P], AggregateProject[P]>
+  }
+
+
+
+
+  export type ProjectGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProjectWhereInput
+    orderBy?: ProjectOrderByWithAggregationInput | ProjectOrderByWithAggregationInput[]
+    by: ProjectScalarFieldEnum[] | ProjectScalarFieldEnum
+    having?: ProjectScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProjectCountAggregateInputType | true
+    _min?: ProjectMinAggregateInputType
+    _max?: ProjectMaxAggregateInputType
+  }
+
+  export type ProjectGroupByOutputType = {
+    id: string
+    organizationId: string
+    code: string
+    name: string
+    description: string | null
+    status: $Enums.ProjectStatus
+    startDate: Date | null
+    endDate: Date | null
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: ProjectCountAggregateOutputType | null
+    _min: ProjectMinAggregateOutputType | null
+    _max: ProjectMaxAggregateOutputType | null
+  }
+
+  type GetProjectGroupByPayload<T extends ProjectGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProjectGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProjectGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProjectGroupByOutputType[P]>
+            : GetScalarType<T[P], ProjectGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProjectSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    status?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["project"]>
+
+  export type ProjectSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    status?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["project"]>
+
+  export type ProjectSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    status?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["project"]>
+
+  export type ProjectSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    status?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "code" | "name" | "description" | "status" | "startDate" | "endDate" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+  export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type ProjectIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+
+  export type $ProjectPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Project"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      code: string
+      name: string
+      description: string | null
+      status: $Enums.ProjectStatus
+      startDate: Date | null
+      endDate: Date | null
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["project"]>
+    composites: {}
+  }
+
+  type ProjectGetPayload<S extends boolean | null | undefined | ProjectDefaultArgs> = $Result.GetResult<Prisma.$ProjectPayload, S>
+
+  type ProjectCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProjectFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProjectCountAggregateInputType | true
+    }
+
+  export interface ProjectDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Project'], meta: { name: 'Project' } }
+    /**
+     * Find zero or one Project that matches the filter.
+     * @param {ProjectFindUniqueArgs} args - Arguments to find a Project
+     * @example
+     * // Get one Project
+     * const project = await prisma.project.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProjectFindUniqueArgs>(args: SelectSubset<T, ProjectFindUniqueArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Project that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProjectFindUniqueOrThrowArgs} args - Arguments to find a Project
+     * @example
+     * // Get one Project
+     * const project = await prisma.project.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProjectFindUniqueOrThrowArgs>(args: SelectSubset<T, ProjectFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Project that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectFindFirstArgs} args - Arguments to find a Project
+     * @example
+     * // Get one Project
+     * const project = await prisma.project.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProjectFindFirstArgs>(args?: SelectSubset<T, ProjectFindFirstArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Project that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectFindFirstOrThrowArgs} args - Arguments to find a Project
+     * @example
+     * // Get one Project
+     * const project = await prisma.project.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProjectFindFirstOrThrowArgs>(args?: SelectSubset<T, ProjectFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Projects that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Projects
+     * const projects = await prisma.project.findMany()
+     * 
+     * // Get first 10 Projects
+     * const projects = await prisma.project.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const projectWithIdOnly = await prisma.project.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProjectFindManyArgs>(args?: SelectSubset<T, ProjectFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Project.
+     * @param {ProjectCreateArgs} args - Arguments to create a Project.
+     * @example
+     * // Create one Project
+     * const Project = await prisma.project.create({
+     *   data: {
+     *     // ... data to create a Project
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProjectCreateArgs>(args: SelectSubset<T, ProjectCreateArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Projects.
+     * @param {ProjectCreateManyArgs} args - Arguments to create many Projects.
+     * @example
+     * // Create many Projects
+     * const project = await prisma.project.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProjectCreateManyArgs>(args?: SelectSubset<T, ProjectCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Projects and returns the data saved in the database.
+     * @param {ProjectCreateManyAndReturnArgs} args - Arguments to create many Projects.
+     * @example
+     * // Create many Projects
+     * const project = await prisma.project.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Projects and only return the `id`
+     * const projectWithIdOnly = await prisma.project.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProjectCreateManyAndReturnArgs>(args?: SelectSubset<T, ProjectCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Project.
+     * @param {ProjectDeleteArgs} args - Arguments to delete one Project.
+     * @example
+     * // Delete one Project
+     * const Project = await prisma.project.delete({
+     *   where: {
+     *     // ... filter to delete one Project
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProjectDeleteArgs>(args: SelectSubset<T, ProjectDeleteArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Project.
+     * @param {ProjectUpdateArgs} args - Arguments to update one Project.
+     * @example
+     * // Update one Project
+     * const project = await prisma.project.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProjectUpdateArgs>(args: SelectSubset<T, ProjectUpdateArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Projects.
+     * @param {ProjectDeleteManyArgs} args - Arguments to filter Projects to delete.
+     * @example
+     * // Delete a few Projects
+     * const { count } = await prisma.project.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProjectDeleteManyArgs>(args?: SelectSubset<T, ProjectDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Projects.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Projects
+     * const project = await prisma.project.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProjectUpdateManyArgs>(args: SelectSubset<T, ProjectUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Projects and returns the data updated in the database.
+     * @param {ProjectUpdateManyAndReturnArgs} args - Arguments to update many Projects.
+     * @example
+     * // Update many Projects
+     * const project = await prisma.project.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Projects and only return the `id`
+     * const projectWithIdOnly = await prisma.project.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProjectUpdateManyAndReturnArgs>(args: SelectSubset<T, ProjectUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Project.
+     * @param {ProjectUpsertArgs} args - Arguments to update or create a Project.
+     * @example
+     * // Update or create a Project
+     * const project = await prisma.project.upsert({
+     *   create: {
+     *     // ... data to create a Project
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Project we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProjectUpsertArgs>(args: SelectSubset<T, ProjectUpsertArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Projects.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectCountArgs} args - Arguments to filter Projects to count.
+     * @example
+     * // Count the number of Projects
+     * const count = await prisma.project.count({
+     *   where: {
+     *     // ... the filter for the Projects we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProjectCountArgs>(
+      args?: Subset<T, ProjectCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProjectCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Project.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProjectAggregateArgs>(args: Subset<T, ProjectAggregateArgs>): Prisma.PrismaPromise<GetProjectAggregateType<T>>
+
+    /**
+     * Group by Project.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProjectGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProjectGroupByArgs['orderBy'] }
+        : { orderBy?: ProjectGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProjectGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProjectGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Project model
+   */
+  readonly fields: ProjectFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Project.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Project model
+   */
+  interface ProjectFieldRefs {
+    readonly id: FieldRef<"Project", 'String'>
+    readonly organizationId: FieldRef<"Project", 'String'>
+    readonly code: FieldRef<"Project", 'String'>
+    readonly name: FieldRef<"Project", 'String'>
+    readonly description: FieldRef<"Project", 'String'>
+    readonly status: FieldRef<"Project", 'ProjectStatus'>
+    readonly startDate: FieldRef<"Project", 'DateTime'>
+    readonly endDate: FieldRef<"Project", 'DateTime'>
+    readonly isActive: FieldRef<"Project", 'Boolean'>
+    readonly createdAt: FieldRef<"Project", 'DateTime'>
+    readonly updatedAt: FieldRef<"Project", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Project findUnique
+   */
+  export type ProjectFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * Filter, which Project to fetch.
+     */
+    where: ProjectWhereUniqueInput
+  }
+
+  /**
+   * Project findUniqueOrThrow
+   */
+  export type ProjectFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * Filter, which Project to fetch.
+     */
+    where: ProjectWhereUniqueInput
+  }
+
+  /**
+   * Project findFirst
+   */
+  export type ProjectFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * Filter, which Project to fetch.
+     */
+    where?: ProjectWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Projects to fetch.
+     */
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Projects.
+     */
+    cursor?: ProjectWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Projects from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Projects.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Projects.
+     */
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+  }
+
+  /**
+   * Project findFirstOrThrow
+   */
+  export type ProjectFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * Filter, which Project to fetch.
+     */
+    where?: ProjectWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Projects to fetch.
+     */
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Projects.
+     */
+    cursor?: ProjectWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Projects from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Projects.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Projects.
+     */
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+  }
+
+  /**
+   * Project findMany
+   */
+  export type ProjectFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * Filter, which Projects to fetch.
+     */
+    where?: ProjectWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Projects to fetch.
+     */
+    orderBy?: ProjectOrderByWithRelationInput | ProjectOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Projects.
+     */
+    cursor?: ProjectWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Projects from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Projects.
+     */
+    skip?: number
+    distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+  }
+
+  /**
+   * Project create
+   */
+  export type ProjectCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Project.
+     */
+    data: XOR<ProjectCreateInput, ProjectUncheckedCreateInput>
+  }
+
+  /**
+   * Project createMany
+   */
+  export type ProjectCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Projects.
+     */
+    data: ProjectCreateManyInput | ProjectCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Project createManyAndReturn
+   */
+  export type ProjectCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * The data used to create many Projects.
+     */
+    data: ProjectCreateManyInput | ProjectCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Project update
+   */
+  export type ProjectUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Project.
+     */
+    data: XOR<ProjectUpdateInput, ProjectUncheckedUpdateInput>
+    /**
+     * Choose, which Project to update.
+     */
+    where: ProjectWhereUniqueInput
+  }
+
+  /**
+   * Project updateMany
+   */
+  export type ProjectUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Projects.
+     */
+    data: XOR<ProjectUpdateManyMutationInput, ProjectUncheckedUpdateManyInput>
+    /**
+     * Filter which Projects to update
+     */
+    where?: ProjectWhereInput
+    /**
+     * Limit how many Projects to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Project updateManyAndReturn
+   */
+  export type ProjectUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * The data used to update Projects.
+     */
+    data: XOR<ProjectUpdateManyMutationInput, ProjectUncheckedUpdateManyInput>
+    /**
+     * Filter which Projects to update
+     */
+    where?: ProjectWhereInput
+    /**
+     * Limit how many Projects to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Project upsert
+   */
+  export type ProjectUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Project to update in case it exists.
+     */
+    where: ProjectWhereUniqueInput
+    /**
+     * In case the Project found by the `where` argument doesn't exist, create a new Project with this data.
+     */
+    create: XOR<ProjectCreateInput, ProjectUncheckedCreateInput>
+    /**
+     * In case the Project was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProjectUpdateInput, ProjectUncheckedUpdateInput>
+  }
+
+  /**
+   * Project delete
+   */
+  export type ProjectDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    /**
+     * Filter which Project to delete.
+     */
+    where: ProjectWhereUniqueInput
+  }
+
+  /**
+   * Project deleteMany
+   */
+  export type ProjectDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Projects to delete
+     */
+    where?: ProjectWhereInput
+    /**
+     * Limit how many Projects to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Project without action
+   */
+  export type ProjectDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FundingSource
+   */
+
+  export type AggregateFundingSource = {
+    _count: FundingSourceCountAggregateOutputType | null
+    _min: FundingSourceMinAggregateOutputType | null
+    _max: FundingSourceMaxAggregateOutputType | null
+  }
+
+  export type FundingSourceMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    type: $Enums.FundingSourceType | null
+    description: string | null
+    isRestricted: boolean | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FundingSourceMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    type: $Enums.FundingSourceType | null
+    description: string | null
+    isRestricted: boolean | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FundingSourceCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    code: number
+    name: number
+    type: number
+    description: number
+    isRestricted: number
+    restrictions: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FundingSourceMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    type?: true
+    description?: true
+    isRestricted?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FundingSourceMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    type?: true
+    description?: true
+    isRestricted?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FundingSourceCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    type?: true
+    description?: true
+    isRestricted?: true
+    restrictions?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FundingSourceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FundingSource to aggregate.
+     */
+    where?: FundingSourceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingSources to fetch.
+     */
+    orderBy?: FundingSourceOrderByWithRelationInput | FundingSourceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FundingSourceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingSources from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingSources.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FundingSources
+    **/
+    _count?: true | FundingSourceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FundingSourceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FundingSourceMaxAggregateInputType
+  }
+
+  export type GetFundingSourceAggregateType<T extends FundingSourceAggregateArgs> = {
+        [P in keyof T & keyof AggregateFundingSource]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFundingSource[P]>
+      : GetScalarType<T[P], AggregateFundingSource[P]>
+  }
+
+
+
+
+  export type FundingSourceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingSourceWhereInput
+    orderBy?: FundingSourceOrderByWithAggregationInput | FundingSourceOrderByWithAggregationInput[]
+    by: FundingSourceScalarFieldEnum[] | FundingSourceScalarFieldEnum
+    having?: FundingSourceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FundingSourceCountAggregateInputType | true
+    _min?: FundingSourceMinAggregateInputType
+    _max?: FundingSourceMaxAggregateInputType
+  }
+
+  export type FundingSourceGroupByOutputType = {
+    id: string
+    organizationId: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description: string | null
+    isRestricted: boolean
+    restrictions: JsonValue | null
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: FundingSourceCountAggregateOutputType | null
+    _min: FundingSourceMinAggregateOutputType | null
+    _max: FundingSourceMaxAggregateOutputType | null
+  }
+
+  type GetFundingSourceGroupByPayload<T extends FundingSourceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FundingSourceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FundingSourceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FundingSourceGroupByOutputType[P]>
+            : GetScalarType<T[P], FundingSourceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FundingSourceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    type?: boolean
+    description?: boolean
+    isRestricted?: boolean
+    restrictions?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingSource"]>
+
+  export type FundingSourceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    type?: boolean
+    description?: boolean
+    isRestricted?: boolean
+    restrictions?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingSource"]>
+
+  export type FundingSourceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    type?: boolean
+    description?: boolean
+    isRestricted?: boolean
+    restrictions?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingSource"]>
+
+  export type FundingSourceSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    type?: boolean
+    description?: boolean
+    isRestricted?: boolean
+    restrictions?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FundingSourceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "code" | "name" | "type" | "description" | "isRestricted" | "restrictions" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["fundingSource"]>
+  export type FundingSourceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type FundingSourceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type FundingSourceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+
+  export type $FundingSourcePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FundingSource"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      code: string
+      name: string
+      type: $Enums.FundingSourceType
+      description: string | null
+      isRestricted: boolean
+      restrictions: Prisma.JsonValue | null
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["fundingSource"]>
+    composites: {}
+  }
+
+  type FundingSourceGetPayload<S extends boolean | null | undefined | FundingSourceDefaultArgs> = $Result.GetResult<Prisma.$FundingSourcePayload, S>
+
+  type FundingSourceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FundingSourceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FundingSourceCountAggregateInputType | true
+    }
+
+  export interface FundingSourceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FundingSource'], meta: { name: 'FundingSource' } }
+    /**
+     * Find zero or one FundingSource that matches the filter.
+     * @param {FundingSourceFindUniqueArgs} args - Arguments to find a FundingSource
+     * @example
+     * // Get one FundingSource
+     * const fundingSource = await prisma.fundingSource.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FundingSourceFindUniqueArgs>(args: SelectSubset<T, FundingSourceFindUniqueArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FundingSource that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FundingSourceFindUniqueOrThrowArgs} args - Arguments to find a FundingSource
+     * @example
+     * // Get one FundingSource
+     * const fundingSource = await prisma.fundingSource.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FundingSourceFindUniqueOrThrowArgs>(args: SelectSubset<T, FundingSourceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FundingSource that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingSourceFindFirstArgs} args - Arguments to find a FundingSource
+     * @example
+     * // Get one FundingSource
+     * const fundingSource = await prisma.fundingSource.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FundingSourceFindFirstArgs>(args?: SelectSubset<T, FundingSourceFindFirstArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FundingSource that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingSourceFindFirstOrThrowArgs} args - Arguments to find a FundingSource
+     * @example
+     * // Get one FundingSource
+     * const fundingSource = await prisma.fundingSource.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FundingSourceFindFirstOrThrowArgs>(args?: SelectSubset<T, FundingSourceFindFirstOrThrowArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FundingSources that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingSourceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FundingSources
+     * const fundingSources = await prisma.fundingSource.findMany()
+     * 
+     * // Get first 10 FundingSources
+     * const fundingSources = await prisma.fundingSource.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const fundingSourceWithIdOnly = await prisma.fundingSource.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FundingSourceFindManyArgs>(args?: SelectSubset<T, FundingSourceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FundingSource.
+     * @param {FundingSourceCreateArgs} args - Arguments to create a FundingSource.
+     * @example
+     * // Create one FundingSource
+     * const FundingSource = await prisma.fundingSource.create({
+     *   data: {
+     *     // ... data to create a FundingSource
+     *   }
+     * })
+     * 
+     */
+    create<T extends FundingSourceCreateArgs>(args: SelectSubset<T, FundingSourceCreateArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FundingSources.
+     * @param {FundingSourceCreateManyArgs} args - Arguments to create many FundingSources.
+     * @example
+     * // Create many FundingSources
+     * const fundingSource = await prisma.fundingSource.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FundingSourceCreateManyArgs>(args?: SelectSubset<T, FundingSourceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FundingSources and returns the data saved in the database.
+     * @param {FundingSourceCreateManyAndReturnArgs} args - Arguments to create many FundingSources.
+     * @example
+     * // Create many FundingSources
+     * const fundingSource = await prisma.fundingSource.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FundingSources and only return the `id`
+     * const fundingSourceWithIdOnly = await prisma.fundingSource.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FundingSourceCreateManyAndReturnArgs>(args?: SelectSubset<T, FundingSourceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FundingSource.
+     * @param {FundingSourceDeleteArgs} args - Arguments to delete one FundingSource.
+     * @example
+     * // Delete one FundingSource
+     * const FundingSource = await prisma.fundingSource.delete({
+     *   where: {
+     *     // ... filter to delete one FundingSource
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FundingSourceDeleteArgs>(args: SelectSubset<T, FundingSourceDeleteArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FundingSource.
+     * @param {FundingSourceUpdateArgs} args - Arguments to update one FundingSource.
+     * @example
+     * // Update one FundingSource
+     * const fundingSource = await prisma.fundingSource.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FundingSourceUpdateArgs>(args: SelectSubset<T, FundingSourceUpdateArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FundingSources.
+     * @param {FundingSourceDeleteManyArgs} args - Arguments to filter FundingSources to delete.
+     * @example
+     * // Delete a few FundingSources
+     * const { count } = await prisma.fundingSource.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FundingSourceDeleteManyArgs>(args?: SelectSubset<T, FundingSourceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FundingSources.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingSourceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FundingSources
+     * const fundingSource = await prisma.fundingSource.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FundingSourceUpdateManyArgs>(args: SelectSubset<T, FundingSourceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FundingSources and returns the data updated in the database.
+     * @param {FundingSourceUpdateManyAndReturnArgs} args - Arguments to update many FundingSources.
+     * @example
+     * // Update many FundingSources
+     * const fundingSource = await prisma.fundingSource.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FundingSources and only return the `id`
+     * const fundingSourceWithIdOnly = await prisma.fundingSource.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FundingSourceUpdateManyAndReturnArgs>(args: SelectSubset<T, FundingSourceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FundingSource.
+     * @param {FundingSourceUpsertArgs} args - Arguments to update or create a FundingSource.
+     * @example
+     * // Update or create a FundingSource
+     * const fundingSource = await prisma.fundingSource.upsert({
+     *   create: {
+     *     // ... data to create a FundingSource
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FundingSource we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FundingSourceUpsertArgs>(args: SelectSubset<T, FundingSourceUpsertArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FundingSources.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingSourceCountArgs} args - Arguments to filter FundingSources to count.
+     * @example
+     * // Count the number of FundingSources
+     * const count = await prisma.fundingSource.count({
+     *   where: {
+     *     // ... the filter for the FundingSources we want to count
+     *   }
+     * })
+    **/
+    count<T extends FundingSourceCountArgs>(
+      args?: Subset<T, FundingSourceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FundingSourceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FundingSource.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingSourceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FundingSourceAggregateArgs>(args: Subset<T, FundingSourceAggregateArgs>): Prisma.PrismaPromise<GetFundingSourceAggregateType<T>>
+
+    /**
+     * Group by FundingSource.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingSourceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FundingSourceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FundingSourceGroupByArgs['orderBy'] }
+        : { orderBy?: FundingSourceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FundingSourceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFundingSourceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FundingSource model
+   */
+  readonly fields: FundingSourceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FundingSource.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FundingSourceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FundingSource model
+   */
+  interface FundingSourceFieldRefs {
+    readonly id: FieldRef<"FundingSource", 'String'>
+    readonly organizationId: FieldRef<"FundingSource", 'String'>
+    readonly code: FieldRef<"FundingSource", 'String'>
+    readonly name: FieldRef<"FundingSource", 'String'>
+    readonly type: FieldRef<"FundingSource", 'FundingSourceType'>
+    readonly description: FieldRef<"FundingSource", 'String'>
+    readonly isRestricted: FieldRef<"FundingSource", 'Boolean'>
+    readonly restrictions: FieldRef<"FundingSource", 'Json'>
+    readonly isActive: FieldRef<"FundingSource", 'Boolean'>
+    readonly createdAt: FieldRef<"FundingSource", 'DateTime'>
+    readonly updatedAt: FieldRef<"FundingSource", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FundingSource findUnique
+   */
+  export type FundingSourceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingSource to fetch.
+     */
+    where: FundingSourceWhereUniqueInput
+  }
+
+  /**
+   * FundingSource findUniqueOrThrow
+   */
+  export type FundingSourceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingSource to fetch.
+     */
+    where: FundingSourceWhereUniqueInput
+  }
+
+  /**
+   * FundingSource findFirst
+   */
+  export type FundingSourceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingSource to fetch.
+     */
+    where?: FundingSourceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingSources to fetch.
+     */
+    orderBy?: FundingSourceOrderByWithRelationInput | FundingSourceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FundingSources.
+     */
+    cursor?: FundingSourceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingSources from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingSources.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingSources.
+     */
+    distinct?: FundingSourceScalarFieldEnum | FundingSourceScalarFieldEnum[]
+  }
+
+  /**
+   * FundingSource findFirstOrThrow
+   */
+  export type FundingSourceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingSource to fetch.
+     */
+    where?: FundingSourceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingSources to fetch.
+     */
+    orderBy?: FundingSourceOrderByWithRelationInput | FundingSourceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FundingSources.
+     */
+    cursor?: FundingSourceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingSources from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingSources.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingSources.
+     */
+    distinct?: FundingSourceScalarFieldEnum | FundingSourceScalarFieldEnum[]
+  }
+
+  /**
+   * FundingSource findMany
+   */
+  export type FundingSourceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingSources to fetch.
+     */
+    where?: FundingSourceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingSources to fetch.
+     */
+    orderBy?: FundingSourceOrderByWithRelationInput | FundingSourceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FundingSources.
+     */
+    cursor?: FundingSourceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingSources from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingSources.
+     */
+    skip?: number
+    distinct?: FundingSourceScalarFieldEnum | FundingSourceScalarFieldEnum[]
+  }
+
+  /**
+   * FundingSource create
+   */
+  export type FundingSourceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FundingSource.
+     */
+    data: XOR<FundingSourceCreateInput, FundingSourceUncheckedCreateInput>
+  }
+
+  /**
+   * FundingSource createMany
+   */
+  export type FundingSourceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FundingSources.
+     */
+    data: FundingSourceCreateManyInput | FundingSourceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FundingSource createManyAndReturn
+   */
+  export type FundingSourceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * The data used to create many FundingSources.
+     */
+    data: FundingSourceCreateManyInput | FundingSourceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FundingSource update
+   */
+  export type FundingSourceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FundingSource.
+     */
+    data: XOR<FundingSourceUpdateInput, FundingSourceUncheckedUpdateInput>
+    /**
+     * Choose, which FundingSource to update.
+     */
+    where: FundingSourceWhereUniqueInput
+  }
+
+  /**
+   * FundingSource updateMany
+   */
+  export type FundingSourceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FundingSources.
+     */
+    data: XOR<FundingSourceUpdateManyMutationInput, FundingSourceUncheckedUpdateManyInput>
+    /**
+     * Filter which FundingSources to update
+     */
+    where?: FundingSourceWhereInput
+    /**
+     * Limit how many FundingSources to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingSource updateManyAndReturn
+   */
+  export type FundingSourceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * The data used to update FundingSources.
+     */
+    data: XOR<FundingSourceUpdateManyMutationInput, FundingSourceUncheckedUpdateManyInput>
+    /**
+     * Filter which FundingSources to update
+     */
+    where?: FundingSourceWhereInput
+    /**
+     * Limit how many FundingSources to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FundingSource upsert
+   */
+  export type FundingSourceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FundingSource to update in case it exists.
+     */
+    where: FundingSourceWhereUniqueInput
+    /**
+     * In case the FundingSource found by the `where` argument doesn't exist, create a new FundingSource with this data.
+     */
+    create: XOR<FundingSourceCreateInput, FundingSourceUncheckedCreateInput>
+    /**
+     * In case the FundingSource was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FundingSourceUpdateInput, FundingSourceUncheckedUpdateInput>
+  }
+
+  /**
+   * FundingSource delete
+   */
+  export type FundingSourceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    /**
+     * Filter which FundingSource to delete.
+     */
+    where: FundingSourceWhereUniqueInput
+  }
+
+  /**
+   * FundingSource deleteMany
+   */
+  export type FundingSourceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FundingSources to delete
+     */
+    where?: FundingSourceWhereInput
+    /**
+     * Limit how many FundingSources to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingSource without action
+   */
+  export type FundingSourceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
   }
 
 
@@ -34585,6 +37144,40 @@ export namespace Prisma {
   export type CostCentreScalarFieldEnum = (typeof CostCentreScalarFieldEnum)[keyof typeof CostCentreScalarFieldEnum]
 
 
+  export const ProjectScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    code: 'code',
+    name: 'name',
+    description: 'description',
+    status: 'status',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+  export const FundingSourceScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    code: 'code',
+    name: 'name',
+    type: 'type',
+    description: 'description',
+    isRestricted: 'isRestricted',
+    restrictions: 'restrictions',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FundingSourceScalarFieldEnum = (typeof FundingSourceScalarFieldEnum)[keyof typeof FundingSourceScalarFieldEnum]
+
+
   export const OrganizationMembershipScalarFieldEnum: {
     organizationId: 'organizationId',
     userId: 'userId',
@@ -35061,6 +37654,34 @@ export namespace Prisma {
    * Reference to a field of type 'LocationType[]'
    */
   export type ListEnumLocationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LocationType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProjectStatus'
+   */
+  export type EnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProjectStatus[]'
+   */
+  export type ListEnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FundingSourceType'
+   */
+  export type EnumFundingSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FundingSourceType'>
+    
+
+
+  /**
+   * Reference to a field of type 'FundingSourceType[]'
+   */
+  export type ListEnumFundingSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FundingSourceType[]'>
     
 
 
@@ -36622,6 +39243,8 @@ export namespace Prisma {
     locations?: LocationListRelationFilter
     departments?: DepartmentListRelationFilter
     costCentres?: CostCentreListRelationFilter
+    projects?: ProjectListRelationFilter
+    fundingSources?: FundingSourceListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -36646,6 +39269,8 @@ export namespace Prisma {
     locations?: LocationOrderByRelationAggregateInput
     departments?: DepartmentOrderByRelationAggregateInput
     costCentres?: CostCentreOrderByRelationAggregateInput
+    projects?: ProjectOrderByRelationAggregateInput
+    fundingSources?: FundingSourceOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -36673,6 +39298,8 @@ export namespace Prisma {
     locations?: LocationListRelationFilter
     departments?: DepartmentListRelationFilter
     costCentres?: CostCentreListRelationFilter
+    projects?: ProjectListRelationFilter
+    fundingSources?: FundingSourceListRelationFilter
   }, "id" | "code">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -36998,6 +39625,178 @@ export namespace Prisma {
     isActive?: BoolWithAggregatesFilter<"CostCentre"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"CostCentre"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"CostCentre"> | Date | string
+  }
+
+  export type ProjectWhereInput = {
+    AND?: ProjectWhereInput | ProjectWhereInput[]
+    OR?: ProjectWhereInput[]
+    NOT?: ProjectWhereInput | ProjectWhereInput[]
+    id?: StringFilter<"Project"> | string
+    organizationId?: StringFilter<"Project"> | string
+    code?: StringFilter<"Project"> | string
+    name?: StringFilter<"Project"> | string
+    description?: StringNullableFilter<"Project"> | string | null
+    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+    startDate?: DateTimeNullableFilter<"Project"> | Date | string | null
+    endDate?: DateTimeNullableFilter<"Project"> | Date | string | null
+    isActive?: BoolFilter<"Project"> | boolean
+    createdAt?: DateTimeFilter<"Project"> | Date | string
+    updatedAt?: DateTimeFilter<"Project"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }
+
+  export type ProjectOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    status?: SortOrder
+    startDate?: SortOrderInput | SortOrder
+    endDate?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+  }
+
+  export type ProjectWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_code?: ProjectOrganizationIdCodeCompoundUniqueInput
+    AND?: ProjectWhereInput | ProjectWhereInput[]
+    OR?: ProjectWhereInput[]
+    NOT?: ProjectWhereInput | ProjectWhereInput[]
+    organizationId?: StringFilter<"Project"> | string
+    code?: StringFilter<"Project"> | string
+    name?: StringFilter<"Project"> | string
+    description?: StringNullableFilter<"Project"> | string | null
+    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+    startDate?: DateTimeNullableFilter<"Project"> | Date | string | null
+    endDate?: DateTimeNullableFilter<"Project"> | Date | string | null
+    isActive?: BoolFilter<"Project"> | boolean
+    createdAt?: DateTimeFilter<"Project"> | Date | string
+    updatedAt?: DateTimeFilter<"Project"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }, "id" | "organizationId_code">
+
+  export type ProjectOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    status?: SortOrder
+    startDate?: SortOrderInput | SortOrder
+    endDate?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ProjectCountOrderByAggregateInput
+    _max?: ProjectMaxOrderByAggregateInput
+    _min?: ProjectMinOrderByAggregateInput
+  }
+
+  export type ProjectScalarWhereWithAggregatesInput = {
+    AND?: ProjectScalarWhereWithAggregatesInput | ProjectScalarWhereWithAggregatesInput[]
+    OR?: ProjectScalarWhereWithAggregatesInput[]
+    NOT?: ProjectScalarWhereWithAggregatesInput | ProjectScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Project"> | string
+    organizationId?: StringWithAggregatesFilter<"Project"> | string
+    code?: StringWithAggregatesFilter<"Project"> | string
+    name?: StringWithAggregatesFilter<"Project"> | string
+    description?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    status?: EnumProjectStatusWithAggregatesFilter<"Project"> | $Enums.ProjectStatus
+    startDate?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    endDate?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
+    isActive?: BoolWithAggregatesFilter<"Project"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
+  }
+
+  export type FundingSourceWhereInput = {
+    AND?: FundingSourceWhereInput | FundingSourceWhereInput[]
+    OR?: FundingSourceWhereInput[]
+    NOT?: FundingSourceWhereInput | FundingSourceWhereInput[]
+    id?: StringFilter<"FundingSource"> | string
+    organizationId?: StringFilter<"FundingSource"> | string
+    code?: StringFilter<"FundingSource"> | string
+    name?: StringFilter<"FundingSource"> | string
+    type?: EnumFundingSourceTypeFilter<"FundingSource"> | $Enums.FundingSourceType
+    description?: StringNullableFilter<"FundingSource"> | string | null
+    isRestricted?: BoolFilter<"FundingSource"> | boolean
+    restrictions?: JsonNullableFilter<"FundingSource">
+    isActive?: BoolFilter<"FundingSource"> | boolean
+    createdAt?: DateTimeFilter<"FundingSource"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingSource"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }
+
+  export type FundingSourceOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isRestricted?: SortOrder
+    restrictions?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+  }
+
+  export type FundingSourceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_code?: FundingSourceOrganizationIdCodeCompoundUniqueInput
+    AND?: FundingSourceWhereInput | FundingSourceWhereInput[]
+    OR?: FundingSourceWhereInput[]
+    NOT?: FundingSourceWhereInput | FundingSourceWhereInput[]
+    organizationId?: StringFilter<"FundingSource"> | string
+    code?: StringFilter<"FundingSource"> | string
+    name?: StringFilter<"FundingSource"> | string
+    type?: EnumFundingSourceTypeFilter<"FundingSource"> | $Enums.FundingSourceType
+    description?: StringNullableFilter<"FundingSource"> | string | null
+    isRestricted?: BoolFilter<"FundingSource"> | boolean
+    restrictions?: JsonNullableFilter<"FundingSource">
+    isActive?: BoolFilter<"FundingSource"> | boolean
+    createdAt?: DateTimeFilter<"FundingSource"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingSource"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }, "id" | "organizationId_code">
+
+  export type FundingSourceOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isRestricted?: SortOrder
+    restrictions?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FundingSourceCountOrderByAggregateInput
+    _max?: FundingSourceMaxOrderByAggregateInput
+    _min?: FundingSourceMinOrderByAggregateInput
+  }
+
+  export type FundingSourceScalarWhereWithAggregatesInput = {
+    AND?: FundingSourceScalarWhereWithAggregatesInput | FundingSourceScalarWhereWithAggregatesInput[]
+    OR?: FundingSourceScalarWhereWithAggregatesInput[]
+    NOT?: FundingSourceScalarWhereWithAggregatesInput | FundingSourceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FundingSource"> | string
+    organizationId?: StringWithAggregatesFilter<"FundingSource"> | string
+    code?: StringWithAggregatesFilter<"FundingSource"> | string
+    name?: StringWithAggregatesFilter<"FundingSource"> | string
+    type?: EnumFundingSourceTypeWithAggregatesFilter<"FundingSource"> | $Enums.FundingSourceType
+    description?: StringNullableWithAggregatesFilter<"FundingSource"> | string | null
+    isRestricted?: BoolWithAggregatesFilter<"FundingSource"> | boolean
+    restrictions?: JsonNullableWithAggregatesFilter<"FundingSource">
+    isActive?: BoolWithAggregatesFilter<"FundingSource"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"FundingSource"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FundingSource"> | Date | string
   }
 
   export type OrganizationMembershipWhereInput = {
@@ -39289,6 +42088,8 @@ export namespace Prisma {
     locations?: LocationCreateNestedManyWithoutOrganizationInput
     departments?: DepartmentCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -39313,6 +42114,8 @@ export namespace Prisma {
     locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
     departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -39337,6 +42140,8 @@ export namespace Prisma {
     locations?: LocationUpdateManyWithoutOrganizationNestedInput
     departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -39361,6 +42166,8 @@ export namespace Prisma {
     locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
     departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -39719,6 +42526,200 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectCreateInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    status?: $Enums.ProjectStatus
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutProjectsInput
+  }
+
+  export type ProjectUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    status?: $Enums.ProjectStatus
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProjectUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutProjectsNestedInput
+  }
+
+  export type ProjectUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectCreateManyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    status?: $Enums.ProjectStatus
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProjectUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingSourceCreateInput = {
+    id?: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description?: string | null
+    isRestricted?: boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutFundingSourcesInput
+  }
+
+  export type FundingSourceUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description?: string | null
+    isRestricted?: boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingSourceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutFundingSourcesNestedInput
+  }
+
+  export type FundingSourceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingSourceCreateManyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description?: string | null
+    isRestricted?: boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingSourceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingSourceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41914,6 +44915,18 @@ export namespace Prisma {
     none?: CostCentreWhereInput
   }
 
+  export type ProjectListRelationFilter = {
+    every?: ProjectWhereInput
+    some?: ProjectWhereInput
+    none?: ProjectWhereInput
+  }
+
+  export type FundingSourceListRelationFilter = {
+    every?: FundingSourceWhereInput
+    some?: FundingSourceWhereInput
+    none?: FundingSourceWhereInput
+  }
+
   export type LocationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -41923,6 +44936,14 @@ export namespace Prisma {
   }
 
   export type CostCentreOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProjectOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FundingSourceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -42168,6 +45189,132 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumProjectStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus
+  }
+
+  export type ProjectOrganizationIdCodeCompoundUniqueInput = {
+    organizationId: string
+    code: string
+  }
+
+  export type ProjectCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProjectMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProjectMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProjectStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProjectStatusFilter<$PrismaModel>
+    _max?: NestedEnumProjectStatusFilter<$PrismaModel>
+  }
+
+  export type EnumFundingSourceTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingSourceType | EnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingSourceType[] | ListEnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingSourceType[] | ListEnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingSourceTypeFilter<$PrismaModel> | $Enums.FundingSourceType
+  }
+
+  export type FundingSourceOrganizationIdCodeCompoundUniqueInput = {
+    organizationId: string
+    code: string
+  }
+
+  export type FundingSourceCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    description?: SortOrder
+    isRestricted?: SortOrder
+    restrictions?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FundingSourceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    description?: SortOrder
+    isRestricted?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FundingSourceMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    description?: SortOrder
+    isRestricted?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumFundingSourceTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingSourceType | EnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingSourceType[] | ListEnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingSourceType[] | ListEnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingSourceTypeWithAggregatesFilter<$PrismaModel> | $Enums.FundingSourceType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFundingSourceTypeFilter<$PrismaModel>
+    _max?: NestedEnumFundingSourceTypeFilter<$PrismaModel>
   }
 
   export type OrganizationMembershipOrganizationIdUserIdCompoundUniqueInput = {
@@ -44155,6 +47302,20 @@ export namespace Prisma {
     connect?: CostCentreWhereUniqueInput | CostCentreWhereUniqueInput[]
   }
 
+  export type ProjectCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ProjectCreateWithoutOrganizationInput, ProjectUncheckedCreateWithoutOrganizationInput> | ProjectCreateWithoutOrganizationInput[] | ProjectUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ProjectCreateOrConnectWithoutOrganizationInput | ProjectCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ProjectCreateManyOrganizationInputEnvelope
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+  }
+
+  export type FundingSourceCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<FundingSourceCreateWithoutOrganizationInput, FundingSourceUncheckedCreateWithoutOrganizationInput> | FundingSourceCreateWithoutOrganizationInput[] | FundingSourceUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: FundingSourceCreateOrConnectWithoutOrganizationInput | FundingSourceCreateOrConnectWithoutOrganizationInput[]
+    createMany?: FundingSourceCreateManyOrganizationInputEnvelope
+    connect?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -44181,6 +47342,20 @@ export namespace Prisma {
     connectOrCreate?: CostCentreCreateOrConnectWithoutOrganizationInput | CostCentreCreateOrConnectWithoutOrganizationInput[]
     createMany?: CostCentreCreateManyOrganizationInputEnvelope
     connect?: CostCentreWhereUniqueInput | CostCentreWhereUniqueInput[]
+  }
+
+  export type ProjectUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ProjectCreateWithoutOrganizationInput, ProjectUncheckedCreateWithoutOrganizationInput> | ProjectCreateWithoutOrganizationInput[] | ProjectUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ProjectCreateOrConnectWithoutOrganizationInput | ProjectCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ProjectCreateManyOrganizationInputEnvelope
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+  }
+
+  export type FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<FundingSourceCreateWithoutOrganizationInput, FundingSourceUncheckedCreateWithoutOrganizationInput> | FundingSourceCreateWithoutOrganizationInput[] | FundingSourceUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: FundingSourceCreateOrConnectWithoutOrganizationInput | FundingSourceCreateOrConnectWithoutOrganizationInput[]
+    createMany?: FundingSourceCreateManyOrganizationInputEnvelope
+    connect?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
   }
 
   export type EnumOrganizationTypeFieldUpdateOperationsInput = {
@@ -44247,6 +47422,34 @@ export namespace Prisma {
     deleteMany?: CostCentreScalarWhereInput | CostCentreScalarWhereInput[]
   }
 
+  export type ProjectUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ProjectCreateWithoutOrganizationInput, ProjectUncheckedCreateWithoutOrganizationInput> | ProjectCreateWithoutOrganizationInput[] | ProjectUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ProjectCreateOrConnectWithoutOrganizationInput | ProjectCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ProjectUpsertWithWhereUniqueWithoutOrganizationInput | ProjectUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ProjectCreateManyOrganizationInputEnvelope
+    set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    update?: ProjectUpdateWithWhereUniqueWithoutOrganizationInput | ProjectUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ProjectUpdateManyWithWhereWithoutOrganizationInput | ProjectUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
+  }
+
+  export type FundingSourceUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<FundingSourceCreateWithoutOrganizationInput, FundingSourceUncheckedCreateWithoutOrganizationInput> | FundingSourceCreateWithoutOrganizationInput[] | FundingSourceUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: FundingSourceCreateOrConnectWithoutOrganizationInput | FundingSourceCreateOrConnectWithoutOrganizationInput[]
+    upsert?: FundingSourceUpsertWithWhereUniqueWithoutOrganizationInput | FundingSourceUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: FundingSourceCreateManyOrganizationInputEnvelope
+    set?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
+    disconnect?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
+    delete?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
+    connect?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
+    update?: FundingSourceUpdateWithWhereUniqueWithoutOrganizationInput | FundingSourceUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: FundingSourceUpdateManyWithWhereWithoutOrganizationInput | FundingSourceUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: FundingSourceScalarWhereInput | FundingSourceScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -44301,6 +47504,34 @@ export namespace Prisma {
     update?: CostCentreUpdateWithWhereUniqueWithoutOrganizationInput | CostCentreUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: CostCentreUpdateManyWithWhereWithoutOrganizationInput | CostCentreUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: CostCentreScalarWhereInput | CostCentreScalarWhereInput[]
+  }
+
+  export type ProjectUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ProjectCreateWithoutOrganizationInput, ProjectUncheckedCreateWithoutOrganizationInput> | ProjectCreateWithoutOrganizationInput[] | ProjectUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ProjectCreateOrConnectWithoutOrganizationInput | ProjectCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ProjectUpsertWithWhereUniqueWithoutOrganizationInput | ProjectUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ProjectCreateManyOrganizationInputEnvelope
+    set?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    disconnect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    delete?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+    update?: ProjectUpdateWithWhereUniqueWithoutOrganizationInput | ProjectUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ProjectUpdateManyWithWhereWithoutOrganizationInput | ProjectUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
+  }
+
+  export type FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<FundingSourceCreateWithoutOrganizationInput, FundingSourceUncheckedCreateWithoutOrganizationInput> | FundingSourceCreateWithoutOrganizationInput[] | FundingSourceUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: FundingSourceCreateOrConnectWithoutOrganizationInput | FundingSourceCreateOrConnectWithoutOrganizationInput[]
+    upsert?: FundingSourceUpsertWithWhereUniqueWithoutOrganizationInput | FundingSourceUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: FundingSourceCreateManyOrganizationInputEnvelope
+    set?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
+    disconnect?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
+    delete?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
+    connect?: FundingSourceWhereUniqueInput | FundingSourceWhereUniqueInput[]
+    update?: FundingSourceUpdateWithWhereUniqueWithoutOrganizationInput | FundingSourceUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: FundingSourceUpdateManyWithWhereWithoutOrganizationInput | FundingSourceUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: FundingSourceScalarWhereInput | FundingSourceScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutLocationsInput = {
@@ -44605,6 +47836,42 @@ export namespace Prisma {
     delete?: DepartmentWhereInput | boolean
     connect?: DepartmentWhereUniqueInput
     update?: XOR<XOR<DepartmentUpdateToOneWithWhereWithoutCostCentresInput, DepartmentUpdateWithoutCostCentresInput>, DepartmentUncheckedUpdateWithoutCostCentresInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutProjectsInput = {
+    create?: XOR<OrganizationCreateWithoutProjectsInput, OrganizationUncheckedCreateWithoutProjectsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutProjectsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type EnumProjectStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ProjectStatus
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutProjectsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutProjectsInput, OrganizationUncheckedCreateWithoutProjectsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutProjectsInput
+    upsert?: OrganizationUpsertWithoutProjectsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutProjectsInput, OrganizationUpdateWithoutProjectsInput>, OrganizationUncheckedUpdateWithoutProjectsInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutFundingSourcesInput = {
+    create?: XOR<OrganizationCreateWithoutFundingSourcesInput, OrganizationUncheckedCreateWithoutFundingSourcesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutFundingSourcesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type EnumFundingSourceTypeFieldUpdateOperationsInput = {
+    set?: $Enums.FundingSourceType
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutFundingSourcesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutFundingSourcesInput, OrganizationUncheckedCreateWithoutFundingSourcesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutFundingSourcesInput
+    upsert?: OrganizationUpsertWithoutFundingSourcesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutFundingSourcesInput, OrganizationUpdateWithoutFundingSourcesInput>, OrganizationUncheckedUpdateWithoutFundingSourcesInput>
   }
 
   export type OrganizationCreateNestedOneWithoutMembershipsInput = {
@@ -45283,6 +48550,40 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumLocationTypeFilter<$PrismaModel>
     _max?: NestedEnumLocationTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumProjectStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProjectStatusFilter<$PrismaModel> | $Enums.ProjectStatus
+  }
+
+  export type NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProjectStatus | EnumProjectStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProjectStatus[] | ListEnumProjectStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProjectStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProjectStatusFilter<$PrismaModel>
+    _max?: NestedEnumProjectStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFundingSourceTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingSourceType | EnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingSourceType[] | ListEnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingSourceType[] | ListEnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingSourceTypeFilter<$PrismaModel> | $Enums.FundingSourceType
+  }
+
+  export type NestedEnumFundingSourceTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingSourceType | EnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingSourceType[] | ListEnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingSourceType[] | ListEnumFundingSourceTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingSourceTypeWithAggregatesFilter<$PrismaModel> | $Enums.FundingSourceType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFundingSourceTypeFilter<$PrismaModel>
+    _max?: NestedEnumFundingSourceTypeFilter<$PrismaModel>
   }
 
   export type NestedBigIntFilter<$PrismaModel = never> = {
@@ -49763,6 +53064,78 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ProjectCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    status?: $Enums.ProjectStatus
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProjectUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    status?: $Enums.ProjectStatus
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProjectCreateOrConnectWithoutOrganizationInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutOrganizationInput, ProjectUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ProjectCreateManyOrganizationInputEnvelope = {
+    data: ProjectCreateManyOrganizationInput | ProjectCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FundingSourceCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description?: string | null
+    isRestricted?: boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingSourceUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description?: string | null
+    isRestricted?: boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingSourceCreateOrConnectWithoutOrganizationInput = {
+    where: FundingSourceWhereUniqueInput
+    create: XOR<FundingSourceCreateWithoutOrganizationInput, FundingSourceUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type FundingSourceCreateManyOrganizationInputEnvelope = {
+    data: FundingSourceCreateManyOrganizationInput | FundingSourceCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: OrganizationMembershipWhereUniqueInput
     update: XOR<OrganizationMembershipUpdateWithoutOrganizationInput, OrganizationMembershipUncheckedUpdateWithoutOrganizationInput>
@@ -49877,6 +53250,72 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"CostCentre"> | Date | string
   }
 
+  export type ProjectUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ProjectWhereUniqueInput
+    update: XOR<ProjectUpdateWithoutOrganizationInput, ProjectUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ProjectCreateWithoutOrganizationInput, ProjectUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ProjectUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ProjectWhereUniqueInput
+    data: XOR<ProjectUpdateWithoutOrganizationInput, ProjectUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ProjectUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ProjectScalarWhereInput
+    data: XOR<ProjectUpdateManyMutationInput, ProjectUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ProjectScalarWhereInput = {
+    AND?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
+    OR?: ProjectScalarWhereInput[]
+    NOT?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
+    id?: StringFilter<"Project"> | string
+    organizationId?: StringFilter<"Project"> | string
+    code?: StringFilter<"Project"> | string
+    name?: StringFilter<"Project"> | string
+    description?: StringNullableFilter<"Project"> | string | null
+    status?: EnumProjectStatusFilter<"Project"> | $Enums.ProjectStatus
+    startDate?: DateTimeNullableFilter<"Project"> | Date | string | null
+    endDate?: DateTimeNullableFilter<"Project"> | Date | string | null
+    isActive?: BoolFilter<"Project"> | boolean
+    createdAt?: DateTimeFilter<"Project"> | Date | string
+    updatedAt?: DateTimeFilter<"Project"> | Date | string
+  }
+
+  export type FundingSourceUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: FundingSourceWhereUniqueInput
+    update: XOR<FundingSourceUpdateWithoutOrganizationInput, FundingSourceUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<FundingSourceCreateWithoutOrganizationInput, FundingSourceUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type FundingSourceUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: FundingSourceWhereUniqueInput
+    data: XOR<FundingSourceUpdateWithoutOrganizationInput, FundingSourceUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type FundingSourceUpdateManyWithWhereWithoutOrganizationInput = {
+    where: FundingSourceScalarWhereInput
+    data: XOR<FundingSourceUpdateManyMutationInput, FundingSourceUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type FundingSourceScalarWhereInput = {
+    AND?: FundingSourceScalarWhereInput | FundingSourceScalarWhereInput[]
+    OR?: FundingSourceScalarWhereInput[]
+    NOT?: FundingSourceScalarWhereInput | FundingSourceScalarWhereInput[]
+    id?: StringFilter<"FundingSource"> | string
+    organizationId?: StringFilter<"FundingSource"> | string
+    code?: StringFilter<"FundingSource"> | string
+    name?: StringFilter<"FundingSource"> | string
+    type?: EnumFundingSourceTypeFilter<"FundingSource"> | $Enums.FundingSourceType
+    description?: StringNullableFilter<"FundingSource"> | string | null
+    isRestricted?: BoolFilter<"FundingSource"> | boolean
+    restrictions?: JsonNullableFilter<"FundingSource">
+    isActive?: BoolFilter<"FundingSource"> | boolean
+    createdAt?: DateTimeFilter<"FundingSource"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingSource"> | Date | string
+  }
+
   export type OrganizationCreateWithoutLocationsInput = {
     id?: string
     code: string
@@ -49898,6 +53337,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
     departments?: DepartmentCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -49921,6 +53362,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
     departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -50155,6 +53598,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
     departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -50178,6 +53623,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
     departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type LocationUpsertWithoutChildrenInput = {
@@ -50282,6 +53729,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
     locations?: LocationCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -50305,6 +53754,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
     locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -50547,6 +53998,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
     locations?: LocationUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -50570,6 +54023,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
     locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutChildrenInput = {
@@ -50678,6 +54133,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
     locations?: LocationCreateNestedManyWithoutOrganizationInput
     departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCostCentresInput = {
@@ -50701,6 +54158,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
     locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
     departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCostCentresInput = {
@@ -50771,6 +54230,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
     locations?: LocationUpdateManyWithoutOrganizationNestedInput
     departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCostCentresInput = {
@@ -50794,6 +54255,8 @@ export namespace Prisma {
     memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
     locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
     departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutCostCentresInput = {
@@ -50833,6 +54296,238 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutHomeDepartmentNestedInput
   }
 
+  export type OrganizationCreateWithoutProjectsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutProjectsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutProjectsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutProjectsInput, OrganizationUncheckedCreateWithoutProjectsInput>
+  }
+
+  export type OrganizationUpsertWithoutProjectsInput = {
+    update: XOR<OrganizationUpdateWithoutProjectsInput, OrganizationUncheckedUpdateWithoutProjectsInput>
+    create: XOR<OrganizationCreateWithoutProjectsInput, OrganizationUncheckedCreateWithoutProjectsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutProjectsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutProjectsInput, OrganizationUncheckedUpdateWithoutProjectsInput>
+  }
+
+  export type OrganizationUpdateWithoutProjectsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutProjectsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationCreateWithoutFundingSourcesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutFundingSourcesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutFundingSourcesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutFundingSourcesInput, OrganizationUncheckedCreateWithoutFundingSourcesInput>
+  }
+
+  export type OrganizationUpsertWithoutFundingSourcesInput = {
+    update: XOR<OrganizationUpdateWithoutFundingSourcesInput, OrganizationUncheckedUpdateWithoutFundingSourcesInput>
+    create: XOR<OrganizationCreateWithoutFundingSourcesInput, OrganizationUncheckedCreateWithoutFundingSourcesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutFundingSourcesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutFundingSourcesInput, OrganizationUncheckedUpdateWithoutFundingSourcesInput>
+  }
+
+  export type OrganizationUpdateWithoutFundingSourcesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutFundingSourcesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
   export type OrganizationCreateWithoutMembershipsInput = {
     id?: string
     code: string
@@ -50854,6 +54549,8 @@ export namespace Prisma {
     locations?: LocationCreateNestedManyWithoutOrganizationInput
     departments?: DepartmentCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -50877,6 +54574,8 @@ export namespace Prisma {
     locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
     departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -51015,6 +54714,8 @@ export namespace Prisma {
     locations?: LocationUpdateManyWithoutOrganizationNestedInput
     departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -51038,6 +54739,8 @@ export namespace Prisma {
     locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
     departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganizationMembershipsInput = {
@@ -53011,6 +56714,32 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type ProjectCreateManyOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    status?: $Enums.ProjectStatus
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingSourceCreateManyOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description?: string | null
+    isRestricted?: boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrganizationMembershipUpdateWithoutOrganizationInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -53148,6 +56877,84 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingSourceUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingSourceUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingSourceUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
