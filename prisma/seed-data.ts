@@ -1,4 +1,4 @@
-import type { ModuleKey, PermissionAction, ProjectStatus, FundingSourceType } from '@/generated/prisma/client';
+import type { ModuleKey, PermissionAction, ProjectStatus, FundingSourceType, CurrencyType } from '@/generated/prisma/client';
 
 /**
  * Permission catalogue.
@@ -392,6 +392,45 @@ export const FUNDING_SOURCES = [
     description: 'Externally restricted grant funding with specific use constraints.',
     isRestricted: true,
     restrictions: { allowedProjects: ['IVENTIKA', 'UZANITE'], allowedCostCategories: ['PERSONNEL', 'EQUIPMENT', 'TRAVEL'] },
+    isActive: true,
+  },
+];
+
+export const CURRENCIES = [
+  {
+    code: 'TZS',
+    name: 'Tanzanian Shilling',
+    symbol: 'TSh',
+    type: 'FIAT' as CurrencyType,
+    decimalPlaces: 2,
+    isBase: true,
+    isActive: true,
+  },
+  {
+    code: 'USD',
+    name: 'US Dollar',
+    symbol: '$',
+    type: 'FIAT' as CurrencyType,
+    decimalPlaces: 2,
+    isBase: false,
+    isActive: true,
+  },
+  {
+    code: 'EUR',
+    name: 'Euro',
+    symbol: '€',
+    type: 'FIAT' as CurrencyType,
+    decimalPlaces: 2,
+    isBase: false,
+    isActive: true,
+  },
+  {
+    code: 'GBP',
+    name: 'British Pound',
+    symbol: '£',
+    type: 'FIAT' as CurrencyType,
+    decimalPlaces: 2,
+    isBase: false,
     isActive: true,
   },
 ];

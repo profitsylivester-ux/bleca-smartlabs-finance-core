@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Badge, Button, Card, CardBody, CardHeader, PageHeader, Table, Td, Th } from '@/components/ui';
 import { cn } from '@/lib/format';
 
-type Tab = 'locations' | 'departments' | 'cost-centres' | 'projects' | 'funding-sources';
+type Tab = 'locations' | 'departments' | 'cost-centres' | 'projects' | 'funding-sources' | 'currencies' | 'exchange-rates';
 
 interface Location {
   id: string;
@@ -64,12 +64,38 @@ interface FundingSource {
   isActive: boolean;
 }
 
+interface Currency {
+  id: string;
+  code: string;
+  name: string;
+  symbol: string | null;
+  type: string;
+  decimalPlaces: number;
+  isBase: boolean;
+  isActive: boolean;
+}
+
+interface ExchangeRate {
+  id: string;
+  baseCurrencyId: string;
+  quoteCurrencyId: string;
+  rateDate: string;
+  rate: string;
+  source: string | null;
+  differenceTreatment: string;
+  createdAt: string;
+  baseCurrency: { id: string; code: string; name: string };
+  quoteCurrency: { id: string; code: string; name: string };
+}
+
 interface MasterData {
   locations: Location[];
   departments: Department[];
   costCentres: CostCentre[];
   projects: Project[];
   fundingSources: FundingSource[];
+  currencies: Currency[];
+  exchangeRates: ExchangeRate[];
 }
 
 export default function MasterDataPage({ initialData }: { initialData: MasterData }) {
@@ -79,6 +105,8 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
   const [costCentres, setCostCentres] = useState<CostCentre[]>(initialData.costCentres);
   const [projects, setProjects] = useState<Project[]>(initialData.projects);
   const [fundingSources, setFundingSources] = useState<FundingSource[]>(initialData.fundingSources);
+  const [currencies, setCurrencies] = useState<Currency[]>(initialData.currencies);
+  const [exchangeRates, setExchangeRates] = useState<ExchangeRate[]>(initialData.exchangeRates);
 
   const tabs: Array<{ id: Tab; label: string; count: number }> = [
     { id: 'locations', label: 'Locations', count: locations.length },
@@ -86,6 +114,8 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
     { id: 'cost-centres', label: 'Cost Centres', count: costCentres.length },
     { id: 'projects', label: 'Projects', count: projects.length },
     { id: 'funding-sources', label: 'Funding Sources', count: fundingSources.length },
+    { id: 'currencies', label: 'Currencies', count: currencies.length },
+    { id: 'exchange-rates', label: 'Exchange Rates', count: exchangeRates.length },
   ];
 
   const typeBadges: Record<string, 'info' | 'success' | 'warning' | 'danger' | 'neutral'> = {
@@ -455,6 +485,130 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                             ) : (
                               <Badge tone="warning">Inactive</Badge>
                             )}
+                          </Td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                )}
+              </CardBody>
+            </Card>
+          )}
+          {activeTab === 'currencies' && (
+            <Card>
+              <CardHeader
+                title="Currencies"
+                description="Currency definitions including base currency (TZS) and supported foreign currencies."
+                actions={
+                  <Button size="sm" variant="outline">
+                    Add currency
+                  </Button>
+                }
+              />
+              <CardBody className="px-0 py-0">
+                {currencies.length === 0 ? (
+                  <div className="px-5 py-12 text-center">
+                    <p className="text-foreground text-sm font-medium">No currencies yet</p>
+                    <p className="text-muted-foreground mt-1 max-w-md text-xs">
+                      Create your first currency to enable multi-currency transactions.
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
+                    <thead>
+                      <tr>
+                        <Th>Code</Th>
+                        <Th>Name</Th>
+                        <Th>Symbol</Th>
+                        <Th>Type</Th>
+                        <Th>Decimals</Th>
+                        <Th>Base</Th>
+                        <Th>Status</Th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currencies.map((cur) => (
+                        <tr key={cur.id}>
+                          <Td className="mono text-xs">{cur.code}</Td>
+                          <Td><span className="font-medium">{cur.name}</span></Td>
+                          <Td className="text-muted-foreground text-xs">{cur.symbol ?? '-'}</Td>
+                          <Td>
+                            <Badge tone={cur.type === 'FIAT' ? 'success' : cur.type === 'CRYPTO' ? 'warning' : 'neutral'}>{cur.type}</Badge>
+                          </Td>
+                          <Td className="tabular text-right">{cur.decimalPlaces}</Td>
+                          <Td>
+                            {cur.isBase ? (
+                              <Badge tone="info">Base</Badge>
+                            ) : (
+                              <Badge tone="neutral">Quote</Badge>
+                            )}
+                          </Td>
+                          <Td>
+                            {cur.isActive ? (
+                              <Badge tone="success">Active</Badge>
+                            ) : (
+                              <Badge tone="warning">Inactive</Badge>
+                            )}
+                          </Td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                )}
+              </CardBody>
+            </Card>
+          )}
+
+          {activeTab === 'exchange-rates' && (
+            <Card>
+              <CardHeader
+                title="Exchange Rates"
+                description="Historical exchange rates for currency conversion. Rates are looked up by transaction date."
+                actions={
+                  <Button size="sm" variant="outline">
+                    Add exchange rate
+                  </Button>
+                }
+              />
+              <CardBody className="px-0 py-0">
+                {exchangeRates.length === 0 ? (
+                  <div className="px-5 py-12 text-center">
+                    <p className="text-foreground text-sm font-medium">No exchange rates yet</p>
+                    <p className="text-muted-foreground mt-1 max-w-md text-xs">
+                      Create your first exchange rate to enable currency conversion.
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
+                    <thead>
+                      <tr>
+                        <Th>Base / Quote</Th>
+                        <Th>Rate</Th>
+                        <Th>Date</Th>
+                        <Th>Source</Th>
+                        <Th>FX Diff Treatment</Th>
+                        <Th>Created</Th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {exchangeRates.map((er) => (
+                        <tr key={er.id}>
+                          <Td>
+                            <span className="mono text-xs">{er.baseCurrency.code}</span> /
+                            <span className="mono text-xs">{er.quoteCurrency.code}</span>
+                          </Td>
+                          <Td className="mono text-xs">{Number(er.rate).toFixed(6)}</Td>
+                          <Td className="text-muted-foreground text-xs">
+                            {new Date(er.rateDate).toISOString().split('T')[0]}
+                          </Td>
+                          <Td className="text-muted-foreground text-xs">{er.source}</Td>
+                          <Td>
+                            <Badge tone={er.differenceTreatment === 'EXPENSE' ? 'danger' : er.differenceTreatment === 'INCOME' ? 'success' : 'warning'}>
+                              {er.differenceTreatment}
+                            </Badge>
+                          </Td>
+                          <Td className="text-muted-foreground text-xs">
+                            {new Date(er.createdAt).toISOString().split('T')[0]}
                           </Td>
                         </tr>
                       ))}

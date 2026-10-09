@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@/generated/prisma/client';
-import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, PROJECTS, FUNDING_SOURCES } from '../../../prisma/seed-data';
+import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, PROJECTS, FUNDING_SOURCES, CURRENCIES } from '../../../prisma/seed-data';
 
 /**
  * Reference data for the integration suite.
@@ -95,6 +95,14 @@ export async function seedTestFixtures(prisma: PrismaClient): Promise<void> {
       update: { ...fs, organizationId: org.id },
     });
   }
+
+  for (const cur of CURRENCIES) {
+    await prisma.currency.upsert({
+      where: { code: cur.code },
+      create: cur,
+      update: cur,
+    });
+  }
 }
 
 /**
@@ -125,7 +133,9 @@ export async function resetTestData(prisma: PrismaClient): Promise<void> {
       delegations,
       user_roles,
       organization_memberships,
-      users
+      users,
+      exchange_rates,
+      currencies
     RESTART IDENTITY CASCADE
   `);
 }

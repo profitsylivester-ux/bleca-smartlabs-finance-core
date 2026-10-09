@@ -420,6 +420,31 @@ exports.Prisma.FundingSourceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CurrencyScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  symbol: 'symbol',
+  type: 'type',
+  decimalPlaces: 'decimalPlaces',
+  isBase: 'isBase',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ExchangeRateScalarFieldEnum = {
+  id: 'id',
+  baseCurrencyId: 'baseCurrencyId',
+  quoteCurrencyId: 'quoteCurrencyId',
+  rateDate: 'rateDate',
+  rate: 'rate',
+  source: 'source',
+  differenceTreatment: 'differenceTreatment',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.OrganizationMembershipScalarFieldEnum = {
   organizationId: 'organizationId',
   userId: 'userId',
@@ -742,6 +767,18 @@ exports.FundingSourceType = exports.$Enums.FundingSourceType = {
   OTHER: 'OTHER'
 };
 
+exports.CurrencyType = exports.$Enums.CurrencyType = {
+  FIAT: 'FIAT',
+  CRYPTO: 'CRYPTO',
+  COMPOSITE: 'COMPOSITE'
+};
+
+exports.FxDifferenceTreatment = exports.$Enums.FxDifferenceTreatment = {
+  EXPENSE: 'EXPENSE',
+  INCOME: 'INCOME',
+  SUSPENSE: 'SUSPENSE'
+};
+
 exports.AuditAction = exports.$Enums.AuditAction = {
   LOGIN: 'LOGIN',
   LOGOUT: 'LOGOUT',
@@ -804,7 +841,9 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   DEPARTMENT: 'DEPARTMENT',
   COST_CENTRE: 'COST_CENTRE',
   PROJECT: 'PROJECT',
-  FUNDING_SOURCE: 'FUNDING_SOURCE'
+  FUNDING_SOURCE: 'FUNDING_SOURCE',
+  CURRENCY: 'CURRENCY',
+  EXCHANGE_RATE: 'EXCHANGE_RATE'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -917,6 +956,8 @@ exports.Prisma.ModelName = {
   CostCentre: 'CostCentre',
   Project: 'Project',
   FundingSource: 'FundingSource',
+  Currency: 'Currency',
+  ExchangeRate: 'ExchangeRate',
   OrganizationMembership: 'OrganizationMembership',
   AuditLog: 'AuditLog',
   AuditChainHead: 'AuditChainHead',

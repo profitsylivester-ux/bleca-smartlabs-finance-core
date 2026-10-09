@@ -12,7 +12,7 @@ export default async function MasterDataPage() {
     return <div>No organization context</div>;
   }
 
-  const [locations, departments, costCentres, projects, fundingSources] = await Promise.all([
+  const [locations, departments, costCentres, projects, fundingSources, currencies, exchangeRates] = await Promise.all([
     prisma.location.findMany({
       where: { organizationId: ctx.actor.organizationId },
       orderBy: [{ type: 'asc' }, { code: 'asc' }],
@@ -86,6 +86,35 @@ export default async function MasterDataPage() {
         isActive: true,
       },
     }),
+    prisma.currency.findMany({
+      orderBy: [{ isBase: 'desc' }, { code: 'asc' }],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        symbol: true,
+        type: true,
+        decimalPlaces: true,
+        isBase: true,
+        isActive: true,
+      },
+    }),
+    prisma.exchangeRate.findMany({
+      orderBy: [{ rateDate: 'desc' }, { baseCurrencyId: 'asc' }],
+      select: {
+        id: true,
+        baseCurrencyId: true,
+        quoteCurrencyId: true,
+        rateDate: true,
+        rate: true,
+        source: true,
+        differenceTreatment: true,
+        createdAt: true,
+        updatedAt: true,
+        baseCurrency: { select: { id: true, code: true, name: true } },
+        quoteCurrency: { select: { id: true, code: true, name: true } },
+      },
+    }),
   ]);
 
   const projectsForClient = projects.map((p) => ({
@@ -99,5 +128,13 @@ export default async function MasterDataPage() {
     restrictions: fs.restrictions as Record<string, unknown> | null,
   }));
 
-  return <MasterDataClient initialData={{ locations, departments, costCentres, projects: projectsForClient, fundingSources: fundingSourcesForClient }} />;
+  const exchangeRatesForClient = exchangeRates.map((er) => ({
+    ...er,
+    rateDate: er.rateDate.toISOString(),
+    createdAt: er.createdAt.toISOString(),
+    updatedAt: er.updatedAt.toISOString(),
+    rate: er.rate.toString(),
+  }));
+
+  return <MasterDataClient initialData={{ locations, departments, costCentres, projects: projectsForClient, fundingSources: fundingSourcesForClient, currencies, exchangeRates: exchangeRatesForClient }} />;
 }

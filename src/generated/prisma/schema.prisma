@@ -232,6 +232,20 @@ enum FundingSourceType {
   OTHER
 }
 
+/// ---- Currencies & FX --------------------------------------------------------
+
+enum CurrencyType {
+  FIAT
+  CRYPTO
+  COMPOSITE
+}
+
+enum FxDifferenceTreatment {
+  EXPENSE
+  INCOME
+  SUSPENSE
+}
+
 /// Master data lifecycle status (PDF 62).
 enum MasterDataStatus {
   DRAFT
@@ -307,6 +321,8 @@ enum AuditEntityType {
   COST_CENTRE
   PROJECT
   FUNDING_SOURCE
+  CURRENCY
+  EXCHANGE_RATE
 }
 
 enum AuditResult {
@@ -925,6 +941,42 @@ model FundingSource {
   @@unique([organizationId, code])
   @@index([type, isActive])
   @@map("funding_sources")
+}
+
+model Currency {
+  id            String       @id @default(cuid())
+  code          String       @unique @db.Char(3)
+  name          String
+  symbol        String?
+  type          CurrencyType @default(FIAT)
+  decimalPlaces Int          @default(2)
+  isBase        Boolean      @default(false) @map("is_base")
+  isActive      Boolean      @default(true) @map("is_active")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  exchangeRatesBase  ExchangeRate[] @relation("ExchangeRateBase")
+  exchangeRatesQuote ExchangeRate[] @relation("ExchangeRateQuote")
+
+  @@map("currencies")
+}
+
+model ExchangeRate {
+  id                  String                @id @default(cuid())
+  baseCurrencyId      String                @map("base_currency_id")
+  baseCurrency        Currency              @relation("ExchangeRateBase", fields: [baseCurrencyId], references: [id])
+  quoteCurrencyId     String                @map("quote_currency_id")
+  quoteCurrency       Currency              @relation("ExchangeRateQuote", fields: [quoteCurrencyId], references: [id])
+  rateDate            DateTime              @map("rate_date")
+  rate                Decimal               @db.Decimal(20, 10)
+  source              String?               @default("MANUAL")
+  differenceTreatment FxDifferenceTreatment @default(EXPENSE) @map("difference_treatment")
+  createdAt           DateTime              @default(now()) @map("created_at")
+  updatedAt           DateTime              @updatedAt @map("updated_at")
+
+  @@unique([baseCurrencyId, quoteCurrencyId, rateDate])
+  @@index([rateDate])
+  @@map("exchange_rates")
 }
 
 model OrganizationMembership {
