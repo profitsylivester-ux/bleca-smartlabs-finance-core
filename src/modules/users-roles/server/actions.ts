@@ -190,7 +190,7 @@ export async function createUserAction(
           entityId: user.id,
           entityLabel: email,
           description: `Assigned role ${roleCode} to ${email}`,
-          metadata: { roleCode, temporary, expiresAt: temporary ? expiresAt : null },
+          metadata: { roleCode, temporary, expiresAt: temporary && expiresAt ? expiresAt : null },
         },
         {
           organizationId: context.actor.organizationId,

@@ -29,7 +29,7 @@ const createSchema = z.object({
   isOwned: z.boolean().optional(),
   permissionReference: z.string().max(200).nullish(),
   parentId: z.string().cuid().nullish(),
-  address: z.record(z.unknown()).nullish(),
+  address: z.record(z.string(), z.unknown()).nullish(),
   timezone: z.string().default('Africa/Dar_es_Salaam'),
   isActive: z.boolean().optional(),
   effectiveFrom: z.string().datetime().nullish(),
@@ -152,18 +152,18 @@ export async function POST(request: Request) {
           async (tx) => {
             const created = await tx.location.create({
               data: {
-                organizationId: ctx.actor.organizationId,
+                organizationId: ctx.actor.organizationId!,
                 code: body.code,
                 name: body.name,
                 type: body.type,
                 isOwned: body.isOwned ?? false,
-                permissionReference: body.permissionReference ?? undefined,
-                parentId: body.parentId ?? null,
-                address: body.address ?? undefined,
+                permissionReference: (body.permissionReference ?? undefined) as string | undefined,
+                parentId: body.parentId ?? undefined,
+                address: (body.address ?? undefined) as import('@/generated/prisma/runtime/library').InputJsonValue | undefined,
                 timezone: body.timezone,
                 isActive: body.isActive ?? true,
-                effectiveFrom: body.effectiveFrom ? new Date(body.effectiveFrom) : null,
-                effectiveTo: body.effectiveTo ? new Date(body.effectiveTo) : null,
+                effectiveFrom: body.effectiveFrom ? new Date(body.effectiveFrom) : undefined,
+                effectiveTo: body.effectiveTo ? new Date(body.effectiveTo) : undefined,
               },
               select: { id: true, code: true, name: true, type: true },
             });

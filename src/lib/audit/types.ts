@@ -4,6 +4,7 @@ import type {
   AuditEntityType,
   AuditResult,
 } from '@/generated/prisma/client';
+import type { InputJsonValue } from '@/generated/prisma/runtime/library';
 
 /**
  * The shape of one audit entry as the caller supplies it.
@@ -18,8 +19,8 @@ export interface AuditEntryInput {
   entityId?: string | null;
   entityLabel?: string | null;
   description: string;
-  changes?: Record<string, { from: unknown; to: unknown }> | null;
-  metadata?: Record<string, unknown> | null;
+  changes?: Record<string, { from: InputJsonValue | null; to: InputJsonValue | null }> | null;
+  metadata?: Record<string, InputJsonValue | null> | null;
   result?: AuditResult;
   errorMessage?: string | null;
   channel?: AuditChannel;
@@ -57,7 +58,7 @@ export interface SecurityEventInput {
   subjectType?: AuditEntityType | null;
   subjectId?: string | null;
   subjectLabel?: string | null;
-  detail?: Record<string, unknown> | null;
+  detail?: Record<string, InputJsonValue | null> | null;
 }
 
 export interface AuditActor {

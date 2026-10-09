@@ -1,4 +1,3 @@
-import { Prisma } from '@/generated/prisma/client';
 import type { Tx } from '@/lib/db/prisma';
 import { computeEntryHash, computeSignature } from '@/lib/audit/chain';
 import type { AuditActor, AuditEntryInput, SecurityEventInput } from '@/lib/audit/types';
@@ -75,8 +74,8 @@ export async function writeAuditEntry(
       entityId: input.entityId ?? null,
       entityLabel: input.entityLabel ?? null,
       description: input.description,
-      changes: (input.changes ?? undefined) as Prisma.InputJsonValue | undefined,
-      metadata: (input.metadata ?? undefined) as Prisma.InputJsonValue | undefined,
+      changes: input.changes ?? undefined,
+      metadata: input.metadata ?? undefined,
       ipAddress: options.ipAddress ?? null,
       userAgent: options.userAgent ?? null,
       requestId: options.requestId ?? null,
@@ -134,7 +133,7 @@ export async function writeSecurityEvent(
       subjectId: event.subjectId ?? null,
       subjectLabel: event.subjectLabel ?? null,
       description: event.description,
-      detail: (event.detail ?? undefined) as Prisma.InputJsonValue | undefined,
+      detail: event.detail ?? undefined,
       ipAddress: options.ipAddress ?? null,
       userAgent: options.userAgent ?? null,
       requestId: options.requestId ?? null,

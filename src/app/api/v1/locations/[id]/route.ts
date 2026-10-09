@@ -9,6 +9,7 @@ import { runIdempotent } from '@/lib/api/idempotency';
 import { withAudit } from '@/lib/db/with-audit';
 import { writeAuditEntry } from '@/lib/audit/writer';
 import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
+import type { InputJsonValue } from '@/generated/prisma/runtime/library';
 
 const locationTypeSchema = z.enum([
   'HEAD_OFFICE',
@@ -28,7 +29,7 @@ const updateSchema = z.object({
   isOwned: z.boolean().optional(),
   permissionReference: z.string().max(200).nullish(),
   parentId: z.string().cuid().nullish(),
-  address: z.record(z.unknown()).nullish(),
+  address: z.record(z.string(), z.unknown()).nullish(),
   timezone: z.string().optional(),
   isActive: z.boolean().optional(),
   effectiveFrom: z.string().datetime().nullish(),
@@ -167,7 +168,7 @@ export async function PATCH(
                 isOwned: body.isOwned ?? current.isOwned,
                 permissionReference: body.permissionReference ?? (current.permissionReference ?? undefined),
                 parentId: body.parentId ?? current.parentId,
-                address: body.address ?? (current.address ?? undefined),
+                address: (body.address ?? (current.address ?? undefined)) as import('@/generated/prisma/runtime/library').InputJsonValue | undefined,
                 timezone: body.timezone ?? current.timezone,
                 isActive: body.isActive ?? current.isActive,
                 effectiveFrom: body.effectiveFrom ? new Date(body.effectiveFrom) : current.effectiveFrom,
@@ -176,7 +177,7 @@ export async function PATCH(
               select: { id: true, code: true, name: true, type: true },
             });
 
-            const changes: Record<string, { from: unknown; to: unknown }> = {};
+            const changes: Record<string, { from: InputJsonValue | null; to: InputJsonValue | null }> = {};
             if (body.name && body.name !== current.name) changes.name = { from: current.name, to: body.name };
             if (body.type && body.type !== current.type) changes.type = { from: current.type, to: body.type };
             if (body.isOwned !== undefined && body.isOwned !== current.isOwned)
@@ -186,7 +187,7 @@ export async function PATCH(
             if (body.parentId !== undefined && body.parentId !== current.parentId)
               changes.parentId = { from: current.parentId, to: body.parentId };
             if (body.address !== undefined && JSON.stringify(body.address) !== JSON.stringify(current.address))
-              changes.address = { from: current.address, to: body.address };
+              changes.address = { from: current.address as import('@/generated/prisma/runtime/library').InputJsonValue | null, to: body.address as import('@/generated/prisma/runtime/library').InputJsonValue | null };
             if (body.timezone && body.timezone !== current.timezone) changes.timezone = { from: current.timezone, to: body.timezone };
             if (body.isActive !== undefined && body.isActive !== current.isActive) changes.isActive = { from: current.isActive, to: body.isActive };
             if (body.effectiveFrom && new Date(body.effectiveFrom).getTime() !== current.effectiveFrom?.getTime())

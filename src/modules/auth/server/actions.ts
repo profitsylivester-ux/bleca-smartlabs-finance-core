@@ -265,7 +265,7 @@ export async function recordSecurityNote(input: {
   description: string;
   entityType: 'AUTH_POLICY' | 'SYSTEM';
   entityId?: string | null;
-  detail?: Record<string, unknown>;
+  detail?: Record<string, import('@/generated/prisma/runtime/library').InputJsonValue | null>;
 }): Promise<void> {
   await prisma.$transaction(async (tx) => {
     await writeAuditEntry(tx, SYSTEM_ACTOR, {

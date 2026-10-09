@@ -9,6 +9,7 @@ import { runIdempotent } from '@/lib/api/idempotency';
 import { withAudit } from '@/lib/db/with-audit';
 import { writeAuditEntry } from '@/lib/audit/writer';
 import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
+import type { InputJsonValue } from '@/generated/prisma/runtime/library';
 
 const updateSchema = z.object({
   name: z.string().min(2).max(120).optional(),
@@ -143,7 +144,7 @@ export async function PATCH(
               select: { id: true, code: true, name: true },
             });
 
-            const changes: Record<string, { from: unknown; to: unknown }> = {};
+            const changes: Record<string, { from: InputJsonValue | null; to: InputJsonValue | null }> = {};
             if (body.name && body.name !== current.name) changes.name = { from: current.name, to: body.name };
             if (body.parentId !== undefined && body.parentId !== current.parentId)
               changes.parentId = { from: current.parentId, to: body.parentId };

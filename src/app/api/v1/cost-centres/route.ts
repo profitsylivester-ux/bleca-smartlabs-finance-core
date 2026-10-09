@@ -126,11 +126,11 @@ export async function POST(request: Request) {
           async (tx) => {
             const created = await tx.costCentre.create({
               data: {
-                organizationId: ctx.actor.organizationId,
+                organizationId: ctx.actor.organizationId!,
                 code: body.code,
                 name: body.name,
-                description: body.description ?? null,
-                departmentId: body.departmentId ?? null,
+                description: body.description ?? undefined,
+                departmentId: body.departmentId ?? undefined,
                 isActive: body.isActive ?? true,
               },
               select: { id: true, code: true, name: true },

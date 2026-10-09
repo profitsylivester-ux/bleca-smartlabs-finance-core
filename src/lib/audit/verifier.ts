@@ -235,7 +235,14 @@ export async function sealAndVerifyPeriod(input: {
               description:
                 `The append-only audit chain failed verification at sequence ` +
                 `${result.brokenAtSequence?.toString()}. ${result.detail ?? ''}`.trim(),
-              detail: { ...result },
+              detail: {
+                fromSequence: result.fromSequence.toString(),
+                toSequence: result.toSequence.toString(),
+                entriesChecked: result.entriesChecked,
+                status: result.status,
+                brokenAtSequence: result.brokenAtSequence?.toString() ?? null,
+                detail: result.detail,
+              },
             },
     },
   );
