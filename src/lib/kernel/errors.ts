@@ -164,3 +164,10 @@ export class RateLimitedError extends KernelError {
     this.name = 'RateLimitedError';
   }
 }
+
+export class ForbiddenError extends KernelError {
+  constructor(message: string, details?: Record<string, unknown>) {
+    super('FORBIDDEN', message, { details });
+    this.name = 'ForbiddenError';
+  }
+}
