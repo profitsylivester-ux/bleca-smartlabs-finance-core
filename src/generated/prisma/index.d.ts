@@ -132,6 +132,16 @@ export type MasterDataChangeRequest = $Result.DefaultSelection<Prisma.$MasterDat
  */
 export type MasterDataVersion = $Result.DefaultSelection<Prisma.$MasterDataVersionPayload>
 /**
+ * Model ReasonCode
+ * Reason codes for transaction categorization (PDF 62). Seeded as reference data.
+ */
+export type ReasonCode = $Result.DefaultSelection<Prisma.$ReasonCodePayload>
+/**
+ * Model ProductService
+ * Lightweight product/service catalogue for revenue linkage (PDF 62).
+ */
+export type ProductService = $Result.DefaultSelection<Prisma.$ProductServicePayload>
+/**
  * Model OrganizationMembership
  * 
  */
@@ -519,7 +529,9 @@ export const AuditEntityType: {
   CURRENCY: 'CURRENCY',
   EXCHANGE_RATE: 'EXCHANGE_RATE',
   MASTER_DATA_CHANGE_REQUEST: 'MASTER_DATA_CHANGE_REQUEST',
-  MASTER_DATA_VERSION: 'MASTER_DATA_VERSION'
+  MASTER_DATA_VERSION: 'MASTER_DATA_VERSION',
+  REASON_CODE: 'REASON_CODE',
+  PRODUCT_SERVICE: 'PRODUCT_SERVICE'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -1127,6 +1139,26 @@ export class PrismaClient<
   get masterDataVersion(): Prisma.MasterDataVersionDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.reasonCode`: Exposes CRUD operations for the **ReasonCode** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReasonCodes
+    * const reasonCodes = await prisma.reasonCode.findMany()
+    * ```
+    */
+  get reasonCode(): Prisma.ReasonCodeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.productService`: Exposes CRUD operations for the **ProductService** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProductServices
+    * const productServices = await prisma.productService.findMany()
+    * ```
+    */
+  get productService(): Prisma.ProductServiceDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.organizationMembership`: Exposes CRUD operations for the **OrganizationMembership** model.
     * Example usage:
     * ```ts
@@ -1669,6 +1701,8 @@ export namespace Prisma {
     ExchangeRate: 'ExchangeRate',
     MasterDataChangeRequest: 'MasterDataChangeRequest',
     MasterDataVersion: 'MasterDataVersion',
+    ReasonCode: 'ReasonCode',
+    ProductService: 'ProductService',
     OrganizationMembership: 'OrganizationMembership',
     AuditLog: 'AuditLog',
     AuditChainHead: 'AuditChainHead',
@@ -1695,7 +1729,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3401,6 +3435,154 @@ export namespace Prisma {
           }
         }
       }
+      ReasonCode: {
+        payload: Prisma.$ReasonCodePayload<ExtArgs>
+        fields: Prisma.ReasonCodeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReasonCodeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReasonCodeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload>
+          }
+          findFirst: {
+            args: Prisma.ReasonCodeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReasonCodeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload>
+          }
+          findMany: {
+            args: Prisma.ReasonCodeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload>[]
+          }
+          create: {
+            args: Prisma.ReasonCodeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload>
+          }
+          createMany: {
+            args: Prisma.ReasonCodeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReasonCodeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload>[]
+          }
+          delete: {
+            args: Prisma.ReasonCodeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload>
+          }
+          update: {
+            args: Prisma.ReasonCodeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload>
+          }
+          deleteMany: {
+            args: Prisma.ReasonCodeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReasonCodeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReasonCodeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload>[]
+          }
+          upsert: {
+            args: Prisma.ReasonCodeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReasonCodePayload>
+          }
+          aggregate: {
+            args: Prisma.ReasonCodeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReasonCode>
+          }
+          groupBy: {
+            args: Prisma.ReasonCodeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReasonCodeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReasonCodeCountArgs<ExtArgs>
+            result: $Utils.Optional<ReasonCodeCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProductService: {
+        payload: Prisma.$ProductServicePayload<ExtArgs>
+        fields: Prisma.ProductServiceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProductServiceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProductServiceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload>
+          }
+          findFirst: {
+            args: Prisma.ProductServiceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProductServiceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload>
+          }
+          findMany: {
+            args: Prisma.ProductServiceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload>[]
+          }
+          create: {
+            args: Prisma.ProductServiceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload>
+          }
+          createMany: {
+            args: Prisma.ProductServiceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProductServiceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload>[]
+          }
+          delete: {
+            args: Prisma.ProductServiceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload>
+          }
+          update: {
+            args: Prisma.ProductServiceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload>
+          }
+          deleteMany: {
+            args: Prisma.ProductServiceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProductServiceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProductServiceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload>[]
+          }
+          upsert: {
+            args: Prisma.ProductServiceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductServicePayload>
+          }
+          aggregate: {
+            args: Prisma.ProductServiceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProductService>
+          }
+          groupBy: {
+            args: Prisma.ProductServiceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProductServiceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProductServiceCountArgs<ExtArgs>
+            result: $Utils.Optional<ProductServiceCountAggregateOutputType> | number
+          }
+        }
+      }
       OrganizationMembership: {
         payload: Prisma.$OrganizationMembershipPayload<ExtArgs>
         fields: Prisma.OrganizationMembershipFieldRefs
@@ -4112,6 +4294,8 @@ export namespace Prisma {
     exchangeRate?: ExchangeRateOmit
     masterDataChangeRequest?: MasterDataChangeRequestOmit
     masterDataVersion?: MasterDataVersionOmit
+    reasonCode?: ReasonCodeOmit
+    productService?: ProductServiceOmit
     organizationMembership?: OrganizationMembershipOmit
     auditLog?: AuditLogOmit
     auditChainHead?: AuditChainHeadOmit
@@ -4493,6 +4677,8 @@ export namespace Prisma {
     projects: number
     fundingSources: number
     masterDataChangeRequests: number
+    reasonCodes: number
+    productsServices: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4503,6 +4689,8 @@ export namespace Prisma {
     projects?: boolean | OrganizationCountOutputTypeCountProjectsArgs
     fundingSources?: boolean | OrganizationCountOutputTypeCountFundingSourcesArgs
     masterDataChangeRequests?: boolean | OrganizationCountOutputTypeCountMasterDataChangeRequestsArgs
+    reasonCodes?: boolean | OrganizationCountOutputTypeCountReasonCodesArgs
+    productsServices?: boolean | OrganizationCountOutputTypeCountProductsServicesArgs
   }
 
   // Custom InputTypes
@@ -4563,6 +4751,20 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountMasterDataChangeRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MasterDataChangeRequestWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountReasonCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReasonCodeWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountProductsServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductServiceWhereInput
   }
 
 
@@ -4662,11 +4864,13 @@ export namespace Prisma {
   export type CurrencyCountOutputType = {
     exchangeRatesBase: number
     exchangeRatesQuote: number
+    productsServices: number
   }
 
   export type CurrencyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     exchangeRatesBase?: boolean | CurrencyCountOutputTypeCountExchangeRatesBaseArgs
     exchangeRatesQuote?: boolean | CurrencyCountOutputTypeCountExchangeRatesQuoteArgs
+    productsServices?: boolean | CurrencyCountOutputTypeCountProductsServicesArgs
   }
 
   // Custom InputTypes
@@ -4692,6 +4896,13 @@ export namespace Prisma {
    */
   export type CurrencyCountOutputTypeCountExchangeRatesQuoteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ExchangeRateWhereInput
+  }
+
+  /**
+   * CurrencyCountOutputType without action
+   */
+  export type CurrencyCountOutputTypeCountProductsServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductServiceWhereInput
   }
 
 
@@ -21144,6 +21355,8 @@ export namespace Prisma {
     projects?: boolean | Organization$projectsArgs<ExtArgs>
     fundingSources?: boolean | Organization$fundingSourcesArgs<ExtArgs>
     masterDataChangeRequests?: boolean | Organization$masterDataChangeRequestsArgs<ExtArgs>
+    reasonCodes?: boolean | Organization$reasonCodesArgs<ExtArgs>
+    productsServices?: boolean | Organization$productsServicesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -21216,6 +21429,8 @@ export namespace Prisma {
     projects?: boolean | Organization$projectsArgs<ExtArgs>
     fundingSources?: boolean | Organization$fundingSourcesArgs<ExtArgs>
     masterDataChangeRequests?: boolean | Organization$masterDataChangeRequestsArgs<ExtArgs>
+    reasonCodes?: boolean | Organization$reasonCodesArgs<ExtArgs>
+    productsServices?: boolean | Organization$productsServicesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -21231,6 +21446,8 @@ export namespace Prisma {
       projects: Prisma.$ProjectPayload<ExtArgs>[]
       fundingSources: Prisma.$FundingSourcePayload<ExtArgs>[]
       masterDataChangeRequests: Prisma.$MasterDataChangeRequestPayload<ExtArgs>[]
+      reasonCodes: Prisma.$ReasonCodePayload<ExtArgs>[]
+      productsServices: Prisma.$ProductServicePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -21657,6 +21874,8 @@ export namespace Prisma {
     projects<T extends Organization$projectsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     fundingSources<T extends Organization$fundingSourcesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$fundingSourcesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     masterDataChangeRequests<T extends Organization$masterDataChangeRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$masterDataChangeRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reasonCodes<T extends Organization$reasonCodesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$reasonCodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    productsServices<T extends Organization$productsServicesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$productsServicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -22256,6 +22475,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MasterDataChangeRequestScalarFieldEnum | MasterDataChangeRequestScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.reasonCodes
+   */
+  export type Organization$reasonCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+    where?: ReasonCodeWhereInput
+    orderBy?: ReasonCodeOrderByWithRelationInput | ReasonCodeOrderByWithRelationInput[]
+    cursor?: ReasonCodeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReasonCodeScalarFieldEnum | ReasonCodeScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.productsServices
+   */
+  export type Organization$productsServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    where?: ProductServiceWhereInput
+    orderBy?: ProductServiceOrderByWithRelationInput | ProductServiceOrderByWithRelationInput[]
+    cursor?: ProductServiceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProductServiceScalarFieldEnum | ProductServiceScalarFieldEnum[]
   }
 
   /**
@@ -28401,6 +28668,7 @@ export namespace Prisma {
     updatedAt?: boolean
     exchangeRatesBase?: boolean | Currency$exchangeRatesBaseArgs<ExtArgs>
     exchangeRatesQuote?: boolean | Currency$exchangeRatesQuoteArgs<ExtArgs>
+    productsServices?: boolean | Currency$productsServicesArgs<ExtArgs>
     _count?: boolean | CurrencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["currency"]>
 
@@ -28447,6 +28715,7 @@ export namespace Prisma {
   export type CurrencyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     exchangeRatesBase?: boolean | Currency$exchangeRatesBaseArgs<ExtArgs>
     exchangeRatesQuote?: boolean | Currency$exchangeRatesQuoteArgs<ExtArgs>
+    productsServices?: boolean | Currency$productsServicesArgs<ExtArgs>
     _count?: boolean | CurrencyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CurrencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -28457,6 +28726,7 @@ export namespace Prisma {
     objects: {
       exchangeRatesBase: Prisma.$ExchangeRatePayload<ExtArgs>[]
       exchangeRatesQuote: Prisma.$ExchangeRatePayload<ExtArgs>[]
+      productsServices: Prisma.$ProductServicePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -28865,6 +29135,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     exchangeRatesBase<T extends Currency$exchangeRatesBaseArgs<ExtArgs> = {}>(args?: Subset<T, Currency$exchangeRatesBaseArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     exchangeRatesQuote<T extends Currency$exchangeRatesQuoteArgs<ExtArgs> = {}>(args?: Subset<T, Currency$exchangeRatesQuoteArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    productsServices<T extends Currency$productsServicesArgs<ExtArgs> = {}>(args?: Subset<T, Currency$productsServicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -29337,6 +29608,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ExchangeRateScalarFieldEnum | ExchangeRateScalarFieldEnum[]
+  }
+
+  /**
+   * Currency.productsServices
+   */
+  export type Currency$productsServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    where?: ProductServiceWhereInput
+    orderBy?: ProductServiceOrderByWithRelationInput | ProductServiceOrderByWithRelationInput[]
+    cursor?: ProductServiceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProductServiceScalarFieldEnum | ProductServiceScalarFieldEnum[]
   }
 
   /**
@@ -32892,6 +33187,2326 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: MasterDataVersionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReasonCode
+   */
+
+  export type AggregateReasonCode = {
+    _count: ReasonCodeCountAggregateOutputType | null
+    _min: ReasonCodeMinAggregateOutputType | null
+    _max: ReasonCodeMaxAggregateOutputType | null
+  }
+
+  export type ReasonCodeMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    category: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReasonCodeMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    category: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReasonCodeCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    code: number
+    name: number
+    description: number
+    category: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ReasonCodeMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReasonCodeMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReasonCodeCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ReasonCodeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReasonCode to aggregate.
+     */
+    where?: ReasonCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReasonCodes to fetch.
+     */
+    orderBy?: ReasonCodeOrderByWithRelationInput | ReasonCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReasonCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReasonCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReasonCodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReasonCodes
+    **/
+    _count?: true | ReasonCodeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReasonCodeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReasonCodeMaxAggregateInputType
+  }
+
+  export type GetReasonCodeAggregateType<T extends ReasonCodeAggregateArgs> = {
+        [P in keyof T & keyof AggregateReasonCode]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReasonCode[P]>
+      : GetScalarType<T[P], AggregateReasonCode[P]>
+  }
+
+
+
+
+  export type ReasonCodeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReasonCodeWhereInput
+    orderBy?: ReasonCodeOrderByWithAggregationInput | ReasonCodeOrderByWithAggregationInput[]
+    by: ReasonCodeScalarFieldEnum[] | ReasonCodeScalarFieldEnum
+    having?: ReasonCodeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReasonCodeCountAggregateInputType | true
+    _min?: ReasonCodeMinAggregateInputType
+    _max?: ReasonCodeMaxAggregateInputType
+  }
+
+  export type ReasonCodeGroupByOutputType = {
+    id: string
+    organizationId: string
+    code: string
+    name: string
+    description: string | null
+    category: string
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: ReasonCodeCountAggregateOutputType | null
+    _min: ReasonCodeMinAggregateOutputType | null
+    _max: ReasonCodeMaxAggregateOutputType | null
+  }
+
+  type GetReasonCodeGroupByPayload<T extends ReasonCodeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReasonCodeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReasonCodeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReasonCodeGroupByOutputType[P]>
+            : GetScalarType<T[P], ReasonCodeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReasonCodeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reasonCode"]>
+
+  export type ReasonCodeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reasonCode"]>
+
+  export type ReasonCodeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reasonCode"]>
+
+  export type ReasonCodeSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ReasonCodeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "code" | "name" | "description" | "category" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["reasonCode"]>
+  export type ReasonCodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type ReasonCodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type ReasonCodeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+
+  export type $ReasonCodePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReasonCode"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      code: string
+      name: string
+      description: string | null
+      category: string
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["reasonCode"]>
+    composites: {}
+  }
+
+  type ReasonCodeGetPayload<S extends boolean | null | undefined | ReasonCodeDefaultArgs> = $Result.GetResult<Prisma.$ReasonCodePayload, S>
+
+  type ReasonCodeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReasonCodeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReasonCodeCountAggregateInputType | true
+    }
+
+  export interface ReasonCodeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReasonCode'], meta: { name: 'ReasonCode' } }
+    /**
+     * Find zero or one ReasonCode that matches the filter.
+     * @param {ReasonCodeFindUniqueArgs} args - Arguments to find a ReasonCode
+     * @example
+     * // Get one ReasonCode
+     * const reasonCode = await prisma.reasonCode.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReasonCodeFindUniqueArgs>(args: SelectSubset<T, ReasonCodeFindUniqueArgs<ExtArgs>>): Prisma__ReasonCodeClient<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReasonCode that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReasonCodeFindUniqueOrThrowArgs} args - Arguments to find a ReasonCode
+     * @example
+     * // Get one ReasonCode
+     * const reasonCode = await prisma.reasonCode.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReasonCodeFindUniqueOrThrowArgs>(args: SelectSubset<T, ReasonCodeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReasonCodeClient<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReasonCode that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReasonCodeFindFirstArgs} args - Arguments to find a ReasonCode
+     * @example
+     * // Get one ReasonCode
+     * const reasonCode = await prisma.reasonCode.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReasonCodeFindFirstArgs>(args?: SelectSubset<T, ReasonCodeFindFirstArgs<ExtArgs>>): Prisma__ReasonCodeClient<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReasonCode that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReasonCodeFindFirstOrThrowArgs} args - Arguments to find a ReasonCode
+     * @example
+     * // Get one ReasonCode
+     * const reasonCode = await prisma.reasonCode.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReasonCodeFindFirstOrThrowArgs>(args?: SelectSubset<T, ReasonCodeFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReasonCodeClient<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReasonCodes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReasonCodeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReasonCodes
+     * const reasonCodes = await prisma.reasonCode.findMany()
+     * 
+     * // Get first 10 ReasonCodes
+     * const reasonCodes = await prisma.reasonCode.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reasonCodeWithIdOnly = await prisma.reasonCode.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReasonCodeFindManyArgs>(args?: SelectSubset<T, ReasonCodeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReasonCode.
+     * @param {ReasonCodeCreateArgs} args - Arguments to create a ReasonCode.
+     * @example
+     * // Create one ReasonCode
+     * const ReasonCode = await prisma.reasonCode.create({
+     *   data: {
+     *     // ... data to create a ReasonCode
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReasonCodeCreateArgs>(args: SelectSubset<T, ReasonCodeCreateArgs<ExtArgs>>): Prisma__ReasonCodeClient<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReasonCodes.
+     * @param {ReasonCodeCreateManyArgs} args - Arguments to create many ReasonCodes.
+     * @example
+     * // Create many ReasonCodes
+     * const reasonCode = await prisma.reasonCode.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReasonCodeCreateManyArgs>(args?: SelectSubset<T, ReasonCodeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReasonCodes and returns the data saved in the database.
+     * @param {ReasonCodeCreateManyAndReturnArgs} args - Arguments to create many ReasonCodes.
+     * @example
+     * // Create many ReasonCodes
+     * const reasonCode = await prisma.reasonCode.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReasonCodes and only return the `id`
+     * const reasonCodeWithIdOnly = await prisma.reasonCode.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReasonCodeCreateManyAndReturnArgs>(args?: SelectSubset<T, ReasonCodeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReasonCode.
+     * @param {ReasonCodeDeleteArgs} args - Arguments to delete one ReasonCode.
+     * @example
+     * // Delete one ReasonCode
+     * const ReasonCode = await prisma.reasonCode.delete({
+     *   where: {
+     *     // ... filter to delete one ReasonCode
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReasonCodeDeleteArgs>(args: SelectSubset<T, ReasonCodeDeleteArgs<ExtArgs>>): Prisma__ReasonCodeClient<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReasonCode.
+     * @param {ReasonCodeUpdateArgs} args - Arguments to update one ReasonCode.
+     * @example
+     * // Update one ReasonCode
+     * const reasonCode = await prisma.reasonCode.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReasonCodeUpdateArgs>(args: SelectSubset<T, ReasonCodeUpdateArgs<ExtArgs>>): Prisma__ReasonCodeClient<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReasonCodes.
+     * @param {ReasonCodeDeleteManyArgs} args - Arguments to filter ReasonCodes to delete.
+     * @example
+     * // Delete a few ReasonCodes
+     * const { count } = await prisma.reasonCode.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReasonCodeDeleteManyArgs>(args?: SelectSubset<T, ReasonCodeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReasonCodes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReasonCodeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReasonCodes
+     * const reasonCode = await prisma.reasonCode.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReasonCodeUpdateManyArgs>(args: SelectSubset<T, ReasonCodeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReasonCodes and returns the data updated in the database.
+     * @param {ReasonCodeUpdateManyAndReturnArgs} args - Arguments to update many ReasonCodes.
+     * @example
+     * // Update many ReasonCodes
+     * const reasonCode = await prisma.reasonCode.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReasonCodes and only return the `id`
+     * const reasonCodeWithIdOnly = await prisma.reasonCode.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReasonCodeUpdateManyAndReturnArgs>(args: SelectSubset<T, ReasonCodeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReasonCode.
+     * @param {ReasonCodeUpsertArgs} args - Arguments to update or create a ReasonCode.
+     * @example
+     * // Update or create a ReasonCode
+     * const reasonCode = await prisma.reasonCode.upsert({
+     *   create: {
+     *     // ... data to create a ReasonCode
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReasonCode we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReasonCodeUpsertArgs>(args: SelectSubset<T, ReasonCodeUpsertArgs<ExtArgs>>): Prisma__ReasonCodeClient<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReasonCodes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReasonCodeCountArgs} args - Arguments to filter ReasonCodes to count.
+     * @example
+     * // Count the number of ReasonCodes
+     * const count = await prisma.reasonCode.count({
+     *   where: {
+     *     // ... the filter for the ReasonCodes we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReasonCodeCountArgs>(
+      args?: Subset<T, ReasonCodeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReasonCodeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReasonCode.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReasonCodeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReasonCodeAggregateArgs>(args: Subset<T, ReasonCodeAggregateArgs>): Prisma.PrismaPromise<GetReasonCodeAggregateType<T>>
+
+    /**
+     * Group by ReasonCode.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReasonCodeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReasonCodeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReasonCodeGroupByArgs['orderBy'] }
+        : { orderBy?: ReasonCodeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReasonCodeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReasonCodeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReasonCode model
+   */
+  readonly fields: ReasonCodeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReasonCode.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReasonCodeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReasonCode model
+   */
+  interface ReasonCodeFieldRefs {
+    readonly id: FieldRef<"ReasonCode", 'String'>
+    readonly organizationId: FieldRef<"ReasonCode", 'String'>
+    readonly code: FieldRef<"ReasonCode", 'String'>
+    readonly name: FieldRef<"ReasonCode", 'String'>
+    readonly description: FieldRef<"ReasonCode", 'String'>
+    readonly category: FieldRef<"ReasonCode", 'String'>
+    readonly isActive: FieldRef<"ReasonCode", 'Boolean'>
+    readonly createdAt: FieldRef<"ReasonCode", 'DateTime'>
+    readonly updatedAt: FieldRef<"ReasonCode", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReasonCode findUnique
+   */
+  export type ReasonCodeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which ReasonCode to fetch.
+     */
+    where: ReasonCodeWhereUniqueInput
+  }
+
+  /**
+   * ReasonCode findUniqueOrThrow
+   */
+  export type ReasonCodeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which ReasonCode to fetch.
+     */
+    where: ReasonCodeWhereUniqueInput
+  }
+
+  /**
+   * ReasonCode findFirst
+   */
+  export type ReasonCodeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which ReasonCode to fetch.
+     */
+    where?: ReasonCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReasonCodes to fetch.
+     */
+    orderBy?: ReasonCodeOrderByWithRelationInput | ReasonCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReasonCodes.
+     */
+    cursor?: ReasonCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReasonCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReasonCodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReasonCodes.
+     */
+    distinct?: ReasonCodeScalarFieldEnum | ReasonCodeScalarFieldEnum[]
+  }
+
+  /**
+   * ReasonCode findFirstOrThrow
+   */
+  export type ReasonCodeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which ReasonCode to fetch.
+     */
+    where?: ReasonCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReasonCodes to fetch.
+     */
+    orderBy?: ReasonCodeOrderByWithRelationInput | ReasonCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReasonCodes.
+     */
+    cursor?: ReasonCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReasonCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReasonCodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReasonCodes.
+     */
+    distinct?: ReasonCodeScalarFieldEnum | ReasonCodeScalarFieldEnum[]
+  }
+
+  /**
+   * ReasonCode findMany
+   */
+  export type ReasonCodeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which ReasonCodes to fetch.
+     */
+    where?: ReasonCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReasonCodes to fetch.
+     */
+    orderBy?: ReasonCodeOrderByWithRelationInput | ReasonCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReasonCodes.
+     */
+    cursor?: ReasonCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReasonCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReasonCodes.
+     */
+    skip?: number
+    distinct?: ReasonCodeScalarFieldEnum | ReasonCodeScalarFieldEnum[]
+  }
+
+  /**
+   * ReasonCode create
+   */
+  export type ReasonCodeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ReasonCode.
+     */
+    data: XOR<ReasonCodeCreateInput, ReasonCodeUncheckedCreateInput>
+  }
+
+  /**
+   * ReasonCode createMany
+   */
+  export type ReasonCodeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReasonCodes.
+     */
+    data: ReasonCodeCreateManyInput | ReasonCodeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReasonCode createManyAndReturn
+   */
+  export type ReasonCodeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReasonCodes.
+     */
+    data: ReasonCodeCreateManyInput | ReasonCodeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReasonCode update
+   */
+  export type ReasonCodeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ReasonCode.
+     */
+    data: XOR<ReasonCodeUpdateInput, ReasonCodeUncheckedUpdateInput>
+    /**
+     * Choose, which ReasonCode to update.
+     */
+    where: ReasonCodeWhereUniqueInput
+  }
+
+  /**
+   * ReasonCode updateMany
+   */
+  export type ReasonCodeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReasonCodes.
+     */
+    data: XOR<ReasonCodeUpdateManyMutationInput, ReasonCodeUncheckedUpdateManyInput>
+    /**
+     * Filter which ReasonCodes to update
+     */
+    where?: ReasonCodeWhereInput
+    /**
+     * Limit how many ReasonCodes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReasonCode updateManyAndReturn
+   */
+  export type ReasonCodeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * The data used to update ReasonCodes.
+     */
+    data: XOR<ReasonCodeUpdateManyMutationInput, ReasonCodeUncheckedUpdateManyInput>
+    /**
+     * Filter which ReasonCodes to update
+     */
+    where?: ReasonCodeWhereInput
+    /**
+     * Limit how many ReasonCodes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReasonCode upsert
+   */
+  export type ReasonCodeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ReasonCode to update in case it exists.
+     */
+    where: ReasonCodeWhereUniqueInput
+    /**
+     * In case the ReasonCode found by the `where` argument doesn't exist, create a new ReasonCode with this data.
+     */
+    create: XOR<ReasonCodeCreateInput, ReasonCodeUncheckedCreateInput>
+    /**
+     * In case the ReasonCode was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReasonCodeUpdateInput, ReasonCodeUncheckedUpdateInput>
+  }
+
+  /**
+   * ReasonCode delete
+   */
+  export type ReasonCodeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter which ReasonCode to delete.
+     */
+    where: ReasonCodeWhereUniqueInput
+  }
+
+  /**
+   * ReasonCode deleteMany
+   */
+  export type ReasonCodeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReasonCodes to delete
+     */
+    where?: ReasonCodeWhereInput
+    /**
+     * Limit how many ReasonCodes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReasonCode without action
+   */
+  export type ReasonCodeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReasonCode
+     */
+    select?: ReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReasonCode
+     */
+    omit?: ReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReasonCodeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProductService
+   */
+
+  export type AggregateProductService = {
+    _count: ProductServiceCountAggregateOutputType | null
+    _avg: ProductServiceAvgAggregateOutputType | null
+    _sum: ProductServiceSumAggregateOutputType | null
+    _min: ProductServiceMinAggregateOutputType | null
+    _max: ProductServiceMaxAggregateOutputType | null
+  }
+
+  export type ProductServiceAvgAggregateOutputType = {
+    unitPrice: Decimal | null
+  }
+
+  export type ProductServiceSumAggregateOutputType = {
+    unitPrice: Decimal | null
+  }
+
+  export type ProductServiceMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    type: string | null
+    unit: string | null
+    unitPrice: Decimal | null
+    currencyCode: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProductServiceMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    type: string | null
+    unit: string | null
+    unitPrice: Decimal | null
+    currencyCode: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ProductServiceCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    code: number
+    name: number
+    description: number
+    type: number
+    unit: number
+    unitPrice: number
+    currencyCode: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ProductServiceAvgAggregateInputType = {
+    unitPrice?: true
+  }
+
+  export type ProductServiceSumAggregateInputType = {
+    unitPrice?: true
+  }
+
+  export type ProductServiceMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    type?: true
+    unit?: true
+    unitPrice?: true
+    currencyCode?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProductServiceMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    type?: true
+    unit?: true
+    unitPrice?: true
+    currencyCode?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ProductServiceCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    type?: true
+    unit?: true
+    unitPrice?: true
+    currencyCode?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ProductServiceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductService to aggregate.
+     */
+    where?: ProductServiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductServices to fetch.
+     */
+    orderBy?: ProductServiceOrderByWithRelationInput | ProductServiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProductServiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductServices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductServices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProductServices
+    **/
+    _count?: true | ProductServiceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ProductServiceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ProductServiceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProductServiceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProductServiceMaxAggregateInputType
+  }
+
+  export type GetProductServiceAggregateType<T extends ProductServiceAggregateArgs> = {
+        [P in keyof T & keyof AggregateProductService]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProductService[P]>
+      : GetScalarType<T[P], AggregateProductService[P]>
+  }
+
+
+
+
+  export type ProductServiceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductServiceWhereInput
+    orderBy?: ProductServiceOrderByWithAggregationInput | ProductServiceOrderByWithAggregationInput[]
+    by: ProductServiceScalarFieldEnum[] | ProductServiceScalarFieldEnum
+    having?: ProductServiceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProductServiceCountAggregateInputType | true
+    _avg?: ProductServiceAvgAggregateInputType
+    _sum?: ProductServiceSumAggregateInputType
+    _min?: ProductServiceMinAggregateInputType
+    _max?: ProductServiceMaxAggregateInputType
+  }
+
+  export type ProductServiceGroupByOutputType = {
+    id: string
+    organizationId: string
+    code: string
+    name: string
+    description: string | null
+    type: string
+    unit: string | null
+    unitPrice: Decimal | null
+    currencyCode: string | null
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: ProductServiceCountAggregateOutputType | null
+    _avg: ProductServiceAvgAggregateOutputType | null
+    _sum: ProductServiceSumAggregateOutputType | null
+    _min: ProductServiceMinAggregateOutputType | null
+    _max: ProductServiceMaxAggregateOutputType | null
+  }
+
+  type GetProductServiceGroupByPayload<T extends ProductServiceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProductServiceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProductServiceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProductServiceGroupByOutputType[P]>
+            : GetScalarType<T[P], ProductServiceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProductServiceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    type?: boolean
+    unit?: boolean
+    unitPrice?: boolean
+    currencyCode?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | ProductService$currencyArgs<ExtArgs>
+  }, ExtArgs["result"]["productService"]>
+
+  export type ProductServiceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    type?: boolean
+    unit?: boolean
+    unitPrice?: boolean
+    currencyCode?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | ProductService$currencyArgs<ExtArgs>
+  }, ExtArgs["result"]["productService"]>
+
+  export type ProductServiceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    type?: boolean
+    unit?: boolean
+    unitPrice?: boolean
+    currencyCode?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | ProductService$currencyArgs<ExtArgs>
+  }, ExtArgs["result"]["productService"]>
+
+  export type ProductServiceSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    type?: boolean
+    unit?: boolean
+    unitPrice?: boolean
+    currencyCode?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ProductServiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "code" | "name" | "description" | "type" | "unit" | "unitPrice" | "currencyCode" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["productService"]>
+  export type ProductServiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | ProductService$currencyArgs<ExtArgs>
+  }
+  export type ProductServiceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | ProductService$currencyArgs<ExtArgs>
+  }
+  export type ProductServiceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | ProductService$currencyArgs<ExtArgs>
+  }
+
+  export type $ProductServicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProductService"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      currency: Prisma.$CurrencyPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      code: string
+      name: string
+      description: string | null
+      type: string
+      unit: string | null
+      unitPrice: Prisma.Decimal | null
+      currencyCode: string | null
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["productService"]>
+    composites: {}
+  }
+
+  type ProductServiceGetPayload<S extends boolean | null | undefined | ProductServiceDefaultArgs> = $Result.GetResult<Prisma.$ProductServicePayload, S>
+
+  type ProductServiceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProductServiceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProductServiceCountAggregateInputType | true
+    }
+
+  export interface ProductServiceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProductService'], meta: { name: 'ProductService' } }
+    /**
+     * Find zero or one ProductService that matches the filter.
+     * @param {ProductServiceFindUniqueArgs} args - Arguments to find a ProductService
+     * @example
+     * // Get one ProductService
+     * const productService = await prisma.productService.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProductServiceFindUniqueArgs>(args: SelectSubset<T, ProductServiceFindUniqueArgs<ExtArgs>>): Prisma__ProductServiceClient<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProductService that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProductServiceFindUniqueOrThrowArgs} args - Arguments to find a ProductService
+     * @example
+     * // Get one ProductService
+     * const productService = await prisma.productService.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProductServiceFindUniqueOrThrowArgs>(args: SelectSubset<T, ProductServiceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProductServiceClient<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductService that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductServiceFindFirstArgs} args - Arguments to find a ProductService
+     * @example
+     * // Get one ProductService
+     * const productService = await prisma.productService.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProductServiceFindFirstArgs>(args?: SelectSubset<T, ProductServiceFindFirstArgs<ExtArgs>>): Prisma__ProductServiceClient<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductService that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductServiceFindFirstOrThrowArgs} args - Arguments to find a ProductService
+     * @example
+     * // Get one ProductService
+     * const productService = await prisma.productService.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProductServiceFindFirstOrThrowArgs>(args?: SelectSubset<T, ProductServiceFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProductServiceClient<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProductServices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductServiceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProductServices
+     * const productServices = await prisma.productService.findMany()
+     * 
+     * // Get first 10 ProductServices
+     * const productServices = await prisma.productService.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const productServiceWithIdOnly = await prisma.productService.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ProductServiceFindManyArgs>(args?: SelectSubset<T, ProductServiceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProductService.
+     * @param {ProductServiceCreateArgs} args - Arguments to create a ProductService.
+     * @example
+     * // Create one ProductService
+     * const ProductService = await prisma.productService.create({
+     *   data: {
+     *     // ... data to create a ProductService
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProductServiceCreateArgs>(args: SelectSubset<T, ProductServiceCreateArgs<ExtArgs>>): Prisma__ProductServiceClient<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProductServices.
+     * @param {ProductServiceCreateManyArgs} args - Arguments to create many ProductServices.
+     * @example
+     * // Create many ProductServices
+     * const productService = await prisma.productService.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProductServiceCreateManyArgs>(args?: SelectSubset<T, ProductServiceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProductServices and returns the data saved in the database.
+     * @param {ProductServiceCreateManyAndReturnArgs} args - Arguments to create many ProductServices.
+     * @example
+     * // Create many ProductServices
+     * const productService = await prisma.productService.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProductServices and only return the `id`
+     * const productServiceWithIdOnly = await prisma.productService.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProductServiceCreateManyAndReturnArgs>(args?: SelectSubset<T, ProductServiceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProductService.
+     * @param {ProductServiceDeleteArgs} args - Arguments to delete one ProductService.
+     * @example
+     * // Delete one ProductService
+     * const ProductService = await prisma.productService.delete({
+     *   where: {
+     *     // ... filter to delete one ProductService
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProductServiceDeleteArgs>(args: SelectSubset<T, ProductServiceDeleteArgs<ExtArgs>>): Prisma__ProductServiceClient<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProductService.
+     * @param {ProductServiceUpdateArgs} args - Arguments to update one ProductService.
+     * @example
+     * // Update one ProductService
+     * const productService = await prisma.productService.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProductServiceUpdateArgs>(args: SelectSubset<T, ProductServiceUpdateArgs<ExtArgs>>): Prisma__ProductServiceClient<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProductServices.
+     * @param {ProductServiceDeleteManyArgs} args - Arguments to filter ProductServices to delete.
+     * @example
+     * // Delete a few ProductServices
+     * const { count } = await prisma.productService.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProductServiceDeleteManyArgs>(args?: SelectSubset<T, ProductServiceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProductServices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductServiceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProductServices
+     * const productService = await prisma.productService.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProductServiceUpdateManyArgs>(args: SelectSubset<T, ProductServiceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProductServices and returns the data updated in the database.
+     * @param {ProductServiceUpdateManyAndReturnArgs} args - Arguments to update many ProductServices.
+     * @example
+     * // Update many ProductServices
+     * const productService = await prisma.productService.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProductServices and only return the `id`
+     * const productServiceWithIdOnly = await prisma.productService.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProductServiceUpdateManyAndReturnArgs>(args: SelectSubset<T, ProductServiceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProductService.
+     * @param {ProductServiceUpsertArgs} args - Arguments to update or create a ProductService.
+     * @example
+     * // Update or create a ProductService
+     * const productService = await prisma.productService.upsert({
+     *   create: {
+     *     // ... data to create a ProductService
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProductService we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProductServiceUpsertArgs>(args: SelectSubset<T, ProductServiceUpsertArgs<ExtArgs>>): Prisma__ProductServiceClient<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProductServices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductServiceCountArgs} args - Arguments to filter ProductServices to count.
+     * @example
+     * // Count the number of ProductServices
+     * const count = await prisma.productService.count({
+     *   where: {
+     *     // ... the filter for the ProductServices we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProductServiceCountArgs>(
+      args?: Subset<T, ProductServiceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProductServiceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProductService.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductServiceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProductServiceAggregateArgs>(args: Subset<T, ProductServiceAggregateArgs>): Prisma.PrismaPromise<GetProductServiceAggregateType<T>>
+
+    /**
+     * Group by ProductService.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductServiceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProductServiceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProductServiceGroupByArgs['orderBy'] }
+        : { orderBy?: ProductServiceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProductServiceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProductServiceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProductService model
+   */
+  readonly fields: ProductServiceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProductService.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProductServiceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    currency<T extends ProductService$currencyArgs<ExtArgs> = {}>(args?: Subset<T, ProductService$currencyArgs<ExtArgs>>): Prisma__CurrencyClient<$Result.GetResult<Prisma.$CurrencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProductService model
+   */
+  interface ProductServiceFieldRefs {
+    readonly id: FieldRef<"ProductService", 'String'>
+    readonly organizationId: FieldRef<"ProductService", 'String'>
+    readonly code: FieldRef<"ProductService", 'String'>
+    readonly name: FieldRef<"ProductService", 'String'>
+    readonly description: FieldRef<"ProductService", 'String'>
+    readonly type: FieldRef<"ProductService", 'String'>
+    readonly unit: FieldRef<"ProductService", 'String'>
+    readonly unitPrice: FieldRef<"ProductService", 'Decimal'>
+    readonly currencyCode: FieldRef<"ProductService", 'String'>
+    readonly isActive: FieldRef<"ProductService", 'Boolean'>
+    readonly createdAt: FieldRef<"ProductService", 'DateTime'>
+    readonly updatedAt: FieldRef<"ProductService", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProductService findUnique
+   */
+  export type ProductServiceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductService to fetch.
+     */
+    where: ProductServiceWhereUniqueInput
+  }
+
+  /**
+   * ProductService findUniqueOrThrow
+   */
+  export type ProductServiceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductService to fetch.
+     */
+    where: ProductServiceWhereUniqueInput
+  }
+
+  /**
+   * ProductService findFirst
+   */
+  export type ProductServiceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductService to fetch.
+     */
+    where?: ProductServiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductServices to fetch.
+     */
+    orderBy?: ProductServiceOrderByWithRelationInput | ProductServiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductServices.
+     */
+    cursor?: ProductServiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductServices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductServices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductServices.
+     */
+    distinct?: ProductServiceScalarFieldEnum | ProductServiceScalarFieldEnum[]
+  }
+
+  /**
+   * ProductService findFirstOrThrow
+   */
+  export type ProductServiceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductService to fetch.
+     */
+    where?: ProductServiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductServices to fetch.
+     */
+    orderBy?: ProductServiceOrderByWithRelationInput | ProductServiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductServices.
+     */
+    cursor?: ProductServiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductServices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductServices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductServices.
+     */
+    distinct?: ProductServiceScalarFieldEnum | ProductServiceScalarFieldEnum[]
+  }
+
+  /**
+   * ProductService findMany
+   */
+  export type ProductServiceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductServices to fetch.
+     */
+    where?: ProductServiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductServices to fetch.
+     */
+    orderBy?: ProductServiceOrderByWithRelationInput | ProductServiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProductServices.
+     */
+    cursor?: ProductServiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductServices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductServices.
+     */
+    skip?: number
+    distinct?: ProductServiceScalarFieldEnum | ProductServiceScalarFieldEnum[]
+  }
+
+  /**
+   * ProductService create
+   */
+  export type ProductServiceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProductService.
+     */
+    data: XOR<ProductServiceCreateInput, ProductServiceUncheckedCreateInput>
+  }
+
+  /**
+   * ProductService createMany
+   */
+  export type ProductServiceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProductServices.
+     */
+    data: ProductServiceCreateManyInput | ProductServiceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProductService createManyAndReturn
+   */
+  export type ProductServiceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProductServices.
+     */
+    data: ProductServiceCreateManyInput | ProductServiceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProductService update
+   */
+  export type ProductServiceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProductService.
+     */
+    data: XOR<ProductServiceUpdateInput, ProductServiceUncheckedUpdateInput>
+    /**
+     * Choose, which ProductService to update.
+     */
+    where: ProductServiceWhereUniqueInput
+  }
+
+  /**
+   * ProductService updateMany
+   */
+  export type ProductServiceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProductServices.
+     */
+    data: XOR<ProductServiceUpdateManyMutationInput, ProductServiceUncheckedUpdateManyInput>
+    /**
+     * Filter which ProductServices to update
+     */
+    where?: ProductServiceWhereInput
+    /**
+     * Limit how many ProductServices to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductService updateManyAndReturn
+   */
+  export type ProductServiceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * The data used to update ProductServices.
+     */
+    data: XOR<ProductServiceUpdateManyMutationInput, ProductServiceUncheckedUpdateManyInput>
+    /**
+     * Filter which ProductServices to update
+     */
+    where?: ProductServiceWhereInput
+    /**
+     * Limit how many ProductServices to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProductService upsert
+   */
+  export type ProductServiceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProductService to update in case it exists.
+     */
+    where: ProductServiceWhereUniqueInput
+    /**
+     * In case the ProductService found by the `where` argument doesn't exist, create a new ProductService with this data.
+     */
+    create: XOR<ProductServiceCreateInput, ProductServiceUncheckedCreateInput>
+    /**
+     * In case the ProductService was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProductServiceUpdateInput, ProductServiceUncheckedUpdateInput>
+  }
+
+  /**
+   * ProductService delete
+   */
+  export type ProductServiceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
+    /**
+     * Filter which ProductService to delete.
+     */
+    where: ProductServiceWhereUniqueInput
+  }
+
+  /**
+   * ProductService deleteMany
+   */
+  export type ProductServiceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductServices to delete
+     */
+    where?: ProductServiceWhereInput
+    /**
+     * Limit how many ProductServices to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductService.currency
+   */
+  export type ProductService$currencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Currency
+     */
+    select?: CurrencySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Currency
+     */
+    omit?: CurrencyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CurrencyInclude<ExtArgs> | null
+    where?: CurrencyWhereInput
+  }
+
+  /**
+   * ProductService without action
+   */
+  export type ProductServiceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductService
+     */
+    select?: ProductServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductService
+     */
+    omit?: ProductServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductServiceInclude<ExtArgs> | null
   }
 
 
@@ -42571,6 +45186,39 @@ export namespace Prisma {
   export type MasterDataVersionScalarFieldEnum = (typeof MasterDataVersionScalarFieldEnum)[keyof typeof MasterDataVersionScalarFieldEnum]
 
 
+  export const ReasonCodeScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    code: 'code',
+    name: 'name',
+    description: 'description',
+    category: 'category',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ReasonCodeScalarFieldEnum = (typeof ReasonCodeScalarFieldEnum)[keyof typeof ReasonCodeScalarFieldEnum]
+
+
+  export const ProductServiceScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    code: 'code',
+    name: 'name',
+    description: 'description',
+    type: 'type',
+    unit: 'unit',
+    unitPrice: 'unitPrice',
+    currencyCode: 'currencyCode',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ProductServiceScalarFieldEnum = (typeof ProductServiceScalarFieldEnum)[keyof typeof ProductServiceScalarFieldEnum]
+
+
   export const OrganizationMembershipScalarFieldEnum: {
     organizationId: 'organizationId',
     userId: 'userId',
@@ -44694,6 +47342,8 @@ export namespace Prisma {
     projects?: ProjectListRelationFilter
     fundingSources?: FundingSourceListRelationFilter
     masterDataChangeRequests?: MasterDataChangeRequestListRelationFilter
+    reasonCodes?: ReasonCodeListRelationFilter
+    productsServices?: ProductServiceListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -44721,6 +47371,8 @@ export namespace Prisma {
     projects?: ProjectOrderByRelationAggregateInput
     fundingSources?: FundingSourceOrderByRelationAggregateInput
     masterDataChangeRequests?: MasterDataChangeRequestOrderByRelationAggregateInput
+    reasonCodes?: ReasonCodeOrderByRelationAggregateInput
+    productsServices?: ProductServiceOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -44751,6 +47403,8 @@ export namespace Prisma {
     projects?: ProjectListRelationFilter
     fundingSources?: FundingSourceListRelationFilter
     masterDataChangeRequests?: MasterDataChangeRequestListRelationFilter
+    reasonCodes?: ReasonCodeListRelationFilter
+    productsServices?: ProductServiceListRelationFilter
   }, "id" | "code">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -45266,6 +47920,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Currency"> | Date | string
     exchangeRatesBase?: ExchangeRateListRelationFilter
     exchangeRatesQuote?: ExchangeRateListRelationFilter
+    productsServices?: ProductServiceListRelationFilter
   }
 
   export type CurrencyOrderByWithRelationInput = {
@@ -45281,6 +47936,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     exchangeRatesBase?: ExchangeRateOrderByRelationAggregateInput
     exchangeRatesQuote?: ExchangeRateOrderByRelationAggregateInput
+    productsServices?: ProductServiceOrderByRelationAggregateInput
   }
 
   export type CurrencyWhereUniqueInput = Prisma.AtLeast<{
@@ -45299,6 +47955,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Currency"> | Date | string
     exchangeRatesBase?: ExchangeRateListRelationFilter
     exchangeRatesQuote?: ExchangeRateListRelationFilter
+    productsServices?: ProductServiceListRelationFilter
   }, "id" | "code">
 
   export type CurrencyOrderByWithAggregationInput = {
@@ -45606,6 +48263,178 @@ export namespace Prisma {
     effectiveFrom?: DateTimeWithAggregatesFilter<"MasterDataVersion"> | Date | string
     effectiveTo?: DateTimeNullableWithAggregatesFilter<"MasterDataVersion"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"MasterDataVersion"> | Date | string
+  }
+
+  export type ReasonCodeWhereInput = {
+    AND?: ReasonCodeWhereInput | ReasonCodeWhereInput[]
+    OR?: ReasonCodeWhereInput[]
+    NOT?: ReasonCodeWhereInput | ReasonCodeWhereInput[]
+    id?: StringFilter<"ReasonCode"> | string
+    organizationId?: StringFilter<"ReasonCode"> | string
+    code?: StringFilter<"ReasonCode"> | string
+    name?: StringFilter<"ReasonCode"> | string
+    description?: StringNullableFilter<"ReasonCode"> | string | null
+    category?: StringFilter<"ReasonCode"> | string
+    isActive?: BoolFilter<"ReasonCode"> | boolean
+    createdAt?: DateTimeFilter<"ReasonCode"> | Date | string
+    updatedAt?: DateTimeFilter<"ReasonCode"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }
+
+  export type ReasonCodeOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+  }
+
+  export type ReasonCodeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_code?: ReasonCodeOrganizationIdCodeCompoundUniqueInput
+    AND?: ReasonCodeWhereInput | ReasonCodeWhereInput[]
+    OR?: ReasonCodeWhereInput[]
+    NOT?: ReasonCodeWhereInput | ReasonCodeWhereInput[]
+    organizationId?: StringFilter<"ReasonCode"> | string
+    code?: StringFilter<"ReasonCode"> | string
+    name?: StringFilter<"ReasonCode"> | string
+    description?: StringNullableFilter<"ReasonCode"> | string | null
+    category?: StringFilter<"ReasonCode"> | string
+    isActive?: BoolFilter<"ReasonCode"> | boolean
+    createdAt?: DateTimeFilter<"ReasonCode"> | Date | string
+    updatedAt?: DateTimeFilter<"ReasonCode"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }, "id" | "organizationId_code">
+
+  export type ReasonCodeOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ReasonCodeCountOrderByAggregateInput
+    _max?: ReasonCodeMaxOrderByAggregateInput
+    _min?: ReasonCodeMinOrderByAggregateInput
+  }
+
+  export type ReasonCodeScalarWhereWithAggregatesInput = {
+    AND?: ReasonCodeScalarWhereWithAggregatesInput | ReasonCodeScalarWhereWithAggregatesInput[]
+    OR?: ReasonCodeScalarWhereWithAggregatesInput[]
+    NOT?: ReasonCodeScalarWhereWithAggregatesInput | ReasonCodeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReasonCode"> | string
+    organizationId?: StringWithAggregatesFilter<"ReasonCode"> | string
+    code?: StringWithAggregatesFilter<"ReasonCode"> | string
+    name?: StringWithAggregatesFilter<"ReasonCode"> | string
+    description?: StringNullableWithAggregatesFilter<"ReasonCode"> | string | null
+    category?: StringWithAggregatesFilter<"ReasonCode"> | string
+    isActive?: BoolWithAggregatesFilter<"ReasonCode"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ReasonCode"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ReasonCode"> | Date | string
+  }
+
+  export type ProductServiceWhereInput = {
+    AND?: ProductServiceWhereInput | ProductServiceWhereInput[]
+    OR?: ProductServiceWhereInput[]
+    NOT?: ProductServiceWhereInput | ProductServiceWhereInput[]
+    id?: StringFilter<"ProductService"> | string
+    organizationId?: StringFilter<"ProductService"> | string
+    code?: StringFilter<"ProductService"> | string
+    name?: StringFilter<"ProductService"> | string
+    description?: StringNullableFilter<"ProductService"> | string | null
+    type?: StringFilter<"ProductService"> | string
+    unit?: StringNullableFilter<"ProductService"> | string | null
+    unitPrice?: DecimalNullableFilter<"ProductService"> | Decimal | DecimalJsLike | number | string | null
+    currencyCode?: StringNullableFilter<"ProductService"> | string | null
+    isActive?: BoolFilter<"ProductService"> | boolean
+    createdAt?: DateTimeFilter<"ProductService"> | Date | string
+    updatedAt?: DateTimeFilter<"ProductService"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    currency?: XOR<CurrencyNullableScalarRelationFilter, CurrencyWhereInput> | null
+  }
+
+  export type ProductServiceOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    type?: SortOrder
+    unit?: SortOrderInput | SortOrder
+    unitPrice?: SortOrderInput | SortOrder
+    currencyCode?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    currency?: CurrencyOrderByWithRelationInput
+  }
+
+  export type ProductServiceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_code?: ProductServiceOrganizationIdCodeCompoundUniqueInput
+    AND?: ProductServiceWhereInput | ProductServiceWhereInput[]
+    OR?: ProductServiceWhereInput[]
+    NOT?: ProductServiceWhereInput | ProductServiceWhereInput[]
+    organizationId?: StringFilter<"ProductService"> | string
+    code?: StringFilter<"ProductService"> | string
+    name?: StringFilter<"ProductService"> | string
+    description?: StringNullableFilter<"ProductService"> | string | null
+    type?: StringFilter<"ProductService"> | string
+    unit?: StringNullableFilter<"ProductService"> | string | null
+    unitPrice?: DecimalNullableFilter<"ProductService"> | Decimal | DecimalJsLike | number | string | null
+    currencyCode?: StringNullableFilter<"ProductService"> | string | null
+    isActive?: BoolFilter<"ProductService"> | boolean
+    createdAt?: DateTimeFilter<"ProductService"> | Date | string
+    updatedAt?: DateTimeFilter<"ProductService"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    currency?: XOR<CurrencyNullableScalarRelationFilter, CurrencyWhereInput> | null
+  }, "id" | "organizationId_code">
+
+  export type ProductServiceOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    type?: SortOrder
+    unit?: SortOrderInput | SortOrder
+    unitPrice?: SortOrderInput | SortOrder
+    currencyCode?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ProductServiceCountOrderByAggregateInput
+    _avg?: ProductServiceAvgOrderByAggregateInput
+    _max?: ProductServiceMaxOrderByAggregateInput
+    _min?: ProductServiceMinOrderByAggregateInput
+    _sum?: ProductServiceSumOrderByAggregateInput
+  }
+
+  export type ProductServiceScalarWhereWithAggregatesInput = {
+    AND?: ProductServiceScalarWhereWithAggregatesInput | ProductServiceScalarWhereWithAggregatesInput[]
+    OR?: ProductServiceScalarWhereWithAggregatesInput[]
+    NOT?: ProductServiceScalarWhereWithAggregatesInput | ProductServiceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ProductService"> | string
+    organizationId?: StringWithAggregatesFilter<"ProductService"> | string
+    code?: StringWithAggregatesFilter<"ProductService"> | string
+    name?: StringWithAggregatesFilter<"ProductService"> | string
+    description?: StringNullableWithAggregatesFilter<"ProductService"> | string | null
+    type?: StringWithAggregatesFilter<"ProductService"> | string
+    unit?: StringNullableWithAggregatesFilter<"ProductService"> | string | null
+    unitPrice?: DecimalNullableWithAggregatesFilter<"ProductService"> | Decimal | DecimalJsLike | number | string | null
+    currencyCode?: StringNullableWithAggregatesFilter<"ProductService"> | string | null
+    isActive?: BoolWithAggregatesFilter<"ProductService"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ProductService"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ProductService"> | Date | string
   }
 
   export type OrganizationMembershipWhereInput = {
@@ -47908,6 +50737,8 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -47935,6 +50766,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -47962,6 +50795,8 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -47989,6 +50824,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -48559,6 +51396,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     exchangeRatesBase?: ExchangeRateCreateNestedManyWithoutBaseCurrencyInput
     exchangeRatesQuote?: ExchangeRateCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateInput = {
@@ -48574,6 +51412,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     exchangeRatesBase?: ExchangeRateUncheckedCreateNestedManyWithoutBaseCurrencyInput
     exchangeRatesQuote?: ExchangeRateUncheckedCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUpdateInput = {
@@ -48589,6 +51428,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     exchangeRatesBase?: ExchangeRateUpdateManyWithoutBaseCurrencyNestedInput
     exchangeRatesQuote?: ExchangeRateUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateInput = {
@@ -48604,6 +51444,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     exchangeRatesBase?: ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput
     exchangeRatesQuote?: ExchangeRateUncheckedUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyCreateManyInput = {
@@ -48935,6 +51776,192 @@ export namespace Prisma {
     effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
     effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReasonCodeCreateInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    category: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutReasonCodesInput
+  }
+
+  export type ReasonCodeUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    category: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReasonCodeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutReasonCodesNestedInput
+  }
+
+  export type ReasonCodeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReasonCodeCreateManyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    category: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReasonCodeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReasonCodeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductServiceCreateInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    unit?: string | null
+    unitPrice?: Decimal | DecimalJsLike | number | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutProductsServicesInput
+    currency?: CurrencyCreateNestedOneWithoutProductsServicesInput
+  }
+
+  export type ProductServiceUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    unit?: string | null
+    unitPrice?: Decimal | DecimalJsLike | number | string | null
+    currencyCode?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProductServiceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    unitPrice?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutProductsServicesNestedInput
+    currency?: CurrencyUpdateOneWithoutProductsServicesNestedInput
+  }
+
+  export type ProductServiceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    unitPrice?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductServiceCreateManyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    unit?: string | null
+    unitPrice?: Decimal | DecimalJsLike | number | string | null
+    currencyCode?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProductServiceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    unitPrice?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductServiceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    unitPrice?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrganizationMembershipCreateInput = {
@@ -51149,6 +54176,18 @@ export namespace Prisma {
     none?: FundingSourceWhereInput
   }
 
+  export type ReasonCodeListRelationFilter = {
+    every?: ReasonCodeWhereInput
+    some?: ReasonCodeWhereInput
+    none?: ReasonCodeWhereInput
+  }
+
+  export type ProductServiceListRelationFilter = {
+    every?: ProductServiceWhereInput
+    some?: ProductServiceWhereInput
+    none?: ProductServiceWhereInput
+  }
+
   export type LocationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -51166,6 +54205,14 @@ export namespace Prisma {
   }
 
   export type FundingSourceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReasonCodeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProductServiceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -51905,6 +54952,110 @@ export namespace Prisma {
 
   export type MasterDataVersionSumOrderByAggregateInput = {
     versionNumber?: SortOrder
+  }
+
+  export type ReasonCodeOrganizationIdCodeCompoundUniqueInput = {
+    organizationId: string
+    code: string
+  }
+
+  export type ReasonCodeCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReasonCodeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReasonCodeMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CurrencyNullableScalarRelationFilter = {
+    is?: CurrencyWhereInput | null
+    isNot?: CurrencyWhereInput | null
+  }
+
+  export type ProductServiceOrganizationIdCodeCompoundUniqueInput = {
+    organizationId: string
+    code: string
+  }
+
+  export type ProductServiceCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    unit?: SortOrder
+    unitPrice?: SortOrder
+    currencyCode?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductServiceAvgOrderByAggregateInput = {
+    unitPrice?: SortOrder
+  }
+
+  export type ProductServiceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    unit?: SortOrder
+    unitPrice?: SortOrder
+    currencyCode?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductServiceMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    unit?: SortOrder
+    unitPrice?: SortOrder
+    currencyCode?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductServiceSumOrderByAggregateInput = {
+    unitPrice?: SortOrder
   }
 
   export type OrganizationMembershipOrganizationIdUserIdCompoundUniqueInput = {
@@ -53980,6 +57131,20 @@ export namespace Prisma {
     connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
   }
 
+  export type ReasonCodeCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ReasonCodeCreateWithoutOrganizationInput, ReasonCodeUncheckedCreateWithoutOrganizationInput> | ReasonCodeCreateWithoutOrganizationInput[] | ReasonCodeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ReasonCodeCreateOrConnectWithoutOrganizationInput | ReasonCodeCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ReasonCodeCreateManyOrganizationInputEnvelope
+    connect?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+  }
+
+  export type ProductServiceCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ProductServiceCreateWithoutOrganizationInput, ProductServiceUncheckedCreateWithoutOrganizationInput> | ProductServiceCreateWithoutOrganizationInput[] | ProductServiceUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ProductServiceCreateOrConnectWithoutOrganizationInput | ProductServiceCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ProductServiceCreateManyOrganizationInputEnvelope
+    connect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -54027,6 +57192,20 @@ export namespace Prisma {
     connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput | MasterDataChangeRequestCreateOrConnectWithoutOrganizationInput[]
     createMany?: MasterDataChangeRequestCreateManyOrganizationInputEnvelope
     connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+  }
+
+  export type ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ReasonCodeCreateWithoutOrganizationInput, ReasonCodeUncheckedCreateWithoutOrganizationInput> | ReasonCodeCreateWithoutOrganizationInput[] | ReasonCodeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ReasonCodeCreateOrConnectWithoutOrganizationInput | ReasonCodeCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ReasonCodeCreateManyOrganizationInputEnvelope
+    connect?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+  }
+
+  export type ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ProductServiceCreateWithoutOrganizationInput, ProductServiceUncheckedCreateWithoutOrganizationInput> | ProductServiceCreateWithoutOrganizationInput[] | ProductServiceUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ProductServiceCreateOrConnectWithoutOrganizationInput | ProductServiceCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ProductServiceCreateManyOrganizationInputEnvelope
+    connect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
   }
 
   export type EnumOrganizationTypeFieldUpdateOperationsInput = {
@@ -54135,6 +57314,34 @@ export namespace Prisma {
     deleteMany?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
   }
 
+  export type ReasonCodeUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ReasonCodeCreateWithoutOrganizationInput, ReasonCodeUncheckedCreateWithoutOrganizationInput> | ReasonCodeCreateWithoutOrganizationInput[] | ReasonCodeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ReasonCodeCreateOrConnectWithoutOrganizationInput | ReasonCodeCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ReasonCodeUpsertWithWhereUniqueWithoutOrganizationInput | ReasonCodeUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ReasonCodeCreateManyOrganizationInputEnvelope
+    set?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+    disconnect?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+    delete?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+    connect?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+    update?: ReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput | ReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ReasonCodeUpdateManyWithWhereWithoutOrganizationInput | ReasonCodeUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ReasonCodeScalarWhereInput | ReasonCodeScalarWhereInput[]
+  }
+
+  export type ProductServiceUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ProductServiceCreateWithoutOrganizationInput, ProductServiceUncheckedCreateWithoutOrganizationInput> | ProductServiceCreateWithoutOrganizationInput[] | ProductServiceUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ProductServiceCreateOrConnectWithoutOrganizationInput | ProductServiceCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ProductServiceUpsertWithWhereUniqueWithoutOrganizationInput | ProductServiceUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ProductServiceCreateManyOrganizationInputEnvelope
+    set?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    disconnect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    delete?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    connect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    update?: ProductServiceUpdateWithWhereUniqueWithoutOrganizationInput | ProductServiceUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ProductServiceUpdateManyWithWhereWithoutOrganizationInput | ProductServiceUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ProductServiceScalarWhereInput | ProductServiceScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -54231,6 +57438,34 @@ export namespace Prisma {
     update?: MasterDataChangeRequestUpdateWithWhereUniqueWithoutOrganizationInput | MasterDataChangeRequestUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: MasterDataChangeRequestUpdateManyWithWhereWithoutOrganizationInput | MasterDataChangeRequestUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
+  }
+
+  export type ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ReasonCodeCreateWithoutOrganizationInput, ReasonCodeUncheckedCreateWithoutOrganizationInput> | ReasonCodeCreateWithoutOrganizationInput[] | ReasonCodeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ReasonCodeCreateOrConnectWithoutOrganizationInput | ReasonCodeCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ReasonCodeUpsertWithWhereUniqueWithoutOrganizationInput | ReasonCodeUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ReasonCodeCreateManyOrganizationInputEnvelope
+    set?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+    disconnect?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+    delete?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+    connect?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+    update?: ReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput | ReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ReasonCodeUpdateManyWithWhereWithoutOrganizationInput | ReasonCodeUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ReasonCodeScalarWhereInput | ReasonCodeScalarWhereInput[]
+  }
+
+  export type ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ProductServiceCreateWithoutOrganizationInput, ProductServiceUncheckedCreateWithoutOrganizationInput> | ProductServiceCreateWithoutOrganizationInput[] | ProductServiceUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ProductServiceCreateOrConnectWithoutOrganizationInput | ProductServiceCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ProductServiceUpsertWithWhereUniqueWithoutOrganizationInput | ProductServiceUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ProductServiceCreateManyOrganizationInputEnvelope
+    set?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    disconnect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    delete?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    connect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    update?: ProductServiceUpdateWithWhereUniqueWithoutOrganizationInput | ProductServiceUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ProductServiceUpdateManyWithWhereWithoutOrganizationInput | ProductServiceUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ProductServiceScalarWhereInput | ProductServiceScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutLocationsInput = {
@@ -54587,6 +57822,13 @@ export namespace Prisma {
     connect?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
   }
 
+  export type ProductServiceCreateNestedManyWithoutCurrencyInput = {
+    create?: XOR<ProductServiceCreateWithoutCurrencyInput, ProductServiceUncheckedCreateWithoutCurrencyInput> | ProductServiceCreateWithoutCurrencyInput[] | ProductServiceUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: ProductServiceCreateOrConnectWithoutCurrencyInput | ProductServiceCreateOrConnectWithoutCurrencyInput[]
+    createMany?: ProductServiceCreateManyCurrencyInputEnvelope
+    connect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+  }
+
   export type ExchangeRateUncheckedCreateNestedManyWithoutBaseCurrencyInput = {
     create?: XOR<ExchangeRateCreateWithoutBaseCurrencyInput, ExchangeRateUncheckedCreateWithoutBaseCurrencyInput> | ExchangeRateCreateWithoutBaseCurrencyInput[] | ExchangeRateUncheckedCreateWithoutBaseCurrencyInput[]
     connectOrCreate?: ExchangeRateCreateOrConnectWithoutBaseCurrencyInput | ExchangeRateCreateOrConnectWithoutBaseCurrencyInput[]
@@ -54599,6 +57841,13 @@ export namespace Prisma {
     connectOrCreate?: ExchangeRateCreateOrConnectWithoutQuoteCurrencyInput | ExchangeRateCreateOrConnectWithoutQuoteCurrencyInput[]
     createMany?: ExchangeRateCreateManyQuoteCurrencyInputEnvelope
     connect?: ExchangeRateWhereUniqueInput | ExchangeRateWhereUniqueInput[]
+  }
+
+  export type ProductServiceUncheckedCreateNestedManyWithoutCurrencyInput = {
+    create?: XOR<ProductServiceCreateWithoutCurrencyInput, ProductServiceUncheckedCreateWithoutCurrencyInput> | ProductServiceCreateWithoutCurrencyInput[] | ProductServiceUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: ProductServiceCreateOrConnectWithoutCurrencyInput | ProductServiceCreateOrConnectWithoutCurrencyInput[]
+    createMany?: ProductServiceCreateManyCurrencyInputEnvelope
+    connect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
   }
 
   export type EnumCurrencyTypeFieldUpdateOperationsInput = {
@@ -54633,6 +57882,20 @@ export namespace Prisma {
     deleteMany?: ExchangeRateScalarWhereInput | ExchangeRateScalarWhereInput[]
   }
 
+  export type ProductServiceUpdateManyWithoutCurrencyNestedInput = {
+    create?: XOR<ProductServiceCreateWithoutCurrencyInput, ProductServiceUncheckedCreateWithoutCurrencyInput> | ProductServiceCreateWithoutCurrencyInput[] | ProductServiceUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: ProductServiceCreateOrConnectWithoutCurrencyInput | ProductServiceCreateOrConnectWithoutCurrencyInput[]
+    upsert?: ProductServiceUpsertWithWhereUniqueWithoutCurrencyInput | ProductServiceUpsertWithWhereUniqueWithoutCurrencyInput[]
+    createMany?: ProductServiceCreateManyCurrencyInputEnvelope
+    set?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    disconnect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    delete?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    connect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    update?: ProductServiceUpdateWithWhereUniqueWithoutCurrencyInput | ProductServiceUpdateWithWhereUniqueWithoutCurrencyInput[]
+    updateMany?: ProductServiceUpdateManyWithWhereWithoutCurrencyInput | ProductServiceUpdateManyWithWhereWithoutCurrencyInput[]
+    deleteMany?: ProductServiceScalarWhereInput | ProductServiceScalarWhereInput[]
+  }
+
   export type ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput = {
     create?: XOR<ExchangeRateCreateWithoutBaseCurrencyInput, ExchangeRateUncheckedCreateWithoutBaseCurrencyInput> | ExchangeRateCreateWithoutBaseCurrencyInput[] | ExchangeRateUncheckedCreateWithoutBaseCurrencyInput[]
     connectOrCreate?: ExchangeRateCreateOrConnectWithoutBaseCurrencyInput | ExchangeRateCreateOrConnectWithoutBaseCurrencyInput[]
@@ -54659,6 +57922,20 @@ export namespace Prisma {
     update?: ExchangeRateUpdateWithWhereUniqueWithoutQuoteCurrencyInput | ExchangeRateUpdateWithWhereUniqueWithoutQuoteCurrencyInput[]
     updateMany?: ExchangeRateUpdateManyWithWhereWithoutQuoteCurrencyInput | ExchangeRateUpdateManyWithWhereWithoutQuoteCurrencyInput[]
     deleteMany?: ExchangeRateScalarWhereInput | ExchangeRateScalarWhereInput[]
+  }
+
+  export type ProductServiceUncheckedUpdateManyWithoutCurrencyNestedInput = {
+    create?: XOR<ProductServiceCreateWithoutCurrencyInput, ProductServiceUncheckedCreateWithoutCurrencyInput> | ProductServiceCreateWithoutCurrencyInput[] | ProductServiceUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: ProductServiceCreateOrConnectWithoutCurrencyInput | ProductServiceCreateOrConnectWithoutCurrencyInput[]
+    upsert?: ProductServiceUpsertWithWhereUniqueWithoutCurrencyInput | ProductServiceUpsertWithWhereUniqueWithoutCurrencyInput[]
+    createMany?: ProductServiceCreateManyCurrencyInputEnvelope
+    set?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    disconnect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    delete?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    connect?: ProductServiceWhereUniqueInput | ProductServiceWhereUniqueInput[]
+    update?: ProductServiceUpdateWithWhereUniqueWithoutCurrencyInput | ProductServiceUpdateWithWhereUniqueWithoutCurrencyInput[]
+    updateMany?: ProductServiceUpdateManyWithWhereWithoutCurrencyInput | ProductServiceUpdateManyWithWhereWithoutCurrencyInput[]
+    deleteMany?: ProductServiceScalarWhereInput | ProductServiceScalarWhereInput[]
   }
 
   export type CurrencyCreateNestedOneWithoutExchangeRatesBaseInput = {
@@ -54807,6 +58084,50 @@ export namespace Prisma {
     upsert?: MasterDataChangeRequestUpsertWithoutVersionsInput
     connect?: MasterDataChangeRequestWhereUniqueInput
     update?: XOR<XOR<MasterDataChangeRequestUpdateToOneWithWhereWithoutVersionsInput, MasterDataChangeRequestUpdateWithoutVersionsInput>, MasterDataChangeRequestUncheckedUpdateWithoutVersionsInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutReasonCodesInput = {
+    create?: XOR<OrganizationCreateWithoutReasonCodesInput, OrganizationUncheckedCreateWithoutReasonCodesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutReasonCodesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutReasonCodesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutReasonCodesInput, OrganizationUncheckedCreateWithoutReasonCodesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutReasonCodesInput
+    upsert?: OrganizationUpsertWithoutReasonCodesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutReasonCodesInput, OrganizationUpdateWithoutReasonCodesInput>, OrganizationUncheckedUpdateWithoutReasonCodesInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutProductsServicesInput = {
+    create?: XOR<OrganizationCreateWithoutProductsServicesInput, OrganizationUncheckedCreateWithoutProductsServicesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutProductsServicesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type CurrencyCreateNestedOneWithoutProductsServicesInput = {
+    create?: XOR<CurrencyCreateWithoutProductsServicesInput, CurrencyUncheckedCreateWithoutProductsServicesInput>
+    connectOrCreate?: CurrencyCreateOrConnectWithoutProductsServicesInput
+    connect?: CurrencyWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutProductsServicesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutProductsServicesInput, OrganizationUncheckedCreateWithoutProductsServicesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutProductsServicesInput
+    upsert?: OrganizationUpsertWithoutProductsServicesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutProductsServicesInput, OrganizationUpdateWithoutProductsServicesInput>, OrganizationUncheckedUpdateWithoutProductsServicesInput>
+  }
+
+  export type CurrencyUpdateOneWithoutProductsServicesNestedInput = {
+    create?: XOR<CurrencyCreateWithoutProductsServicesInput, CurrencyUncheckedCreateWithoutProductsServicesInput>
+    connectOrCreate?: CurrencyCreateOrConnectWithoutProductsServicesInput
+    upsert?: CurrencyUpsertWithoutProductsServicesInput
+    disconnect?: CurrencyWhereInput | boolean
+    delete?: CurrencyWhereInput | boolean
+    connect?: CurrencyWhereUniqueInput
+    update?: XOR<XOR<CurrencyUpdateToOneWithWhereWithoutProductsServicesInput, CurrencyUpdateWithoutProductsServicesInput>, CurrencyUncheckedUpdateWithoutProductsServicesInput>
   }
 
   export type OrganizationCreateNestedOneWithoutMembershipsInput = {
@@ -60432,6 +63753,76 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ReasonCodeCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    category: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReasonCodeUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    category: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReasonCodeCreateOrConnectWithoutOrganizationInput = {
+    where: ReasonCodeWhereUniqueInput
+    create: XOR<ReasonCodeCreateWithoutOrganizationInput, ReasonCodeUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ReasonCodeCreateManyOrganizationInputEnvelope = {
+    data: ReasonCodeCreateManyOrganizationInput | ReasonCodeCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProductServiceCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    unit?: string | null
+    unitPrice?: Decimal | DecimalJsLike | number | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    currency?: CurrencyCreateNestedOneWithoutProductsServicesInput
+  }
+
+  export type ProductServiceUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    unit?: string | null
+    unitPrice?: Decimal | DecimalJsLike | number | string | null
+    currencyCode?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProductServiceCreateOrConnectWithoutOrganizationInput = {
+    where: ProductServiceWhereUniqueInput
+    create: XOR<ProductServiceCreateWithoutOrganizationInput, ProductServiceUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ProductServiceCreateManyOrganizationInputEnvelope = {
+    data: ProductServiceCreateManyOrganizationInput | ProductServiceCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: OrganizationMembershipWhereUniqueInput
     update: XOR<OrganizationMembershipUpdateWithoutOrganizationInput, OrganizationMembershipUncheckedUpdateWithoutOrganizationInput>
@@ -60628,6 +64019,71 @@ export namespace Prisma {
     data: XOR<MasterDataChangeRequestUpdateManyMutationInput, MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationInput>
   }
 
+  export type ReasonCodeUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ReasonCodeWhereUniqueInput
+    update: XOR<ReasonCodeUpdateWithoutOrganizationInput, ReasonCodeUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ReasonCodeCreateWithoutOrganizationInput, ReasonCodeUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ReasonCodeWhereUniqueInput
+    data: XOR<ReasonCodeUpdateWithoutOrganizationInput, ReasonCodeUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ReasonCodeUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ReasonCodeScalarWhereInput
+    data: XOR<ReasonCodeUpdateManyMutationInput, ReasonCodeUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ReasonCodeScalarWhereInput = {
+    AND?: ReasonCodeScalarWhereInput | ReasonCodeScalarWhereInput[]
+    OR?: ReasonCodeScalarWhereInput[]
+    NOT?: ReasonCodeScalarWhereInput | ReasonCodeScalarWhereInput[]
+    id?: StringFilter<"ReasonCode"> | string
+    organizationId?: StringFilter<"ReasonCode"> | string
+    code?: StringFilter<"ReasonCode"> | string
+    name?: StringFilter<"ReasonCode"> | string
+    description?: StringNullableFilter<"ReasonCode"> | string | null
+    category?: StringFilter<"ReasonCode"> | string
+    isActive?: BoolFilter<"ReasonCode"> | boolean
+    createdAt?: DateTimeFilter<"ReasonCode"> | Date | string
+    updatedAt?: DateTimeFilter<"ReasonCode"> | Date | string
+  }
+
+  export type ProductServiceUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ProductServiceWhereUniqueInput
+    update: XOR<ProductServiceUpdateWithoutOrganizationInput, ProductServiceUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ProductServiceCreateWithoutOrganizationInput, ProductServiceUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ProductServiceUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ProductServiceWhereUniqueInput
+    data: XOR<ProductServiceUpdateWithoutOrganizationInput, ProductServiceUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ProductServiceUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ProductServiceScalarWhereInput
+    data: XOR<ProductServiceUpdateManyMutationInput, ProductServiceUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ProductServiceScalarWhereInput = {
+    AND?: ProductServiceScalarWhereInput | ProductServiceScalarWhereInput[]
+    OR?: ProductServiceScalarWhereInput[]
+    NOT?: ProductServiceScalarWhereInput | ProductServiceScalarWhereInput[]
+    id?: StringFilter<"ProductService"> | string
+    organizationId?: StringFilter<"ProductService"> | string
+    code?: StringFilter<"ProductService"> | string
+    name?: StringFilter<"ProductService"> | string
+    description?: StringNullableFilter<"ProductService"> | string | null
+    type?: StringFilter<"ProductService"> | string
+    unit?: StringNullableFilter<"ProductService"> | string | null
+    unitPrice?: DecimalNullableFilter<"ProductService"> | Decimal | DecimalJsLike | number | string | null
+    currencyCode?: StringNullableFilter<"ProductService"> | string | null
+    isActive?: BoolFilter<"ProductService"> | boolean
+    createdAt?: DateTimeFilter<"ProductService"> | Date | string
+    updatedAt?: DateTimeFilter<"ProductService"> | Date | string
+  }
+
   export type OrganizationCreateWithoutLocationsInput = {
     id?: string
     code: string
@@ -60652,6 +64108,8 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -60678,6 +64136,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -60919,6 +64379,8 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -60945,6 +64407,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type LocationUpsertWithoutChildrenInput = {
@@ -61052,6 +64516,8 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -61078,6 +64544,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -61327,6 +64795,8 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -61353,6 +64823,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutChildrenInput = {
@@ -61464,6 +64936,8 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCostCentresInput = {
@@ -61490,6 +64964,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCostCentresInput = {
@@ -61563,6 +65039,8 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCostCentresInput = {
@@ -61589,6 +65067,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutCostCentresInput = {
@@ -61652,6 +65132,8 @@ export namespace Prisma {
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProjectsInput = {
@@ -61678,6 +65160,8 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProjectsInput = {
@@ -61720,6 +65204,8 @@ export namespace Prisma {
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProjectsInput = {
@@ -61746,6 +65232,8 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutFundingSourcesInput = {
@@ -61772,6 +65260,8 @@ export namespace Prisma {
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFundingSourcesInput = {
@@ -61798,6 +65288,8 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFundingSourcesInput = {
@@ -61840,6 +65332,8 @@ export namespace Prisma {
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFundingSourcesInput = {
@@ -61866,6 +65360,8 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ExchangeRateCreateWithoutBaseCurrencyInput = {
@@ -61932,6 +65428,44 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ProductServiceCreateWithoutCurrencyInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    unit?: string | null
+    unitPrice?: Decimal | DecimalJsLike | number | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutProductsServicesInput
+  }
+
+  export type ProductServiceUncheckedCreateWithoutCurrencyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    unit?: string | null
+    unitPrice?: Decimal | DecimalJsLike | number | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProductServiceCreateOrConnectWithoutCurrencyInput = {
+    where: ProductServiceWhereUniqueInput
+    create: XOR<ProductServiceCreateWithoutCurrencyInput, ProductServiceUncheckedCreateWithoutCurrencyInput>
+  }
+
+  export type ProductServiceCreateManyCurrencyInputEnvelope = {
+    data: ProductServiceCreateManyCurrencyInput | ProductServiceCreateManyCurrencyInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ExchangeRateUpsertWithWhereUniqueWithoutBaseCurrencyInput = {
     where: ExchangeRateWhereUniqueInput
     update: XOR<ExchangeRateUpdateWithoutBaseCurrencyInput, ExchangeRateUncheckedUpdateWithoutBaseCurrencyInput>
@@ -61979,6 +65513,22 @@ export namespace Prisma {
     data: XOR<ExchangeRateUpdateManyMutationInput, ExchangeRateUncheckedUpdateManyWithoutQuoteCurrencyInput>
   }
 
+  export type ProductServiceUpsertWithWhereUniqueWithoutCurrencyInput = {
+    where: ProductServiceWhereUniqueInput
+    update: XOR<ProductServiceUpdateWithoutCurrencyInput, ProductServiceUncheckedUpdateWithoutCurrencyInput>
+    create: XOR<ProductServiceCreateWithoutCurrencyInput, ProductServiceUncheckedCreateWithoutCurrencyInput>
+  }
+
+  export type ProductServiceUpdateWithWhereUniqueWithoutCurrencyInput = {
+    where: ProductServiceWhereUniqueInput
+    data: XOR<ProductServiceUpdateWithoutCurrencyInput, ProductServiceUncheckedUpdateWithoutCurrencyInput>
+  }
+
+  export type ProductServiceUpdateManyWithWhereWithoutCurrencyInput = {
+    where: ProductServiceScalarWhereInput
+    data: XOR<ProductServiceUpdateManyMutationInput, ProductServiceUncheckedUpdateManyWithoutCurrencyInput>
+  }
+
   export type CurrencyCreateWithoutExchangeRatesBaseInput = {
     id?: string
     code: string
@@ -61991,6 +65541,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     exchangeRatesQuote?: ExchangeRateCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutExchangeRatesBaseInput = {
@@ -62005,6 +65556,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     exchangeRatesQuote?: ExchangeRateUncheckedCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutExchangeRatesBaseInput = {
@@ -62024,6 +65576,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     exchangeRatesBase?: ExchangeRateCreateNestedManyWithoutBaseCurrencyInput
+    productsServices?: ProductServiceCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutExchangeRatesQuoteInput = {
@@ -62038,6 +65591,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     exchangeRatesBase?: ExchangeRateUncheckedCreateNestedManyWithoutBaseCurrencyInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutExchangeRatesQuoteInput = {
@@ -62068,6 +65622,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     exchangeRatesQuote?: ExchangeRateUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutExchangeRatesBaseInput = {
@@ -62082,6 +65637,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     exchangeRatesQuote?: ExchangeRateUncheckedUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUpsertWithoutExchangeRatesQuoteInput = {
@@ -62107,6 +65663,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     exchangeRatesBase?: ExchangeRateUpdateManyWithoutBaseCurrencyNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutExchangeRatesQuoteInput = {
@@ -62121,6 +65678,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     exchangeRatesBase?: ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type OrganizationCreateWithoutMasterDataChangeRequestsInput = {
@@ -62147,6 +65705,8 @@ export namespace Prisma {
     costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput = {
@@ -62173,6 +65733,8 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMasterDataChangeRequestsInput = {
@@ -62455,6 +66017,8 @@ export namespace Prisma {
     costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput = {
@@ -62481,6 +66045,8 @@ export namespace Prisma {
     costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsRequestedInput = {
@@ -62817,6 +66383,338 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OrganizationCreateWithoutReasonCodesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutReasonCodesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutReasonCodesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutReasonCodesInput, OrganizationUncheckedCreateWithoutReasonCodesInput>
+  }
+
+  export type OrganizationUpsertWithoutReasonCodesInput = {
+    update: XOR<OrganizationUpdateWithoutReasonCodesInput, OrganizationUncheckedUpdateWithoutReasonCodesInput>
+    create: XOR<OrganizationCreateWithoutReasonCodesInput, OrganizationUncheckedCreateWithoutReasonCodesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutReasonCodesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutReasonCodesInput, OrganizationUncheckedUpdateWithoutReasonCodesInput>
+  }
+
+  export type OrganizationUpdateWithoutReasonCodesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutReasonCodesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationCreateWithoutProductsServicesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutProductsServicesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutProductsServicesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutProductsServicesInput, OrganizationUncheckedCreateWithoutProductsServicesInput>
+  }
+
+  export type CurrencyCreateWithoutProductsServicesInput = {
+    id?: string
+    code: string
+    name: string
+    symbol?: string | null
+    type?: $Enums.CurrencyType
+    decimalPlaces?: number
+    isBase?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exchangeRatesBase?: ExchangeRateCreateNestedManyWithoutBaseCurrencyInput
+    exchangeRatesQuote?: ExchangeRateCreateNestedManyWithoutQuoteCurrencyInput
+  }
+
+  export type CurrencyUncheckedCreateWithoutProductsServicesInput = {
+    id?: string
+    code: string
+    name: string
+    symbol?: string | null
+    type?: $Enums.CurrencyType
+    decimalPlaces?: number
+    isBase?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exchangeRatesBase?: ExchangeRateUncheckedCreateNestedManyWithoutBaseCurrencyInput
+    exchangeRatesQuote?: ExchangeRateUncheckedCreateNestedManyWithoutQuoteCurrencyInput
+  }
+
+  export type CurrencyCreateOrConnectWithoutProductsServicesInput = {
+    where: CurrencyWhereUniqueInput
+    create: XOR<CurrencyCreateWithoutProductsServicesInput, CurrencyUncheckedCreateWithoutProductsServicesInput>
+  }
+
+  export type OrganizationUpsertWithoutProductsServicesInput = {
+    update: XOR<OrganizationUpdateWithoutProductsServicesInput, OrganizationUncheckedUpdateWithoutProductsServicesInput>
+    create: XOR<OrganizationCreateWithoutProductsServicesInput, OrganizationUncheckedCreateWithoutProductsServicesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutProductsServicesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutProductsServicesInput, OrganizationUncheckedUpdateWithoutProductsServicesInput>
+  }
+
+  export type OrganizationUpdateWithoutProductsServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutProductsServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type CurrencyUpsertWithoutProductsServicesInput = {
+    update: XOR<CurrencyUpdateWithoutProductsServicesInput, CurrencyUncheckedUpdateWithoutProductsServicesInput>
+    create: XOR<CurrencyCreateWithoutProductsServicesInput, CurrencyUncheckedCreateWithoutProductsServicesInput>
+    where?: CurrencyWhereInput
+  }
+
+  export type CurrencyUpdateToOneWithWhereWithoutProductsServicesInput = {
+    where?: CurrencyWhereInput
+    data: XOR<CurrencyUpdateWithoutProductsServicesInput, CurrencyUncheckedUpdateWithoutProductsServicesInput>
+  }
+
+  export type CurrencyUpdateWithoutProductsServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCurrencyTypeFieldUpdateOperationsInput | $Enums.CurrencyType
+    decimalPlaces?: IntFieldUpdateOperationsInput | number
+    isBase?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exchangeRatesBase?: ExchangeRateUpdateManyWithoutBaseCurrencyNestedInput
+    exchangeRatesQuote?: ExchangeRateUpdateManyWithoutQuoteCurrencyNestedInput
+  }
+
+  export type CurrencyUncheckedUpdateWithoutProductsServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCurrencyTypeFieldUpdateOperationsInput | $Enums.CurrencyType
+    decimalPlaces?: IntFieldUpdateOperationsInput | number
+    isBase?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exchangeRatesBase?: ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+    exchangeRatesQuote?: ExchangeRateUncheckedUpdateManyWithoutQuoteCurrencyNestedInput
+  }
+
   export type OrganizationCreateWithoutMembershipsInput = {
     id?: string
     code: string
@@ -62841,6 +66739,8 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -62867,6 +66767,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -63012,6 +66914,8 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -63038,6 +66942,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganizationMembershipsInput = {
@@ -65213,6 +69119,31 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type ReasonCodeCreateManyOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    category: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProductServiceCreateManyOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    unit?: string | null
+    unitPrice?: Decimal | DecimalJsLike | number | string | null
+    currencyCode?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrganizationMembershipUpdateWithoutOrganizationInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -65479,6 +69410,81 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReasonCodeUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReasonCodeUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReasonCodeUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductServiceUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    unitPrice?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currency?: CurrencyUpdateOneWithoutProductsServicesNestedInput
+  }
+
+  export type ProductServiceUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    unitPrice?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductServiceUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    unitPrice?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -66003,6 +70009,20 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type ProductServiceCreateManyCurrencyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    unit?: string | null
+    unitPrice?: Decimal | DecimalJsLike | number | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ExchangeRateUpdateWithoutBaseCurrencyInput = {
     id?: StringFieldUpdateOperationsInput | string
     rateDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66065,6 +70085,48 @@ export namespace Prisma {
     rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     source?: NullableStringFieldUpdateOperationsInput | string | null
     differenceTreatment?: EnumFxDifferenceTreatmentFieldUpdateOperationsInput | $Enums.FxDifferenceTreatment
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductServiceUpdateWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    unitPrice?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutProductsServicesNestedInput
+  }
+
+  export type ProductServiceUncheckedUpdateWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    unitPrice?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductServiceUncheckedUpdateManyWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    unitPrice?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

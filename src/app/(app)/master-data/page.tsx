@@ -12,7 +12,7 @@ export default async function MasterDataPage() {
     return <div>No organization context</div>;
   }
 
-  const [locations, departments, costCentres, projects, fundingSources, currencies, exchangeRates] = await Promise.all([
+  const [locations, departments, costCentres, projects, fundingSources, currencies, exchangeRates, reasonCodes, productsServices] = await Promise.all([
     prisma.location.findMany({
       where: { organizationId: ctx.actor.organizationId },
       orderBy: [{ type: 'asc' }, { code: 'asc' }],
@@ -115,6 +115,38 @@ export default async function MasterDataPage() {
         quoteCurrency: { select: { id: true, code: true, name: true } },
       },
     }),
+    prisma.reasonCode.findMany({
+      where: { organizationId: ctx.actor.organizationId },
+      orderBy: [{ category: 'asc' }, { code: 'asc' }],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        description: true,
+        category: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
+    prisma.productService.findMany({
+      where: { organizationId: ctx.actor.organizationId },
+      orderBy: [{ type: 'asc' }, { code: 'asc' }],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        description: true,
+        type: true,
+        unit: true,
+        unitPrice: true,
+        currencyCode: true,
+        currency: { select: { id: true, code: true, name: true, symbol: true } },
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
   ]);
 
   const projectsForClient = projects.map((p) => ({
@@ -136,5 +168,31 @@ export default async function MasterDataPage() {
     rate: er.rate.toString(),
   }));
 
-  return <MasterDataClient initialData={{ locations, departments, costCentres, projects: projectsForClient, fundingSources: fundingSourcesForClient, currencies, exchangeRates: exchangeRatesForClient }} />;
+  const reasonCodesForClient = reasonCodes.map((rc) => ({
+    ...rc,
+    createdAt: rc.createdAt.toISOString(),
+    updatedAt: rc.updatedAt.toISOString(),
+  }));
+
+  const productsServicesForClient = productsServices.map((ps) => ({
+    ...ps,
+    createdAt: ps.createdAt.toISOString(),
+    updatedAt: ps.updatedAt.toISOString(),
+    unitPrice: ps.unitPrice?.toString() ?? null,
+    currency: ps.currency ? { ...ps.currency } : null,
+  }));
+
+  return <MasterDataClient
+    initialData={{
+      locations,
+      departments,
+      costCentres,
+      projects: projectsForClient,
+      fundingSources: fundingSourcesForClient,
+      currencies,
+      exchangeRates: exchangeRatesForClient,
+      reasonCodes: reasonCodesForClient,
+      productsServices: productsServicesForClient,
+    }}
+  />;
 }

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Badge, Button, Card, CardBody, CardHeader, PageHeader, Table, Td, Th } from '@/components/ui';
 import { cn } from '@/lib/format';
 
-type Tab = 'locations' | 'departments' | 'cost-centres' | 'projects' | 'funding-sources' | 'currencies' | 'exchange-rates';
+type Tab = 'locations' | 'departments' | 'cost-centres' | 'projects' | 'funding-sources' | 'currencies' | 'exchange-rates' | 'reason-codes' | 'products-services';
 
 interface Location {
   id: string;
@@ -88,6 +88,31 @@ interface ExchangeRate {
   quoteCurrency: { id: string; code: string; name: string };
 }
 
+interface ReasonCode {
+  id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  category: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ProductService {
+  id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  type: string;
+  unit: string | null;
+  unitPrice: string | null;
+  currency: { id: string; code: string; name: string; symbol: string | null } | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface MasterData {
   locations: Location[];
   departments: Department[];
@@ -96,6 +121,8 @@ interface MasterData {
   fundingSources: FundingSource[];
   currencies: Currency[];
   exchangeRates: ExchangeRate[];
+  reasonCodes: ReasonCode[];
+  productsServices: ProductService[];
 }
 
 export default function MasterDataPage({ initialData }: { initialData: MasterData }) {
@@ -107,6 +134,8 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
   const [fundingSources, setFundingSources] = useState<FundingSource[]>(initialData.fundingSources);
   const [currencies, setCurrencies] = useState<Currency[]>(initialData.currencies);
   const [exchangeRates, setExchangeRates] = useState<ExchangeRate[]>(initialData.exchangeRates);
+  const [reasonCodes, setReasonCodes] = useState<ReasonCode[]>(initialData.reasonCodes);
+  const [productsServices, setProductsServices] = useState<ProductService[]>(initialData.productsServices);
 
   const tabs: Array<{ id: Tab; label: string; count: number }> = [
     { id: 'locations', label: 'Locations', count: locations.length },
@@ -116,6 +145,8 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
     { id: 'funding-sources', label: 'Funding Sources', count: fundingSources.length },
     { id: 'currencies', label: 'Currencies', count: currencies.length },
     { id: 'exchange-rates', label: 'Exchange Rates', count: exchangeRates.length },
+    { id: 'reason-codes', label: 'Reason Codes', count: reasonCodes.length },
+    { id: 'products-services', label: 'Products/Services', count: productsServices.length },
   ];
 
   const typeBadges: Record<string, 'info' | 'success' | 'warning' | 'danger' | 'neutral'> = {
@@ -609,6 +640,125 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                           </Td>
                           <Td className="text-muted-foreground text-xs">
                             {new Date(er.createdAt).toISOString().split('T')[0]}
+                          </Td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                )}
+              </CardBody>
+            </Card>
+          )}
+
+          {activeTab === 'reason-codes' && (
+            <Card>
+              <CardHeader
+                title="Reason Codes"
+                description="Standardized reason codes for transaction categorization across revenue, expenses, transfers, and adjustments."
+                actions={
+                  <Button size="sm" variant="outline">
+                    Add reason code
+                  </Button>
+                }
+              />
+              <CardBody className="px-0 py-0">
+                {reasonCodes.length === 0 ? (
+                  <div className="px-5 py-12 text-center">
+                    <p className="text-foreground text-sm font-medium">No reason codes yet</p>
+                    <p className="text-muted-foreground mt-1 max-w-md text-xs">
+                      Create reason codes to categorize transactions consistently.
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
+                    <thead>
+                      <tr>
+                        <Th>Code</Th>
+                        <Th>Name</Th>
+                        <Th>Category</Th>
+                        <Th>Description</Th>
+                        <Th>Status</Th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {reasonCodes.map((rc) => (
+                        <tr key={rc.id}>
+                          <Td className="mono text-xs">{rc.code}</Td>
+                          <Td><span className="font-medium">{rc.name}</span></Td>
+                          <Td>
+                            <Badge tone={
+                              rc.category === 'REVENUE' ? 'success' :
+                              rc.category === 'EXPENSE' ? 'danger' :
+                              rc.category === 'TRANSFER' ? 'info' :
+                              rc.category === 'ADJUSTMENT' ? 'warning' : 'neutral'
+                            }>{rc.category}</Badge>
+                          </Td>
+                          <Td className="text-muted-foreground text-xs max-w-md truncate">{rc.description ?? '-'}</Td>
+                          <Td>
+                            {rc.isActive ? (
+                              <Badge tone="success">Active</Badge>
+                            ) : (
+                              <Badge tone="warning">Inactive</Badge>
+                            )}
+                          </Td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                )}
+              </CardBody>
+            </Card>
+          )}
+
+          {activeTab === 'products-services' && (
+            <Card>
+              <CardHeader
+                title="Products & Services"
+                description="Product and service catalogue for revenue linkage and invoicing."
+                actions={
+                  <Button size="sm" variant="outline">
+                    Add product/service
+                  </Button>
+                }
+              />
+              <CardBody className="px-0 py-0">
+                {productsServices.length === 0 ? (
+                  <div className="px-5 py-12 text-center">
+                    <p className="text-foreground text-sm font-medium">No products or services yet</p>
+                    <p className="text-muted-foreground mt-1 max-w-md text-xs">
+                      Create products and services to enable revenue tracking and invoicing.
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
+                    <thead>
+                      <tr>
+                        <Th>Code</Th>
+                        <Th>Name</Th>
+                        <Th>Type</Th>
+                        <Th>Unit</Th>
+                        <Th>Unit Price</Th>
+                        <Th>Currency</Th>
+                        <Th>Status</Th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {productsServices.map((ps) => (
+                        <tr key={ps.id}>
+                          <Td className="mono text-xs">{ps.code}</Td>
+                          <Td><span className="font-medium">{ps.name}</span></Td>
+                          <Td>
+                            <Badge tone={ps.type === 'SERVICE' ? 'info' : 'success'}>{ps.type}</Badge>
+                          </Td>
+                          <Td className="text-muted-foreground text-xs">{ps.unit}</Td>
+                          <Td className="mono text-xs">{ps.unitPrice ? Number(ps.unitPrice).toFixed(2) : '-'}</Td>
+                          <Td className="text-muted-foreground text-xs">{ps.currency?.code ?? '-'}</Td>
+                          <Td>
+                            {ps.isActive ? (
+                              <Badge tone="success">Active</Badge>
+                            ) : (
+                              <Badge tone="warning">Inactive</Badge>
+                            )}
                           </Td>
                         </tr>
                       ))}

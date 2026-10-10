@@ -1,5 +1,8 @@
 import type { ModuleKey, PermissionAction, ProjectStatus, FundingSourceType, CurrencyType } from '@/generated/prisma/client';
 
+/** Reason code categories. */
+export type ReasonCodeCategory = 'REVENUE' | 'EXPENSE' | 'TRANSFER' | 'ADJUSTMENT' | 'OTHER';
+
 /**
  * Permission catalogue.
  *
@@ -433,4 +436,69 @@ export const CURRENCIES = [
     isBase: false,
     isActive: true,
   },
+];
+
+export interface ReasonCodeSeed {
+  code: string;
+  name: string;
+  description: string;
+  category: ReasonCodeCategory;
+}
+
+export const REASON_CODES: ReasonCodeSeed[] = [
+  // Revenue reasons
+  { code: 'GRANT-UNRESTRICTED', name: 'Unrestricted Grant Revenue', description: 'Revenue from unrestricted grants', category: 'REVENUE' },
+  { code: 'GRANT-RESTRICTED', name: 'Restricted Grant Revenue', description: 'Revenue from restricted grants with specific use constraints', category: 'REVENUE' },
+  { code: 'CONTRACT-REVENUE', name: 'Contract Revenue', description: 'Revenue from service contracts and deliverables', category: 'REVENUE' },
+  { code: 'DONATION', name: 'Donation Revenue', description: 'Unrestricted donations and contributions', category: 'REVENUE' },
+  { code: 'INTEREST-INCOME', name: 'Interest Income', description: 'Interest earned on bank deposits and investments', category: 'REVENUE' },
+  { code: 'OTHER-INCOME', name: 'Other Income', description: 'Miscellaneous income not categorized elsewhere', category: 'REVENUE' },
+
+  // Expense reasons
+  { code: 'PERSONNEL', name: 'Personnel Costs', description: 'Salaries, wages, benefits, and payroll taxes', category: 'EXPENSE' },
+  { code: 'TRAVEL', name: 'Travel & Subsistence', description: 'Travel expenses, accommodation, and daily allowances', category: 'EXPENSE' },
+  { code: 'EQUIPMENT', name: 'Equipment & Supplies', description: 'Purchase of equipment, furniture, and consumable supplies', category: 'EXPENSE' },
+  { code: 'CONSULTANCY', name: 'Consultancy & Professional Fees', description: 'External consultants, auditors, and professional services', category: 'EXPENSE' },
+  { code: 'WORKSHOP', name: 'Workshops & Training', description: 'Training courses, workshops, and capacity building events', category: 'EXPENSE' },
+  { code: 'OFFICE-RENT', name: 'Office Rent & Utilities', description: 'Rent, electricity, water, internet, and office maintenance', category: 'EXPENSE' },
+  { code: 'COMMUNICATION', name: 'Communication', description: 'Phone, postage, and communication expenses', category: 'EXPENSE' },
+  { code: 'VEHICLE', name: 'Vehicle Running Costs', description: 'Fuel, maintenance, insurance, and vehicle hire', category: 'EXPENSE' },
+  { code: 'BANK-CHARGES', name: 'Bank Charges', description: 'Bank fees, transfer charges, and currency conversion fees', category: 'EXPENSE' },
+  { code: 'OTHER-EXPENSE', name: 'Other Expenses', description: 'Miscellaneous expenses not categorized elsewhere', category: 'EXPENSE' },
+
+  // Transfer reasons
+  { code: 'INTER-PROJECT', name: 'Inter-Project Transfer', description: 'Transfer of funds between projects', category: 'TRANSFER' },
+  { code: 'CORE-FUNDING', name: 'Core Funding Allocation', description: 'Allocation from core/unrestricted funds to projects', category: 'TRANSFER' },
+  { code: 'RETURN-FUNDS', name: 'Return of Funds', description: 'Return of unspent funds to donor or central pool', category: 'TRANSFER' },
+
+  // Adjustment reasons
+  { code: 'FX-GAIN', name: 'Foreign Exchange Gain', description: 'Realized or unrealized gain from currency fluctuations', category: 'ADJUSTMENT' },
+  { code: 'FX-LOSS', name: 'Foreign Exchange Loss', description: 'Realized or unrealized loss from currency fluctuations', category: 'ADJUSTMENT' },
+  { code: 'REVALUATION', name: 'Asset Revaluation', description: 'Revaluation of assets or liabilities', category: 'ADJUSTMENT' },
+  { code: 'WRITE-OFF', name: 'Write-off', description: 'Write-off of unrecoverable receivables or obsolete assets', category: 'ADJUSTMENT' },
+  { code: 'PRIOR-YEAR', name: 'Prior Year Adjustment', description: 'Correction of prior period errors', category: 'ADJUSTMENT' },
+
+  // Other
+  { code: 'OPENING-BAL', name: 'Opening Balance', description: 'Opening balance entry for new accounts or periods', category: 'OTHER' },
+  { code: 'CLOSING-BAL', name: 'Closing Balance', description: 'Closing balance entry at period end', category: 'OTHER' },
+];
+
+export interface ProductServiceSeed {
+  code: string;
+  name: string;
+  description: string;
+  type: 'PRODUCT' | 'SERVICE';
+  unit: string;
+  unitPrice?: string;
+  currencyCode: string;
+}
+
+export const PRODUCTS_SERVICES: ProductServiceSeed[] = [
+  { code: 'CONSULT-DAY', name: 'Consultancy Services (Daily)', description: 'Daily rate for consultancy services', type: 'SERVICE', unit: 'DAY', unitPrice: '500.00', currencyCode: 'USD' },
+  { code: 'CONSULT-HOUR', name: 'Consultancy Services (Hourly)', description: 'Hourly rate for consultancy services', type: 'SERVICE', unit: 'HOUR', unitPrice: '75.00', currencyCode: 'USD' },
+  { code: 'TRAINING-DAY', name: 'Training Delivery (Daily)', description: 'Daily rate for training delivery', type: 'SERVICE', unit: 'DAY', unitPrice: '800.00', currencyCode: 'USD' },
+  { code: 'RESEARCH-HOUR', name: 'Research Services (Hourly)', description: 'Hourly rate for research services', type: 'SERVICE', unit: 'HOUR', unitPrice: '100.00', currencyCode: 'USD' },
+  { code: 'REPORT', name: 'Report Preparation', description: 'Fixed fee for report preparation and delivery', type: 'PRODUCT', unit: 'UNIT', unitPrice: '2000.00', currencyCode: 'USD' },
+  { code: 'SOFTWARE-LIC', name: 'Software License', description: 'Annual software license fee', type: 'PRODUCT', unit: 'YEAR', unitPrice: '5000.00', currencyCode: 'USD' },
+  { code: 'PUBLICATION', name: 'Research Publication', description: 'Publication and dissemination services', type: 'PRODUCT', unit: 'UNIT', unitPrice: '1500.00', currencyCode: 'USD' },
 ];

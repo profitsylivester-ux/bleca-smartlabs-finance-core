@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@/generated/prisma/client';
-import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, PROJECTS, FUNDING_SOURCES, CURRENCIES } from '../../../prisma/seed-data';
+import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, PROJECTS, FUNDING_SOURCES, CURRENCIES, REASON_CODES, PRODUCTS_SERVICES } from '../../../prisma/seed-data';
 
 /**
  * Reference data for the integration suite.
@@ -103,6 +103,40 @@ export async function seedTestFixtures(prisma: PrismaClient): Promise<void> {
       update: cur,
     });
   }
+
+  for (const rc of REASON_CODES) {
+    await prisma.reasonCode.upsert({
+      where: { organizationId_code: { organizationId: org.id, code: rc.code } },
+      create: { ...rc, organizationId: org.id },
+      update: { ...rc, organizationId: org.id },
+    });
+  }
+
+  for (const ps of PRODUCTS_SERVICES) {
+    const currency = await prisma.currency.findUnique({ where: { code: ps.currencyCode } });
+    if (!currency) continue;
+    await prisma.productService.upsert({
+      where: { organizationId_code: { organizationId: org.id, code: ps.code } },
+      create: {
+        organizationId: org.id,
+        code: ps.code,
+        name: ps.name,
+        description: ps.description,
+        type: ps.type,
+        unit: ps.unit,
+        unitPrice: ps.unitPrice ? Number(ps.unitPrice) : null,
+        currencyCode: currency.code,
+      },
+      update: {
+        name: ps.name,
+        description: ps.description,
+        type: ps.type,
+        unit: ps.unit,
+        unitPrice: ps.unitPrice ? Number(ps.unitPrice) : null,
+        currencyCode: currency.code,
+      },
+    });
+  }
 }
 
 /**
@@ -135,7 +169,9 @@ export async function resetTestData(prisma: PrismaClient): Promise<void> {
       organization_memberships,
       users,
       exchange_rates,
-      currencies
+      currencies,
+      products_services,
+      reason_codes
     RESTART IDENTITY CASCADE
   `);
 }

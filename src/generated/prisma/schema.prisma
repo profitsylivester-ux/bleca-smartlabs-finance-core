@@ -335,6 +335,8 @@ enum AuditEntityType {
   EXCHANGE_RATE
   MASTER_DATA_CHANGE_REQUEST
   MASTER_DATA_VERSION
+  REASON_CODE
+  PRODUCT_SERVICE
 }
 
 enum AuditResult {
@@ -848,6 +850,8 @@ model Organization {
   projects                 Project[]
   fundingSources           FundingSource[]
   masterDataChangeRequests MasterDataChangeRequest[]
+  reasonCodes              ReasonCode[]
+  productsServices         ProductService[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -970,8 +974,9 @@ model Currency {
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
 
-  exchangeRatesBase  ExchangeRate[] @relation("ExchangeRateBase")
-  exchangeRatesQuote ExchangeRate[] @relation("ExchangeRateQuote")
+  exchangeRatesBase  ExchangeRate[]   @relation("ExchangeRateBase")
+  exchangeRatesQuote ExchangeRate[]   @relation("ExchangeRateQuote")
+  productsServices   ProductService[]
 
   @@map("currencies")
 }
@@ -1039,6 +1044,46 @@ model MasterDataVersion {
   @@index([entityType, entityId])
   @@index([effectiveFrom])
   @@map("master_data_versions")
+}
+
+/// Reason codes for transaction categorization (PDF 62). Seeded as reference data.
+model ReasonCode {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code           String
+  name           String
+  description    String?
+  category       String
+  isActive       Boolean      @default(true) @map("is_active")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  @@unique([organizationId, code])
+  @@index([category, isActive])
+  @@map("reason_codes")
+}
+
+/// Lightweight product/service catalogue for revenue linkage (PDF 62).
+model ProductService {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code           String
+  name           String
+  description    String?
+  type           String // "PRODUCT" | "SERVICE"
+  unit           String? // e.g., "HOUR", "DAY", "UNIT", "MONTH"
+  unitPrice      Decimal?     @map("unit_price") @db.Decimal(20, 6)
+  currencyId     String?      @map("currency_id") @db.Char(3)
+  currency       Currency?    @relation(fields: [currencyId], references: [id])
+  isActive       Boolean      @default(true) @map("is_active")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  @@unique([organizationId, code])
+  @@index([type, isActive])
+  @@map("products_services")
 }
 
 model OrganizationMembership {

@@ -475,6 +475,33 @@ exports.Prisma.MasterDataVersionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ReasonCodeScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductServiceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  type: 'type',
+  unit: 'unit',
+  unitPrice: 'unitPrice',
+  currencyCode: 'currencyCode',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.OrganizationMembershipScalarFieldEnum = {
   organizationId: 'organizationId',
   userId: 'userId',
@@ -835,7 +862,9 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   CURRENCY: 'CURRENCY',
   EXCHANGE_RATE: 'EXCHANGE_RATE',
   MASTER_DATA_CHANGE_REQUEST: 'MASTER_DATA_CHANGE_REQUEST',
-  MASTER_DATA_VERSION: 'MASTER_DATA_VERSION'
+  MASTER_DATA_VERSION: 'MASTER_DATA_VERSION',
+  REASON_CODE: 'REASON_CODE',
+  PRODUCT_SERVICE: 'PRODUCT_SERVICE'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -1005,6 +1034,8 @@ exports.Prisma.ModelName = {
   ExchangeRate: 'ExchangeRate',
   MasterDataChangeRequest: 'MasterDataChangeRequest',
   MasterDataVersion: 'MasterDataVersion',
+  ReasonCode: 'ReasonCode',
+  ProductService: 'ProductService',
   OrganizationMembership: 'OrganizationMembership',
   AuditLog: 'AuditLog',
   AuditChainHead: 'AuditChainHead',
