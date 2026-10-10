@@ -538,6 +538,7 @@ enum AuditEntityType {
   FINANCIAL_PERIOD
   OPENING_BALANCE
   JOURNAL_ENTRY
+  ACCOUNT_BALANCE_SNAPSHOT
 }
 
 enum AuditResult {

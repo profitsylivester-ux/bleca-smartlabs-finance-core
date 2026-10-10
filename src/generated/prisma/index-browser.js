@@ -1028,7 +1028,8 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   ACCOUNT: 'ACCOUNT',
   FINANCIAL_PERIOD: 'FINANCIAL_PERIOD',
   OPENING_BALANCE: 'OPENING_BALANCE',
-  JOURNAL_ENTRY: 'JOURNAL_ENTRY'
+  JOURNAL_ENTRY: 'JOURNAL_ENTRY',
+  ACCOUNT_BALANCE_SNAPSHOT: 'ACCOUNT_BALANCE_SNAPSHOT'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {

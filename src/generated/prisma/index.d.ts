@@ -815,7 +815,8 @@ export const AuditEntityType: {
   ACCOUNT: 'ACCOUNT',
   FINANCIAL_PERIOD: 'FINANCIAL_PERIOD',
   OPENING_BALANCE: 'OPENING_BALANCE',
-  JOURNAL_ENTRY: 'JOURNAL_ENTRY'
+  JOURNAL_ENTRY: 'JOURNAL_ENTRY',
+  ACCOUNT_BALANCE_SNAPSHOT: 'ACCOUNT_BALANCE_SNAPSHOT'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
