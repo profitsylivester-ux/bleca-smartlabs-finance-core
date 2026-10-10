@@ -706,31 +706,6 @@ export const PaymentMethod: {
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 
 
-export const ReversalReasonCategory: {
-  DATA_ENTRY_ERROR: 'DATA_ENTRY_ERROR',
-  DUPLICATE: 'DUPLICATE',
-  MISCLASSIFICATION: 'MISCLASSIFICATION',
-  WRONG_AMOUNT: 'WRONG_AMOUNT',
-  WRONG_DATE: 'WRONG_DATE',
-  WRONG_PARTY: 'WRONG_PARTY',
-  CURRENCY_VARIANCE: 'CURRENCY_VARIANCE',
-  BANK_FEE: 'BANK_FEE',
-  RETURNED_PAYMENT: 'RETURNED_PAYMENT',
-  FX_VARIANCE: 'FX_VARIANCE',
-  SUPPLIER_CREDIT: 'SUPPLIER_CREDIT',
-  SYSTEM_CORRECTION: 'SYSTEM_CORRECTION',
-  PERIOD_MISALLOCATION: 'PERIOD_MISALLOCATION',
-  EARLY_PAYMENT_RECEIVED: 'EARLY_PAYMENT_RECEIVED',
-  LATE_PAYMENT: 'LATE_PAYMENT',
-  GOODWILL: 'GOODWILL',
-  WRITE_OFF: 'WRITE_OFF',
-  YEAR_END: 'YEAR_END',
-  OTHER: 'OTHER'
-};
-
-export type ReversalReasonCategory = (typeof ReversalReasonCategory)[keyof typeof ReversalReasonCategory]
-
-
 export const TransactionStatus: {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED',
@@ -1095,10 +1070,6 @@ export const JournalSource: typeof $Enums.JournalSource
 export type PaymentMethod = $Enums.PaymentMethod
 
 export const PaymentMethod: typeof $Enums.PaymentMethod
-
-export type ReversalReasonCategory = $Enums.ReversalReasonCategory
-
-export const ReversalReasonCategory: typeof $Enums.ReversalReasonCategory
 
 export type TransactionStatus = $Enums.TransactionStatus
 
@@ -46479,7 +46450,7 @@ export namespace Prisma {
     code: string | null
     name: string | null
     description: string | null
-    category: $Enums.ReversalReasonCategory | null
+    category: string | null
     isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -46491,7 +46462,7 @@ export namespace Prisma {
     code: string | null
     name: string | null
     description: string | null
-    category: $Enums.ReversalReasonCategory | null
+    category: string | null
     isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -46626,7 +46597,7 @@ export namespace Prisma {
     code: string
     name: string
     description: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -46730,7 +46701,7 @@ export namespace Prisma {
       code: string
       name: string
       description: string | null
-      category: $Enums.ReversalReasonCategory
+      category: string
       isActive: boolean
       createdAt: Date
       updatedAt: Date
@@ -47165,7 +47136,7 @@ export namespace Prisma {
     readonly code: FieldRef<"ReversalReasonCode", 'String'>
     readonly name: FieldRef<"ReversalReasonCode", 'String'>
     readonly description: FieldRef<"ReversalReasonCode", 'String'>
-    readonly category: FieldRef<"ReversalReasonCode", 'ReversalReasonCategory'>
+    readonly category: FieldRef<"ReversalReasonCode", 'String'>
     readonly isActive: FieldRef<"ReversalReasonCode", 'Boolean'>
     readonly createdAt: FieldRef<"ReversalReasonCode", 'DateTime'>
     readonly updatedAt: FieldRef<"ReversalReasonCode", 'DateTime'>
@@ -62425,20 +62396,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'ReversalReasonCategory'
-   */
-  export type EnumReversalReasonCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReversalReasonCategory'>
-    
-
-
-  /**
-   * Reference to a field of type 'ReversalReasonCategory[]'
-   */
-  export type ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReversalReasonCategory[]'>
-    
-
-
-  /**
    * Reference to a field of type 'TransactionStatus'
    */
   export type EnumTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionStatus'>
@@ -66041,7 +65998,7 @@ export namespace Prisma {
     code?: StringFilter<"ReversalReasonCode"> | string
     name?: StringFilter<"ReversalReasonCode"> | string
     description?: StringNullableFilter<"ReversalReasonCode"> | string | null
-    category?: EnumReversalReasonCategoryFilter<"ReversalReasonCode"> | $Enums.ReversalReasonCategory
+    category?: StringFilter<"ReversalReasonCode"> | string
     isActive?: BoolFilter<"ReversalReasonCode"> | boolean
     createdAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
     updatedAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
@@ -66075,7 +66032,7 @@ export namespace Prisma {
     code?: StringFilter<"ReversalReasonCode"> | string
     name?: StringFilter<"ReversalReasonCode"> | string
     description?: StringNullableFilter<"ReversalReasonCode"> | string | null
-    category?: EnumReversalReasonCategoryFilter<"ReversalReasonCode"> | $Enums.ReversalReasonCategory
+    category?: StringFilter<"ReversalReasonCode"> | string
     isActive?: BoolFilter<"ReversalReasonCode"> | boolean
     createdAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
     updatedAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
@@ -66108,7 +66065,7 @@ export namespace Prisma {
     code?: StringWithAggregatesFilter<"ReversalReasonCode"> | string
     name?: StringWithAggregatesFilter<"ReversalReasonCode"> | string
     description?: StringNullableWithAggregatesFilter<"ReversalReasonCode"> | string | null
-    category?: EnumReversalReasonCategoryWithAggregatesFilter<"ReversalReasonCode"> | $Enums.ReversalReasonCategory
+    category?: StringWithAggregatesFilter<"ReversalReasonCode"> | string
     isActive?: BoolWithAggregatesFilter<"ReversalReasonCode"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"ReversalReasonCode"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ReversalReasonCode"> | Date | string
@@ -70991,7 +70948,7 @@ export namespace Prisma {
     code: string
     name: string
     description?: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -71006,7 +70963,7 @@ export namespace Prisma {
     code: string
     name: string
     description?: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -71019,7 +70976,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71034,7 +70991,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71048,7 +71005,7 @@ export namespace Prisma {
     code: string
     name: string
     description?: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -71059,7 +71016,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71071,7 +71028,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -75311,13 +75268,6 @@ export namespace Prisma {
     fxRate?: SortOrder
   }
 
-  export type EnumReversalReasonCategoryFilter<$PrismaModel = never> = {
-    equals?: $Enums.ReversalReasonCategory | EnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumReversalReasonCategoryFilter<$PrismaModel> | $Enums.ReversalReasonCategory
-  }
-
   export type ReversalReasonCodeOrganizationIdCodeCompoundUniqueInput = {
     organizationId: string
     code: string
@@ -75357,16 +75307,6 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type EnumReversalReasonCategoryWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ReversalReasonCategory | EnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumReversalReasonCategoryWithAggregatesFilter<$PrismaModel> | $Enums.ReversalReasonCategory
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumReversalReasonCategoryFilter<$PrismaModel>
-    _max?: NestedEnumReversalReasonCategoryFilter<$PrismaModel>
   }
 
   export type EnumTransactionStatusFilter<$PrismaModel = never> = {
@@ -81151,10 +81091,6 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
-  export type EnumReversalReasonCategoryFieldUpdateOperationsInput = {
-    set?: $Enums.ReversalReasonCategory
-  }
-
   export type OrganizationUpdateOneRequiredWithoutReversalReasonCodesNestedInput = {
     create?: XOR<OrganizationCreateWithoutReversalReasonCodesInput, OrganizationUncheckedCreateWithoutReversalReasonCodesInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutReversalReasonCodesInput
@@ -82651,23 +82587,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumJournalSourceFilter<$PrismaModel>
     _max?: NestedEnumJournalSourceFilter<$PrismaModel>
-  }
-
-  export type NestedEnumReversalReasonCategoryFilter<$PrismaModel = never> = {
-    equals?: $Enums.ReversalReasonCategory | EnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumReversalReasonCategoryFilter<$PrismaModel> | $Enums.ReversalReasonCategory
-  }
-
-  export type NestedEnumReversalReasonCategoryWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ReversalReasonCategory | EnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    in?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
-    not?: NestedEnumReversalReasonCategoryWithAggregatesFilter<$PrismaModel> | $Enums.ReversalReasonCategory
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumReversalReasonCategoryFilter<$PrismaModel>
-    _max?: NestedEnumReversalReasonCategoryFilter<$PrismaModel>
   }
 
   export type NestedEnumTransactionStatusFilter<$PrismaModel = never> = {
@@ -88888,7 +88807,7 @@ export namespace Prisma {
     code: string
     name: string
     description?: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -88901,7 +88820,7 @@ export namespace Prisma {
     code: string
     name: string
     description?: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -89655,7 +89574,7 @@ export namespace Prisma {
     code?: StringFilter<"ReversalReasonCode"> | string
     name?: StringFilter<"ReversalReasonCode"> | string
     description?: StringNullableFilter<"ReversalReasonCode"> | string | null
-    category?: EnumReversalReasonCategoryFilter<"ReversalReasonCode"> | $Enums.ReversalReasonCategory
+    category?: StringFilter<"ReversalReasonCode"> | string
     isActive?: BoolFilter<"ReversalReasonCode"> | boolean
     createdAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
     updatedAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
@@ -96493,7 +96412,7 @@ export namespace Prisma {
     code: string
     name: string
     description?: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -96507,7 +96426,7 @@ export namespace Prisma {
     code: string
     name: string
     description?: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -97508,7 +97427,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -97522,7 +97441,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -100372,7 +100291,7 @@ export namespace Prisma {
     code: string
     name: string
     description?: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -100386,7 +100305,7 @@ export namespace Prisma {
     code: string
     name: string
     description?: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -101688,7 +101607,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -101702,7 +101621,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -106152,7 +106071,7 @@ export namespace Prisma {
     code: string
     name: string
     description?: string | null
-    category: $Enums.ReversalReasonCategory
+    category: string
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -106663,7 +106582,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -106676,7 +106595,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -106689,7 +106608,7 @@ export namespace Prisma {
     code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    category?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

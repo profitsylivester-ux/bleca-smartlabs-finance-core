@@ -205,3 +205,20 @@ export function EmptyState({ title, body }: { title: string; body?: string }) {
     </div>
   );
 }
+
+export function Select({ className, ...props }: React.SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <select
+      className={cn(
+        'border-border-strong text-foreground h-9 w-full rounded-md border bg-white px-3 text-sm',
+        'placeholder:text-muted-foreground disabled:bg-surface-muted disabled:text-muted-foreground',
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+export function SelectOption({ value, children, ...props }: React.OptionHTMLAttributes<HTMLOptionElement>) {
+  return <option value={value} {...props}>{children}</option>;
+}

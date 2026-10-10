@@ -431,29 +431,6 @@ enum PaymentMethod {
   OTHER
 }
 
-/// Reversal/Adjustment reason code categories (PDF §9, §62).
-enum ReversalReasonCategory {
-  DATA_ENTRY_ERROR
-  DUPLICATE
-  MISCLASSIFICATION
-  WRONG_AMOUNT
-  WRONG_DATE
-  WRONG_PARTY
-  CURRENCY_VARIANCE
-  BANK_FEE
-  RETURNED_PAYMENT
-  FX_VARIANCE
-  SUPPLIER_CREDIT
-  SYSTEM_CORRECTION
-  PERIOD_MISALLOCATION
-  EARLY_PAYMENT_RECEIVED
-  LATE_PAYMENT
-  GOODWILL
-  WRITE_OFF
-  YEAR_END
-  OTHER
-}
-
 enum TransactionStatus {
   DRAFT
   SUBMITTED
@@ -1542,7 +1519,7 @@ model ReversalReasonCode {
   code           String
   name           String
   description    String?
-  category       ReversalReasonCategory
+  category       String
   isActive       Boolean  @default(true) @map("is_active")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
