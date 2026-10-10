@@ -2,14 +2,15 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { PrismaClient } from '@/generated/prisma/client';
 import { seedTestFixtures } from '../setup/fixtures';
 import { TransactionStateMachine, type TransactionStatus } from '@/lib/workflow/transaction-state-machine';
-import { TransactionService } from '@/lib/transactions/service';
+import { TransactionService, type TransactionRow } from '@/lib/transactions/service';
 import { runIdempotent } from '@/lib/api/idempotency';
 import { writeAuditEntry } from '@/lib/audit/writer';
+import type { ActorContext } from '@/lib/kernel/context';
 
 const prisma = new PrismaClient();
 let orgId: string;
 let userId: string;
-let actor: { id: string; name: string; roleCodes: string[] };
+let actor: ActorContext;
 let assetAccountId: string;
 let liabilityAccountId: string;
 let periodId: string;
@@ -43,14 +44,22 @@ beforeAll(async () => {
         create: { roleId: financeOfficerRole!.id },
       },
     },
-    select: { id: true, fullName: true, userRoles: { where: { revokedAt: null }, select: { role: { select: { code: true } } } } },
+    select: { id: true, email: true, fullName: true, userRoles: { where: { revokedAt: null }, select: { role: { select: { code: true } } } } },
   });
   userId = user.id;
-  actor = {
-    id: user.id,
-    name: user.fullName,
+  const actorContext: import('@/lib/kernel/context').ActorContext = {
+    userId: user.id,
+    email: user.email,
+    fullName: user.fullName,
     roleCodes: user.userRoles.map((ur) => ur.role.code),
+    isFinalApprover: false,
+    organizationId: orgId,
+    sessionId: null,
+    mfaSatisfiedAt: null,
+    stepUpSatisfiedAt: null,
+    stepUpExpiresAt: null,
   };
+  actor = actorContext;
 
   const assetAccount = await prisma.account.findFirst({
     where: { organizationId: orgId, type: 'ASSET', isPostable: true },
@@ -105,7 +114,7 @@ describe('M5 Transaction Lifecycle', () => {
         currencyCode: 'TZS',
         paymentMethod: 'BANK_TRANSFER',
       },
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     expect(created.status).toBe('DRAFT');
     expect(created.amount).toBe(1000);
@@ -114,7 +123,7 @@ describe('M5 Transaction Lifecycle', () => {
     const submitted = await txService.submit(
       created.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
       'Submitted for approval',
     );
     expect(submitted.status).toBe('SUBMITTED');
@@ -123,7 +132,7 @@ describe('M5 Transaction Lifecycle', () => {
     const approved = await txService.approve(
       submitted.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     expect(approved.status).toBe('APPROVED');
 
@@ -131,7 +140,7 @@ describe('M5 Transaction Lifecycle', () => {
     const posted = await txService.post(
       approved.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     expect(posted.status).toBe('POSTED');
 
@@ -141,13 +150,13 @@ describe('M5 Transaction Lifecycle', () => {
       include: { journalEntries: true },
     });
     expect(postedTx?.journalEntries).toHaveLength(1);
-    expect(postedTx?.journalEntries[0].status).toBe('POSTED');
+    expect(postedTx?.journalEntries?.[0]?.status).toBe('POSTED');
 
     // 5. ADJUST
     const adjusted = await txService.adjust(
       posted.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
       'ADJ_DATA_ENTRY_ERROR: Correcting amount',
     );
     expect(adjusted.status).toBe('ADJUSTED');
@@ -163,7 +172,7 @@ describe('M5 Transaction Lifecycle', () => {
     const reversed = await txService.reverse(
       posted.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
       'REVERSAL_DUPLICATE: Duplicate entry',
       undefined,
       posted.id,
@@ -196,23 +205,23 @@ describe('M5 Transaction Lifecycle', () => {
         currencyCode: 'TZS',
         paymentMethod: 'CASH',
       },
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     const submitted = await txService.submit(
       created.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     const approved = await txService.approve(
       submitted.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     // Attempt to edit description on APPROVED transaction
     await expect(
-      txService.update(approved.id, orgId, { description: 'Tampered' }, { id: userId, name: actor.name, roleCodes: actor.roleCodes }),
+      txService.update(approved.id, orgId, { description: 'Tampered' }, actor),
     ).rejects.toThrow();
   });
 
@@ -227,28 +236,28 @@ describe('M5 Transaction Lifecycle', () => {
         currencyCode: 'TZS',
         paymentMethod: 'CASH',
       },
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     const submitted = await txService.submit(
       created.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     const approved = await txService.approve(
       submitted.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     const posted = await txService.post(
       approved.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     // Attempt to edit description on POSTED transaction
     await expect(
-      txService.update(posted.id, orgId, { description: 'Tampered' }, { id: userId, name: actor.name, roleCodes: actor.roleCodes }),
+      txService.update(posted.id, orgId, { description: 'Tampered' }, actor),
     ).rejects.toThrow();
   });
 
@@ -263,23 +272,23 @@ describe('M5 Transaction Lifecycle', () => {
         currencyCode: 'TZS',
         paymentMethod: 'CASH',
       },
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     const submitted = await txService.submit(
       created.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     const approved = await txService.approve(
       submitted.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     const posted = await txService.post(
       approved.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     // Attempt direct DB delete
@@ -299,18 +308,18 @@ describe('M5 Transaction Lifecycle', () => {
         currencyCode: 'TZS',
         paymentMethod: 'CASH',
       },
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     const submitted = await txService.submit(
       created.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     const approved = await txService.approve(
       submitted.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     // Attempt direct DB delete
@@ -330,18 +339,18 @@ describe('M5 Transaction Lifecycle', () => {
         currencyCode: 'TZS',
         paymentMethod: 'CASH',
       },
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     const submitted = await txService.submit(
       created.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     const approved = await txService.approve(
       submitted.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     const idempotencyKey = `test-idempotent-${approved.id}`;
@@ -353,13 +362,15 @@ describe('M5 Transaction Lifecycle', () => {
       actorId: userId,
       body: {},
       handler: async (tx) => {
-        const result = await txService._doAction(tx, approved.id, orgId, { id: userId, name: actor.name, roleCodes: actor.roleCodes }, 'POSTED');
+        const result = await txService._doAction(tx, approved.id, orgId, actor, 'POSTED');
         return { status: 200, body: result };
       },
     });
 
     expect(outcome1.kind).toBe('EXECUTED');
-    expect(outcome1.result.status).toBe('POSTED');
+    if (outcome1.kind === 'EXECUTED') {
+      expect(outcome1.result.status).toBe('POSTED');
+    }
 
     // Second post with same idempotency key
     const outcome2 = await runIdempotent({
@@ -368,13 +379,15 @@ describe('M5 Transaction Lifecycle', () => {
       actorId: userId,
       body: {},
       handler: async (tx) => {
-        const result = await txService._doAction(tx, approved.id, orgId, { id: userId, name: actor.name, roleCodes: actor.roleCodes }, 'POSTED');
+        const result = await txService._doAction(tx, approved.id, orgId, actor, 'POSTED');
         return { status: 200, body: result };
       },
     });
 
     expect(outcome2.kind).toBe('REPLAYED');
-    expect(outcome2.responseBody.status).toBe('POSTED');
+    if (outcome2.kind === 'REPLAYED') {
+      expect((outcome2.responseBody as TransactionRow).status).toBe('POSTED');
+    }
 
     // Verify only one journal entry was created
     const tx = await prisma.transaction.findUnique({
@@ -395,29 +408,29 @@ describe('M5 Transaction Lifecycle', () => {
         currencyCode: 'TZS',
         paymentMethod: 'CASH',
       },
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     const submitted = await txService.submit(
       created.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     const approved = await txService.approve(
       submitted.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
     const posted = await txService.post(
       approved.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     const reversed = await txService.reverse(
       posted.id,
       orgId,
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
       'REVERSAL_CORRECTION: Error in original',
       undefined,
       posted.id,
@@ -452,7 +465,7 @@ describe('M5 Transaction Lifecycle', () => {
         currencyCode: 'TZS',
         paymentMethod: 'CASH',
       },
-      { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+      actor,
     );
 
     // Attempt illegal transition: DRAFT -> POSTED (skipping SUBMITTED and APPROVED)
@@ -461,7 +474,7 @@ describe('M5 Transaction Lifecycle', () => {
         prisma,
         created.id,
         orgId,
-        { id: userId, name: actor.name, roleCodes: actor.roleCodes },
+        actor,
         'POSTED',
       ),
     ).rejects.toThrow();
@@ -478,10 +491,10 @@ describe('M5 Transaction Lifecycle', () => {
     });
 
     expect(auditEntries.length).toBeGreaterThan(0);
-    const auditEntry = auditEntries[0];
+    const auditEntry = auditEntries[0]!;
     expect(auditEntry.description).toContain('ILLEGAL transition attempted');
     expect(auditEntry.metadata).toBeDefined();
-    expect((auditEntry.metadata as any)?.isLegalTransition).toBe(false);
+    expect((auditEntry.metadata as Record<string, unknown>)?.isLegalTransition).toBe(false);
   });
 
   it('state machine enforces all legal transitions and rejects illegal ones', async () => {
@@ -543,7 +556,13 @@ describe('M5 Audit Trail Verification', () => {
       },
     });
 
-    await writeAuditEntry(prisma, actor, {
+    const auditActor = {
+      id: actor.userId,
+      name: actor.fullName,
+      roleCodes: actor.roleCodes,
+    };
+
+    await writeAuditEntry(prisma, auditActor, {
       action: 'JOURNAL_ENTRY_SUBMITTED',
       entityType: 'JOURNAL_ENTRY',
       entityId: created.id,
@@ -563,6 +582,6 @@ describe('M5 Audit Trail Verification', () => {
     expect(auditLog).not.toBeNull();
     expect(auditLog?.entityType).toBe('JOURNAL_ENTRY');
     expect(auditLog?.action).toBe('JOURNAL_ENTRY_SUBMITTED');
-    expect((auditLog?.metadata as any)?.isLegalTransition).toBe(true);
+    expect((auditLog?.metadata as Record<string, unknown>)?.isLegalTransition).toBe(true);
   });
 });
