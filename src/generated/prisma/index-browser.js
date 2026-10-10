@@ -634,6 +634,30 @@ exports.Prisma.TransactionScalarFieldEnum = {
   date: 'date',
   description: 'description',
   reference: 'reference',
+  number: 'number',
+  accountId: 'accountId',
+  amount: 'amount',
+  currencyCode: 'currencyCode',
+  projectId: 'projectId',
+  departmentId: 'departmentId',
+  costCentreId: 'costCentreId',
+  locationId: 'locationId',
+  fundingSourceId: 'fundingSourceId',
+  paymentMethod: 'paymentMethod',
+  supportingDocumentId: 'supportingDocumentId',
+  createdById: 'createdById',
+  submittedById: 'submittedById',
+  submittedAt: 'submittedAt',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  postedById: 'postedById',
+  postedAt: 'postedAt',
+  reversedById: 'reversedById',
+  reversedAt: 'reversedAt',
+  voidedById: 'voidedById',
+  voidedAt: 'voidedAt',
+  reversalReasonId: 'reversalReasonId',
+  adjustingEntryId: 'adjustingEntryId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1192,6 +1216,16 @@ exports.TransactionStatus = exports.$Enums.TransactionStatus = {
   ADJUSTED: 'ADJUSTED',
   REVERSED: 'REVERSED',
   CANCELLED: 'CANCELLED'
+};
+
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  CASH: 'CASH',
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  MOBILE_MONEY: 'MOBILE_MONEY',
+  PAYMENT_GATEWAY: 'PAYMENT_GATEWAY',
+  CHEQUE: 'CHEQUE',
+  CARD: 'CARD',
+  OTHER: 'OTHER'
 };
 
 exports.BudgetLevel = exports.$Enums.BudgetLevel = {

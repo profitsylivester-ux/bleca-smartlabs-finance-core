@@ -421,6 +421,16 @@ enum JournalSource {
   IMPORT
 }
 
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  MOBILE_MONEY
+  PAYMENT_GATEWAY
+  CHEQUE
+  CARD
+  OTHER
+}
+
 /// Reversal/Adjustment reason code categories (PDF §9, §62).
 enum ReversalReasonCategory {
   DATA_ENTRY_ERROR
@@ -706,14 +716,19 @@ model User {
   accessReviewItems       AccessReviewItem[]
   notifications           Notification[]
   notificationPreferences NotificationPreference[]
-  createdUsers            User[]                  @relation("UserCreatedBy")
-  updatedUsers            User[]                  @relation("UserUpdatedBy")
-  changeRequestsRequested MasterDataChangeRequest[] @relation("ChangeRequestRequestedBy")
-  changeRequestsApproved  MasterDataChangeRequest[] @relation("ChangeRequestApprovedBy")
-  journalEntriesSubmitted JournalEntry[] @relation("JournalEntrySubmittedBy")
-  journalEntriesApproved  JournalEntry[] @relation("JournalEntryApprovedBy")
-  journalEntriesPosted    JournalEntry[] @relation("JournalEntryPostedBy")
-  journalEntriesReversed  JournalEntry[] @relation("JournalEntryReversedBy")
+  createdUsers              User[]                  @relation("UserCreatedBy")
+  updatedUsers              User[]                  @relation("UserUpdatedBy")
+  changeRequestsRequested   MasterDataChangeRequest[] @relation("ChangeRequestRequestedBy")
+  changeRequestsApproved    MasterDataChangeRequest[] @relation("ChangeRequestApprovedBy")
+  journalEntriesSubmitted   JournalEntry[] @relation("JournalEntrySubmittedBy")
+  journalEntriesApproved    JournalEntry[] @relation("JournalEntryApprovedBy")
+  journalEntriesPosted      JournalEntry[] @relation("JournalEntryPostedBy")
+  journalEntriesReversed    JournalEntry[] @relation("JournalEntryReversedBy")
+  transactionsCreated       Transaction[] @relation("TransactionCreatedBy")
+  transactionsSubmitted     Transaction[] @relation("TransactionSubmittedBy")
+  transactionsApproved      Transaction[] @relation("TransactionApprovedBy")
+  transactionsPosted        Transaction[] @relation("TransactionPostedBy")
+  transactionsReversed      Transaction[] @relation("TransactionReversedBy")
 
   @@index([status, isActive])
   @@index([primaryLocationId])
@@ -1095,6 +1110,7 @@ model Location {
 
   users            User[]         @relation("UserPrimaryLocation")
   journalLines     JournalLine[]
+  transactions     Transaction[]
 
   @@unique([organizationId, code])
   @@index([type, isActive])
@@ -1118,6 +1134,7 @@ model Department {
   users          User[]       @relation("UserHomeDepartment")
   costCentres    CostCentre[]
   journalLines   JournalLine[]
+  transactions   Transaction[]
 
   @@unique([organizationId, code])
   @@index([parentId])
@@ -1138,6 +1155,7 @@ model CostCentre {
   updatedAt      DateTime     @updatedAt @map("updated_at")
 
   journalLines JournalLine[]
+  transactions Transaction[]
 
   @@unique([organizationId, code])
   @@index([departmentId])
@@ -1159,6 +1177,7 @@ model Project {
   updatedAt      DateTime     @updatedAt @map("updated_at")
 
   journalLines JournalLine[]
+  transactions Transaction[]
 
   @@unique([organizationId, code])
   @@index([status, isActive])
@@ -1180,6 +1199,7 @@ model FundingSource {
   updatedAt      DateTime          @updatedAt @map("updated_at")
 
   journalLines JournalLine[]
+  transactions Transaction[]
 
   @@unique([organizationId, code])
   @@index([type, isActive])
@@ -1204,6 +1224,7 @@ model Currency {
   openingBalances        OpeningBalance[]
   accountBalanceSnapshots AccountBalanceSnapshot[]
   journalLines           JournalLine[]
+  transactions           Transaction[]
 
   @@map("currencies")
 }
@@ -1340,6 +1361,7 @@ model Account {
   budgetLines            BudgetLine[]
   journalLines           JournalLine[]
   accountBalanceSnapshots AccountBalanceSnapshot[]
+  transactions           Transaction[]
 
   @@unique([organizationId, code])
   @@index([parentId])
@@ -1526,27 +1548,77 @@ model ReversalReasonCode {
   updatedAt      DateTime @updatedAt @map("updated_at")
 
   journalEntries JournalEntry[]
+  transactions   Transaction[]
 
   @@unique([organizationId, code])
   @@index([category, isActive])
   @@map("reversal_reason_codes")
 }
 
-/// Minimal Transaction for M3 period-lock trigger (expanded in M5).
+/// Transaction — M5 expanded with all PDF §8 fields.
 model Transaction {
-  id             String               @id @default(cuid())
-  organizationId String               @map("organization_id")
-  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  status         TransactionStatus    @default(DRAFT)
-  date           DateTime             @db.Date
-  description    String?
-  reference      String?
-  createdAt      DateTime             @default(now()) @map("created_at")
-  updatedAt      DateTime             @updatedAt @map("updated_at")
+  id                 String               @id @default(cuid())
+  organizationId     String               @map("organization_id")
+  organization       Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  status             TransactionStatus    @default(DRAFT)
+  date               DateTime             @db.Date
+  description        String?
+  reference          String?
+  number             String?              // allocated on post
+  accountId          String?              @map("account_id")
+  account            Account?             @relation(fields: [accountId], references: [id])
+  amount             Decimal              @db.Decimal(20, 6)
+  currencyCode       String               @db.Char(3) @map("currency_code")
+  currency           Currency             @relation(fields: [currencyCode], references: [code])
+  projectId          String?              @map("project_id")
+  project            Project?             @relation(fields: [projectId], references: [id])
+  departmentId       String?              @map("department_id")
+  department         Department?          @relation(fields: [departmentId], references: [id])
+  costCentreId       String?              @map("cost_centre_id")
+  costCentre         CostCentre?          @relation(fields: [costCentreId], references: [id])
+  locationId         String?              @map("location_id")
+  location           Location?            @relation(fields: [locationId], references: [id])
+  fundingSourceId    String?              @map("funding_source_id")
+  fundingSource      FundingSource?       @relation(fields: [fundingSourceId], references: [id])
+  paymentMethod      PaymentMethod        @default(CASH) @map("payment_method")
+  supportingDocumentId String?            @map("supporting_document_id") // Document model in M12
+  createdById        String?              @map("created_by_id")
+  createdBy          User?                @relation("TransactionCreatedBy", fields: [createdById], references: [id])
+  submittedById      String?              @map("submitted_by_id")
+  submittedBy        User?                @relation("TransactionSubmittedBy", fields: [submittedById], references: [id])
+  submittedAt        DateTime?            @map("submitted_at")
+  approvedById       String?              @map("approved_by_id")
+  approvedBy         User?                @relation("TransactionApprovedBy", fields: [approvedById], references: [id])
+  approvedAt         DateTime?            @map("approved_at")
+  postedById         String?              @map("posted_by_id")
+  postedBy           User?                @relation("TransactionPostedBy", fields: [postedById], references: [id])
+  postedAt           DateTime?            @map("posted_at")
+  reversedById       String?              @map("reversed_by_id")
+  reversedBy         User?                @relation("TransactionReversedBy", fields: [reversedById], references: [id])
+  reversedAt         DateTime?            @map("reversed_at")
+  voidedById         String?              @map("voided_by_id")
+  voidedAt           DateTime?            @map("voided_at")
+  reversalReasonId   String?              @map("reversal_reason_id")
+  reversalReason     ReversalReasonCode?  @relation(fields: [reversalReasonId], references: [id])
+  adjustingEntryId   String?              @map("adjusting_entry_id")
+  adjustingEntry     Transaction?         @relation("TransactionAdjustments", fields: [adjustingEntryId], references: [id])
+  adjustedEntries    Transaction[]        @relation("TransactionAdjustments")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
 
-  journalEntries JournalEntry[]
+  journalEntries     JournalEntry[]
 
+  @@unique([organizationId, number])
   @@index([status, date])
+  @@index([accountId])
+  @@index([projectId])
+  @@index([departmentId])
+  @@index([costCentreId])
+  @@index([locationId])
+  @@index([fundingSourceId])
+  @@index([supportingDocumentId])
+  @@index([reversalReasonId])
+  @@index([adjustingEntryId])
   @@map("transactions")
 }
 
