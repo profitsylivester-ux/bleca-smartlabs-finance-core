@@ -505,6 +505,7 @@ enum AuditEntityType {
   REASON_CODE
   PRODUCT_SERVICE
   ACCOUNT
+  FINANCIAL_PERIOD
 }
 
 enum AuditResult {
