@@ -44,3 +44,5 @@ next-env.d.ts
 devserver.log
 .storage
 *.local
+
+src/generated/prisma/query_engine-*.dll.node.tmp*
