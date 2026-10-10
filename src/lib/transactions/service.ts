@@ -3,44 +3,45 @@ import { writeAuditEntry } from '@/lib/audit/writer';
 import { runIdempotent } from '@/lib/api/idempotency';
 import { withAudit } from '@/lib/db/with-audit';
 import { ValidationError, NotFoundError } from '@/lib/kernel/errors';
-import { TransactionStateMachine } from '@/lib/workflow/transaction-state-machine';
+import { TransactionStateMachine, type TransactionStatus } from '@/lib/workflow/transaction-state-machine';
 import type { ActorContext } from '@/lib/kernel/context';
+import type { AuditActor } from '@/lib/audit/types';
 
 const STATE_MACHINE = new TransactionStateMachine();
 
-export type PaymentMethod = 'CASH' | 'BANK_TRANSFER' | 'CHECK' | 'CREDIT_CARD' | 'DIRECT_DEBIT' | 'OTHER';
+export type PaymentMethod = 'CASH' | 'BANK_TRANSFER' | 'CHEQUE' | 'MOBILE_MONEY' | 'PAYMENT_GATEWAY' | 'CARD' | 'OTHER';
 
 interface CreateInput {
   organizationId: string;
   date: Date;
-  description?: string;
-  reference?: string;
-  accountId?: string;
+  description?: string | null;
+  reference?: string | null;
+  accountId?: string | null;
   amount: number;
   currencyCode: string;
-  projectId?: string;
-  departmentId?: string;
-  costCentreId?: string;
-  fundingSourceId?: string;
+  projectId?: string | null;
+  departmentId?: string | null;
+  costCentreId?: string | null;
+  fundingSourceId?: string | null;
   paymentMethod?: PaymentMethod;
-  supportingDocumentId?: string;
+  supportingDocumentId?: string | null;
 }
 
-interface TransactionRow {
+export interface TransactionRow {
   id: string;
   status: string | null;
   date: Date;
-  description?: string;
-  reference?: string;
+  description: string | null;
+  reference: string | null;
   amount: number;
   currencyCode: string;
   paymentMethod: PaymentMethod;
-  accountId?: string;
-  projectId?: string;
-  departmentId?: string;
-  costCentreId?: string;
-  fundingSourceId?: string;
-  supportingDocumentId?: string;
+  accountId: string | null;
+  projectId: string | null;
+  departmentId: string | null;
+  costCentreId: string | null;
+  fundingSourceId: string | null;
+  supportingDocumentId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -79,12 +80,12 @@ export class TransactionService {
     await withAudit(
       {
         organizationId,
-        actor,
+        actor: { id: actor.userId, name: actor.fullName, roleCodes: actor.roleCodes },
       },
       async () => {},
       {
-        action: 'TRANSACTION_CREATED' as const,
-        entityType: 'TRANSACTION' as const,
+        action: 'JOURNAL_ENTRY_CREATED' as const,
+        entityType: 'JOURNAL_ENTRY' as const,
         entityId: tx.id,
         entityLabel: tx.id,
         description: `Transaction ${tx.id} created`,
@@ -170,7 +171,7 @@ export class TransactionService {
       endDate?: Date;
     },
   ): Promise<TransactionRow[]> {
-    const where: any = { organizationId };
+    const where: Record<string, unknown> = { organizationId };
 
     if (filters?.status) where.status = filters.status;
     if (filters?.accountId) where.accountId = filters.accountId;
@@ -179,13 +180,13 @@ export class TransactionService {
     if (filters?.costCentreId) where.costCentreId = filters.costCentreId;
     if (filters?.minAmount !== undefined || filters?.maxAmount !== undefined) {
       where.amount = {};
-      if (filters.minAmount !== undefined) where.amount.gte = filters.minAmount;
-      if (filters.maxAmount !== undefined) where.amount.lte = filters.maxAmount;
+      if (filters.minAmount !== undefined) (where.amount as Record<string, number>).gte = filters.minAmount;
+      if (filters.maxAmount !== undefined) (where.amount as Record<string, number>).lte = filters.maxAmount;
     }
     if (filters?.startDate || filters?.endDate) {
       where.date = {};
-      if (filters.startDate) where.date.gte = filters.startDate;
-      if (filters.endDate) where.date.lte = filters.endDate;
+      if (filters.startDate) (where.date as Record<string, Date>).gte = filters.startDate;
+      if (filters.endDate) (where.date as Record<string, Date>).lte = filters.endDate;
     }
 
     const records = await prisma.transaction.findMany({
@@ -240,7 +241,7 @@ export class TransactionService {
       throw new NotFoundError('Transaction', id);
     }
 
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     if (data.description !== undefined) updateData.description = data.description;
     if (data.reference !== undefined) updateData.reference = data.reference;
 
@@ -270,12 +271,12 @@ export class TransactionService {
     await withAudit(
       {
         organizationId,
-        actor,
+        actor: { id: actor.userId, name: actor.fullName, roleCodes: actor.roleCodes },
       },
       async () => {},
       {
-        action: 'TRANSACTION_UPDATED' as const,
-        entityType: 'TRANSACTION' as const,
+        action: 'JOURNAL_ENTRY_UPDATED' as const,
+        entityType: 'JOURNAL_ENTRY' as const,
         entityId: updated.id,
         entityLabel: updated.id,
         description: `Transaction ${updated.id} updated`,
@@ -303,7 +304,7 @@ export class TransactionService {
   }
 
   async submit(id: string, organizationId: string, actor: ActorContext, reason?: string, evidenceDocumentId?: string): Promise<TransactionRow> {
-    const outcome = await runIdempotent({
+    const outcome = await runIdempotent<TransactionRow>({
       key: `${id}:submit`,
       scope: `POST /api/v1/transactions/${id}/submit`,
       actorId: actor.userId,
@@ -312,7 +313,9 @@ export class TransactionService {
     });
 
     if (outcome.kind === 'REPLAYED') {
-      return this.findById(id, organizationId) ?? this._throwNotFound(id);
+      const found = await this.findById(id, organizationId);
+      if (!found) this._throwNotFound(id);
+      return found;
     }
 
     return outcome.result;
@@ -328,12 +331,12 @@ export class TransactionService {
       throw new NotFoundError('Transaction', id);
     }
 
-    const fromStatus = current.status;
+    const fromStatus = current.status as TransactionStatus;
 
-    const isLegal = TransactionStateMachine.isLegalTransition(fromStatus as any, 'SUBMITTED');
+    const isLegal = TransactionStateMachine.isLegalTransition(fromStatus, 'SUBMITTED');
 
     if (!isLegal) {
-      const allowed = TransactionStateMachine.getLegalTransitions(fromStatus as any);
+      const allowed = TransactionStateMachine.getLegalTransitions(fromStatus);
       throw new ValidationError(
         `Illegal state transition from ${fromStatus} to SUBMITTED. Allowed: ${allowed.join(', ')}`,
         { details: { from: fromStatus, to: 'SUBMITTED', allowed } },
@@ -359,20 +362,54 @@ export class TransactionService {
       );
     }
 
+    const updated = await tx.transaction.findFirst({
+      where: { id, organizationId },
+      select: {
+        id: true,
+        status: true,
+        date: true,
+        description: true,
+        reference: true,
+        amount: true,
+        currencyCode: true,
+        paymentMethod: true,
+        accountId: true,
+        projectId: true,
+        departmentId: true,
+        costCentreId: true,
+        fundingSourceId: true,
+        supportingDocumentId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!updated) {
+      throw new NotFoundError('Transaction', id);
+    }
+
     return {
-      id,
-      status: result.newStatus,
-      date: new Date(),
-      amount: 0,
-      currencyCode: 'USD',
-      paymentMethod: 'CASH',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      id: updated.id,
+      status: updated.status,
+      date: updated.date,
+      description: updated.description,
+      reference: updated.reference,
+      amount: Number(updated.amount),
+      currencyCode: updated.currencyCode,
+      paymentMethod: updated.paymentMethod as PaymentMethod,
+      accountId: updated.accountId,
+      projectId: updated.projectId,
+      departmentId: updated.departmentId,
+      costCentreId: updated.costCentreId,
+      fundingSourceId: updated.fundingSourceId,
+      supportingDocumentId: updated.supportingDocumentId,
+      createdAt: updated.createdAt,
+      updatedAt: updated.updatedAt,
     };
   }
 
   async approve(id: string, organizationId: string, actor: ActorContext): Promise<TransactionRow> {
-    const outcome = await runIdempotent({
+    const outcome = await runIdempotent<TransactionRow>({
       key: `${id}:approve`,
       scope: `POST /api/v1/transactions/${id}/approve`,
       actorId: actor.userId,
@@ -381,87 +418,99 @@ export class TransactionService {
     });
 
     if (outcome.kind === 'REPLAYED') {
-      return this.findById(id, organizationId) ?? this._throwNotFound(id);
+      const found = await this.findById(id, organizationId);
+      if (!found) this._throwNotFound(id);
+      return found;
     }
 
     return outcome.result;
   }
 
   async reject(id: string, organizationId: string, actor: ActorContext): Promise<TransactionRow> {
-    const outcome = await runIdempotent({
+    const outcome = await runIdempotent<TransactionRow>({
       key: `${id}:reject`,
       scope: `POST /api/v1/transactions/${id}/reject`,
       actorId: actor.userId,
       body: {},
-      handler: async (tx: Tx) => this._doAction(tx, id, organizationId, actor, 'REJECTED'),
+      handler: async (tx: Tx) => { const r = await this._doAction(tx, id, organizationId, actor, 'REJECTED'); return { status: 200, body: r }; },
     });
 
     if (outcome.kind === 'REPLAYED') {
-      return this.findById(id, organizationId) ?? this._throwNotFound(id);
+      const found = await this.findById(id, organizationId);
+      if (!found) this._throwNotFound(id);
+      return found;
     }
 
     return outcome.result;
   }
 
   async post(id: string, organizationId: string, actor: ActorContext): Promise<TransactionRow> {
-    const outcome = await runIdempotent({
+    const outcome = await runIdempotent<TransactionRow>({
       key: `${id}:post`,
       scope: `POST /api/v1/transactions/${id}/post`,
       actorId: actor.userId,
       body: {},
-      handler: async (tx: Tx) => this._doAction(tx, id, organizationId, actor, 'POSTED'),
+      handler: async (tx: Tx) => { const r = await this._doAction(tx, id, organizationId, actor, 'POSTED'); return { status: 200, body: r }; },
     });
 
     if (outcome.kind === 'REPLAYED') {
-      return this.findById(id, organizationId) ?? this._throwNotFound(id);
+      const found = await this.findById(id, organizationId);
+      if (!found) this._throwNotFound(id);
+      return found;
     }
 
     return outcome.result;
   }
 
   async adjust(id: string, organizationId: string, actor: ActorContext, reason: string, evidenceDocumentId?: string): Promise<TransactionRow> {
-    const outcome = await runIdempotent({
+    const outcome = await runIdempotent<TransactionRow>({
       key: `${id}:adjust`,
       scope: `POST /api/v1/transactions/${id}/adjust`,
       actorId: actor.userId,
       body: { reason, evidenceDocumentId },
-      handler: async (tx: Tx) => this._doAction(tx, id, organizationId, actor, 'ADJUSTED', reason, evidenceDocumentId),
+      handler: async (tx: Tx) => { const r = await this._doAction(tx, id, organizationId, actor, 'ADJUSTED', reason, evidenceDocumentId); return { status: 200, body: r }; },
     });
 
     if (outcome.kind === 'REPLAYED') {
-      return this.findById(id, organizationId) ?? this._throwNotFound(id);
+      const found = await this.findById(id, organizationId);
+      if (!found) this._throwNotFound(id);
+      return found;
     }
 
     return outcome.result;
   }
 
   async reverse(id: string, organizationId: string, actor: ActorContext, reason: string, evidenceDocumentId?: string, originalTransactionId?: string): Promise<TransactionRow> {
-    const outcome = await runIdempotent({
+    const outcome = await runIdempotent<TransactionRow>({
       key: `${id}:reverse`,
       scope: `POST /api/v1/transactions/${id}/reverse`,
       actorId: actor.userId,
       body: { reason, evidenceDocumentId, originalTransactionId },
-      handler: async (tx: Tx) => this._doAction(tx, id, organizationId, actor, 'REVERSED', reason, evidenceDocumentId, originalTransactionId),
+      handler: async (tx: Tx) => { const r = await this._doAction(tx, id, organizationId, actor, 'REVERSED', reason, evidenceDocumentId, originalTransactionId); return { status: 200, body: r }; },
     });
 
     if (outcome.kind === 'REPLAYED') {
-      return this.findById(id, organizationId) ?? this._throwNotFound(id);
+      const found = await this.findById(id, organizationId);
+      if (!found) this._throwNotFound(id);
+      return found;
     }
 
     return outcome.result;
   }
 
   async cancel(id: string, organizationId: string, actor: ActorContext, reason?: string): Promise<TransactionRow> {
-    const outcome = await runIdempotent({
+    const outcome = await runIdempotent<TransactionRow>({
       key: `${id}:cancel`,
       scope: `POST /api/v1/transactions/${id}/cancel`,
       actorId: actor.userId,
       body: { reason },
-      handler: async (tx: Tx) => this._doAction(tx, id, organizationId, actor, 'CANCELLED', reason),
+      handler: async (tx: Tx) => { const r = await this._doAction(tx, id, organizationId, actor, 'CANCELLED', reason); return { status: 200, body: r }; },
     });
 
     if (outcome.kind === 'REPLAYED') {
-      return this.findById(id, organizationId) ?? this._throwNotFound(id);
+      const found = await this.findById(id, organizationId);
+      if (!found) this._throwNotFound(id);
+      return found;
     }
 
     return outcome.result;
@@ -472,7 +521,7 @@ export class TransactionService {
     id: string,
     organizationId: string,
     actor: ActorContext,
-    targetStatus: string,
+    targetStatus: TransactionStatus,
     reason?: string,
     evidenceDocumentId?: string,
     originalTransactionId?: string,
@@ -486,12 +535,12 @@ export class TransactionService {
       throw new NotFoundError('Transaction', id);
     }
 
-    const fromStatus = current.status;
+    const fromStatus = current.status as TransactionStatus;
 
-    const isLegal = TransactionStateMachine.isLegalTransition(fromStatus as any, targetStatus);
+    const isLegal = TransactionStateMachine.isLegalTransition(fromStatus, targetStatus);
 
     if (!isLegal) {
-      const allowed = TransactionStateMachine.getLegalTransitions(fromStatus as any);
+      const allowed = TransactionStateMachine.getLegalTransitions(fromStatus);
       throw new ValidationError(
         `Illegal state transition from ${fromStatus} to ${targetStatus}. Allowed: ${allowed.join(', ')}`,
         { details: { from: fromStatus, to: targetStatus, allowed } },
@@ -508,7 +557,7 @@ export class TransactionService {
         evidenceDocumentId,
         originalTransactionId,
       },
-      targetStatus as any,
+      targetStatus,
     );
 
     if (!result.success) {
@@ -518,32 +567,74 @@ export class TransactionService {
       );
     }
 
+    const updated = await tx.transaction.findFirst({
+      where: { id, organizationId },
+      select: {
+        id: true,
+        status: true,
+        date: true,
+        description: true,
+        reference: true,
+        amount: true,
+        currencyCode: true,
+        paymentMethod: true,
+        accountId: true,
+        projectId: true,
+        departmentId: true,
+        costCentreId: true,
+        fundingSourceId: true,
+        supportingDocumentId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!updated) {
+      throw new NotFoundError('Transaction', id);
+    }
+
     return {
-      id,
-      status: result.newStatus,
-      date: new Date(),
-      amount: 0,
-      currencyCode: 'USD',
-      paymentMethod: 'CASH',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      id: updated.id,
+      status: updated.status,
+      date: updated.date,
+      description: updated.description,
+      reference: updated.reference,
+      amount: Number(updated.amount),
+      currencyCode: updated.currencyCode,
+      paymentMethod: updated.paymentMethod as PaymentMethod,
+      accountId: updated.accountId,
+      projectId: updated.projectId,
+      departmentId: updated.departmentId,
+      costCentreId: updated.costCentreId,
+      fundingSourceId: updated.fundingSourceId,
+      supportingDocumentId: updated.supportingDocumentId,
+      createdAt: updated.createdAt,
+      updatedAt: updated.updatedAt,
     };
   }
 
-  private _rowFromTransition(id: string, newStatus: any): TransactionRow {
+  private _rowFromTransition(id: string, newStatus: TransactionStatus): TransactionRow {
     return {
       id,
       status: newStatus,
       date: new Date(),
+      description: null,
+      reference: null,
       amount: 0,
       currencyCode: 'USD',
       paymentMethod: 'CASH',
+      accountId: null,
+      projectId: null,
+      departmentId: null,
+      costCentreId: null,
+      fundingSourceId: null,
+      supportingDocumentId: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
   }
 
-  private _throwNotFound(id: string) {
-    throw new Error(`NotFoundError: Transaction ${id} not found`);
+  private _throwNotFound(id: string): never {
+    throw new NotFoundError('Transaction', id);
   }
 }

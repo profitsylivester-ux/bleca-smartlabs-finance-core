@@ -10,7 +10,6 @@ import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
 import { TransactionService } from '@/lib/transactions/service';
 
 const service = new TransactionService();
-const { z: z2 } = z;
 
 async function getTransactionWithValidation(
   id: string,
@@ -50,10 +49,10 @@ async function getTransactionWithValidation(
   return { transaction: existing };
 }
 
-const updateSchema = z2.object({
+const updateSchema = z.object({
   status: z.enum(['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'POSTED', 'LOCKED', 'ADJUSTED', 'REVERSED', 'CANCELLED']).optional(),
-  description: z2.string().optional(),
-  reference: z2.string().optional(),
+  description: z.string().optional(),
+  reference: z.string().optional(),
 });
 
 export async function GET(
@@ -68,7 +67,7 @@ export async function GET(
     const { organizationId, id } = await params;
     const { transaction } = await getTransactionWithValidation(id, organizationId, ctx);
 
-    return ok(transaction, reqId);
+    return ok(transaction, 200, reqId);
   } catch (error) {
     return apiError(error, reqId);
   }
@@ -88,7 +87,7 @@ export async function PATCH(
 
     const updated = await service.update(id, organizationId, body, ctx.actor);
 
-    return ok(updated, reqId);
+    return ok(updated, 200, reqId);
   } catch (error) {
     return apiError(error, reqId);
   }

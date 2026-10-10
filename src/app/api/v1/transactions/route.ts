@@ -20,7 +20,7 @@ const createSchema = z.object({
   accountId: z.string().optional(),
   amount: z.number(),
   currencyCode: z.string().length(3),
-  paymentMethod: z.enum(['CASH', 'BANK_TRANSFER', 'CHECK', 'CREDIT_CARD', 'DIRECT_DEBIT', 'OTHER']).default('CASH'),
+  paymentMethod: z.enum(['CASH', 'BANK_TRANSFER', 'CHEQUE', 'MOBILE_MONEY', 'PAYMENT_GATEWAY', 'CARD', 'OTHER']).default('CASH'),
   projectId: z.string().optional(),
   departmentId: z.string().optional(),
   costCentreId: z.string().optional(),
@@ -49,20 +49,20 @@ export async function GET(
 
     const { searchParams } = new URL(request.url);
     const filters = {
-      status: searchParams.get('status') as any,
+      status: searchParams.get('status') || undefined,
       accountId: searchParams.get('accountId') || undefined,
       projectId: searchParams.get('projectId') || undefined,
       departmentId: searchParams.get('departmentId') || undefined,
       costCentreId: searchParams.get('costCentreId') || undefined,
       minAmount: searchParams.get('minAmount') ? Number(searchParams.get('minAmount')) : undefined,
       maxAmount: searchParams.get('maxAmount') ? Number(searchParams.get('maxAmount')) : undefined,
-      startDate: searchParams.get('startDate') ? new Date(searchParams.get('startDate')) : undefined,
-      endDate: searchParams.get('endDate') ? new Date(searchParams.get('endDate')) : undefined,
+      startDate: searchParams.get('startDate') ? new Date(searchParams.get('startDate')!) : undefined,
+      endDate: searchParams.get('endDate') ? new Date(searchParams.get('endDate')!) : undefined,
     };
 
     const transactions = await service.findAll(ctx.actor.organizationId, filters);
 
-    return ok(transactions, reqId);
+    return ok(transactions, 200, reqId);
   } catch (error) {
     return apiError(error, reqId);
   }
@@ -82,13 +82,14 @@ export async function POST(
     }
 
     const body = createSchema.parse(await request.json());
+    const { date, ...rest } = body;
 
     const transaction = await service.create(
-      { organizationId: ctx.actor.organizationId, date: new Date(body.date), ...body },
+      { organizationId: ctx.actor.organizationId, date: new Date(date), ...rest },
       ctx.actor,
     );
 
-    return ok(transaction, reqId);
+    return ok(transaction, 201, reqId);
   } catch (error) {
     return apiError(error, reqId);
   }

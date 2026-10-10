@@ -9,7 +9,7 @@ import { runIdempotent } from '@/lib/api/idempotency';
 import { withAudit } from '@/lib/db/with-audit';
 import { writeAuditEntry } from '@/lib/audit/writer';
 import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
-import { TransactionService } from '@/lib/transactions/service';
+import { TransactionService, type TransactionRow } from '@/lib/transactions/service';
 
 const service = new TransactionService();
 
@@ -35,14 +35,15 @@ export async function POST(
     }
 
     const { id } = await params;
+    const orgId = ctx.actor.organizationId!;
 
-    const outcome = await runIdempotent({
+    const outcome = await runIdempotent<TransactionRow>({
       key,
       scope: `POST /api/v1/transactions/${id}/submit`,
       actorId: ctx.actor.userId,
       body: await request.json(),
       handler: async (tx) => {
-        const result = await service._doSubmit(tx, id, ctx.actor.organizationId, ctx.actor);
+        const result = await service._doSubmit(tx, id, orgId, ctx.actor);
         return { status: 200, body: result };
       },
     });
@@ -51,7 +52,7 @@ export async function POST(
       return NextResponse.json(outcome.responseBody, { status: outcome.responseStatus });
     }
 
-    return ok(outcome.result, reqId);
+    return ok(outcome.result, 200, reqId);
   } catch (error) {
     return apiError(error, reqId);
   }

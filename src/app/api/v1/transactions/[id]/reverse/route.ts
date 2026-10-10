@@ -9,7 +9,7 @@ import { apiError, ok, requestId } from '@/lib/api/responses';
 import { runIdempotent } from '@/lib/api/idempotency';
 import { withAudit } from '@/lib/db/with-audit';
 import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
-import { TransactionService } from '@/lib/transactions/service';
+import { TransactionService, type TransactionRow } from '@/lib/transactions/service';
 
 const service = new TransactionService();
 
@@ -37,15 +37,16 @@ export async function POST(
     }
 
     const { id } = await params;
+    const orgId = ctx.actor.organizationId!;
     const body = reverseSchema.parse(await request.json());
 
-    const outcome = await runIdempotent({
+    const outcome = await runIdempotent<TransactionRow>({
       key,
       scope: `POST /api/v1/transactions/${id}/reverse`,
       actorId: ctx.actor.userId,
       body,
       handler: async (tx) => {
-        const result = await service._doAction(tx, id, ctx.actor.organizationId, ctx.actor, 'REVERSED', body.reason, body.evidenceDocumentId, body.originalTransactionId);
+        const result = await service._doAction(tx, id, orgId, ctx.actor, 'REVERSED', body.reason, body.evidenceDocumentId, body.originalTransactionId);
         return { status: 200, body: result };
       },
     });
@@ -54,7 +55,7 @@ export async function POST(
       return NextResponse.json(outcome.responseBody, { status: outcome.responseStatus });
     }
 
-    return ok(outcome.result, reqId);
+    return ok(outcome.result, 200, reqId);
   } catch (error) {
     return apiError(error, reqId);
   }
