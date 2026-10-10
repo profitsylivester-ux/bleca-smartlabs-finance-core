@@ -46,3 +46,7 @@ devserver.log
 *.local
 
 src/generated/prisma/query_engine-*.dll.node.tmp*
+
+test-run*.txt
+test-out*.txt
+test-output*.txt
