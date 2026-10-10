@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { PrismaClient } from '../src/generated/prisma/client';
 import { hashPassword } from '../src/lib/auth/password';
-import { PERMISSIONS, ROLES, ORG, AUTH_POLICY } from './seed-data';
+import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, CHART_OF_ACCOUNTS_PDF7, type AccountSeed } from './seed-data';
 
 /**
  * Idempotent seed.
@@ -137,6 +137,61 @@ async function seedOrganization() {
   return org;
 }
 
+async function seedChartOfAccounts(orgId: string) {
+  const accountsByCode = new Map<string, { id: string; code: string }>();
+
+  for (const acc of CHART_OF_ACCOUNTS_PDF7) {
+    const parentId = acc.parentCode ? accountsByCode.get(acc.parentCode)?.id : null;
+    const existing = await prisma.account.findUnique({
+      where: { organizationId_code: { organizationId: orgId, code: acc.code } },
+      select: { id: true, code: true },
+    });
+
+    if (existing) {
+      const updated = await prisma.account.update({
+        where: { id: existing.id },
+        data: {
+          name: acc.name,
+          description: acc.description,
+          type: acc.type,
+          subCategory: acc.subCategory as import('@/generated/prisma/client').AccountSubCategory | null,
+          normalBalance: acc.normalBalance,
+          parentId,
+          isPostable: acc.isPostable ?? true,
+          isReconcilable: acc.isReconcilable ?? false,
+          requiresDocument: acc.requiresDocument ?? false,
+          status: (acc as AccountSeed & { status?: string }).status ?? 'ACTIVE',
+        },
+        select: { id: true, code: true },
+      });
+      accountsByCode.set(acc.code, updated);
+      continue;
+    }
+
+    const created = await prisma.account.create({
+      data: {
+        organizationId: orgId,
+        code: acc.code,
+        name: acc.name,
+        description: acc.description,
+        type: acc.type,
+        subCategory: acc.subCategory as import('@/generated/prisma/client').AccountSubCategory | null,
+        normalBalance: acc.normalBalance,
+        parentId,
+        isPostable: acc.isPostable ?? true,
+        isReconcilable: acc.isReconcilable ?? false,
+        requiresDocument: acc.requiresDocument ?? false,
+        status: (acc as AccountSeed & { status?: string }).status ?? 'ACTIVE',
+      },
+      select: { id: true, code: true },
+    });
+
+    accountsByCode.set(acc.code, created);
+  }
+
+  return CHART_OF_ACCOUNTS_PDF7.length;
+}
+
 async function seedCeo(orgId: string) {
   const email = process.env.SEED_CEO_EMAIL?.trim();
   const password = process.env.SEED_CEO_PASSWORD;
@@ -222,6 +277,9 @@ async function main() {
     `  organisation    ${org.name} [${org.code}] status=${org.registrationStatus} ` +
       `base=${org.baseCurrency} tin=${org.tin ?? 'null (not yet registered)'}`,
   );
+
+  const coaCount = await seedChartOfAccounts(org.id);
+  console.log(`  chart of accounts  ${coaCount} accounts (PDF §7)`);
 
   const ceo = await seedCeo(org.id);
   console.log(`  CEO account     ${ceo.message}`);

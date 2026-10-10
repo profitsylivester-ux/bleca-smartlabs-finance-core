@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@/generated/prisma/client';
-import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, PROJECTS, FUNDING_SOURCES, CURRENCIES, REASON_CODES, PRODUCTS_SERVICES } from '../../../prisma/seed-data';
+import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, PROJECTS, FUNDING_SOURCES, CURRENCIES, REASON_CODES, PRODUCTS_SERVICES, CHART_OF_ACCOUNTS_PDF7, type AccountSeed } from '../../../prisma/seed-data';
 
 /**
  * Reference data for the integration suite.
@@ -135,6 +135,145 @@ export async function seedTestFixtures(prisma: PrismaClient): Promise<void> {
         unitPrice: ps.unitPrice ? Number(ps.unitPrice) : null,
         currencyCode: currency.code,
       },
+    });
+  }
+
+  // Seed Chart of Accounts (PDF §7)
+  const accountsByCode = new Map<string, { id: string; code: string }>();
+  for (const acc of CHART_OF_ACCOUNTS_PDF7) {
+    const parentId = acc.parentCode ? accountsByCode.get(acc.parentCode)?.id : null;
+    const existing = await prisma.account.findUnique({
+      where: { organizationId_code: { organizationId: org.id, code: acc.code } },
+      select: { id: true, code: true },
+    });
+
+    if (existing) {
+      const updated = await prisma.account.update({
+        where: { id: existing.id },
+        data: {
+          name: acc.name,
+          description: acc.description,
+          type: acc.type,
+          subCategory: acc.subCategory as import('@/generated/prisma/client').AccountSubCategory | null,
+          normalBalance: acc.normalBalance,
+          parentId,
+          isPostable: acc.isPostable ?? true,
+          isReconcilable: acc.isReconcilable ?? false,
+          requiresDocument: acc.requiresDocument ?? false,
+          status: (acc as AccountSeed & { status?: string }).status ?? 'ACTIVE',
+        },
+        select: { id: true, code: true },
+      });
+      accountsByCode.set(acc.code, updated);
+      continue;
+    }
+
+    const created = await prisma.account.create({
+      data: {
+        organizationId: org.id,
+        code: acc.code,
+        name: acc.name,
+        description: acc.description,
+        type: acc.type,
+        subCategory: acc.subCategory as import('@/generated/prisma/client').AccountSubCategory | null,
+        normalBalance: acc.normalBalance,
+        parentId,
+        isPostable: acc.isPostable ?? true,
+        isReconcilable: acc.isReconcilable ?? false,
+        requiresDocument: acc.requiresDocument ?? false,
+        status: (acc as AccountSeed & { status?: string }).status ?? 'ACTIVE',
+      },
+      select: { id: true, code: true },
+    });
+
+    accountsByCode.set(acc.code, created);
+  }
+
+  // Create financial periods for 2025 fiscal year
+  await createFiscalYearPeriods(prisma, org.id, 2025);
+}
+
+async function createFiscalYearPeriods(prisma: PrismaClient, orgId: string, year: number): Promise<void> {
+  const startOfYear = new Date(Date.UTC(year, 0, 1));
+  const endOfYear = new Date(Date.UTC(year, 11, 31, 23, 59, 59));
+
+  // Check if periods already exist
+  const existingCount = await prisma.financialPeriod.count({
+    where: { organizationId: orgId },
+  });
+  if (existingCount > 0) return;
+
+  // Monthly periods
+  for (let month = 0; month < 12; month++) {
+    const startDate = new Date(Date.UTC(year, month, 1));
+    const endDate = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59));
+    const code = `${year}-${String(month + 1).padStart(2, '0')}`;
+    const name = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+    await prisma.financialPeriod.create({
+      data: {
+        organizationId: orgId,
+        type: 'MONTHLY',
+        status: month === 0 ? 'OPEN' : 'OPEN',
+        code,
+        name,
+        startDate,
+        endDate,
+      },
+    });
+  }
+
+  // Quarterly periods
+  const quarters = [
+    { q: 1, start: 0, end: 2 },
+    { q: 2, start: 3, end: 5 },
+    { q: 3, start: 6, end: 8 },
+    { q: 4, start: 9, end: 11 },
+  ];
+
+  for (const q of quarters) {
+    const startDate = new Date(Date.UTC(year, q.start, 1));
+    const endDate = new Date(Date.UTC(year, q.end + 1, 0, 23, 59, 59));
+    const code = `${year}-Q${q.q}`;
+    const name = `Q${q.q} ${year}`;
+
+    await prisma.financialPeriod.create({
+      data: {
+        organizationId: orgId,
+        type: 'QUARTERLY',
+        status: 'OPEN',
+        code,
+        name,
+        startDate,
+        endDate,
+      },
+    });
+  }
+
+  // Annual period
+  await prisma.financialPeriod.create({
+    data: {
+      organizationId: orgId,
+      type: 'ANNUAL',
+      status: 'OPEN',
+      code: `${year}`,
+      name: `FY ${year}`,
+      startDate: startOfYear,
+      endDate: endOfYear,
+    },
+  });
+
+  // Lock the first monthly period for testing
+  const firstPeriod = await prisma.financialPeriod.findFirst({
+    where: { organizationId: orgId, type: 'MONTHLY' },
+    orderBy: { startDate: 'asc' },
+    select: { id: true },
+  });
+
+  if (firstPeriod) {
+    await prisma.financialPeriod.update({
+      where: { id: firstPeriod.id },
+      data: { status: 'LOCKED', lockedAt: new Date() },
     });
   }
 }
