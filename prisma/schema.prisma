@@ -504,6 +504,7 @@ enum AuditEntityType {
   MASTER_DATA_VERSION
   REASON_CODE
   PRODUCT_SERVICE
+  ACCOUNT
 }
 
 enum AuditResult {

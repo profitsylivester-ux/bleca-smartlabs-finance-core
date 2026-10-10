@@ -774,7 +774,8 @@ export const AuditEntityType: {
   MASTER_DATA_CHANGE_REQUEST: 'MASTER_DATA_CHANGE_REQUEST',
   MASTER_DATA_VERSION: 'MASTER_DATA_VERSION',
   REASON_CODE: 'REASON_CODE',
-  PRODUCT_SERVICE: 'PRODUCT_SERVICE'
+  PRODUCT_SERVICE: 'PRODUCT_SERVICE',
+  ACCOUNT: 'ACCOUNT'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
