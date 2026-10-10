@@ -506,6 +506,7 @@ enum AuditEntityType {
   PRODUCT_SERVICE
   ACCOUNT
   FINANCIAL_PERIOD
+  OPENING_BALANCE
 }
 
 enum AuditResult {

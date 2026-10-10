@@ -994,7 +994,8 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   REASON_CODE: 'REASON_CODE',
   PRODUCT_SERVICE: 'PRODUCT_SERVICE',
   ACCOUNT: 'ACCOUNT',
-  FINANCIAL_PERIOD: 'FINANCIAL_PERIOD'
+  FINANCIAL_PERIOD: 'FINANCIAL_PERIOD',
+  OPENING_BALANCE: 'OPENING_BALANCE'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {

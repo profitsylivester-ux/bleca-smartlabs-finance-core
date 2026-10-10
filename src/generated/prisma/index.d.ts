@@ -776,7 +776,8 @@ export const AuditEntityType: {
   REASON_CODE: 'REASON_CODE',
   PRODUCT_SERVICE: 'PRODUCT_SERVICE',
   ACCOUNT: 'ACCOUNT',
-  FINANCIAL_PERIOD: 'FINANCIAL_PERIOD'
+  FINANCIAL_PERIOD: 'FINANCIAL_PERIOD',
+  OPENING_BALANCE: 'OPENING_BALANCE'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
