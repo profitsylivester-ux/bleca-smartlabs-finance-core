@@ -502,6 +502,134 @@ exports.Prisma.ProductServiceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AccountScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  type: 'type',
+  subCategory: 'subCategory',
+  normalBalance: 'normalBalance',
+  parentId: 'parentId',
+  isPostable: 'isPostable',
+  isReconcilable: 'isReconcilable',
+  requiresDocument: 'requiresDocument',
+  status: 'status',
+  validatedByQualifiedAccountant: 'validatedByQualifiedAccountant',
+  validatorNotes: 'validatorNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FinancialPeriodScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  type: 'type',
+  status: 'status',
+  code: 'code',
+  name: 'name',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isAdjustment: 'isAdjustment',
+  reopenCount: 'reopenCount',
+  closedAt: 'closedAt',
+  lockedAt: 'lockedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OpeningBalanceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  accountId: 'accountId',
+  periodId: 'periodId',
+  amount: 'amount',
+  currencyCode: 'currencyCode',
+  isUnverified: 'isUnverified',
+  verificationStatus: 'verificationStatus',
+  verifiedByAccountantAt: 'verifiedByAccountantAt',
+  verifiedByAccountantId: 'verifiedByAccountantId',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AccountBalanceSnapshotScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  accountId: 'accountId',
+  periodId: 'periodId',
+  currencyCode: 'currencyCode',
+  debitTotal: 'debitTotal',
+  creditTotal: 'creditTotal',
+  balance: 'balance',
+  computedAt: 'computedAt'
+};
+
+exports.Prisma.JournalEntryScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  periodId: 'periodId',
+  type: 'type',
+  status: 'status',
+  source: 'source',
+  reference: 'reference',
+  description: 'description',
+  transactionId: 'transactionId',
+  postedAt: 'postedAt',
+  postedById: 'postedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.JournalLineScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  entryId: 'entryId',
+  accountId: 'accountId',
+  debit: 'debit',
+  credit: 'credit',
+  currencyCode: 'currencyCode',
+  description: 'description',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.TransactionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  status: 'status',
+  date: 'date',
+  description: 'description',
+  reference: 'reference',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BudgetScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  type: 'type',
+  status: 'status',
+  periodType: 'periodType',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BudgetLineScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  budgetId: 'budgetId',
+  accountId: 'accountId',
+  amount: 'amount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.OrganizationMembershipScalarFieldEnum = {
   organizationId: 'organizationId',
   userId: 'userId',
@@ -876,6 +1004,162 @@ exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
   EXPIRED: 'EXPIRED'
 };
 
+exports.AccountType = exports.$Enums.AccountType = {
+  ASSET: 'ASSET',
+  LIABILITY: 'LIABILITY',
+  EQUITY: 'EQUITY',
+  REVENUE: 'REVENUE',
+  EXPENSE: 'EXPENSE'
+};
+
+exports.AccountSubCategory = exports.$Enums.AccountSubCategory = {
+  CASH: 'CASH',
+  BANK: 'BANK',
+  MOBILE_MONEY: 'MOBILE_MONEY',
+  RECEIVABLE: 'RECEIVABLE',
+  INVENTORY: 'INVENTORY',
+  EQUIPMENT: 'EQUIPMENT',
+  OTHER_ASSET: 'OTHER_ASSET',
+  SUPPLIER_PAYABLE: 'SUPPLIER_PAYABLE',
+  TAX_PAYABLE: 'TAX_PAYABLE',
+  LOAN: 'LOAN',
+  ACCRUED_EXPENSE: 'ACCRUED_EXPENSE',
+  OTHER_OBLIGATION: 'OTHER_OBLIGATION',
+  CAPITAL: 'CAPITAL',
+  RETAINED_EARNINGS: 'RETAINED_EARNINGS',
+  FUTURE_INVESTMENT: 'FUTURE_INVESTMENT',
+  REVENUE_TRAINING: 'REVENUE_TRAINING',
+  REVENUE_CONSULTING: 'REVENUE_CONSULTING',
+  REVENUE_SOFTWARE: 'REVENUE_SOFTWARE',
+  REVENUE_SAAS: 'REVENUE_SAAS',
+  REVENUE_AI_SERVICES: 'REVENUE_AI_SERVICES',
+  REVENUE_IOT_SERVICES: 'REVENUE_IOT_SERVICES',
+  REVENUE_HARDWARE: 'REVENUE_HARDWARE',
+  REVENUE_ELECTRONICS: 'REVENUE_ELECTRONICS',
+  REVENUE_COMPONENT_SALES: 'REVENUE_COMPONENT_SALES',
+  REVENUE_SUBSCRIPTION: 'REVENUE_SUBSCRIPTION',
+  REVENUE_TOKEN_PACKAGES: 'REVENUE_TOKEN_PACKAGES',
+  REVENUE_OTHER: 'REVENUE_OTHER',
+  EXPENSE_INTERNET: 'EXPENSE_INTERNET',
+  EXPENSE_CLOUD: 'EXPENSE_CLOUD',
+  EXPENSE_AI_API: 'EXPENSE_AI_API',
+  EXPENSE_TRANSPORT: 'EXPENSE_TRANSPORT',
+  EXPENSE_MARKETING: 'EXPENSE_MARKETING',
+  EXPENSE_SOFTWARE: 'EXPENSE_SOFTWARE',
+  EXPENSE_WORKSPACE: 'EXPENSE_WORKSPACE',
+  EXPENSE_SALARIES: 'EXPENSE_SALARIES',
+  EXPENSE_TRAINING: 'EXPENSE_TRAINING',
+  EXPENSE_HARDWARE_PROTOTYPING: 'EXPENSE_HARDWARE_PROTOTYPING',
+  EXPENSE_OTHER: 'EXPENSE_OTHER',
+  CONTROL: 'CONTROL'
+};
+
+exports.NormalBalance = exports.$Enums.NormalBalance = {
+  DEBIT: 'DEBIT',
+  CREDIT: 'CREDIT'
+};
+
+exports.AccountStatus = exports.$Enums.AccountStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  LOCKED: 'LOCKED',
+  PENDING_ARCHIVE: 'PENDING_ARCHIVE'
+};
+
+exports.PeriodType = exports.$Enums.PeriodType = {
+  MONTHLY: 'MONTHLY',
+  QUARTERLY: 'QUARTERLY',
+  ANNUAL: 'ANNUAL'
+};
+
+exports.PeriodStatus = exports.$Enums.PeriodStatus = {
+  OPEN: 'OPEN',
+  CLOSING: 'CLOSING',
+  CLOSED: 'CLOSED',
+  LOCKED: 'LOCKED',
+  REOPEN_PENDING: 'REOPEN_PENDING',
+  REOPENED: 'REOPENED'
+};
+
+exports.VerificationStatus = exports.$Enums.VerificationStatus = {
+  UNVERIFIED: 'UNVERIFIED',
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  VERIFIED: 'VERIFIED',
+  DISPUTED: 'DISPUTED',
+  SUPERSEDED: 'SUPERSEDED'
+};
+
+exports.JournalEntryType = exports.$Enums.JournalEntryType = {
+  STANDARD: 'STANDARD',
+  OPENING_BALANCE: 'OPENING_BALANCE',
+  ADJUSTMENT: 'ADJUSTMENT',
+  REVERSAL: 'REVERSAL',
+  CORRECTION: 'CORRECTION',
+  CLOSING: 'CLOSING',
+  SYSTEM: 'SYSTEM'
+};
+
+exports.JournalEntryStatus = exports.$Enums.JournalEntryStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  POSTED: 'POSTED',
+  LOCKED: 'LOCKED',
+  REVERSED: 'REVERSED',
+  VOIDED: 'VOIDED'
+};
+
+exports.JournalSource = exports.$Enums.JournalSource = {
+  MANUAL: 'MANUAL',
+  TRANSACTION: 'TRANSACTION',
+  INVOICE: 'INVOICE',
+  PAYMENT: 'PAYMENT',
+  RECEIPT: 'RECEIPT',
+  TRANSFER: 'TRANSFER',
+  OPENING_BALANCE: 'OPENING_BALANCE',
+  CLOSE: 'CLOSE',
+  REVERSAL: 'REVERSAL',
+  IMPORT: 'IMPORT'
+};
+
+exports.TransactionStatus = exports.$Enums.TransactionStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  POSTED: 'POSTED',
+  LOCKED: 'LOCKED',
+  ADJUSTED: 'ADJUSTED',
+  REVERSED: 'REVERSED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.BudgetLevel = exports.$Enums.BudgetLevel = {
+  COMPANY: 'COMPANY',
+  DEPARTMENT: 'DEPARTMENT',
+  PROJECT: 'PROJECT',
+  FUNDING: 'FUNDING',
+  ACTIVITY: 'ACTIVITY'
+};
+
+exports.BudgetStatus = exports.$Enums.BudgetStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  ACTIVE: 'ACTIVE',
+  REVISED: 'REVISED',
+  CLOSED: 'CLOSED',
+  EXPIRED: 'EXPIRED',
+  REJECTED: 'REJECTED'
+};
+
+exports.BudgetPeriodType = exports.$Enums.BudgetPeriodType = {
+  MONTHLY: 'MONTHLY',
+  QUARTERLY: 'QUARTERLY',
+  ANNUAL: 'ANNUAL'
+};
+
 exports.AuditAction = exports.$Enums.AuditAction = {
   LOGIN: 'LOGIN',
   LOGOUT: 'LOGOUT',
@@ -1036,6 +1320,15 @@ exports.Prisma.ModelName = {
   MasterDataVersion: 'MasterDataVersion',
   ReasonCode: 'ReasonCode',
   ProductService: 'ProductService',
+  Account: 'Account',
+  FinancialPeriod: 'FinancialPeriod',
+  OpeningBalance: 'OpeningBalance',
+  AccountBalanceSnapshot: 'AccountBalanceSnapshot',
+  JournalEntry: 'JournalEntry',
+  JournalLine: 'JournalLine',
+  Transaction: 'Transaction',
+  Budget: 'Budget',
+  BudgetLine: 'BudgetLine',
   OrganizationMembership: 'OrganizationMembership',
   AuditLog: 'AuditLog',
   AuditChainHead: 'AuditChainHead',

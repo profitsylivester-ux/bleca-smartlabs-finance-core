@@ -266,6 +266,173 @@ enum MasterDataChangeStatus {
   EXPIRED
 }
 
+/// Chart of Accounts enums.
+enum AccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  REVENUE
+  EXPENSE
+}
+
+enum NormalBalance {
+  DEBIT
+  CREDIT
+}
+
+enum AccountSubCategory {
+  // Assets
+  CASH
+  BANK
+  MOBILE_MONEY
+  RECEIVABLE
+  INVENTORY
+  EQUIPMENT
+  OTHER_ASSET
+  // Liabilities
+  SUPPLIER_PAYABLE
+  TAX_PAYABLE
+  LOAN
+  ACCRUED_EXPENSE
+  OTHER_OBLIGATION
+  // Equity
+  CAPITAL
+  RETAINED_EARNINGS
+  FUTURE_INVESTMENT
+  // Revenue
+  REVENUE_TRAINING
+  REVENUE_CONSULTING
+  REVENUE_SOFTWARE
+  REVENUE_SAAS
+  REVENUE_AI_SERVICES
+  REVENUE_IOT_SERVICES
+  REVENUE_HARDWARE
+  REVENUE_ELECTRONICS
+  REVENUE_COMPONENT_SALES
+  REVENUE_SUBSCRIPTION
+  REVENUE_TOKEN_PACKAGES
+  REVENUE_OTHER
+  // Expenses
+  EXPENSE_INTERNET
+  EXPENSE_CLOUD
+  EXPENSE_AI_API
+  EXPENSE_TRANSPORT
+  EXPENSE_MARKETING
+  EXPENSE_SOFTWARE
+  EXPENSE_WORKSPACE
+  EXPENSE_SALARIES
+  EXPENSE_TRAINING
+  EXPENSE_HARDWARE_PROTOTYPING
+  EXPENSE_OTHER
+  // Control
+  CONTROL
+}
+
+enum AccountStatus {
+  ACTIVE
+  INACTIVE
+  LOCKED
+  PENDING_ARCHIVE
+}
+
+/// Financial Period enums.
+enum PeriodType {
+  MONTHLY
+  QUARTERLY
+  ANNUAL
+}
+
+enum PeriodStatus {
+  OPEN
+  CLOSING
+  CLOSED
+  LOCKED
+  REOPEN_PENDING
+  REOPENED
+}
+
+/// Opening Balance verification status.
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING_VERIFICATION
+  VERIFIED
+  DISPUTED
+  SUPERSEDED
+}
+
+/// Budget enums (M9).
+enum BudgetLevel {
+  COMPANY
+  DEPARTMENT
+  PROJECT
+  FUNDING
+  ACTIVITY
+}
+
+enum BudgetStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  ACTIVE
+  REVISED
+  CLOSED
+  EXPIRED
+  REJECTED
+}
+
+enum BudgetPeriodType {
+  MONTHLY
+  QUARTERLY
+  ANNUAL
+}
+
+/// Journal Entry enums (M4).
+enum JournalEntryType {
+  STANDARD
+  OPENING_BALANCE
+  ADJUSTMENT
+  REVERSAL
+  CORRECTION
+  CLOSING
+  SYSTEM
+}
+
+enum JournalEntryStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  POSTED
+  LOCKED
+  REVERSED
+  VOIDED
+}
+
+enum JournalSource {
+  MANUAL
+  TRANSACTION
+  INVOICE
+  PAYMENT
+  RECEIPT
+  TRANSFER
+  OPENING_BALANCE
+  CLOSE
+  REVERSAL
+  IMPORT
+}
+
+enum TransactionStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  POSTED
+  LOCKED
+  ADJUSTED
+  REVERSED
+  CANCELLED
+}
+
 // ---- Audit ------------------------------------------------------------------
 
 enum AuditAction {
@@ -852,6 +1019,15 @@ model Organization {
   masterDataChangeRequests MasterDataChangeRequest[]
   reasonCodes              ReasonCode[]
   productsServices         ProductService[]
+  accounts                 Account[]
+  financialPeriods         FinancialPeriod[]
+  openingBalances          OpeningBalance[]
+  accountBalanceSnapshots  AccountBalanceSnapshot[]
+  journalEntries           JournalEntry[]
+  journalLines             JournalLine[]
+  transactions             Transaction[]
+  budgets                  Budget[]
+  budgetLines              BudgetLine[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -974,9 +1150,12 @@ model Currency {
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
 
-  exchangeRatesBase  ExchangeRate[]   @relation("ExchangeRateBase")
-  exchangeRatesQuote ExchangeRate[]   @relation("ExchangeRateQuote")
-  productsServices   ProductService[]
+  exchangeRatesBase       ExchangeRate[]           @relation("ExchangeRateBase")
+  exchangeRatesQuote      ExchangeRate[]           @relation("ExchangeRateQuote")
+  productsServices        ProductService[]
+  openingBalances         OpeningBalance[]
+  accountBalanceSnapshots AccountBalanceSnapshot[]
+  journalLines            JournalLine[]
 
   @@map("currencies")
 }
@@ -1075,8 +1254,8 @@ model ProductService {
   type           String // "PRODUCT" | "SERVICE"
   unit           String? // e.g., "HOUR", "DAY", "UNIT", "MONTH"
   unitPrice      Decimal?     @map("unit_price") @db.Decimal(20, 6)
-  currencyId     String?      @map("currency_id") @db.Char(3)
-  currency       Currency?    @relation(fields: [currencyId], references: [id])
+  currencyCode   String?      @map("currency_code") @db.Char(3)
+  currency       Currency?    @relation(fields: [currencyCode], references: [code])
   isActive       Boolean      @default(true) @map("is_active")
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
@@ -1084,6 +1263,218 @@ model ProductService {
   @@unique([organizationId, code])
   @@index([type, isActive])
   @@map("products_services")
+}
+
+/// Chart of Accounts — hierarchical, configurable per PDF §7.
+model Account {
+  id                             String              @id @default(cuid())
+  organizationId                 String              @map("organization_id")
+  organization                   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code                           String
+  name                           String
+  description                    String?
+  type                           AccountType
+  subCategory                    AccountSubCategory?
+  normalBalance                  NormalBalance
+  parentId                       String?             @map("parent_id")
+  parent                         Account?            @relation("AccountHierarchy", fields: [parentId], references: [id])
+  children                       Account[]           @relation("AccountHierarchy")
+  isPostable                     Boolean             @default(true) @map("is_postable")
+  isReconcilable                 Boolean             @default(false) @map("is_reconcilable")
+  requiresDocument               Boolean             @default(false) @map("requires_document")
+  status                         AccountStatus       @default(ACTIVE)
+  validatedByQualifiedAccountant Boolean             @default(false) @map("validated_by_qualified_accountant")
+  validatorNotes                 String?             @map("validator_notes")
+  createdAt                      DateTime            @default(now()) @map("created_at")
+  updatedAt                      DateTime            @updatedAt @map("updated_at")
+
+  openingBalances         OpeningBalance[]
+  budgetLines             BudgetLine[]
+  journalLines            JournalLine[]
+  accountBalanceSnapshots AccountBalanceSnapshot[]
+
+  @@unique([organizationId, code])
+  @@index([parentId])
+  @@index([type, status])
+  @@map("accounts")
+}
+
+/// Financial Periods — monthly/quarterly/annual with lifecycle and reopen control.
+model FinancialPeriod {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  type           PeriodType
+  status         PeriodStatus @default(OPEN)
+  code           String // e.g., "2025-01", "2025-Q1", "2025"
+  name           String
+  startDate      DateTime     @map("start_date")
+  endDate        DateTime     @map("end_date")
+  isAdjustment   Boolean      @default(false) @map("is_adjustment")
+  reopenCount    Int          @default(0) @map("reopen_count")
+  closedAt       DateTime?    @map("closed_at")
+  lockedAt       DateTime?    @map("locked_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  openingBalances         OpeningBalance[]
+  accountBalanceSnapshots AccountBalanceSnapshot[]
+  journalEntries          JournalEntry[]
+
+  @@unique([organizationId, code])
+  @@index([status, startDate])
+  @@index([type, startDate])
+  @@map("financial_periods")
+}
+
+/// Opening Balances — one-sided/partial historical entries with verification status (PDF §2).
+model OpeningBalance {
+  id                     String             @id @default(cuid())
+  organizationId         String             @map("organization_id")
+  organization           Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accountId              String             @map("account_id")
+  account                Account            @relation(fields: [accountId], references: [id])
+  periodId               String             @map("period_id")
+  period                 FinancialPeriod    @relation(fields: [periodId], references: [id])
+  amount                 Decimal            @db.Decimal(20, 6)
+  currencyCode           String             @map("currency_code") @db.Char(3)
+  currency               Currency           @relation(fields: [currencyCode], references: [code])
+  isUnverified           Boolean            @default(true) @map("is_unverified")
+  verificationStatus     VerificationStatus @default(UNVERIFIED) @map("verification_status")
+  verifiedByAccountantAt DateTime?          @map("verified_by_accountant_at")
+  verifiedByAccountantId String?            @map("verified_by_accountant_id")
+  source                 String // mandatory provenance
+  createdAt              DateTime           @default(now()) @map("created_at")
+  updatedAt              DateTime           @updatedAt @map("updated_at")
+
+  @@unique([accountId, periodId])
+  @@index([verificationStatus])
+  @@map("opening_balances")
+}
+
+/// Account Balance Snapshots — rebuildable cache for dashboard speed.
+model AccountBalanceSnapshot {
+  id             String          @id @default(cuid())
+  organizationId String          @map("organization_id")
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accountId      String          @map("account_id")
+  account        Account         @relation(fields: [accountId], references: [id])
+  periodId       String          @map("period_id")
+  period         FinancialPeriod @relation(fields: [periodId], references: [id])
+  currencyCode   String          @map("currency_code") @db.Char(3)
+  currency       Currency        @relation(fields: [currencyCode], references: [code])
+  debitTotal     Decimal         @map("debit_total") @db.Decimal(20, 6)
+  creditTotal    Decimal         @map("credit_total") @db.Decimal(20, 6)
+  balance        Decimal         @db.Decimal(20, 6)
+  computedAt     DateTime        @default(now()) @map("computed_at")
+
+  @@unique([accountId, periodId, currencyCode])
+  @@index([periodId])
+  @@map("account_balance_snapshots")
+}
+
+/// Minimal JournalEntry for M3 period-lock trigger (expanded in M4).
+model JournalEntry {
+  id             String             @id @default(cuid())
+  organizationId String             @map("organization_id")
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  periodId       String             @map("period_id")
+  period         FinancialPeriod    @relation(fields: [periodId], references: [id])
+  type           JournalEntryType   @default(STANDARD)
+  status         JournalEntryStatus @default(DRAFT)
+  source         JournalSource      @default(MANUAL)
+  reference      String?
+  description    String?
+  transactionId  String?            @map("transaction_id")
+  transaction    Transaction?       @relation(fields: [transactionId], references: [id])
+  postedAt       DateTime?          @map("posted_at")
+  postedById     String?            @map("posted_by_id")
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @updatedAt @map("updated_at")
+
+  lines JournalLine[]
+
+  @@index([periodId, status])
+  @@index([transactionId])
+  @@map("journal_entries")
+}
+
+/// Minimal JournalLine for M3 period-lock trigger (expanded in M4).
+model JournalLine {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  entryId        String       @map("entry_id")
+  entry          JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  accountId      String       @map("account_id")
+  account        Account      @relation(fields: [accountId], references: [id])
+  debit          Decimal      @default(0) @db.Decimal(20, 6)
+  credit         Decimal      @default(0) @db.Decimal(20, 6)
+  currencyCode   String       @map("currency_code") @db.Char(3)
+  currency       Currency     @relation(fields: [currencyCode], references: [code])
+  description    String?
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  @@index([entryId])
+  @@index([accountId])
+  @@map("journal_lines")
+}
+
+/// Minimal Transaction for M3 period-lock trigger (expanded in M5).
+model Transaction {
+  id             String            @id @default(cuid())
+  organizationId String            @map("organization_id")
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  status         TransactionStatus @default(DRAFT)
+  date           DateTime          @db.Date
+  description    String?
+  reference      String?
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @updatedAt @map("updated_at")
+
+  journalEntries JournalEntry[]
+
+  @@index([status, date])
+  @@map("transactions")
+}
+
+/// Minimal Budget for M3 account relation (expanded in M9).
+model Budget {
+  id             String           @id @default(cuid())
+  organizationId String           @map("organization_id")
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code           String
+  name           String
+  type           BudgetLevel
+  status         BudgetStatus     @default(DRAFT)
+  periodType     BudgetPeriodType
+  startDate      DateTime         @map("start_date")
+  endDate        DateTime         @map("end_date")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  lines BudgetLine[]
+
+  @@unique([organizationId, code])
+  @@map("budgets")
+}
+
+/// Minimal BudgetLine for M3 account relation (expanded in M9).
+model BudgetLine {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  budgetId       String       @map("budget_id")
+  budget         Budget       @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  accountId      String       @map("account_id")
+  account        Account      @relation(fields: [accountId], references: [id])
+  amount         Decimal      @db.Decimal(20, 6)
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  @@unique([budgetId, accountId])
+  @@index([accountId])
+  @@map("budget_lines")
 }
 
 model OrganizationMembership {
