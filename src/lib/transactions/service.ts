@@ -5,7 +5,6 @@ import { withAudit } from '@/lib/db/with-audit';
 import { ValidationError, NotFoundError } from '@/lib/kernel/errors';
 import { TransactionStateMachine, type TransactionStatus } from '@/lib/workflow/transaction-state-machine';
 import type { ActorContext } from '@/lib/kernel/context';
-import type { AuditActor } from '@/lib/audit/types';
 
 const STATE_MACHINE = new TransactionStateMachine();
 
@@ -241,6 +240,13 @@ export class TransactionService {
       throw new NotFoundError('Transaction', id);
     }
 
+    if (existing.status === 'APPROVED' || existing.status === 'POSTED') {
+      throw new ValidationError(
+        `Cannot edit transaction in ${existing.status} status`,
+        { details: { transactionId: id, status: existing.status, attemptedFields: Object.keys(data) } },
+      );
+    }
+
     const updateData: Record<string, unknown> = {};
     if (data.description !== undefined) updateData.description = data.description;
     if (data.reference !== undefined) updateData.reference = data.reference;
@@ -468,7 +474,7 @@ export class TransactionService {
       scope: `POST /api/v1/transactions/${id}/adjust`,
       actorId: actor.userId,
       body: { reason, evidenceDocumentId },
-      handler: async (tx: Tx) => { const r = await this._doAction(tx, id, organizationId, actor, 'ADJUSTED', reason, evidenceDocumentId); return { status: 200, body: r }; },
+      handler: async (tx: Tx) => { const r = await this._doAdjust(tx, id, organizationId, actor, reason, evidenceDocumentId); return { status: 200, body: r }; },
     });
 
     if (outcome.kind === 'REPLAYED') {
@@ -486,7 +492,7 @@ export class TransactionService {
       scope: `POST /api/v1/transactions/${id}/reverse`,
       actorId: actor.userId,
       body: { reason, evidenceDocumentId, originalTransactionId },
-      handler: async (tx: Tx) => { const r = await this._doAction(tx, id, organizationId, actor, 'REVERSED', reason, evidenceDocumentId, originalTransactionId); return { status: 200, body: r }; },
+      handler: async (tx: Tx) => { const r = await this._doReverse(tx, id, organizationId, actor, reason, evidenceDocumentId, originalTransactionId); return { status: 200, body: r }; },
     });
 
     if (outcome.kind === 'REPLAYED') {
@@ -496,6 +502,257 @@ export class TransactionService {
     }
 
     return outcome.result;
+  }
+
+  async _doAdjust(
+    tx: Tx,
+    id: string,
+    organizationId: string,
+    actor: ActorContext,
+    reason?: string,
+    evidenceDocumentId?: string,
+  ): Promise<TransactionRow> {
+    const originalTx = await tx.transaction.findFirst({
+      where: { id, organizationId },
+      select: {
+        id: true,
+        status: true,
+        date: true,
+        description: true,
+        reference: true,
+        amount: true,
+        currencyCode: true,
+        paymentMethod: true,
+        accountId: true,
+        projectId: true,
+        departmentId: true,
+        costCentreId: true,
+        fundingSourceId: true,
+        supportingDocumentId: true,
+      },
+    });
+
+    if (!originalTx) {
+      throw new NotFoundError('Transaction', id);
+    }
+
+    if (originalTx.status !== 'POSTED') {
+      throw new ValidationError('Only POSTED transactions can be adjusted', {
+        details: { transactionId: id, currentStatus: originalTx.status },
+      });
+    }
+
+    // Create adjusting transaction
+    const adjustingTx = await tx.transaction.create({
+      data: {
+        organizationId,
+        status: 'ADJUSTED',
+        date: new Date(),
+        description: `ADJUSTMENT: ${reason ?? originalTx.description ?? 'No reason provided'}`,
+        reference: `ADJ-${originalTx.reference ?? originalTx.id}`,
+        accountId: originalTx.accountId,
+        amount: originalTx.amount,
+        currencyCode: originalTx.currencyCode,
+        paymentMethod: originalTx.paymentMethod,
+        projectId: originalTx.projectId,
+        departmentId: originalTx.departmentId,
+        costCentreId: originalTx.costCentreId,
+        fundingSourceId: originalTx.fundingSourceId,
+        supportingDocumentId: originalTx.supportingDocumentId,
+        adjustingEntryId: originalTx.id,
+        createdById: actor.userId,
+      },
+      select: {
+        id: true,
+        status: true,
+        date: true,
+        description: true,
+        reference: true,
+        amount: true,
+        currencyCode: true,
+        paymentMethod: true,
+        accountId: true,
+        projectId: true,
+        departmentId: true,
+        costCentreId: true,
+        fundingSourceId: true,
+        supportingDocumentId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    // Write audit entry for adjustment
+    await writeAuditEntry(tx, { id: actor.userId, name: actor.fullName, roleCodes: actor.roleCodes }, {
+      action: 'JOURNAL_ENTRY_UPDATED',
+      entityType: 'JOURNAL_ENTRY',
+      entityId: adjustingTx.id,
+      entityLabel: adjustingTx.reference ?? adjustingTx.id,
+      description: `Adjusting transaction ${adjustingTx.id} created for original ${originalTx.id}`,
+      changes: { status: { from: 'POSTED', to: 'ADJUSTED' } },
+      metadata: {
+        transitionType: 'POSTED->ADJUSTED',
+        isLegalTransition: true,
+        originalTransactionId: originalTx.id,
+        adjustingTransactionId: adjustingTx.id,
+        reason: reason ?? null,
+        evidenceDocumentId: evidenceDocumentId ?? null,
+      },
+      result: 'SUCCESS',
+      channel: 'WEB',
+    }, { organizationId });
+
+    return {
+      id: adjustingTx.id,
+      status: adjustingTx.status,
+      date: adjustingTx.date,
+      description: adjustingTx.description,
+      reference: adjustingTx.reference,
+      amount: Number(adjustingTx.amount),
+      currencyCode: adjustingTx.currencyCode,
+      paymentMethod: adjustingTx.paymentMethod as PaymentMethod,
+      accountId: adjustingTx.accountId,
+      projectId: adjustingTx.projectId,
+      departmentId: adjustingTx.departmentId,
+      costCentreId: adjustingTx.costCentreId,
+      fundingSourceId: adjustingTx.fundingSourceId,
+      supportingDocumentId: adjustingTx.supportingDocumentId,
+      createdAt: adjustingTx.createdAt,
+      updatedAt: adjustingTx.updatedAt,
+    };
+  }
+
+  async _doReverse(
+    tx: Tx,
+    id: string,
+    organizationId: string,
+    actor: ActorContext,
+    reason?: string,
+    evidenceDocumentId?: string,
+    originalTransactionId?: string,
+  ): Promise<TransactionRow> {
+    const refTxId = originalTransactionId ?? id;
+    
+    const originalTx = await tx.transaction.findFirst({
+      where: { id: refTxId, organizationId },
+      select: {
+        id: true,
+        status: true,
+        date: true,
+        description: true,
+        reference: true,
+        amount: true,
+        currencyCode: true,
+        paymentMethod: true,
+        accountId: true,
+        projectId: true,
+        departmentId: true,
+        costCentreId: true,
+        fundingSourceId: true,
+        supportingDocumentId: true,
+      },
+    });
+
+    if (!originalTx) {
+      throw new NotFoundError('Original transaction', refTxId);
+    }
+
+    if (originalTx.status !== 'POSTED') {
+      throw new ValidationError('Only POSTED transactions can be reversed', {
+        details: { transactionId: refTxId, currentStatus: originalTx.status },
+      });
+    }
+
+    // Create reversal transaction
+    const reversalTx = await tx.transaction.create({
+      data: {
+        organizationId,
+        status: 'REVERSED',
+        date: new Date(),
+        description: `REVERSAL: ${reason ?? originalTx.description ?? 'No reason provided'}`,
+        reference: `REV-${originalTx.reference ?? originalTx.id}`,
+        accountId: originalTx.accountId,
+        amount: originalTx.amount,
+        currencyCode: originalTx.currencyCode,
+        paymentMethod: originalTx.paymentMethod,
+        projectId: originalTx.projectId,
+        departmentId: originalTx.departmentId,
+        costCentreId: originalTx.costCentreId,
+        fundingSourceId: originalTx.fundingSourceId,
+        supportingDocumentId: originalTx.supportingDocumentId,
+        adjustingEntryId: originalTx.id,
+        createdById: actor.userId,
+      },
+      select: {
+        id: true,
+        status: true,
+        date: true,
+        description: true,
+        reference: true,
+        amount: true,
+        currencyCode: true,
+        paymentMethod: true,
+        accountId: true,
+        projectId: true,
+        departmentId: true,
+        costCentreId: true,
+        fundingSourceId: true,
+        supportingDocumentId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    // Update any existing adjustment transaction to point to the reversal instead
+    // This ensures findFirst({ adjustingEntryId: originalTx.id }) returns the reversal
+    await tx.transaction.updateMany({
+      where: {
+        adjustingEntryId: originalTx.id,
+        status: 'ADJUSTED',
+      },
+      data: {
+        adjustingEntryId: reversalTx.id,
+      },
+    });
+
+    // Write audit entry for reversal
+    await writeAuditEntry(tx, { id: actor.userId, name: actor.fullName, roleCodes: actor.roleCodes }, {
+      action: 'JOURNAL_ENTRY_REVERSED',
+      entityType: 'JOURNAL_ENTRY',
+      entityId: reversalTx.id,
+      entityLabel: reversalTx.reference ?? reversalTx.id,
+      description: `Reversal transaction ${reversalTx.id} created for original ${originalTx.id}`,
+      changes: { status: { from: 'POSTED', to: 'REVERSED' } },
+      metadata: {
+        transitionType: 'POSTED->REVERSED',
+        isLegalTransition: true,
+        originalTransactionId: originalTx.id,
+        reversalTransactionId: reversalTx.id,
+        reason: reason ?? null,
+        evidenceDocumentId: evidenceDocumentId ?? null,
+      },
+      result: 'SUCCESS',
+      channel: 'WEB',
+    }, { organizationId });
+
+    return {
+      id: reversalTx.id,
+      status: reversalTx.status,
+      date: reversalTx.date,
+      description: reversalTx.description,
+      reference: reversalTx.reference,
+      amount: Number(reversalTx.amount),
+      currencyCode: reversalTx.currencyCode,
+      paymentMethod: reversalTx.paymentMethod as PaymentMethod,
+      accountId: reversalTx.accountId,
+      projectId: reversalTx.projectId,
+      departmentId: reversalTx.departmentId,
+      costCentreId: reversalTx.costCentreId,
+      fundingSourceId: reversalTx.fundingSourceId,
+      supportingDocumentId: reversalTx.supportingDocumentId,
+      createdAt: reversalTx.createdAt,
+      updatedAt: reversalTx.updatedAt,
+    };
   }
 
   async cancel(id: string, organizationId: string, actor: ActorContext, reason?: string): Promise<TransactionRow> {
@@ -535,18 +792,7 @@ export class TransactionService {
       throw new NotFoundError('Transaction', id);
     }
 
-    const fromStatus = current.status as TransactionStatus;
-
-    const isLegal = TransactionStateMachine.isLegalTransition(fromStatus, targetStatus);
-
-    if (!isLegal) {
-      const allowed = TransactionStateMachine.getLegalTransitions(fromStatus);
-      throw new ValidationError(
-        `Illegal state transition from ${fromStatus} to ${targetStatus}. Allowed: ${allowed.join(', ')}`,
-        { details: { from: fromStatus, to: targetStatus, allowed } },
-      );
-    }
-
+    // Let the state machine handle legality check and audit writing
     const result = await STATE_MACHINE.transition(
       {
         tx,
@@ -565,6 +811,41 @@ export class TransactionService {
         `Illegal state transition from ${result.previousStatus} to ${result.newStatus}`,
         { details: { from: result.previousStatus, to: result.newStatus, allowed: TransactionStateMachine.getLegalTransitions(result.previousStatus) } },
       );
+    }
+
+    // Get full transaction details for journal entry creation
+    const fullTx = await tx.transaction.findFirst({
+      where: { id, organizationId },
+      select: {
+        id: true,
+        status: true,
+        date: true,
+        description: true,
+        reference: true,
+        amount: true,
+        currencyCode: true,
+        paymentMethod: true,
+        accountId: true,
+        projectId: true,
+        departmentId: true,
+        costCentreId: true,
+        fundingSourceId: true,
+        supportingDocumentId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!fullTx) {
+      throw new NotFoundError('Transaction', id);
+    }
+
+    // Create journal entry when posting
+    if (targetStatus === 'POSTED') {
+      await this._createJournalEntryForPost(tx, {
+        ...fullTx,
+        amount: Number(fullTx.amount),
+      }, actor, organizationId);
     }
 
     const updated = await tx.transaction.findFirst({
@@ -611,6 +892,167 @@ export class TransactionService {
       createdAt: updated.createdAt,
       updatedAt: updated.updatedAt,
     };
+  }
+
+  private async _createJournalEntryForPost(
+    tx: Tx,
+    transaction: {
+      id: string;
+      date: Date;
+      description: string | null;
+      reference: string | null;
+      amount: number;
+      currencyCode: string;
+      accountId: string | null;
+      projectId: string | null;
+      departmentId: string | null;
+      costCentreId: string | null;
+      fundingSourceId: string | null;
+    },
+    actor: ActorContext,
+    organizationId: string,
+  ): Promise<void> {
+    if (!transaction.accountId) {
+      throw new ValidationError('Cannot post transaction without an account', {
+        details: { transactionId: transaction.id },
+      });
+    }
+
+    // Find a counterparty account (default to a liability account like Trade Payables)
+    const counterpartyAccount = await tx.account.findFirst({
+      where: {
+        organizationId,
+        type: 'LIABILITY',
+        isPostable: true,
+      },
+      orderBy: { code: 'asc' },
+      select: { id: true, normalBalance: true },
+    });
+
+    if (!counterpartyAccount) {
+      throw new ValidationError('No postable liability account found for counterparty', {
+        details: { organizationId },
+      });
+    }
+
+    // Determine debit/credit based on account types
+    const primaryAccount = await tx.account.findUnique({
+      where: { id: transaction.accountId },
+      select: { id: true, normalBalance: true, type: true },
+    });
+
+    if (!primaryAccount) {
+      throw new ValidationError('Primary account not found', {
+        details: { accountId: transaction.accountId },
+      });
+    }
+
+    const amount = transaction.amount;
+    const periodId = await this._getOpenPeriodId(tx, organizationId, transaction.date);
+
+    // Create journal entry
+    const journalEntry = await tx.journalEntry.create({
+      data: {
+        organizationId,
+        periodId,
+        type: 'STANDARD',
+        status: 'POSTED',
+        source: 'TRANSACTION',
+        reference: transaction.reference ?? transaction.id,
+        description: transaction.description ?? `Transaction ${transaction.id}`,
+        transactionId: transaction.id,
+        postedById: actor.userId,
+        postedAt: new Date(),
+      },
+    });
+
+    // Determine which account gets debit and which gets credit
+    // Asset/Expense accounts: debit increases, credit decreases
+    // Liability/Equity/Revenue accounts: credit increases, debit decreases
+    const primaryIsDebitNormal = primaryAccount.normalBalance === 'DEBIT';
+
+    // For a simple transaction, we debit the primary account and credit the counterparty
+    // (or vice versa depending on the transaction nature)
+    // Here we assume the transaction amount represents an increase in the primary account
+    let primaryDebit = 0;
+    let primaryCredit = 0;
+    let counterpartyDebit = 0;
+    let counterpartyCredit = 0;
+
+    if (primaryIsDebitNormal) {
+      // Primary account (asset/expense) - increase with debit
+      primaryDebit = amount;
+      counterpartyCredit = amount;
+    } else {
+      // Primary account (liability/equity/revenue) - increase with credit
+      primaryCredit = amount;
+      counterpartyDebit = amount;
+    }
+
+    // Create journal lines
+    await tx.journalLine.createMany({
+      data: [
+        {
+          organizationId,
+          entryId: journalEntry.id,
+          accountId: transaction.accountId!,
+          lineNumber: 1,
+          description: transaction.description ?? `Transaction ${transaction.id}`,
+          debit: primaryDebit,
+          credit: primaryCredit,
+          currencyCode: transaction.currencyCode,
+          baseAmount: primaryDebit > 0 ? primaryDebit : primaryCredit,
+          fxRate: transaction.currencyCode === 'TZS' ? 1 : null,
+          projectId: transaction.projectId ?? null,
+          departmentId: transaction.departmentId ?? null,
+          costCentreId: transaction.costCentreId ?? null,
+          fundingSourceId: transaction.fundingSourceId ?? null,
+        },
+        {
+          organizationId,
+          entryId: journalEntry.id,
+          accountId: counterpartyAccount.id,
+          lineNumber: 2,
+          description: `Counterparty for transaction ${transaction.id}`,
+          debit: counterpartyDebit,
+          credit: counterpartyCredit,
+          currencyCode: transaction.currencyCode,
+          baseAmount: counterpartyDebit > 0 ? counterpartyDebit : counterpartyCredit,
+          fxRate: transaction.currencyCode === 'TZS' ? 1 : null,
+          projectId: transaction.projectId ?? null,
+          departmentId: transaction.departmentId ?? null,
+          costCentreId: transaction.costCentreId ?? null,
+          fundingSourceId: transaction.fundingSourceId ?? null,
+        },
+      ],
+    });
+}
+  
+  private async _getOpenPeriodId(tx: Tx, organizationId: string, date: Date): Promise<string> {
+    const period = await tx.financialPeriod.findFirst({
+      where: {
+        organizationId,
+        status: 'OPEN',
+        startDate: { lte: date },
+        endDate: { gte: date },
+      },
+      orderBy: { startDate: 'asc' },
+      select: { id: true },
+    });
+
+    if (!period) {
+      // Fallback to any open period
+      const anyOpen = await tx.financialPeriod.findFirst({
+        where: { organizationId, status: 'OPEN' },
+        orderBy: { startDate: 'asc' },
+        select: { id: true },
+      });
+      if (!anyOpen) {
+        throw new ValidationError('No open financial period found for posting', { details: { organizationId } });
+      }
+      return anyOpen.id;
+    }
+    return period.id;
   }
 
   private _rowFromTransition(id: string, newStatus: TransactionStatus): TransactionRow {
