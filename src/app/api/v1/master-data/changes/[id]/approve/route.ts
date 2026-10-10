@@ -210,7 +210,7 @@ export async function POST(
           }
         )
       }
-    );
+    });
 
     if (outcome.kind === 'REPLAYED') {
       return NextResponse.json(outcome.responseBody, { status: outcome.responseStatus });
