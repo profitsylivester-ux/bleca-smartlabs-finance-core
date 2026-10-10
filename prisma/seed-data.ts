@@ -771,3 +771,32 @@ export const PRODUCTS_SERVICES: ProductServiceSeed[] = [
   { code: 'SOFTWARE-LIC', name: 'Software License', description: 'Annual software license fee', type: 'PRODUCT', unit: 'YEAR', unitPrice: '5000.00', currencyCode: 'USD' },
   { code: 'PUBLICATION', name: 'Research Publication', description: 'Publication and dissemination services', type: 'PRODUCT', unit: 'UNIT', unitPrice: '1500.00', currencyCode: 'USD' },
 ];
+
+export interface ReversalReasonCodeSeed {
+  code: string;
+  name: string;
+  description: string;
+  category: 'DATA_ENTRY_ERROR' | 'DUPLICATE' | 'MISCLASSIFICATION' | 'WRONG_AMOUNT' | 'WRONG_DATE' | 'WRONG_PARTY' | 'CURRENCY_VARIANCE' | 'BANK_FEE' | 'RETURNED_PAYMENT' | 'FX_VARIANCE' | 'SUPPLIER_CREDIT' | 'SYSTEM_CORRECTION' | 'PERIOD_MISALLOCATION' | 'EARLY_PAYMENT_RECEIVED' | 'LATE_PAYMENT' | 'GOODWILL' | 'WRITE_OFF' | 'YEAR_END' | 'OTHER';
+}
+
+export const REVERSAL_REASON_CODES: ReversalReasonCodeSeed[] = [
+  { code: 'DATA-ENTRY-ERROR', name: 'Data Entry Error', description: 'Incorrect data entered during creation', category: 'DATA_ENTRY_ERROR' },
+  { code: 'DUPLICATE-ENTRY', name: 'Duplicate Entry', description: 'Entry was duplicated in error', category: 'DUPLICATE' },
+  { code: 'MISCLASSIFICATION', name: 'Misclassification', description: 'Transaction posted to wrong account or category', category: 'MISCLASSIFICATION' },
+  { code: 'WRONG-AMOUNT', name: 'Wrong Amount', description: 'Incorrect amount entered', category: 'WRONG_AMOUNT' },
+  { code: 'WRONG-DATE', name: 'Wrong Date', description: 'Incorrect transaction date', category: 'WRONG_DATE' },
+  { code: 'WRONG-PARTY', name: 'Wrong Party', description: 'Incorrect customer, supplier, or counterparty', category: 'WRONG_PARTY' },
+  { code: 'CURRENCY-VARIANCE', name: 'Currency Variance', description: 'Exchange rate difference on settlement', category: 'CURRENCY_VARIANCE' },
+  { code: 'BANK-FEE', name: 'Bank Fee', description: 'Unexpected bank charges or fees', category: 'BANK_FEE' },
+  { code: 'RETURNED-PAYMENT', name: 'Returned Payment', description: 'Payment returned by bank or payment processor', category: 'RETURNED_PAYMENT' },
+  { code: 'FX-VARIANCE', name: 'Foreign Exchange Variance', description: 'FX rate fluctuation impact', category: 'FX_VARIANCE' },
+  { code: 'SUPPLIER-CREDIT', name: 'Supplier Credit', description: 'Credit note received from supplier', category: 'SUPPLIER_CREDIT' },
+  { code: 'SYSTEM-CORRECTION', name: 'System Correction', description: 'Automated system correction', category: 'SYSTEM_CORRECTION' },
+  { code: 'PERIOD-MISALLOCATION', name: 'Period Misallocation', description: 'Entry posted to incorrect financial period', category: 'PERIOD_MISALLOCATION' },
+  { code: 'EARLY-PAYMENT', name: 'Early Payment Received', description: 'Payment received before due date', category: 'EARLY_PAYMENT_RECEIVED' },
+  { code: 'LATE-PAYMENT', name: 'Late Payment', description: 'Payment received after due date', category: 'LATE_PAYMENT' },
+  { code: 'GOODWILL', name: 'Goodwill Adjustment', description: 'Goodwill write-off or adjustment', category: 'GOODWILL' },
+  { code: 'WRITE-OFF', name: 'Write-off', description: 'Bad debt or asset write-off', category: 'WRITE_OFF' },
+  { code: 'YEAR-END', name: 'Year-End Adjustment', description: 'Year-end closing adjustment', category: 'YEAR_END' },
+  { code: 'OTHER', name: 'Other', description: 'Other reason not listed above', category: 'OTHER' },
+];

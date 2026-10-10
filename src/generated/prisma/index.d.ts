@@ -163,14 +163,19 @@ export type OpeningBalance = $Result.DefaultSelection<Prisma.$OpeningBalancePayl
 export type AccountBalanceSnapshot = $Result.DefaultSelection<Prisma.$AccountBalanceSnapshotPayload>
 /**
  * Model JournalEntry
- * Minimal JournalEntry for M3 period-lock trigger (expanded in M4).
+ * JournalEntry — M4 double-entry core.
  */
 export type JournalEntry = $Result.DefaultSelection<Prisma.$JournalEntryPayload>
 /**
  * Model JournalLine
- * Minimal JournalLine for M3 period-lock trigger (expanded in M4).
+ * JournalLine — M4 double-entry core. Every line belongs to exactly one entry.
  */
 export type JournalLine = $Result.DefaultSelection<Prisma.$JournalLinePayload>
+/**
+ * Model ReversalReasonCode
+ * Reversal reason codes — seeded reference data for reversal/adjustment audit trail.
+ */
+export type ReversalReasonCode = $Result.DefaultSelection<Prisma.$ReversalReasonCodePayload>
 /**
  * Model Transaction
  * Minimal Transaction for M3 period-lock trigger (expanded in M5).
@@ -688,6 +693,31 @@ export const JournalSource: {
 export type JournalSource = (typeof JournalSource)[keyof typeof JournalSource]
 
 
+export const ReversalReasonCategory: {
+  DATA_ENTRY_ERROR: 'DATA_ENTRY_ERROR',
+  DUPLICATE: 'DUPLICATE',
+  MISCLASSIFICATION: 'MISCLASSIFICATION',
+  WRONG_AMOUNT: 'WRONG_AMOUNT',
+  WRONG_DATE: 'WRONG_DATE',
+  WRONG_PARTY: 'WRONG_PARTY',
+  CURRENCY_VARIANCE: 'CURRENCY_VARIANCE',
+  BANK_FEE: 'BANK_FEE',
+  RETURNED_PAYMENT: 'RETURNED_PAYMENT',
+  FX_VARIANCE: 'FX_VARIANCE',
+  SUPPLIER_CREDIT: 'SUPPLIER_CREDIT',
+  SYSTEM_CORRECTION: 'SYSTEM_CORRECTION',
+  PERIOD_MISALLOCATION: 'PERIOD_MISALLOCATION',
+  EARLY_PAYMENT_RECEIVED: 'EARLY_PAYMENT_RECEIVED',
+  LATE_PAYMENT: 'LATE_PAYMENT',
+  GOODWILL: 'GOODWILL',
+  WRITE_OFF: 'WRITE_OFF',
+  YEAR_END: 'YEAR_END',
+  OTHER: 'OTHER'
+};
+
+export type ReversalReasonCategory = (typeof ReversalReasonCategory)[keyof typeof ReversalReasonCategory]
+
+
 export const TransactionStatus: {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED',
@@ -1039,6 +1069,10 @@ export const JournalEntryStatus: typeof $Enums.JournalEntryStatus
 export type JournalSource = $Enums.JournalSource
 
 export const JournalSource: typeof $Enums.JournalSource
+
+export type ReversalReasonCategory = $Enums.ReversalReasonCategory
+
+export const ReversalReasonCategory: typeof $Enums.ReversalReasonCategory
 
 export type TransactionStatus = $Enums.TransactionStatus
 
@@ -1519,6 +1553,16 @@ export class PrismaClient<
     * ```
     */
   get journalLine(): Prisma.JournalLineDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reversalReasonCode`: Exposes CRUD operations for the **ReversalReasonCode** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReversalReasonCodes
+    * const reversalReasonCodes = await prisma.reversalReasonCode.findMany()
+    * ```
+    */
+  get reversalReasonCode(): Prisma.ReversalReasonCodeDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.transaction`: Exposes CRUD operations for the **Transaction** model.
@@ -2101,6 +2145,7 @@ export namespace Prisma {
     AccountBalanceSnapshot: 'AccountBalanceSnapshot',
     JournalEntry: 'JournalEntry',
     JournalLine: 'JournalLine',
+    ReversalReasonCode: 'ReversalReasonCode',
     Transaction: 'Transaction',
     Budget: 'Budget',
     BudgetLine: 'BudgetLine',
@@ -2130,7 +2175,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4428,6 +4473,80 @@ export namespace Prisma {
           }
         }
       }
+      ReversalReasonCode: {
+        payload: Prisma.$ReversalReasonCodePayload<ExtArgs>
+        fields: Prisma.ReversalReasonCodeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReversalReasonCodeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReversalReasonCodeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload>
+          }
+          findFirst: {
+            args: Prisma.ReversalReasonCodeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReversalReasonCodeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload>
+          }
+          findMany: {
+            args: Prisma.ReversalReasonCodeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload>[]
+          }
+          create: {
+            args: Prisma.ReversalReasonCodeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload>
+          }
+          createMany: {
+            args: Prisma.ReversalReasonCodeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReversalReasonCodeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload>[]
+          }
+          delete: {
+            args: Prisma.ReversalReasonCodeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload>
+          }
+          update: {
+            args: Prisma.ReversalReasonCodeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload>
+          }
+          deleteMany: {
+            args: Prisma.ReversalReasonCodeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReversalReasonCodeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReversalReasonCodeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload>[]
+          }
+          upsert: {
+            args: Prisma.ReversalReasonCodeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReversalReasonCodePayload>
+          }
+          aggregate: {
+            args: Prisma.ReversalReasonCodeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReversalReasonCode>
+          }
+          groupBy: {
+            args: Prisma.ReversalReasonCodeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReversalReasonCodeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReversalReasonCodeCountArgs<ExtArgs>
+            result: $Utils.Optional<ReversalReasonCodeCountAggregateOutputType> | number
+          }
+        }
+      }
       Transaction: {
         payload: Prisma.$TransactionPayload<ExtArgs>
         fields: Prisma.TransactionFieldRefs
@@ -5369,6 +5488,7 @@ export namespace Prisma {
     accountBalanceSnapshot?: AccountBalanceSnapshotOmit
     journalEntry?: JournalEntryOmit
     journalLine?: JournalLineOmit
+    reversalReasonCode?: ReversalReasonCodeOmit
     transaction?: TransactionOmit
     budget?: BudgetOmit
     budgetLine?: BudgetLineOmit
@@ -5474,6 +5594,10 @@ export namespace Prisma {
     updatedUsers: number
     changeRequestsRequested: number
     changeRequestsApproved: number
+    journalEntriesSubmitted: number
+    journalEntriesApproved: number
+    journalEntriesPosted: number
+    journalEntriesReversed: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5491,6 +5615,10 @@ export namespace Prisma {
     updatedUsers?: boolean | UserCountOutputTypeCountUpdatedUsersArgs
     changeRequestsRequested?: boolean | UserCountOutputTypeCountChangeRequestsRequestedArgs
     changeRequestsApproved?: boolean | UserCountOutputTypeCountChangeRequestsApprovedArgs
+    journalEntriesSubmitted?: boolean | UserCountOutputTypeCountJournalEntriesSubmittedArgs
+    journalEntriesApproved?: boolean | UserCountOutputTypeCountJournalEntriesApprovedArgs
+    journalEntriesPosted?: boolean | UserCountOutputTypeCountJournalEntriesPostedArgs
+    journalEntriesReversed?: boolean | UserCountOutputTypeCountJournalEntriesReversedArgs
   }
 
   // Custom InputTypes
@@ -5600,6 +5728,34 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountChangeRequestsApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MasterDataChangeRequestWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountJournalEntriesSubmittedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalEntryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountJournalEntriesApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalEntryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountJournalEntriesPostedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalEntryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountJournalEntriesReversedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalEntryWhereInput
   }
 
 
@@ -5754,6 +5910,7 @@ export namespace Prisma {
     fundingSources: number
     masterDataChangeRequests: number
     reasonCodes: number
+    reversalReasonCodes: number
     productsServices: number
     accounts: number
     financialPeriods: number
@@ -5775,6 +5932,7 @@ export namespace Prisma {
     fundingSources?: boolean | OrganizationCountOutputTypeCountFundingSourcesArgs
     masterDataChangeRequests?: boolean | OrganizationCountOutputTypeCountMasterDataChangeRequestsArgs
     reasonCodes?: boolean | OrganizationCountOutputTypeCountReasonCodesArgs
+    reversalReasonCodes?: boolean | OrganizationCountOutputTypeCountReversalReasonCodesArgs
     productsServices?: boolean | OrganizationCountOutputTypeCountProductsServicesArgs
     accounts?: boolean | OrganizationCountOutputTypeCountAccountsArgs
     financialPeriods?: boolean | OrganizationCountOutputTypeCountFinancialPeriodsArgs
@@ -5857,6 +6015,13 @@ export namespace Prisma {
   /**
    * OrganizationCountOutputType without action
    */
+  export type OrganizationCountOutputTypeCountReversalReasonCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReversalReasonCodeWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
   export type OrganizationCountOutputTypeCountProductsServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProductServiceWhereInput
   }
@@ -5932,11 +6097,13 @@ export namespace Prisma {
   export type LocationCountOutputType = {
     children: number
     users: number
+    journalLines: number
   }
 
   export type LocationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     children?: boolean | LocationCountOutputTypeCountChildrenArgs
     users?: boolean | LocationCountOutputTypeCountUsersArgs
+    journalLines?: boolean | LocationCountOutputTypeCountJournalLinesArgs
   }
 
   // Custom InputTypes
@@ -5964,6 +6131,13 @@ export namespace Prisma {
     where?: UserWhereInput
   }
 
+  /**
+   * LocationCountOutputType without action
+   */
+  export type LocationCountOutputTypeCountJournalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalLineWhereInput
+  }
+
 
   /**
    * Count Type DepartmentCountOutputType
@@ -5973,12 +6147,14 @@ export namespace Prisma {
     children: number
     users: number
     costCentres: number
+    journalLines: number
   }
 
   export type DepartmentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     children?: boolean | DepartmentCountOutputTypeCountChildrenArgs
     users?: boolean | DepartmentCountOutputTypeCountUsersArgs
     costCentres?: boolean | DepartmentCountOutputTypeCountCostCentresArgs
+    journalLines?: boolean | DepartmentCountOutputTypeCountJournalLinesArgs
   }
 
   // Custom InputTypes
@@ -6011,6 +6187,106 @@ export namespace Prisma {
    */
   export type DepartmentCountOutputTypeCountCostCentresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CostCentreWhereInput
+  }
+
+  /**
+   * DepartmentCountOutputType without action
+   */
+  export type DepartmentCountOutputTypeCountJournalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalLineWhereInput
+  }
+
+
+  /**
+   * Count Type CostCentreCountOutputType
+   */
+
+  export type CostCentreCountOutputType = {
+    journalLines: number
+  }
+
+  export type CostCentreCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    journalLines?: boolean | CostCentreCountOutputTypeCountJournalLinesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CostCentreCountOutputType without action
+   */
+  export type CostCentreCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CostCentreCountOutputType
+     */
+    select?: CostCentreCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CostCentreCountOutputType without action
+   */
+  export type CostCentreCountOutputTypeCountJournalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalLineWhereInput
+  }
+
+
+  /**
+   * Count Type ProjectCountOutputType
+   */
+
+  export type ProjectCountOutputType = {
+    journalLines: number
+  }
+
+  export type ProjectCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    journalLines?: boolean | ProjectCountOutputTypeCountJournalLinesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProjectCountOutputType
+     */
+    select?: ProjectCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeCountJournalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalLineWhereInput
+  }
+
+
+  /**
+   * Count Type FundingSourceCountOutputType
+   */
+
+  export type FundingSourceCountOutputType = {
+    journalLines: number
+  }
+
+  export type FundingSourceCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    journalLines?: boolean | FundingSourceCountOutputTypeCountJournalLinesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FundingSourceCountOutputType without action
+   */
+  export type FundingSourceCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSourceCountOutputType
+     */
+    select?: FundingSourceCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FundingSourceCountOutputType without action
+   */
+  export type FundingSourceCountOutputTypeCountJournalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalLineWhereInput
   }
 
 
@@ -6242,10 +6518,14 @@ export namespace Prisma {
    */
 
   export type JournalEntryCountOutputType = {
+    adjustedEntries: number
+    reversingEntries: number
     lines: number
   }
 
   export type JournalEntryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    adjustedEntries?: boolean | JournalEntryCountOutputTypeCountAdjustedEntriesArgs
+    reversingEntries?: boolean | JournalEntryCountOutputTypeCountReversingEntriesArgs
     lines?: boolean | JournalEntryCountOutputTypeCountLinesArgs
   }
 
@@ -6263,8 +6543,53 @@ export namespace Prisma {
   /**
    * JournalEntryCountOutputType without action
    */
+  export type JournalEntryCountOutputTypeCountAdjustedEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalEntryWhereInput
+  }
+
+  /**
+   * JournalEntryCountOutputType without action
+   */
+  export type JournalEntryCountOutputTypeCountReversingEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalEntryWhereInput
+  }
+
+  /**
+   * JournalEntryCountOutputType without action
+   */
   export type JournalEntryCountOutputTypeCountLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JournalLineWhereInput
+  }
+
+
+  /**
+   * Count Type ReversalReasonCodeCountOutputType
+   */
+
+  export type ReversalReasonCodeCountOutputType = {
+    journalEntries: number
+  }
+
+  export type ReversalReasonCodeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    journalEntries?: boolean | ReversalReasonCodeCountOutputTypeCountJournalEntriesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ReversalReasonCodeCountOutputType without action
+   */
+  export type ReversalReasonCodeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCodeCountOutputType
+     */
+    select?: ReversalReasonCodeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ReversalReasonCodeCountOutputType without action
+   */
+  export type ReversalReasonCodeCountOutputTypeCountJournalEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalEntryWhereInput
   }
 
 
@@ -6801,6 +7126,10 @@ export namespace Prisma {
     updatedUsers?: boolean | User$updatedUsersArgs<ExtArgs>
     changeRequestsRequested?: boolean | User$changeRequestsRequestedArgs<ExtArgs>
     changeRequestsApproved?: boolean | User$changeRequestsApprovedArgs<ExtArgs>
+    journalEntriesSubmitted?: boolean | User$journalEntriesSubmittedArgs<ExtArgs>
+    journalEntriesApproved?: boolean | User$journalEntriesApprovedArgs<ExtArgs>
+    journalEntriesPosted?: boolean | User$journalEntriesPostedArgs<ExtArgs>
+    journalEntriesReversed?: boolean | User$journalEntriesReversedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -6940,6 +7269,10 @@ export namespace Prisma {
     updatedUsers?: boolean | User$updatedUsersArgs<ExtArgs>
     changeRequestsRequested?: boolean | User$changeRequestsRequestedArgs<ExtArgs>
     changeRequestsApproved?: boolean | User$changeRequestsApprovedArgs<ExtArgs>
+    journalEntriesSubmitted?: boolean | User$journalEntriesSubmittedArgs<ExtArgs>
+    journalEntriesApproved?: boolean | User$journalEntriesApprovedArgs<ExtArgs>
+    journalEntriesPosted?: boolean | User$journalEntriesPostedArgs<ExtArgs>
+    journalEntriesReversed?: boolean | User$journalEntriesReversedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6976,6 +7309,10 @@ export namespace Prisma {
       updatedUsers: Prisma.$UserPayload<ExtArgs>[]
       changeRequestsRequested: Prisma.$MasterDataChangeRequestPayload<ExtArgs>[]
       changeRequestsApproved: Prisma.$MasterDataChangeRequestPayload<ExtArgs>[]
+      journalEntriesSubmitted: Prisma.$JournalEntryPayload<ExtArgs>[]
+      journalEntriesApproved: Prisma.$JournalEntryPayload<ExtArgs>[]
+      journalEntriesPosted: Prisma.$JournalEntryPayload<ExtArgs>[]
+      journalEntriesReversed: Prisma.$JournalEntryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7434,6 +7771,10 @@ export namespace Prisma {
     updatedUsers<T extends User$updatedUsersArgs<ExtArgs> = {}>(args?: Subset<T, User$updatedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     changeRequestsRequested<T extends User$changeRequestsRequestedArgs<ExtArgs> = {}>(args?: Subset<T, User$changeRequestsRequestedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     changeRequestsApproved<T extends User$changeRequestsApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$changeRequestsApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    journalEntriesSubmitted<T extends User$journalEntriesSubmittedArgs<ExtArgs> = {}>(args?: Subset<T, User$journalEntriesSubmittedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    journalEntriesApproved<T extends User$journalEntriesApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$journalEntriesApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    journalEntriesPosted<T extends User$journalEntriesPostedArgs<ExtArgs> = {}>(args?: Subset<T, User$journalEntriesPostedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    journalEntriesReversed<T extends User$journalEntriesReversedArgs<ExtArgs> = {}>(args?: Subset<T, User$journalEntriesReversedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8301,6 +8642,102 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MasterDataChangeRequestScalarFieldEnum | MasterDataChangeRequestScalarFieldEnum[]
+  }
+
+  /**
+   * User.journalEntriesSubmitted
+   */
+  export type User$journalEntriesSubmittedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+    orderBy?: JournalEntryOrderByWithRelationInput | JournalEntryOrderByWithRelationInput[]
+    cursor?: JournalEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalEntryScalarFieldEnum | JournalEntryScalarFieldEnum[]
+  }
+
+  /**
+   * User.journalEntriesApproved
+   */
+  export type User$journalEntriesApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+    orderBy?: JournalEntryOrderByWithRelationInput | JournalEntryOrderByWithRelationInput[]
+    cursor?: JournalEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalEntryScalarFieldEnum | JournalEntryScalarFieldEnum[]
+  }
+
+  /**
+   * User.journalEntriesPosted
+   */
+  export type User$journalEntriesPostedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+    orderBy?: JournalEntryOrderByWithRelationInput | JournalEntryOrderByWithRelationInput[]
+    cursor?: JournalEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalEntryScalarFieldEnum | JournalEntryScalarFieldEnum[]
+  }
+
+  /**
+   * User.journalEntriesReversed
+   */
+  export type User$journalEntriesReversedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+    orderBy?: JournalEntryOrderByWithRelationInput | JournalEntryOrderByWithRelationInput[]
+    cursor?: JournalEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalEntryScalarFieldEnum | JournalEntryScalarFieldEnum[]
   }
 
   /**
@@ -22749,6 +23186,7 @@ export namespace Prisma {
     fundingSources?: boolean | Organization$fundingSourcesArgs<ExtArgs>
     masterDataChangeRequests?: boolean | Organization$masterDataChangeRequestsArgs<ExtArgs>
     reasonCodes?: boolean | Organization$reasonCodesArgs<ExtArgs>
+    reversalReasonCodes?: boolean | Organization$reversalReasonCodesArgs<ExtArgs>
     productsServices?: boolean | Organization$productsServicesArgs<ExtArgs>
     accounts?: boolean | Organization$accountsArgs<ExtArgs>
     financialPeriods?: boolean | Organization$financialPeriodsArgs<ExtArgs>
@@ -22832,6 +23270,7 @@ export namespace Prisma {
     fundingSources?: boolean | Organization$fundingSourcesArgs<ExtArgs>
     masterDataChangeRequests?: boolean | Organization$masterDataChangeRequestsArgs<ExtArgs>
     reasonCodes?: boolean | Organization$reasonCodesArgs<ExtArgs>
+    reversalReasonCodes?: boolean | Organization$reversalReasonCodesArgs<ExtArgs>
     productsServices?: boolean | Organization$productsServicesArgs<ExtArgs>
     accounts?: boolean | Organization$accountsArgs<ExtArgs>
     financialPeriods?: boolean | Organization$financialPeriodsArgs<ExtArgs>
@@ -22858,6 +23297,7 @@ export namespace Prisma {
       fundingSources: Prisma.$FundingSourcePayload<ExtArgs>[]
       masterDataChangeRequests: Prisma.$MasterDataChangeRequestPayload<ExtArgs>[]
       reasonCodes: Prisma.$ReasonCodePayload<ExtArgs>[]
+      reversalReasonCodes: Prisma.$ReversalReasonCodePayload<ExtArgs>[]
       productsServices: Prisma.$ProductServicePayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       financialPeriods: Prisma.$FinancialPeriodPayload<ExtArgs>[]
@@ -23295,6 +23735,7 @@ export namespace Prisma {
     fundingSources<T extends Organization$fundingSourcesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$fundingSourcesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     masterDataChangeRequests<T extends Organization$masterDataChangeRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$masterDataChangeRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MasterDataChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reasonCodes<T extends Organization$reasonCodesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$reasonCodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReasonCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reversalReasonCodes<T extends Organization$reversalReasonCodesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$reversalReasonCodesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     productsServices<T extends Organization$productsServicesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$productsServicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends Organization$accountsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     financialPeriods<T extends Organization$financialPeriodsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$financialPeriodsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialPeriodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -23931,6 +24372,30 @@ export namespace Prisma {
   }
 
   /**
+   * Organization.reversalReasonCodes
+   */
+  export type Organization$reversalReasonCodesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    where?: ReversalReasonCodeWhereInput
+    orderBy?: ReversalReasonCodeOrderByWithRelationInput | ReversalReasonCodeOrderByWithRelationInput[]
+    cursor?: ReversalReasonCodeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReversalReasonCodeScalarFieldEnum | ReversalReasonCodeScalarFieldEnum[]
+  }
+
+  /**
    * Organization.productsServices
    */
   export type Organization$productsServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24433,6 +24898,7 @@ export namespace Prisma {
     parent?: boolean | Location$parentArgs<ExtArgs>
     children?: boolean | Location$childrenArgs<ExtArgs>
     users?: boolean | Location$usersArgs<ExtArgs>
+    journalLines?: boolean | Location$journalLinesArgs<ExtArgs>
     _count?: boolean | LocationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["location"]>
 
@@ -24500,6 +24966,7 @@ export namespace Prisma {
     parent?: boolean | Location$parentArgs<ExtArgs>
     children?: boolean | Location$childrenArgs<ExtArgs>
     users?: boolean | Location$usersArgs<ExtArgs>
+    journalLines?: boolean | Location$journalLinesArgs<ExtArgs>
     _count?: boolean | LocationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type LocationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24518,6 +24985,7 @@ export namespace Prisma {
       parent: Prisma.$LocationPayload<ExtArgs> | null
       children: Prisma.$LocationPayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
+      journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -24933,6 +25401,7 @@ export namespace Prisma {
     parent<T extends Location$parentArgs<ExtArgs> = {}>(args?: Subset<T, Location$parentArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     children<T extends Location$childrenArgs<ExtArgs> = {}>(args?: Subset<T, Location$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Location$usersArgs<ExtArgs> = {}>(args?: Subset<T, Location$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    journalLines<T extends Location$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, Location$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -25440,6 +25909,30 @@ export namespace Prisma {
   }
 
   /**
+   * Location.journalLines
+   */
+  export type Location$journalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    where?: JournalLineWhereInput
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    cursor?: JournalLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
    * Location without action
    */
   export type LocationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -25651,6 +26144,7 @@ export namespace Prisma {
     children?: boolean | Department$childrenArgs<ExtArgs>
     users?: boolean | Department$usersArgs<ExtArgs>
     costCentres?: boolean | Department$costCentresArgs<ExtArgs>
+    journalLines?: boolean | Department$journalLinesArgs<ExtArgs>
     _count?: boolean | DepartmentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["department"]>
 
@@ -25698,6 +26192,7 @@ export namespace Prisma {
     children?: boolean | Department$childrenArgs<ExtArgs>
     users?: boolean | Department$usersArgs<ExtArgs>
     costCentres?: boolean | Department$costCentresArgs<ExtArgs>
+    journalLines?: boolean | Department$journalLinesArgs<ExtArgs>
     _count?: boolean | DepartmentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DepartmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -25717,6 +26212,7 @@ export namespace Prisma {
       children: Prisma.$DepartmentPayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
       costCentres: Prisma.$CostCentrePayload<ExtArgs>[]
+      journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -26126,6 +26622,7 @@ export namespace Prisma {
     children<T extends Department$childrenArgs<ExtArgs> = {}>(args?: Subset<T, Department$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Department$usersArgs<ExtArgs> = {}>(args?: Subset<T, Department$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     costCentres<T extends Department$costCentresArgs<ExtArgs> = {}>(args?: Subset<T, Department$costCentresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CostCentrePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    journalLines<T extends Department$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, Department$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -26650,6 +27147,30 @@ export namespace Prisma {
   }
 
   /**
+   * Department.journalLines
+   */
+  export type Department$journalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    where?: JournalLineWhereInput
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    cursor?: JournalLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
    * Department without action
    */
   export type DepartmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -26866,6 +27387,8 @@ export namespace Prisma {
     updatedAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     department?: boolean | CostCentre$departmentArgs<ExtArgs>
+    journalLines?: boolean | CostCentre$journalLinesArgs<ExtArgs>
+    _count?: boolean | CostCentreCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["costCentre"]>
 
   export type CostCentreSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -26912,6 +27435,8 @@ export namespace Prisma {
   export type CostCentreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     department?: boolean | CostCentre$departmentArgs<ExtArgs>
+    journalLines?: boolean | CostCentre$journalLinesArgs<ExtArgs>
+    _count?: boolean | CostCentreCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CostCentreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -26927,6 +27452,7 @@ export namespace Prisma {
     objects: {
       organization: Prisma.$OrganizationPayload<ExtArgs>
       department: Prisma.$DepartmentPayload<ExtArgs> | null
+      journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -27334,6 +27860,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     department<T extends CostCentre$departmentArgs<ExtArgs> = {}>(args?: Subset<T, CostCentre$departmentArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    journalLines<T extends CostCentre$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, CostCentre$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -27787,6 +28314,30 @@ export namespace Prisma {
   }
 
   /**
+   * CostCentre.journalLines
+   */
+  export type CostCentre$journalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    where?: JournalLineWhereInput
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    cursor?: JournalLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
    * CostCentre without action
    */
   export type CostCentreDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -28018,6 +28569,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    journalLines?: boolean | Project$journalLinesArgs<ExtArgs>
+    _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -28067,6 +28620,8 @@ export namespace Prisma {
   export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "code" | "name" | "description" | "status" | "startDate" | "endDate" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    journalLines?: boolean | Project$journalLinesArgs<ExtArgs>
+    _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -28079,6 +28634,7 @@ export namespace Prisma {
     name: "Project"
     objects: {
       organization: Prisma.$OrganizationPayload<ExtArgs>
+      journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -28487,6 +29043,7 @@ export namespace Prisma {
   export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    journalLines<T extends Project$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, Project$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -28923,6 +29480,30 @@ export namespace Prisma {
   }
 
   /**
+   * Project.journalLines
+   */
+  export type Project$journalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    where?: JournalLineWhereInput
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    cursor?: JournalLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
    * Project without action
    */
   export type ProjectDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -29150,6 +29731,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    journalLines?: boolean | FundingSource$journalLinesArgs<ExtArgs>
+    _count?: boolean | FundingSourceCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fundingSource"]>
 
   export type FundingSourceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -29199,6 +29782,8 @@ export namespace Prisma {
   export type FundingSourceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "code" | "name" | "type" | "description" | "isRestricted" | "restrictions" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["fundingSource"]>
   export type FundingSourceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    journalLines?: boolean | FundingSource$journalLinesArgs<ExtArgs>
+    _count?: boolean | FundingSourceCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FundingSourceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -29211,6 +29796,7 @@ export namespace Prisma {
     name: "FundingSource"
     objects: {
       organization: Prisma.$OrganizationPayload<ExtArgs>
+      journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -29619,6 +30205,7 @@ export namespace Prisma {
   export interface Prisma__FundingSourceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    journalLines<T extends FundingSource$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, FundingSource$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -30052,6 +30639,30 @@ export namespace Prisma {
      * Limit how many FundingSources to delete.
      */
     limit?: number
+  }
+
+  /**
+   * FundingSource.journalLines
+   */
+  export type FundingSource$journalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    where?: JournalLineWhereInput
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    cursor?: JournalLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
   }
 
   /**
@@ -42330,11 +42941,23 @@ export namespace Prisma {
     type: $Enums.JournalEntryType | null
     status: $Enums.JournalEntryStatus | null
     source: $Enums.JournalSource | null
+    number: string | null
     reference: string | null
     description: string | null
     transactionId: string | null
-    postedAt: Date | null
+    adjustingEntryId: string | null
+    reversalReasonId: string | null
+    reversedEntryId: string | null
+    submittedById: string | null
+    submittedAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
     postedById: string | null
+    postedAt: Date | null
+    reversedById: string | null
+    reversedAt: Date | null
+    voidedById: string | null
+    voidedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -42346,11 +42969,23 @@ export namespace Prisma {
     type: $Enums.JournalEntryType | null
     status: $Enums.JournalEntryStatus | null
     source: $Enums.JournalSource | null
+    number: string | null
     reference: string | null
     description: string | null
     transactionId: string | null
-    postedAt: Date | null
+    adjustingEntryId: string | null
+    reversalReasonId: string | null
+    reversedEntryId: string | null
+    submittedById: string | null
+    submittedAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
     postedById: string | null
+    postedAt: Date | null
+    reversedById: string | null
+    reversedAt: Date | null
+    voidedById: string | null
+    voidedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -42362,11 +42997,23 @@ export namespace Prisma {
     type: number
     status: number
     source: number
+    number: number
     reference: number
     description: number
     transactionId: number
-    postedAt: number
+    adjustingEntryId: number
+    reversalReasonId: number
+    reversedEntryId: number
+    submittedById: number
+    submittedAt: number
+    approvedById: number
+    approvedAt: number
     postedById: number
+    postedAt: number
+    reversedById: number
+    reversedAt: number
+    voidedById: number
+    voidedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -42380,11 +43027,23 @@ export namespace Prisma {
     type?: true
     status?: true
     source?: true
+    number?: true
     reference?: true
     description?: true
     transactionId?: true
-    postedAt?: true
+    adjustingEntryId?: true
+    reversalReasonId?: true
+    reversedEntryId?: true
+    submittedById?: true
+    submittedAt?: true
+    approvedById?: true
+    approvedAt?: true
     postedById?: true
+    postedAt?: true
+    reversedById?: true
+    reversedAt?: true
+    voidedById?: true
+    voidedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -42396,11 +43055,23 @@ export namespace Prisma {
     type?: true
     status?: true
     source?: true
+    number?: true
     reference?: true
     description?: true
     transactionId?: true
-    postedAt?: true
+    adjustingEntryId?: true
+    reversalReasonId?: true
+    reversedEntryId?: true
+    submittedById?: true
+    submittedAt?: true
+    approvedById?: true
+    approvedAt?: true
     postedById?: true
+    postedAt?: true
+    reversedById?: true
+    reversedAt?: true
+    voidedById?: true
+    voidedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -42412,11 +43083,23 @@ export namespace Prisma {
     type?: true
     status?: true
     source?: true
+    number?: true
     reference?: true
     description?: true
     transactionId?: true
-    postedAt?: true
+    adjustingEntryId?: true
+    reversalReasonId?: true
+    reversedEntryId?: true
+    submittedById?: true
+    submittedAt?: true
+    approvedById?: true
+    approvedAt?: true
     postedById?: true
+    postedAt?: true
+    reversedById?: true
+    reversedAt?: true
+    voidedById?: true
+    voidedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -42501,11 +43184,23 @@ export namespace Prisma {
     type: $Enums.JournalEntryType
     status: $Enums.JournalEntryStatus
     source: $Enums.JournalSource
+    number: string | null
     reference: string | null
     description: string | null
     transactionId: string | null
-    postedAt: Date | null
+    adjustingEntryId: string | null
+    reversalReasonId: string | null
+    reversedEntryId: string | null
+    submittedById: string | null
+    submittedAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
     postedById: string | null
+    postedAt: Date | null
+    reversedById: string | null
+    reversedAt: Date | null
+    voidedById: string | null
+    voidedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: JournalEntryCountAggregateOutputType | null
@@ -42534,16 +43229,37 @@ export namespace Prisma {
     type?: boolean
     status?: boolean
     source?: boolean
+    number?: boolean
     reference?: boolean
     description?: boolean
     transactionId?: boolean
-    postedAt?: boolean
+    adjustingEntryId?: boolean
+    reversalReasonId?: boolean
+    reversedEntryId?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
     postedById?: boolean
+    postedAt?: boolean
+    reversedById?: boolean
+    reversedAt?: boolean
+    voidedById?: boolean
+    voidedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     period?: boolean | FinancialPeriodDefaultArgs<ExtArgs>
     transaction?: boolean | JournalEntry$transactionArgs<ExtArgs>
+    adjustingEntry?: boolean | JournalEntry$adjustingEntryArgs<ExtArgs>
+    adjustedEntries?: boolean | JournalEntry$adjustedEntriesArgs<ExtArgs>
+    reversalReason?: boolean | JournalEntry$reversalReasonArgs<ExtArgs>
+    reversedEntry?: boolean | JournalEntry$reversedEntryArgs<ExtArgs>
+    reversingEntries?: boolean | JournalEntry$reversingEntriesArgs<ExtArgs>
+    submittedBy?: boolean | JournalEntry$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | JournalEntry$approvedByArgs<ExtArgs>
+    postedBy?: boolean | JournalEntry$postedByArgs<ExtArgs>
+    reversedBy?: boolean | JournalEntry$reversedByArgs<ExtArgs>
     lines?: boolean | JournalEntry$linesArgs<ExtArgs>
     _count?: boolean | JournalEntryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["journalEntry"]>
@@ -42555,16 +43271,35 @@ export namespace Prisma {
     type?: boolean
     status?: boolean
     source?: boolean
+    number?: boolean
     reference?: boolean
     description?: boolean
     transactionId?: boolean
-    postedAt?: boolean
+    adjustingEntryId?: boolean
+    reversalReasonId?: boolean
+    reversedEntryId?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
     postedById?: boolean
+    postedAt?: boolean
+    reversedById?: boolean
+    reversedAt?: boolean
+    voidedById?: boolean
+    voidedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     period?: boolean | FinancialPeriodDefaultArgs<ExtArgs>
     transaction?: boolean | JournalEntry$transactionArgs<ExtArgs>
+    adjustingEntry?: boolean | JournalEntry$adjustingEntryArgs<ExtArgs>
+    reversalReason?: boolean | JournalEntry$reversalReasonArgs<ExtArgs>
+    reversedEntry?: boolean | JournalEntry$reversedEntryArgs<ExtArgs>
+    submittedBy?: boolean | JournalEntry$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | JournalEntry$approvedByArgs<ExtArgs>
+    postedBy?: boolean | JournalEntry$postedByArgs<ExtArgs>
+    reversedBy?: boolean | JournalEntry$reversedByArgs<ExtArgs>
   }, ExtArgs["result"]["journalEntry"]>
 
   export type JournalEntrySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -42574,16 +43309,35 @@ export namespace Prisma {
     type?: boolean
     status?: boolean
     source?: boolean
+    number?: boolean
     reference?: boolean
     description?: boolean
     transactionId?: boolean
-    postedAt?: boolean
+    adjustingEntryId?: boolean
+    reversalReasonId?: boolean
+    reversedEntryId?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
     postedById?: boolean
+    postedAt?: boolean
+    reversedById?: boolean
+    reversedAt?: boolean
+    voidedById?: boolean
+    voidedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     period?: boolean | FinancialPeriodDefaultArgs<ExtArgs>
     transaction?: boolean | JournalEntry$transactionArgs<ExtArgs>
+    adjustingEntry?: boolean | JournalEntry$adjustingEntryArgs<ExtArgs>
+    reversalReason?: boolean | JournalEntry$reversalReasonArgs<ExtArgs>
+    reversedEntry?: boolean | JournalEntry$reversedEntryArgs<ExtArgs>
+    submittedBy?: boolean | JournalEntry$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | JournalEntry$approvedByArgs<ExtArgs>
+    postedBy?: boolean | JournalEntry$postedByArgs<ExtArgs>
+    reversedBy?: boolean | JournalEntry$reversedByArgs<ExtArgs>
   }, ExtArgs["result"]["journalEntry"]>
 
   export type JournalEntrySelectScalar = {
@@ -42593,20 +43347,41 @@ export namespace Prisma {
     type?: boolean
     status?: boolean
     source?: boolean
+    number?: boolean
     reference?: boolean
     description?: boolean
     transactionId?: boolean
-    postedAt?: boolean
+    adjustingEntryId?: boolean
+    reversalReasonId?: boolean
+    reversedEntryId?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
     postedById?: boolean
+    postedAt?: boolean
+    reversedById?: boolean
+    reversedAt?: boolean
+    voidedById?: boolean
+    voidedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type JournalEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "periodId" | "type" | "status" | "source" | "reference" | "description" | "transactionId" | "postedAt" | "postedById" | "createdAt" | "updatedAt", ExtArgs["result"]["journalEntry"]>
+  export type JournalEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "periodId" | "type" | "status" | "source" | "number" | "reference" | "description" | "transactionId" | "adjustingEntryId" | "reversalReasonId" | "reversedEntryId" | "submittedById" | "submittedAt" | "approvedById" | "approvedAt" | "postedById" | "postedAt" | "reversedById" | "reversedAt" | "voidedById" | "voidedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["journalEntry"]>
   export type JournalEntryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     period?: boolean | FinancialPeriodDefaultArgs<ExtArgs>
     transaction?: boolean | JournalEntry$transactionArgs<ExtArgs>
+    adjustingEntry?: boolean | JournalEntry$adjustingEntryArgs<ExtArgs>
+    adjustedEntries?: boolean | JournalEntry$adjustedEntriesArgs<ExtArgs>
+    reversalReason?: boolean | JournalEntry$reversalReasonArgs<ExtArgs>
+    reversedEntry?: boolean | JournalEntry$reversedEntryArgs<ExtArgs>
+    reversingEntries?: boolean | JournalEntry$reversingEntriesArgs<ExtArgs>
+    submittedBy?: boolean | JournalEntry$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | JournalEntry$approvedByArgs<ExtArgs>
+    postedBy?: boolean | JournalEntry$postedByArgs<ExtArgs>
+    reversedBy?: boolean | JournalEntry$reversedByArgs<ExtArgs>
     lines?: boolean | JournalEntry$linesArgs<ExtArgs>
     _count?: boolean | JournalEntryCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -42614,11 +43389,25 @@ export namespace Prisma {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     period?: boolean | FinancialPeriodDefaultArgs<ExtArgs>
     transaction?: boolean | JournalEntry$transactionArgs<ExtArgs>
+    adjustingEntry?: boolean | JournalEntry$adjustingEntryArgs<ExtArgs>
+    reversalReason?: boolean | JournalEntry$reversalReasonArgs<ExtArgs>
+    reversedEntry?: boolean | JournalEntry$reversedEntryArgs<ExtArgs>
+    submittedBy?: boolean | JournalEntry$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | JournalEntry$approvedByArgs<ExtArgs>
+    postedBy?: boolean | JournalEntry$postedByArgs<ExtArgs>
+    reversedBy?: boolean | JournalEntry$reversedByArgs<ExtArgs>
   }
   export type JournalEntryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     period?: boolean | FinancialPeriodDefaultArgs<ExtArgs>
     transaction?: boolean | JournalEntry$transactionArgs<ExtArgs>
+    adjustingEntry?: boolean | JournalEntry$adjustingEntryArgs<ExtArgs>
+    reversalReason?: boolean | JournalEntry$reversalReasonArgs<ExtArgs>
+    reversedEntry?: boolean | JournalEntry$reversedEntryArgs<ExtArgs>
+    submittedBy?: boolean | JournalEntry$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | JournalEntry$approvedByArgs<ExtArgs>
+    postedBy?: boolean | JournalEntry$postedByArgs<ExtArgs>
+    reversedBy?: boolean | JournalEntry$reversedByArgs<ExtArgs>
   }
 
   export type $JournalEntryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -42627,6 +43416,15 @@ export namespace Prisma {
       organization: Prisma.$OrganizationPayload<ExtArgs>
       period: Prisma.$FinancialPeriodPayload<ExtArgs>
       transaction: Prisma.$TransactionPayload<ExtArgs> | null
+      adjustingEntry: Prisma.$JournalEntryPayload<ExtArgs> | null
+      adjustedEntries: Prisma.$JournalEntryPayload<ExtArgs>[]
+      reversalReason: Prisma.$ReversalReasonCodePayload<ExtArgs> | null
+      reversedEntry: Prisma.$JournalEntryPayload<ExtArgs> | null
+      reversingEntries: Prisma.$JournalEntryPayload<ExtArgs>[]
+      submittedBy: Prisma.$UserPayload<ExtArgs> | null
+      approvedBy: Prisma.$UserPayload<ExtArgs> | null
+      postedBy: Prisma.$UserPayload<ExtArgs> | null
+      reversedBy: Prisma.$UserPayload<ExtArgs> | null
       lines: Prisma.$JournalLinePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -42636,11 +43434,23 @@ export namespace Prisma {
       type: $Enums.JournalEntryType
       status: $Enums.JournalEntryStatus
       source: $Enums.JournalSource
+      number: string | null
       reference: string | null
       description: string | null
       transactionId: string | null
-      postedAt: Date | null
+      adjustingEntryId: string | null
+      reversalReasonId: string | null
+      reversedEntryId: string | null
+      submittedById: string | null
+      submittedAt: Date | null
+      approvedById: string | null
+      approvedAt: Date | null
       postedById: string | null
+      postedAt: Date | null
+      reversedById: string | null
+      reversedAt: Date | null
+      voidedById: string | null
+      voidedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["journalEntry"]>
@@ -43040,6 +43850,15 @@ export namespace Prisma {
     organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     period<T extends FinancialPeriodDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FinancialPeriodDefaultArgs<ExtArgs>>): Prisma__FinancialPeriodClient<$Result.GetResult<Prisma.$FinancialPeriodPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     transaction<T extends JournalEntry$transactionArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$transactionArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    adjustingEntry<T extends JournalEntry$adjustingEntryArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$adjustingEntryArgs<ExtArgs>>): Prisma__JournalEntryClient<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    adjustedEntries<T extends JournalEntry$adjustedEntriesArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$adjustedEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reversalReason<T extends JournalEntry$reversalReasonArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$reversalReasonArgs<ExtArgs>>): Prisma__ReversalReasonCodeClient<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    reversedEntry<T extends JournalEntry$reversedEntryArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$reversedEntryArgs<ExtArgs>>): Prisma__JournalEntryClient<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    reversingEntries<T extends JournalEntry$reversingEntriesArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$reversingEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    submittedBy<T extends JournalEntry$submittedByArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$submittedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    approvedBy<T extends JournalEntry$approvedByArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$approvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    postedBy<T extends JournalEntry$postedByArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$postedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    reversedBy<T extends JournalEntry$reversedByArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$reversedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     lines<T extends JournalEntry$linesArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$linesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -43076,11 +43895,23 @@ export namespace Prisma {
     readonly type: FieldRef<"JournalEntry", 'JournalEntryType'>
     readonly status: FieldRef<"JournalEntry", 'JournalEntryStatus'>
     readonly source: FieldRef<"JournalEntry", 'JournalSource'>
+    readonly number: FieldRef<"JournalEntry", 'String'>
     readonly reference: FieldRef<"JournalEntry", 'String'>
     readonly description: FieldRef<"JournalEntry", 'String'>
     readonly transactionId: FieldRef<"JournalEntry", 'String'>
-    readonly postedAt: FieldRef<"JournalEntry", 'DateTime'>
+    readonly adjustingEntryId: FieldRef<"JournalEntry", 'String'>
+    readonly reversalReasonId: FieldRef<"JournalEntry", 'String'>
+    readonly reversedEntryId: FieldRef<"JournalEntry", 'String'>
+    readonly submittedById: FieldRef<"JournalEntry", 'String'>
+    readonly submittedAt: FieldRef<"JournalEntry", 'DateTime'>
+    readonly approvedById: FieldRef<"JournalEntry", 'String'>
+    readonly approvedAt: FieldRef<"JournalEntry", 'DateTime'>
     readonly postedById: FieldRef<"JournalEntry", 'String'>
+    readonly postedAt: FieldRef<"JournalEntry", 'DateTime'>
+    readonly reversedById: FieldRef<"JournalEntry", 'String'>
+    readonly reversedAt: FieldRef<"JournalEntry", 'DateTime'>
+    readonly voidedById: FieldRef<"JournalEntry", 'String'>
+    readonly voidedAt: FieldRef<"JournalEntry", 'DateTime'>
     readonly createdAt: FieldRef<"JournalEntry", 'DateTime'>
     readonly updatedAt: FieldRef<"JournalEntry", 'DateTime'>
   }
@@ -43498,6 +44329,187 @@ export namespace Prisma {
   }
 
   /**
+   * JournalEntry.adjustingEntry
+   */
+  export type JournalEntry$adjustingEntryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+  }
+
+  /**
+   * JournalEntry.adjustedEntries
+   */
+  export type JournalEntry$adjustedEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+    orderBy?: JournalEntryOrderByWithRelationInput | JournalEntryOrderByWithRelationInput[]
+    cursor?: JournalEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalEntryScalarFieldEnum | JournalEntryScalarFieldEnum[]
+  }
+
+  /**
+   * JournalEntry.reversalReason
+   */
+  export type JournalEntry$reversalReasonArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    where?: ReversalReasonCodeWhereInput
+  }
+
+  /**
+   * JournalEntry.reversedEntry
+   */
+  export type JournalEntry$reversedEntryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+  }
+
+  /**
+   * JournalEntry.reversingEntries
+   */
+  export type JournalEntry$reversingEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+    orderBy?: JournalEntryOrderByWithRelationInput | JournalEntryOrderByWithRelationInput[]
+    cursor?: JournalEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalEntryScalarFieldEnum | JournalEntryScalarFieldEnum[]
+  }
+
+  /**
+   * JournalEntry.submittedBy
+   */
+  export type JournalEntry$submittedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * JournalEntry.approvedBy
+   */
+  export type JournalEntry$approvedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * JournalEntry.postedBy
+   */
+  export type JournalEntry$postedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * JournalEntry.reversedBy
+   */
+  export type JournalEntry$reversedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * JournalEntry.lines
    */
   export type JournalEntry$linesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -43553,13 +44565,19 @@ export namespace Prisma {
   }
 
   export type JournalLineAvgAggregateOutputType = {
+    lineNumber: number | null
     debit: Decimal | null
     credit: Decimal | null
+    baseAmount: Decimal | null
+    fxRate: Decimal | null
   }
 
   export type JournalLineSumAggregateOutputType = {
+    lineNumber: number | null
     debit: Decimal | null
     credit: Decimal | null
+    baseAmount: Decimal | null
+    fxRate: Decimal | null
   }
 
   export type JournalLineMinAggregateOutputType = {
@@ -43567,10 +44585,18 @@ export namespace Prisma {
     organizationId: string | null
     entryId: string | null
     accountId: string | null
+    lineNumber: number | null
+    description: string | null
     debit: Decimal | null
     credit: Decimal | null
     currencyCode: string | null
-    description: string | null
+    baseAmount: Decimal | null
+    fxRate: Decimal | null
+    projectId: string | null
+    departmentId: string | null
+    costCentreId: string | null
+    locationId: string | null
+    fundingSourceId: string | null
     createdAt: Date | null
   }
 
@@ -43579,10 +44605,18 @@ export namespace Prisma {
     organizationId: string | null
     entryId: string | null
     accountId: string | null
+    lineNumber: number | null
+    description: string | null
     debit: Decimal | null
     credit: Decimal | null
     currencyCode: string | null
-    description: string | null
+    baseAmount: Decimal | null
+    fxRate: Decimal | null
+    projectId: string | null
+    departmentId: string | null
+    costCentreId: string | null
+    locationId: string | null
+    fundingSourceId: string | null
     createdAt: Date | null
   }
 
@@ -43591,23 +44625,37 @@ export namespace Prisma {
     organizationId: number
     entryId: number
     accountId: number
+    lineNumber: number
+    description: number
     debit: number
     credit: number
     currencyCode: number
-    description: number
+    baseAmount: number
+    fxRate: number
+    projectId: number
+    departmentId: number
+    costCentreId: number
+    locationId: number
+    fundingSourceId: number
     createdAt: number
     _all: number
   }
 
 
   export type JournalLineAvgAggregateInputType = {
+    lineNumber?: true
     debit?: true
     credit?: true
+    baseAmount?: true
+    fxRate?: true
   }
 
   export type JournalLineSumAggregateInputType = {
+    lineNumber?: true
     debit?: true
     credit?: true
+    baseAmount?: true
+    fxRate?: true
   }
 
   export type JournalLineMinAggregateInputType = {
@@ -43615,10 +44663,18 @@ export namespace Prisma {
     organizationId?: true
     entryId?: true
     accountId?: true
+    lineNumber?: true
+    description?: true
     debit?: true
     credit?: true
     currencyCode?: true
-    description?: true
+    baseAmount?: true
+    fxRate?: true
+    projectId?: true
+    departmentId?: true
+    costCentreId?: true
+    locationId?: true
+    fundingSourceId?: true
     createdAt?: true
   }
 
@@ -43627,10 +44683,18 @@ export namespace Prisma {
     organizationId?: true
     entryId?: true
     accountId?: true
+    lineNumber?: true
+    description?: true
     debit?: true
     credit?: true
     currencyCode?: true
-    description?: true
+    baseAmount?: true
+    fxRate?: true
+    projectId?: true
+    departmentId?: true
+    costCentreId?: true
+    locationId?: true
+    fundingSourceId?: true
     createdAt?: true
   }
 
@@ -43639,10 +44703,18 @@ export namespace Prisma {
     organizationId?: true
     entryId?: true
     accountId?: true
+    lineNumber?: true
+    description?: true
     debit?: true
     credit?: true
     currencyCode?: true
-    description?: true
+    baseAmount?: true
+    fxRate?: true
+    projectId?: true
+    departmentId?: true
+    costCentreId?: true
+    locationId?: true
+    fundingSourceId?: true
     createdAt?: true
     _all?: true
   }
@@ -43738,10 +44810,18 @@ export namespace Prisma {
     organizationId: string
     entryId: string
     accountId: string
+    lineNumber: number
+    description: string | null
     debit: Decimal
     credit: Decimal
     currencyCode: string
-    description: string | null
+    baseAmount: Decimal
+    fxRate: Decimal | null
+    projectId: string | null
+    departmentId: string | null
+    costCentreId: string | null
+    locationId: string | null
+    fundingSourceId: string | null
     createdAt: Date
     _count: JournalLineCountAggregateOutputType | null
     _avg: JournalLineAvgAggregateOutputType | null
@@ -43769,15 +44849,28 @@ export namespace Prisma {
     organizationId?: boolean
     entryId?: boolean
     accountId?: boolean
+    lineNumber?: boolean
+    description?: boolean
     debit?: boolean
     credit?: boolean
     currencyCode?: boolean
-    description?: boolean
+    baseAmount?: boolean
+    fxRate?: boolean
+    projectId?: boolean
+    departmentId?: boolean
+    costCentreId?: boolean
+    locationId?: boolean
+    fundingSourceId?: boolean
     createdAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     entry?: boolean | JournalEntryDefaultArgs<ExtArgs>
     account?: boolean | AccountDefaultArgs<ExtArgs>
     currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    project?: boolean | JournalLine$projectArgs<ExtArgs>
+    department?: boolean | JournalLine$departmentArgs<ExtArgs>
+    costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
+    location?: boolean | JournalLine$locationArgs<ExtArgs>
+    fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
   }, ExtArgs["result"]["journalLine"]>
 
   export type JournalLineSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -43785,15 +44878,28 @@ export namespace Prisma {
     organizationId?: boolean
     entryId?: boolean
     accountId?: boolean
+    lineNumber?: boolean
+    description?: boolean
     debit?: boolean
     credit?: boolean
     currencyCode?: boolean
-    description?: boolean
+    baseAmount?: boolean
+    fxRate?: boolean
+    projectId?: boolean
+    departmentId?: boolean
+    costCentreId?: boolean
+    locationId?: boolean
+    fundingSourceId?: boolean
     createdAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     entry?: boolean | JournalEntryDefaultArgs<ExtArgs>
     account?: boolean | AccountDefaultArgs<ExtArgs>
     currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    project?: boolean | JournalLine$projectArgs<ExtArgs>
+    department?: boolean | JournalLine$departmentArgs<ExtArgs>
+    costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
+    location?: boolean | JournalLine$locationArgs<ExtArgs>
+    fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
   }, ExtArgs["result"]["journalLine"]>
 
   export type JournalLineSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -43801,15 +44907,28 @@ export namespace Prisma {
     organizationId?: boolean
     entryId?: boolean
     accountId?: boolean
+    lineNumber?: boolean
+    description?: boolean
     debit?: boolean
     credit?: boolean
     currencyCode?: boolean
-    description?: boolean
+    baseAmount?: boolean
+    fxRate?: boolean
+    projectId?: boolean
+    departmentId?: boolean
+    costCentreId?: boolean
+    locationId?: boolean
+    fundingSourceId?: boolean
     createdAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     entry?: boolean | JournalEntryDefaultArgs<ExtArgs>
     account?: boolean | AccountDefaultArgs<ExtArgs>
     currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    project?: boolean | JournalLine$projectArgs<ExtArgs>
+    department?: boolean | JournalLine$departmentArgs<ExtArgs>
+    costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
+    location?: boolean | JournalLine$locationArgs<ExtArgs>
+    fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
   }, ExtArgs["result"]["journalLine"]>
 
   export type JournalLineSelectScalar = {
@@ -43817,31 +44936,54 @@ export namespace Prisma {
     organizationId?: boolean
     entryId?: boolean
     accountId?: boolean
+    lineNumber?: boolean
+    description?: boolean
     debit?: boolean
     credit?: boolean
     currencyCode?: boolean
-    description?: boolean
+    baseAmount?: boolean
+    fxRate?: boolean
+    projectId?: boolean
+    departmentId?: boolean
+    costCentreId?: boolean
+    locationId?: boolean
+    fundingSourceId?: boolean
     createdAt?: boolean
   }
 
-  export type JournalLineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "entryId" | "accountId" | "debit" | "credit" | "currencyCode" | "description" | "createdAt", ExtArgs["result"]["journalLine"]>
+  export type JournalLineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "entryId" | "accountId" | "lineNumber" | "description" | "debit" | "credit" | "currencyCode" | "baseAmount" | "fxRate" | "projectId" | "departmentId" | "costCentreId" | "locationId" | "fundingSourceId" | "createdAt", ExtArgs["result"]["journalLine"]>
   export type JournalLineInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     entry?: boolean | JournalEntryDefaultArgs<ExtArgs>
     account?: boolean | AccountDefaultArgs<ExtArgs>
     currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    project?: boolean | JournalLine$projectArgs<ExtArgs>
+    department?: boolean | JournalLine$departmentArgs<ExtArgs>
+    costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
+    location?: boolean | JournalLine$locationArgs<ExtArgs>
+    fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
   }
   export type JournalLineIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     entry?: boolean | JournalEntryDefaultArgs<ExtArgs>
     account?: boolean | AccountDefaultArgs<ExtArgs>
     currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    project?: boolean | JournalLine$projectArgs<ExtArgs>
+    department?: boolean | JournalLine$departmentArgs<ExtArgs>
+    costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
+    location?: boolean | JournalLine$locationArgs<ExtArgs>
+    fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
   }
   export type JournalLineIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     entry?: boolean | JournalEntryDefaultArgs<ExtArgs>
     account?: boolean | AccountDefaultArgs<ExtArgs>
     currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    project?: boolean | JournalLine$projectArgs<ExtArgs>
+    department?: boolean | JournalLine$departmentArgs<ExtArgs>
+    costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
+    location?: boolean | JournalLine$locationArgs<ExtArgs>
+    fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
   }
 
   export type $JournalLinePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -43851,16 +44993,29 @@ export namespace Prisma {
       entry: Prisma.$JournalEntryPayload<ExtArgs>
       account: Prisma.$AccountPayload<ExtArgs>
       currency: Prisma.$CurrencyPayload<ExtArgs>
+      project: Prisma.$ProjectPayload<ExtArgs> | null
+      department: Prisma.$DepartmentPayload<ExtArgs> | null
+      costCentre: Prisma.$CostCentrePayload<ExtArgs> | null
+      location: Prisma.$LocationPayload<ExtArgs> | null
+      fundingSource: Prisma.$FundingSourcePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       organizationId: string
       entryId: string
       accountId: string
+      lineNumber: number
+      description: string | null
       debit: Prisma.Decimal
       credit: Prisma.Decimal
       currencyCode: string
-      description: string | null
+      baseAmount: Prisma.Decimal
+      fxRate: Prisma.Decimal | null
+      projectId: string | null
+      departmentId: string | null
+      costCentreId: string | null
+      locationId: string | null
+      fundingSourceId: string | null
       createdAt: Date
     }, ExtArgs["result"]["journalLine"]>
     composites: {}
@@ -44260,6 +45415,11 @@ export namespace Prisma {
     entry<T extends JournalEntryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntryDefaultArgs<ExtArgs>>): Prisma__JournalEntryClient<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     account<T extends AccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AccountDefaultArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     currency<T extends CurrencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CurrencyDefaultArgs<ExtArgs>>): Prisma__CurrencyClient<$Result.GetResult<Prisma.$CurrencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    project<T extends JournalLine$projectArgs<ExtArgs> = {}>(args?: Subset<T, JournalLine$projectArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    department<T extends JournalLine$departmentArgs<ExtArgs> = {}>(args?: Subset<T, JournalLine$departmentArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    costCentre<T extends JournalLine$costCentreArgs<ExtArgs> = {}>(args?: Subset<T, JournalLine$costCentreArgs<ExtArgs>>): Prisma__CostCentreClient<$Result.GetResult<Prisma.$CostCentrePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    location<T extends JournalLine$locationArgs<ExtArgs> = {}>(args?: Subset<T, JournalLine$locationArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    fundingSource<T extends JournalLine$fundingSourceArgs<ExtArgs> = {}>(args?: Subset<T, JournalLine$fundingSourceArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -44293,10 +45453,18 @@ export namespace Prisma {
     readonly organizationId: FieldRef<"JournalLine", 'String'>
     readonly entryId: FieldRef<"JournalLine", 'String'>
     readonly accountId: FieldRef<"JournalLine", 'String'>
+    readonly lineNumber: FieldRef<"JournalLine", 'Int'>
+    readonly description: FieldRef<"JournalLine", 'String'>
     readonly debit: FieldRef<"JournalLine", 'Decimal'>
     readonly credit: FieldRef<"JournalLine", 'Decimal'>
     readonly currencyCode: FieldRef<"JournalLine", 'String'>
-    readonly description: FieldRef<"JournalLine", 'String'>
+    readonly baseAmount: FieldRef<"JournalLine", 'Decimal'>
+    readonly fxRate: FieldRef<"JournalLine", 'Decimal'>
+    readonly projectId: FieldRef<"JournalLine", 'String'>
+    readonly departmentId: FieldRef<"JournalLine", 'String'>
+    readonly costCentreId: FieldRef<"JournalLine", 'String'>
+    readonly locationId: FieldRef<"JournalLine", 'String'>
+    readonly fundingSourceId: FieldRef<"JournalLine", 'String'>
     readonly createdAt: FieldRef<"JournalLine", 'DateTime'>
   }
     
@@ -44694,6 +45862,101 @@ export namespace Prisma {
   }
 
   /**
+   * JournalLine.project
+   */
+  export type JournalLine$projectArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    where?: ProjectWhereInput
+  }
+
+  /**
+   * JournalLine.department
+   */
+  export type JournalLine$departmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    where?: DepartmentWhereInput
+  }
+
+  /**
+   * JournalLine.costCentre
+   */
+  export type JournalLine$costCentreArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CostCentre
+     */
+    select?: CostCentreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CostCentre
+     */
+    omit?: CostCentreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CostCentreInclude<ExtArgs> | null
+    where?: CostCentreWhereInput
+  }
+
+  /**
+   * JournalLine.location
+   */
+  export type JournalLine$locationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    where?: LocationWhereInput
+  }
+
+  /**
+   * JournalLine.fundingSource
+   */
+  export type JournalLine$fundingSourceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    where?: FundingSourceWhereInput
+  }
+
+  /**
    * JournalLine without action
    */
   export type JournalLineDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -44709,6 +45972,1146 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: JournalLineInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReversalReasonCode
+   */
+
+  export type AggregateReversalReasonCode = {
+    _count: ReversalReasonCodeCountAggregateOutputType | null
+    _min: ReversalReasonCodeMinAggregateOutputType | null
+    _max: ReversalReasonCodeMaxAggregateOutputType | null
+  }
+
+  export type ReversalReasonCodeMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    category: $Enums.ReversalReasonCategory | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReversalReasonCodeMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    category: $Enums.ReversalReasonCategory | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReversalReasonCodeCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    code: number
+    name: number
+    description: number
+    category: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ReversalReasonCodeMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReversalReasonCodeMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReversalReasonCodeCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    description?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ReversalReasonCodeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReversalReasonCode to aggregate.
+     */
+    where?: ReversalReasonCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReversalReasonCodes to fetch.
+     */
+    orderBy?: ReversalReasonCodeOrderByWithRelationInput | ReversalReasonCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReversalReasonCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReversalReasonCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReversalReasonCodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReversalReasonCodes
+    **/
+    _count?: true | ReversalReasonCodeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReversalReasonCodeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReversalReasonCodeMaxAggregateInputType
+  }
+
+  export type GetReversalReasonCodeAggregateType<T extends ReversalReasonCodeAggregateArgs> = {
+        [P in keyof T & keyof AggregateReversalReasonCode]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReversalReasonCode[P]>
+      : GetScalarType<T[P], AggregateReversalReasonCode[P]>
+  }
+
+
+
+
+  export type ReversalReasonCodeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReversalReasonCodeWhereInput
+    orderBy?: ReversalReasonCodeOrderByWithAggregationInput | ReversalReasonCodeOrderByWithAggregationInput[]
+    by: ReversalReasonCodeScalarFieldEnum[] | ReversalReasonCodeScalarFieldEnum
+    having?: ReversalReasonCodeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReversalReasonCodeCountAggregateInputType | true
+    _min?: ReversalReasonCodeMinAggregateInputType
+    _max?: ReversalReasonCodeMaxAggregateInputType
+  }
+
+  export type ReversalReasonCodeGroupByOutputType = {
+    id: string
+    organizationId: string
+    code: string
+    name: string
+    description: string | null
+    category: $Enums.ReversalReasonCategory
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: ReversalReasonCodeCountAggregateOutputType | null
+    _min: ReversalReasonCodeMinAggregateOutputType | null
+    _max: ReversalReasonCodeMaxAggregateOutputType | null
+  }
+
+  type GetReversalReasonCodeGroupByPayload<T extends ReversalReasonCodeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReversalReasonCodeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReversalReasonCodeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReversalReasonCodeGroupByOutputType[P]>
+            : GetScalarType<T[P], ReversalReasonCodeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReversalReasonCodeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    journalEntries?: boolean | ReversalReasonCode$journalEntriesArgs<ExtArgs>
+    _count?: boolean | ReversalReasonCodeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reversalReasonCode"]>
+
+  export type ReversalReasonCodeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reversalReasonCode"]>
+
+  export type ReversalReasonCodeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reversalReasonCode"]>
+
+  export type ReversalReasonCodeSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ReversalReasonCodeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "code" | "name" | "description" | "category" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["reversalReasonCode"]>
+  export type ReversalReasonCodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    journalEntries?: boolean | ReversalReasonCode$journalEntriesArgs<ExtArgs>
+    _count?: boolean | ReversalReasonCodeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ReversalReasonCodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type ReversalReasonCodeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+
+  export type $ReversalReasonCodePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReversalReasonCode"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      journalEntries: Prisma.$JournalEntryPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      code: string
+      name: string
+      description: string | null
+      category: $Enums.ReversalReasonCategory
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["reversalReasonCode"]>
+    composites: {}
+  }
+
+  type ReversalReasonCodeGetPayload<S extends boolean | null | undefined | ReversalReasonCodeDefaultArgs> = $Result.GetResult<Prisma.$ReversalReasonCodePayload, S>
+
+  type ReversalReasonCodeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReversalReasonCodeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReversalReasonCodeCountAggregateInputType | true
+    }
+
+  export interface ReversalReasonCodeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReversalReasonCode'], meta: { name: 'ReversalReasonCode' } }
+    /**
+     * Find zero or one ReversalReasonCode that matches the filter.
+     * @param {ReversalReasonCodeFindUniqueArgs} args - Arguments to find a ReversalReasonCode
+     * @example
+     * // Get one ReversalReasonCode
+     * const reversalReasonCode = await prisma.reversalReasonCode.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReversalReasonCodeFindUniqueArgs>(args: SelectSubset<T, ReversalReasonCodeFindUniqueArgs<ExtArgs>>): Prisma__ReversalReasonCodeClient<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReversalReasonCode that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReversalReasonCodeFindUniqueOrThrowArgs} args - Arguments to find a ReversalReasonCode
+     * @example
+     * // Get one ReversalReasonCode
+     * const reversalReasonCode = await prisma.reversalReasonCode.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReversalReasonCodeFindUniqueOrThrowArgs>(args: SelectSubset<T, ReversalReasonCodeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReversalReasonCodeClient<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReversalReasonCode that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReversalReasonCodeFindFirstArgs} args - Arguments to find a ReversalReasonCode
+     * @example
+     * // Get one ReversalReasonCode
+     * const reversalReasonCode = await prisma.reversalReasonCode.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReversalReasonCodeFindFirstArgs>(args?: SelectSubset<T, ReversalReasonCodeFindFirstArgs<ExtArgs>>): Prisma__ReversalReasonCodeClient<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReversalReasonCode that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReversalReasonCodeFindFirstOrThrowArgs} args - Arguments to find a ReversalReasonCode
+     * @example
+     * // Get one ReversalReasonCode
+     * const reversalReasonCode = await prisma.reversalReasonCode.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReversalReasonCodeFindFirstOrThrowArgs>(args?: SelectSubset<T, ReversalReasonCodeFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReversalReasonCodeClient<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReversalReasonCodes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReversalReasonCodeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReversalReasonCodes
+     * const reversalReasonCodes = await prisma.reversalReasonCode.findMany()
+     * 
+     * // Get first 10 ReversalReasonCodes
+     * const reversalReasonCodes = await prisma.reversalReasonCode.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reversalReasonCodeWithIdOnly = await prisma.reversalReasonCode.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReversalReasonCodeFindManyArgs>(args?: SelectSubset<T, ReversalReasonCodeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReversalReasonCode.
+     * @param {ReversalReasonCodeCreateArgs} args - Arguments to create a ReversalReasonCode.
+     * @example
+     * // Create one ReversalReasonCode
+     * const ReversalReasonCode = await prisma.reversalReasonCode.create({
+     *   data: {
+     *     // ... data to create a ReversalReasonCode
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReversalReasonCodeCreateArgs>(args: SelectSubset<T, ReversalReasonCodeCreateArgs<ExtArgs>>): Prisma__ReversalReasonCodeClient<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReversalReasonCodes.
+     * @param {ReversalReasonCodeCreateManyArgs} args - Arguments to create many ReversalReasonCodes.
+     * @example
+     * // Create many ReversalReasonCodes
+     * const reversalReasonCode = await prisma.reversalReasonCode.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReversalReasonCodeCreateManyArgs>(args?: SelectSubset<T, ReversalReasonCodeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReversalReasonCodes and returns the data saved in the database.
+     * @param {ReversalReasonCodeCreateManyAndReturnArgs} args - Arguments to create many ReversalReasonCodes.
+     * @example
+     * // Create many ReversalReasonCodes
+     * const reversalReasonCode = await prisma.reversalReasonCode.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReversalReasonCodes and only return the `id`
+     * const reversalReasonCodeWithIdOnly = await prisma.reversalReasonCode.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReversalReasonCodeCreateManyAndReturnArgs>(args?: SelectSubset<T, ReversalReasonCodeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReversalReasonCode.
+     * @param {ReversalReasonCodeDeleteArgs} args - Arguments to delete one ReversalReasonCode.
+     * @example
+     * // Delete one ReversalReasonCode
+     * const ReversalReasonCode = await prisma.reversalReasonCode.delete({
+     *   where: {
+     *     // ... filter to delete one ReversalReasonCode
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReversalReasonCodeDeleteArgs>(args: SelectSubset<T, ReversalReasonCodeDeleteArgs<ExtArgs>>): Prisma__ReversalReasonCodeClient<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReversalReasonCode.
+     * @param {ReversalReasonCodeUpdateArgs} args - Arguments to update one ReversalReasonCode.
+     * @example
+     * // Update one ReversalReasonCode
+     * const reversalReasonCode = await prisma.reversalReasonCode.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReversalReasonCodeUpdateArgs>(args: SelectSubset<T, ReversalReasonCodeUpdateArgs<ExtArgs>>): Prisma__ReversalReasonCodeClient<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReversalReasonCodes.
+     * @param {ReversalReasonCodeDeleteManyArgs} args - Arguments to filter ReversalReasonCodes to delete.
+     * @example
+     * // Delete a few ReversalReasonCodes
+     * const { count } = await prisma.reversalReasonCode.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReversalReasonCodeDeleteManyArgs>(args?: SelectSubset<T, ReversalReasonCodeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReversalReasonCodes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReversalReasonCodeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReversalReasonCodes
+     * const reversalReasonCode = await prisma.reversalReasonCode.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReversalReasonCodeUpdateManyArgs>(args: SelectSubset<T, ReversalReasonCodeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReversalReasonCodes and returns the data updated in the database.
+     * @param {ReversalReasonCodeUpdateManyAndReturnArgs} args - Arguments to update many ReversalReasonCodes.
+     * @example
+     * // Update many ReversalReasonCodes
+     * const reversalReasonCode = await prisma.reversalReasonCode.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReversalReasonCodes and only return the `id`
+     * const reversalReasonCodeWithIdOnly = await prisma.reversalReasonCode.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReversalReasonCodeUpdateManyAndReturnArgs>(args: SelectSubset<T, ReversalReasonCodeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReversalReasonCode.
+     * @param {ReversalReasonCodeUpsertArgs} args - Arguments to update or create a ReversalReasonCode.
+     * @example
+     * // Update or create a ReversalReasonCode
+     * const reversalReasonCode = await prisma.reversalReasonCode.upsert({
+     *   create: {
+     *     // ... data to create a ReversalReasonCode
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReversalReasonCode we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReversalReasonCodeUpsertArgs>(args: SelectSubset<T, ReversalReasonCodeUpsertArgs<ExtArgs>>): Prisma__ReversalReasonCodeClient<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReversalReasonCodes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReversalReasonCodeCountArgs} args - Arguments to filter ReversalReasonCodes to count.
+     * @example
+     * // Count the number of ReversalReasonCodes
+     * const count = await prisma.reversalReasonCode.count({
+     *   where: {
+     *     // ... the filter for the ReversalReasonCodes we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReversalReasonCodeCountArgs>(
+      args?: Subset<T, ReversalReasonCodeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReversalReasonCodeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReversalReasonCode.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReversalReasonCodeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReversalReasonCodeAggregateArgs>(args: Subset<T, ReversalReasonCodeAggregateArgs>): Prisma.PrismaPromise<GetReversalReasonCodeAggregateType<T>>
+
+    /**
+     * Group by ReversalReasonCode.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReversalReasonCodeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReversalReasonCodeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReversalReasonCodeGroupByArgs['orderBy'] }
+        : { orderBy?: ReversalReasonCodeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReversalReasonCodeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReversalReasonCodeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReversalReasonCode model
+   */
+  readonly fields: ReversalReasonCodeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReversalReasonCode.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReversalReasonCodeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    journalEntries<T extends ReversalReasonCode$journalEntriesArgs<ExtArgs> = {}>(args?: Subset<T, ReversalReasonCode$journalEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReversalReasonCode model
+   */
+  interface ReversalReasonCodeFieldRefs {
+    readonly id: FieldRef<"ReversalReasonCode", 'String'>
+    readonly organizationId: FieldRef<"ReversalReasonCode", 'String'>
+    readonly code: FieldRef<"ReversalReasonCode", 'String'>
+    readonly name: FieldRef<"ReversalReasonCode", 'String'>
+    readonly description: FieldRef<"ReversalReasonCode", 'String'>
+    readonly category: FieldRef<"ReversalReasonCode", 'ReversalReasonCategory'>
+    readonly isActive: FieldRef<"ReversalReasonCode", 'Boolean'>
+    readonly createdAt: FieldRef<"ReversalReasonCode", 'DateTime'>
+    readonly updatedAt: FieldRef<"ReversalReasonCode", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReversalReasonCode findUnique
+   */
+  export type ReversalReasonCodeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which ReversalReasonCode to fetch.
+     */
+    where: ReversalReasonCodeWhereUniqueInput
+  }
+
+  /**
+   * ReversalReasonCode findUniqueOrThrow
+   */
+  export type ReversalReasonCodeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which ReversalReasonCode to fetch.
+     */
+    where: ReversalReasonCodeWhereUniqueInput
+  }
+
+  /**
+   * ReversalReasonCode findFirst
+   */
+  export type ReversalReasonCodeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which ReversalReasonCode to fetch.
+     */
+    where?: ReversalReasonCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReversalReasonCodes to fetch.
+     */
+    orderBy?: ReversalReasonCodeOrderByWithRelationInput | ReversalReasonCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReversalReasonCodes.
+     */
+    cursor?: ReversalReasonCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReversalReasonCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReversalReasonCodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReversalReasonCodes.
+     */
+    distinct?: ReversalReasonCodeScalarFieldEnum | ReversalReasonCodeScalarFieldEnum[]
+  }
+
+  /**
+   * ReversalReasonCode findFirstOrThrow
+   */
+  export type ReversalReasonCodeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which ReversalReasonCode to fetch.
+     */
+    where?: ReversalReasonCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReversalReasonCodes to fetch.
+     */
+    orderBy?: ReversalReasonCodeOrderByWithRelationInput | ReversalReasonCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReversalReasonCodes.
+     */
+    cursor?: ReversalReasonCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReversalReasonCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReversalReasonCodes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReversalReasonCodes.
+     */
+    distinct?: ReversalReasonCodeScalarFieldEnum | ReversalReasonCodeScalarFieldEnum[]
+  }
+
+  /**
+   * ReversalReasonCode findMany
+   */
+  export type ReversalReasonCodeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter, which ReversalReasonCodes to fetch.
+     */
+    where?: ReversalReasonCodeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReversalReasonCodes to fetch.
+     */
+    orderBy?: ReversalReasonCodeOrderByWithRelationInput | ReversalReasonCodeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReversalReasonCodes.
+     */
+    cursor?: ReversalReasonCodeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReversalReasonCodes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReversalReasonCodes.
+     */
+    skip?: number
+    distinct?: ReversalReasonCodeScalarFieldEnum | ReversalReasonCodeScalarFieldEnum[]
+  }
+
+  /**
+   * ReversalReasonCode create
+   */
+  export type ReversalReasonCodeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ReversalReasonCode.
+     */
+    data: XOR<ReversalReasonCodeCreateInput, ReversalReasonCodeUncheckedCreateInput>
+  }
+
+  /**
+   * ReversalReasonCode createMany
+   */
+  export type ReversalReasonCodeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReversalReasonCodes.
+     */
+    data: ReversalReasonCodeCreateManyInput | ReversalReasonCodeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReversalReasonCode createManyAndReturn
+   */
+  export type ReversalReasonCodeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReversalReasonCodes.
+     */
+    data: ReversalReasonCodeCreateManyInput | ReversalReasonCodeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReversalReasonCode update
+   */
+  export type ReversalReasonCodeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ReversalReasonCode.
+     */
+    data: XOR<ReversalReasonCodeUpdateInput, ReversalReasonCodeUncheckedUpdateInput>
+    /**
+     * Choose, which ReversalReasonCode to update.
+     */
+    where: ReversalReasonCodeWhereUniqueInput
+  }
+
+  /**
+   * ReversalReasonCode updateMany
+   */
+  export type ReversalReasonCodeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReversalReasonCodes.
+     */
+    data: XOR<ReversalReasonCodeUpdateManyMutationInput, ReversalReasonCodeUncheckedUpdateManyInput>
+    /**
+     * Filter which ReversalReasonCodes to update
+     */
+    where?: ReversalReasonCodeWhereInput
+    /**
+     * Limit how many ReversalReasonCodes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReversalReasonCode updateManyAndReturn
+   */
+  export type ReversalReasonCodeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * The data used to update ReversalReasonCodes.
+     */
+    data: XOR<ReversalReasonCodeUpdateManyMutationInput, ReversalReasonCodeUncheckedUpdateManyInput>
+    /**
+     * Filter which ReversalReasonCodes to update
+     */
+    where?: ReversalReasonCodeWhereInput
+    /**
+     * Limit how many ReversalReasonCodes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReversalReasonCode upsert
+   */
+  export type ReversalReasonCodeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ReversalReasonCode to update in case it exists.
+     */
+    where: ReversalReasonCodeWhereUniqueInput
+    /**
+     * In case the ReversalReasonCode found by the `where` argument doesn't exist, create a new ReversalReasonCode with this data.
+     */
+    create: XOR<ReversalReasonCodeCreateInput, ReversalReasonCodeUncheckedCreateInput>
+    /**
+     * In case the ReversalReasonCode was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReversalReasonCodeUpdateInput, ReversalReasonCodeUncheckedUpdateInput>
+  }
+
+  /**
+   * ReversalReasonCode delete
+   */
+  export type ReversalReasonCodeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    /**
+     * Filter which ReversalReasonCode to delete.
+     */
+    where: ReversalReasonCodeWhereUniqueInput
+  }
+
+  /**
+   * ReversalReasonCode deleteMany
+   */
+  export type ReversalReasonCodeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReversalReasonCodes to delete
+     */
+    where?: ReversalReasonCodeWhereInput
+    /**
+     * Limit how many ReversalReasonCodes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReversalReasonCode.journalEntries
+   */
+  export type ReversalReasonCode$journalEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+    orderBy?: JournalEntryOrderByWithRelationInput | JournalEntryOrderByWithRelationInput[]
+    cursor?: JournalEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalEntryScalarFieldEnum | JournalEntryScalarFieldEnum[]
+  }
+
+  /**
+   * ReversalReasonCode without action
+   */
+  export type ReversalReasonCodeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
   }
 
 
@@ -57932,11 +60335,23 @@ export namespace Prisma {
     type: 'type',
     status: 'status',
     source: 'source',
+    number: 'number',
     reference: 'reference',
     description: 'description',
     transactionId: 'transactionId',
-    postedAt: 'postedAt',
+    adjustingEntryId: 'adjustingEntryId',
+    reversalReasonId: 'reversalReasonId',
+    reversedEntryId: 'reversedEntryId',
+    submittedById: 'submittedById',
+    submittedAt: 'submittedAt',
+    approvedById: 'approvedById',
+    approvedAt: 'approvedAt',
     postedById: 'postedById',
+    postedAt: 'postedAt',
+    reversedById: 'reversedById',
+    reversedAt: 'reversedAt',
+    voidedById: 'voidedById',
+    voidedAt: 'voidedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -57949,14 +60364,37 @@ export namespace Prisma {
     organizationId: 'organizationId',
     entryId: 'entryId',
     accountId: 'accountId',
+    lineNumber: 'lineNumber',
+    description: 'description',
     debit: 'debit',
     credit: 'credit',
     currencyCode: 'currencyCode',
-    description: 'description',
+    baseAmount: 'baseAmount',
+    fxRate: 'fxRate',
+    projectId: 'projectId',
+    departmentId: 'departmentId',
+    costCentreId: 'costCentreId',
+    locationId: 'locationId',
+    fundingSourceId: 'fundingSourceId',
     createdAt: 'createdAt'
   };
 
   export type JournalLineScalarFieldEnum = (typeof JournalLineScalarFieldEnum)[keyof typeof JournalLineScalarFieldEnum]
+
+
+  export const ReversalReasonCodeScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    code: 'code',
+    name: 'name',
+    description: 'description',
+    category: 'category',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ReversalReasonCodeScalarFieldEnum = (typeof ReversalReasonCodeScalarFieldEnum)[keyof typeof ReversalReasonCodeScalarFieldEnum]
 
 
   export const TransactionScalarFieldEnum: {
@@ -58714,6 +61152,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ReversalReasonCategory'
+   */
+  export type EnumReversalReasonCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReversalReasonCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReversalReasonCategory[]'
+   */
+  export type ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReversalReasonCategory[]'>
+    
+
+
+  /**
    * Reference to a field of type 'TransactionStatus'
    */
   export type EnumTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionStatus'>
@@ -59009,6 +61461,10 @@ export namespace Prisma {
     updatedUsers?: UserListRelationFilter
     changeRequestsRequested?: MasterDataChangeRequestListRelationFilter
     changeRequestsApproved?: MasterDataChangeRequestListRelationFilter
+    journalEntriesSubmitted?: JournalEntryListRelationFilter
+    journalEntriesApproved?: JournalEntryListRelationFilter
+    journalEntriesPosted?: JournalEntryListRelationFilter
+    journalEntriesReversed?: JournalEntryListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -59063,6 +61519,10 @@ export namespace Prisma {
     updatedUsers?: UserOrderByRelationAggregateInput
     changeRequestsRequested?: MasterDataChangeRequestOrderByRelationAggregateInput
     changeRequestsApproved?: MasterDataChangeRequestOrderByRelationAggregateInput
+    journalEntriesSubmitted?: JournalEntryOrderByRelationAggregateInput
+    journalEntriesApproved?: JournalEntryOrderByRelationAggregateInput
+    journalEntriesPosted?: JournalEntryOrderByRelationAggregateInput
+    journalEntriesReversed?: JournalEntryOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -59120,6 +61580,10 @@ export namespace Prisma {
     updatedUsers?: UserListRelationFilter
     changeRequestsRequested?: MasterDataChangeRequestListRelationFilter
     changeRequestsApproved?: MasterDataChangeRequestListRelationFilter
+    journalEntriesSubmitted?: JournalEntryListRelationFilter
+    journalEntriesApproved?: JournalEntryListRelationFilter
+    journalEntriesPosted?: JournalEntryListRelationFilter
+    journalEntriesReversed?: JournalEntryListRelationFilter
   }, "id" | "emailNormalized" | "passwordResetToken">
 
   export type UserOrderByWithAggregationInput = {
@@ -60323,6 +62787,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceListRelationFilter
     masterDataChangeRequests?: MasterDataChangeRequestListRelationFilter
     reasonCodes?: ReasonCodeListRelationFilter
+    reversalReasonCodes?: ReversalReasonCodeListRelationFilter
     productsServices?: ProductServiceListRelationFilter
     accounts?: AccountListRelationFilter
     financialPeriods?: FinancialPeriodListRelationFilter
@@ -60361,6 +62826,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceOrderByRelationAggregateInput
     masterDataChangeRequests?: MasterDataChangeRequestOrderByRelationAggregateInput
     reasonCodes?: ReasonCodeOrderByRelationAggregateInput
+    reversalReasonCodes?: ReversalReasonCodeOrderByRelationAggregateInput
     productsServices?: ProductServiceOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
     financialPeriods?: FinancialPeriodOrderByRelationAggregateInput
@@ -60402,6 +62868,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceListRelationFilter
     masterDataChangeRequests?: MasterDataChangeRequestListRelationFilter
     reasonCodes?: ReasonCodeListRelationFilter
+    reversalReasonCodes?: ReversalReasonCodeListRelationFilter
     productsServices?: ProductServiceListRelationFilter
     accounts?: AccountListRelationFilter
     financialPeriods?: FinancialPeriodListRelationFilter
@@ -60485,6 +62952,7 @@ export namespace Prisma {
     parent?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
     children?: LocationListRelationFilter
     users?: UserListRelationFilter
+    journalLines?: JournalLineListRelationFilter
   }
 
   export type LocationOrderByWithRelationInput = {
@@ -60507,6 +62975,7 @@ export namespace Prisma {
     parent?: LocationOrderByWithRelationInput
     children?: LocationOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
+    journalLines?: JournalLineOrderByRelationAggregateInput
   }
 
   export type LocationWhereUniqueInput = Prisma.AtLeast<{
@@ -60533,6 +63002,7 @@ export namespace Prisma {
     parent?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
     children?: LocationListRelationFilter
     users?: UserListRelationFilter
+    journalLines?: JournalLineListRelationFilter
   }, "id" | "organizationId_code">
 
   export type LocationOrderByWithAggregationInput = {
@@ -60594,6 +63064,7 @@ export namespace Prisma {
     children?: DepartmentListRelationFilter
     users?: UserListRelationFilter
     costCentres?: CostCentreListRelationFilter
+    journalLines?: JournalLineListRelationFilter
   }
 
   export type DepartmentOrderByWithRelationInput = {
@@ -60610,6 +63081,7 @@ export namespace Prisma {
     children?: DepartmentOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
     costCentres?: CostCentreOrderByRelationAggregateInput
+    journalLines?: JournalLineOrderByRelationAggregateInput
   }
 
   export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
@@ -60630,6 +63102,7 @@ export namespace Prisma {
     children?: DepartmentListRelationFilter
     users?: UserListRelationFilter
     costCentres?: CostCentreListRelationFilter
+    journalLines?: JournalLineListRelationFilter
   }, "id" | "organizationId_code">
 
   export type DepartmentOrderByWithAggregationInput = {
@@ -60675,6 +63148,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"CostCentre"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     department?: XOR<DepartmentNullableScalarRelationFilter, DepartmentWhereInput> | null
+    journalLines?: JournalLineListRelationFilter
   }
 
   export type CostCentreOrderByWithRelationInput = {
@@ -60689,6 +63163,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
     department?: DepartmentOrderByWithRelationInput
+    journalLines?: JournalLineOrderByRelationAggregateInput
   }
 
   export type CostCentreWhereUniqueInput = Prisma.AtLeast<{
@@ -60707,6 +63182,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"CostCentre"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     department?: XOR<DepartmentNullableScalarRelationFilter, DepartmentWhereInput> | null
+    journalLines?: JournalLineListRelationFilter
   }, "id" | "organizationId_code">
 
   export type CostCentreOrderByWithAggregationInput = {
@@ -60755,6 +63231,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    journalLines?: JournalLineListRelationFilter
   }
 
   export type ProjectOrderByWithRelationInput = {
@@ -60770,6 +63247,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
+    journalLines?: JournalLineOrderByRelationAggregateInput
   }
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -60789,6 +63267,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    journalLines?: JournalLineListRelationFilter
   }, "id" | "organizationId_code">
 
   export type ProjectOrderByWithAggregationInput = {
@@ -60841,6 +63320,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"FundingSource"> | Date | string
     updatedAt?: DateTimeFilter<"FundingSource"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    journalLines?: JournalLineListRelationFilter
   }
 
   export type FundingSourceOrderByWithRelationInput = {
@@ -60856,6 +63336,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
+    journalLines?: JournalLineOrderByRelationAggregateInput
   }
 
   export type FundingSourceWhereUniqueInput = Prisma.AtLeast<{
@@ -60875,6 +63356,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"FundingSource"> | Date | string
     updatedAt?: DateTimeFilter<"FundingSource"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    journalLines?: JournalLineListRelationFilter
   }, "id" | "organizationId_code">
 
   export type FundingSourceOrderByWithAggregationInput = {
@@ -61903,16 +64385,37 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFilter<"JournalEntry"> | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFilter<"JournalEntry"> | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFilter<"JournalEntry"> | $Enums.JournalSource
+    number?: StringNullableFilter<"JournalEntry"> | string | null
     reference?: StringNullableFilter<"JournalEntry"> | string | null
     description?: StringNullableFilter<"JournalEntry"> | string | null
     transactionId?: StringNullableFilter<"JournalEntry"> | string | null
-    postedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    adjustingEntryId?: StringNullableFilter<"JournalEntry"> | string | null
+    reversalReasonId?: StringNullableFilter<"JournalEntry"> | string | null
+    reversedEntryId?: StringNullableFilter<"JournalEntry"> | string | null
+    submittedById?: StringNullableFilter<"JournalEntry"> | string | null
+    submittedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    approvedById?: StringNullableFilter<"JournalEntry"> | string | null
+    approvedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
     postedById?: StringNullableFilter<"JournalEntry"> | string | null
+    postedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    reversedById?: StringNullableFilter<"JournalEntry"> | string | null
+    reversedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    voidedById?: StringNullableFilter<"JournalEntry"> | string | null
+    voidedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
     createdAt?: DateTimeFilter<"JournalEntry"> | Date | string
     updatedAt?: DateTimeFilter<"JournalEntry"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     period?: XOR<FinancialPeriodScalarRelationFilter, FinancialPeriodWhereInput>
     transaction?: XOR<TransactionNullableScalarRelationFilter, TransactionWhereInput> | null
+    adjustingEntry?: XOR<JournalEntryNullableScalarRelationFilter, JournalEntryWhereInput> | null
+    adjustedEntries?: JournalEntryListRelationFilter
+    reversalReason?: XOR<ReversalReasonCodeNullableScalarRelationFilter, ReversalReasonCodeWhereInput> | null
+    reversedEntry?: XOR<JournalEntryNullableScalarRelationFilter, JournalEntryWhereInput> | null
+    reversingEntries?: JournalEntryListRelationFilter
+    submittedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    postedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    reversedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     lines?: JournalLineListRelationFilter
   }
 
@@ -61923,21 +64426,43 @@ export namespace Prisma {
     type?: SortOrder
     status?: SortOrder
     source?: SortOrder
+    number?: SortOrderInput | SortOrder
     reference?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     transactionId?: SortOrderInput | SortOrder
-    postedAt?: SortOrderInput | SortOrder
+    adjustingEntryId?: SortOrderInput | SortOrder
+    reversalReasonId?: SortOrderInput | SortOrder
+    reversedEntryId?: SortOrderInput | SortOrder
+    submittedById?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
     postedById?: SortOrderInput | SortOrder
+    postedAt?: SortOrderInput | SortOrder
+    reversedById?: SortOrderInput | SortOrder
+    reversedAt?: SortOrderInput | SortOrder
+    voidedById?: SortOrderInput | SortOrder
+    voidedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
     period?: FinancialPeriodOrderByWithRelationInput
     transaction?: TransactionOrderByWithRelationInput
+    adjustingEntry?: JournalEntryOrderByWithRelationInput
+    adjustedEntries?: JournalEntryOrderByRelationAggregateInput
+    reversalReason?: ReversalReasonCodeOrderByWithRelationInput
+    reversedEntry?: JournalEntryOrderByWithRelationInput
+    reversingEntries?: JournalEntryOrderByRelationAggregateInput
+    submittedBy?: UserOrderByWithRelationInput
+    approvedBy?: UserOrderByWithRelationInput
+    postedBy?: UserOrderByWithRelationInput
+    reversedBy?: UserOrderByWithRelationInput
     lines?: JournalLineOrderByRelationAggregateInput
   }
 
   export type JournalEntryWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    organizationId_number?: JournalEntryOrganizationIdNumberCompoundUniqueInput
     AND?: JournalEntryWhereInput | JournalEntryWhereInput[]
     OR?: JournalEntryWhereInput[]
     NOT?: JournalEntryWhereInput | JournalEntryWhereInput[]
@@ -61946,18 +64471,39 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFilter<"JournalEntry"> | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFilter<"JournalEntry"> | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFilter<"JournalEntry"> | $Enums.JournalSource
+    number?: StringNullableFilter<"JournalEntry"> | string | null
     reference?: StringNullableFilter<"JournalEntry"> | string | null
     description?: StringNullableFilter<"JournalEntry"> | string | null
     transactionId?: StringNullableFilter<"JournalEntry"> | string | null
-    postedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    adjustingEntryId?: StringNullableFilter<"JournalEntry"> | string | null
+    reversalReasonId?: StringNullableFilter<"JournalEntry"> | string | null
+    reversedEntryId?: StringNullableFilter<"JournalEntry"> | string | null
+    submittedById?: StringNullableFilter<"JournalEntry"> | string | null
+    submittedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    approvedById?: StringNullableFilter<"JournalEntry"> | string | null
+    approvedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
     postedById?: StringNullableFilter<"JournalEntry"> | string | null
+    postedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    reversedById?: StringNullableFilter<"JournalEntry"> | string | null
+    reversedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    voidedById?: StringNullableFilter<"JournalEntry"> | string | null
+    voidedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
     createdAt?: DateTimeFilter<"JournalEntry"> | Date | string
     updatedAt?: DateTimeFilter<"JournalEntry"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     period?: XOR<FinancialPeriodScalarRelationFilter, FinancialPeriodWhereInput>
     transaction?: XOR<TransactionNullableScalarRelationFilter, TransactionWhereInput> | null
+    adjustingEntry?: XOR<JournalEntryNullableScalarRelationFilter, JournalEntryWhereInput> | null
+    adjustedEntries?: JournalEntryListRelationFilter
+    reversalReason?: XOR<ReversalReasonCodeNullableScalarRelationFilter, ReversalReasonCodeWhereInput> | null
+    reversedEntry?: XOR<JournalEntryNullableScalarRelationFilter, JournalEntryWhereInput> | null
+    reversingEntries?: JournalEntryListRelationFilter
+    submittedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    postedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    reversedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     lines?: JournalLineListRelationFilter
-  }, "id">
+  }, "id" | "organizationId_number">
 
   export type JournalEntryOrderByWithAggregationInput = {
     id?: SortOrder
@@ -61966,11 +64512,23 @@ export namespace Prisma {
     type?: SortOrder
     status?: SortOrder
     source?: SortOrder
+    number?: SortOrderInput | SortOrder
     reference?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     transactionId?: SortOrderInput | SortOrder
-    postedAt?: SortOrderInput | SortOrder
+    adjustingEntryId?: SortOrderInput | SortOrder
+    reversalReasonId?: SortOrderInput | SortOrder
+    reversedEntryId?: SortOrderInput | SortOrder
+    submittedById?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
     postedById?: SortOrderInput | SortOrder
+    postedAt?: SortOrderInput | SortOrder
+    reversedById?: SortOrderInput | SortOrder
+    reversedAt?: SortOrderInput | SortOrder
+    voidedById?: SortOrderInput | SortOrder
+    voidedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: JournalEntryCountOrderByAggregateInput
@@ -61988,11 +64546,23 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeWithAggregatesFilter<"JournalEntry"> | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusWithAggregatesFilter<"JournalEntry"> | $Enums.JournalEntryStatus
     source?: EnumJournalSourceWithAggregatesFilter<"JournalEntry"> | $Enums.JournalSource
+    number?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
     reference?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
     description?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
     transactionId?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
-    postedAt?: DateTimeNullableWithAggregatesFilter<"JournalEntry"> | Date | string | null
+    adjustingEntryId?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
+    reversalReasonId?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
+    reversedEntryId?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
+    submittedById?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
+    submittedAt?: DateTimeNullableWithAggregatesFilter<"JournalEntry"> | Date | string | null
+    approvedById?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"JournalEntry"> | Date | string | null
     postedById?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
+    postedAt?: DateTimeNullableWithAggregatesFilter<"JournalEntry"> | Date | string | null
+    reversedById?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
+    reversedAt?: DateTimeNullableWithAggregatesFilter<"JournalEntry"> | Date | string | null
+    voidedById?: StringNullableWithAggregatesFilter<"JournalEntry"> | string | null
+    voidedAt?: DateTimeNullableWithAggregatesFilter<"JournalEntry"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JournalEntry"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"JournalEntry"> | Date | string
   }
@@ -62005,15 +64575,28 @@ export namespace Prisma {
     organizationId?: StringFilter<"JournalLine"> | string
     entryId?: StringFilter<"JournalLine"> | string
     accountId?: StringFilter<"JournalLine"> | string
+    lineNumber?: IntFilter<"JournalLine"> | number
+    description?: StringNullableFilter<"JournalLine"> | string | null
     debit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
     credit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFilter<"JournalLine"> | string
-    description?: StringNullableFilter<"JournalLine"> | string | null
+    baseAmount?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+    fxRate?: DecimalNullableFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string | null
+    projectId?: StringNullableFilter<"JournalLine"> | string | null
+    departmentId?: StringNullableFilter<"JournalLine"> | string | null
+    costCentreId?: StringNullableFilter<"JournalLine"> | string | null
+    locationId?: StringNullableFilter<"JournalLine"> | string | null
+    fundingSourceId?: StringNullableFilter<"JournalLine"> | string | null
     createdAt?: DateTimeFilter<"JournalLine"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     entry?: XOR<JournalEntryScalarRelationFilter, JournalEntryWhereInput>
     account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
     currency?: XOR<CurrencyScalarRelationFilter, CurrencyWhereInput>
+    project?: XOR<ProjectNullableScalarRelationFilter, ProjectWhereInput> | null
+    department?: XOR<DepartmentNullableScalarRelationFilter, DepartmentWhereInput> | null
+    costCentre?: XOR<CostCentreNullableScalarRelationFilter, CostCentreWhereInput> | null
+    location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
+    fundingSource?: XOR<FundingSourceNullableScalarRelationFilter, FundingSourceWhereInput> | null
   }
 
   export type JournalLineOrderByWithRelationInput = {
@@ -62021,45 +64604,80 @@ export namespace Prisma {
     organizationId?: SortOrder
     entryId?: SortOrder
     accountId?: SortOrder
+    lineNumber?: SortOrder
+    description?: SortOrderInput | SortOrder
     debit?: SortOrder
     credit?: SortOrder
     currencyCode?: SortOrder
-    description?: SortOrderInput | SortOrder
+    baseAmount?: SortOrder
+    fxRate?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
+    departmentId?: SortOrderInput | SortOrder
+    costCentreId?: SortOrderInput | SortOrder
+    locationId?: SortOrderInput | SortOrder
+    fundingSourceId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
     entry?: JournalEntryOrderByWithRelationInput
     account?: AccountOrderByWithRelationInput
     currency?: CurrencyOrderByWithRelationInput
+    project?: ProjectOrderByWithRelationInput
+    department?: DepartmentOrderByWithRelationInput
+    costCentre?: CostCentreOrderByWithRelationInput
+    location?: LocationOrderByWithRelationInput
+    fundingSource?: FundingSourceOrderByWithRelationInput
   }
 
   export type JournalLineWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    entryId_lineNumber?: JournalLineEntryIdLineNumberCompoundUniqueInput
     AND?: JournalLineWhereInput | JournalLineWhereInput[]
     OR?: JournalLineWhereInput[]
     NOT?: JournalLineWhereInput | JournalLineWhereInput[]
     organizationId?: StringFilter<"JournalLine"> | string
     entryId?: StringFilter<"JournalLine"> | string
     accountId?: StringFilter<"JournalLine"> | string
+    lineNumber?: IntFilter<"JournalLine"> | number
+    description?: StringNullableFilter<"JournalLine"> | string | null
     debit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
     credit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFilter<"JournalLine"> | string
-    description?: StringNullableFilter<"JournalLine"> | string | null
+    baseAmount?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+    fxRate?: DecimalNullableFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string | null
+    projectId?: StringNullableFilter<"JournalLine"> | string | null
+    departmentId?: StringNullableFilter<"JournalLine"> | string | null
+    costCentreId?: StringNullableFilter<"JournalLine"> | string | null
+    locationId?: StringNullableFilter<"JournalLine"> | string | null
+    fundingSourceId?: StringNullableFilter<"JournalLine"> | string | null
     createdAt?: DateTimeFilter<"JournalLine"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     entry?: XOR<JournalEntryScalarRelationFilter, JournalEntryWhereInput>
     account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
     currency?: XOR<CurrencyScalarRelationFilter, CurrencyWhereInput>
-  }, "id">
+    project?: XOR<ProjectNullableScalarRelationFilter, ProjectWhereInput> | null
+    department?: XOR<DepartmentNullableScalarRelationFilter, DepartmentWhereInput> | null
+    costCentre?: XOR<CostCentreNullableScalarRelationFilter, CostCentreWhereInput> | null
+    location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
+    fundingSource?: XOR<FundingSourceNullableScalarRelationFilter, FundingSourceWhereInput> | null
+  }, "id" | "entryId_lineNumber">
 
   export type JournalLineOrderByWithAggregationInput = {
     id?: SortOrder
     organizationId?: SortOrder
     entryId?: SortOrder
     accountId?: SortOrder
+    lineNumber?: SortOrder
+    description?: SortOrderInput | SortOrder
     debit?: SortOrder
     credit?: SortOrder
     currencyCode?: SortOrder
-    description?: SortOrderInput | SortOrder
+    baseAmount?: SortOrder
+    fxRate?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
+    departmentId?: SortOrderInput | SortOrder
+    costCentreId?: SortOrderInput | SortOrder
+    locationId?: SortOrderInput | SortOrder
+    fundingSourceId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: JournalLineCountOrderByAggregateInput
     _avg?: JournalLineAvgOrderByAggregateInput
@@ -62076,11 +64694,98 @@ export namespace Prisma {
     organizationId?: StringWithAggregatesFilter<"JournalLine"> | string
     entryId?: StringWithAggregatesFilter<"JournalLine"> | string
     accountId?: StringWithAggregatesFilter<"JournalLine"> | string
+    lineNumber?: IntWithAggregatesFilter<"JournalLine"> | number
+    description?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
     debit?: DecimalWithAggregatesFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
     credit?: DecimalWithAggregatesFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
     currencyCode?: StringWithAggregatesFilter<"JournalLine"> | string
-    description?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
+    baseAmount?: DecimalWithAggregatesFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+    fxRate?: DecimalNullableWithAggregatesFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string | null
+    projectId?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
+    departmentId?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
+    costCentreId?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
+    locationId?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
+    fundingSourceId?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JournalLine"> | Date | string
+  }
+
+  export type ReversalReasonCodeWhereInput = {
+    AND?: ReversalReasonCodeWhereInput | ReversalReasonCodeWhereInput[]
+    OR?: ReversalReasonCodeWhereInput[]
+    NOT?: ReversalReasonCodeWhereInput | ReversalReasonCodeWhereInput[]
+    id?: StringFilter<"ReversalReasonCode"> | string
+    organizationId?: StringFilter<"ReversalReasonCode"> | string
+    code?: StringFilter<"ReversalReasonCode"> | string
+    name?: StringFilter<"ReversalReasonCode"> | string
+    description?: StringNullableFilter<"ReversalReasonCode"> | string | null
+    category?: EnumReversalReasonCategoryFilter<"ReversalReasonCode"> | $Enums.ReversalReasonCategory
+    isActive?: BoolFilter<"ReversalReasonCode"> | boolean
+    createdAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
+    updatedAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    journalEntries?: JournalEntryListRelationFilter
+  }
+
+  export type ReversalReasonCodeOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    journalEntries?: JournalEntryOrderByRelationAggregateInput
+  }
+
+  export type ReversalReasonCodeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_code?: ReversalReasonCodeOrganizationIdCodeCompoundUniqueInput
+    AND?: ReversalReasonCodeWhereInput | ReversalReasonCodeWhereInput[]
+    OR?: ReversalReasonCodeWhereInput[]
+    NOT?: ReversalReasonCodeWhereInput | ReversalReasonCodeWhereInput[]
+    organizationId?: StringFilter<"ReversalReasonCode"> | string
+    code?: StringFilter<"ReversalReasonCode"> | string
+    name?: StringFilter<"ReversalReasonCode"> | string
+    description?: StringNullableFilter<"ReversalReasonCode"> | string | null
+    category?: EnumReversalReasonCategoryFilter<"ReversalReasonCode"> | $Enums.ReversalReasonCategory
+    isActive?: BoolFilter<"ReversalReasonCode"> | boolean
+    createdAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
+    updatedAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    journalEntries?: JournalEntryListRelationFilter
+  }, "id" | "organizationId_code">
+
+  export type ReversalReasonCodeOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ReversalReasonCodeCountOrderByAggregateInput
+    _max?: ReversalReasonCodeMaxOrderByAggregateInput
+    _min?: ReversalReasonCodeMinOrderByAggregateInput
+  }
+
+  export type ReversalReasonCodeScalarWhereWithAggregatesInput = {
+    AND?: ReversalReasonCodeScalarWhereWithAggregatesInput | ReversalReasonCodeScalarWhereWithAggregatesInput[]
+    OR?: ReversalReasonCodeScalarWhereWithAggregatesInput[]
+    NOT?: ReversalReasonCodeScalarWhereWithAggregatesInput | ReversalReasonCodeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReversalReasonCode"> | string
+    organizationId?: StringWithAggregatesFilter<"ReversalReasonCode"> | string
+    code?: StringWithAggregatesFilter<"ReversalReasonCode"> | string
+    name?: StringWithAggregatesFilter<"ReversalReasonCode"> | string
+    description?: StringNullableWithAggregatesFilter<"ReversalReasonCode"> | string | null
+    category?: EnumReversalReasonCategoryWithAggregatesFilter<"ReversalReasonCode"> | $Enums.ReversalReasonCategory
+    isActive?: BoolWithAggregatesFilter<"ReversalReasonCode"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ReversalReasonCode"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ReversalReasonCode"> | Date | string
   }
 
   export type TransactionWhereInput = {
@@ -63103,6 +65808,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -63153,6 +65862,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUpdateInput = {
@@ -63203,6 +65916,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -63253,6 +65970,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -64620,6 +67341,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -64658,6 +67380,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -64696,6 +67419,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -64734,6 +67458,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -64824,6 +67549,7 @@ export namespace Prisma {
     parent?: LocationCreateNestedOneWithoutChildrenInput
     children?: LocationCreateNestedManyWithoutParentInput
     users?: UserCreateNestedManyWithoutPrimaryLocationInput
+    journalLines?: JournalLineCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateInput = {
@@ -64844,6 +67570,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     children?: LocationUncheckedCreateNestedManyWithoutParentInput
     users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUpdateInput = {
@@ -64864,6 +67591,7 @@ export namespace Prisma {
     parent?: LocationUpdateOneWithoutChildrenNestedInput
     children?: LocationUpdateManyWithoutParentNestedInput
     users?: UserUpdateManyWithoutPrimaryLocationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateInput = {
@@ -64884,6 +67612,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     children?: LocationUncheckedUpdateManyWithoutParentNestedInput
     users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationCreateManyInput = {
@@ -64950,6 +67679,7 @@ export namespace Prisma {
     children?: DepartmentCreateNestedManyWithoutParentInput
     users?: UserCreateNestedManyWithoutHomeDepartmentInput
     costCentres?: CostCentreCreateNestedManyWithoutDepartmentInput
+    journalLines?: JournalLineCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateInput = {
@@ -64964,6 +67694,7 @@ export namespace Prisma {
     children?: DepartmentUncheckedCreateNestedManyWithoutParentInput
     users?: UserUncheckedCreateNestedManyWithoutHomeDepartmentInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutDepartmentInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUpdateInput = {
@@ -64978,6 +67709,7 @@ export namespace Prisma {
     children?: DepartmentUpdateManyWithoutParentNestedInput
     users?: UserUpdateManyWithoutHomeDepartmentNestedInput
     costCentres?: CostCentreUpdateManyWithoutDepartmentNestedInput
+    journalLines?: JournalLineUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateInput = {
@@ -64992,6 +67724,7 @@ export namespace Prisma {
     children?: DepartmentUncheckedUpdateManyWithoutParentNestedInput
     users?: UserUncheckedUpdateManyWithoutHomeDepartmentNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutDepartmentNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentCreateManyInput = {
@@ -65035,6 +67768,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutCostCentresInput
     department?: DepartmentCreateNestedOneWithoutCostCentresInput
+    journalLines?: JournalLineCreateNestedManyWithoutCostCentreInput
   }
 
   export type CostCentreUncheckedCreateInput = {
@@ -65047,6 +67781,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutCostCentreInput
   }
 
   export type CostCentreUpdateInput = {
@@ -65059,6 +67794,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutCostCentresNestedInput
     department?: DepartmentUpdateOneWithoutCostCentresNestedInput
+    journalLines?: JournalLineUpdateManyWithoutCostCentreNestedInput
   }
 
   export type CostCentreUncheckedUpdateInput = {
@@ -65071,6 +67807,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutCostCentreNestedInput
   }
 
   export type CostCentreCreateManyInput = {
@@ -65119,6 +67856,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutProjectsInput
+    journalLines?: JournalLineCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateInput = {
@@ -65133,6 +67871,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUpdateInput = {
@@ -65147,6 +67886,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutProjectsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateInput = {
@@ -65161,6 +67901,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateManyInput = {
@@ -65216,6 +67957,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutFundingSourcesInput
+    journalLines?: JournalLineCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceUncheckedCreateInput = {
@@ -65230,6 +67972,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceUpdateInput = {
@@ -65244,6 +67987,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutFundingSourcesNestedInput
+    journalLines?: JournalLineUpdateManyWithoutFundingSourceNestedInput
   }
 
   export type FundingSourceUncheckedUpdateInput = {
@@ -65258,6 +68002,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutFundingSourceNestedInput
   }
 
   export type FundingSourceCreateManyInput = {
@@ -66375,15 +69120,29 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
     postedAt?: Date | string | null
-    postedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
     period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
     transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
   }
 
@@ -66394,13 +69153,27 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
     transactionId?: string | null
-    postedAt?: Date | string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
   }
 
@@ -66409,15 +69182,29 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
     period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
     transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
   }
 
@@ -66428,13 +69215,27 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     transactionId?: NullableStringFieldUpdateOperationsInput | string | null
-    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
   }
 
@@ -66445,11 +69246,23 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
     transactionId?: string | null
-    postedAt?: Date | string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -66459,10 +69272,15 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -66474,25 +69292,45 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     transactionId?: NullableStringFieldUpdateOperationsInput | string | null
-    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JournalLineCreateInput = {
     id?: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutJournalLinesInput
     entry: JournalEntryCreateNestedOneWithoutLinesInput
     account: AccountCreateNestedOneWithoutJournalLinesInput
     currency: CurrencyCreateNestedOneWithoutJournalLinesInput
+    project?: ProjectCreateNestedOneWithoutJournalLinesInput
+    department?: DepartmentCreateNestedOneWithoutJournalLinesInput
+    costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
+    location?: LocationCreateNestedOneWithoutJournalLinesInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateInput = {
@@ -66500,23 +69338,39 @@ export namespace Prisma {
     organizationId: string
     entryId: string
     accountId: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
     currencyCode: string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
     createdAt?: Date | string
   }
 
   export type JournalLineUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput
     entry?: JournalEntryUpdateOneRequiredWithoutLinesNestedInput
     account?: AccountUpdateOneRequiredWithoutJournalLinesNestedInput
     currency?: CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput
+    project?: ProjectUpdateOneWithoutJournalLinesNestedInput
+    department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
+    costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
+    location?: LocationUpdateOneWithoutJournalLinesNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateInput = {
@@ -66524,10 +69378,18 @@ export namespace Prisma {
     organizationId?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -66536,18 +69398,29 @@ export namespace Prisma {
     organizationId: string
     entryId: string
     accountId: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
     currencyCode: string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
     createdAt?: Date | string
   }
 
   export type JournalLineUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -66556,11 +69429,106 @@ export namespace Prisma {
     organizationId?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReversalReasonCodeCreateInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    category: $Enums.ReversalReasonCategory
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutReversalReasonCodesInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutReversalReasonInput
+  }
+
+  export type ReversalReasonCodeUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    category: $Enums.ReversalReasonCategory
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversalReasonInput
+  }
+
+  export type ReversalReasonCodeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutReversalReasonCodesNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutReversalReasonNestedInput
+  }
+
+  export type ReversalReasonCodeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutReversalReasonNestedInput
+  }
+
+  export type ReversalReasonCodeCreateManyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    category: $Enums.ReversalReasonCategory
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReversalReasonCodeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReversalReasonCodeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TransactionCreateInput = {
@@ -67835,6 +70803,12 @@ export namespace Prisma {
     none?: MasterDataChangeRequestWhereInput
   }
 
+  export type JournalEntryListRelationFilter = {
+    every?: JournalEntryWhereInput
+    some?: JournalEntryWhereInput
+    none?: JournalEntryWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -67881,6 +70855,10 @@ export namespace Prisma {
   }
 
   export type MasterDataChangeRequestOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type JournalEntryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -69029,6 +72007,12 @@ export namespace Prisma {
     none?: ReasonCodeWhereInput
   }
 
+  export type ReversalReasonCodeListRelationFilter = {
+    every?: ReversalReasonCodeWhereInput
+    some?: ReversalReasonCodeWhereInput
+    none?: ReversalReasonCodeWhereInput
+  }
+
   export type ProductServiceListRelationFilter = {
     every?: ProductServiceWhereInput
     some?: ProductServiceWhereInput
@@ -69057,12 +72041,6 @@ export namespace Prisma {
     every?: AccountBalanceSnapshotWhereInput
     some?: AccountBalanceSnapshotWhereInput
     none?: AccountBalanceSnapshotWhereInput
-  }
-
-  export type JournalEntryListRelationFilter = {
-    every?: JournalEntryWhereInput
-    some?: JournalEntryWhereInput
-    none?: JournalEntryWhereInput
   }
 
   export type JournalLineListRelationFilter = {
@@ -69113,6 +72091,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type ReversalReasonCodeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ProductServiceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -69130,10 +72112,6 @@ export namespace Prisma {
   }
 
   export type AccountBalanceSnapshotOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type JournalEntryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -70399,6 +73377,21 @@ export namespace Prisma {
     isNot?: TransactionWhereInput | null
   }
 
+  export type JournalEntryNullableScalarRelationFilter = {
+    is?: JournalEntryWhereInput | null
+    isNot?: JournalEntryWhereInput | null
+  }
+
+  export type ReversalReasonCodeNullableScalarRelationFilter = {
+    is?: ReversalReasonCodeWhereInput | null
+    isNot?: ReversalReasonCodeWhereInput | null
+  }
+
+  export type JournalEntryOrganizationIdNumberCompoundUniqueInput = {
+    organizationId: string
+    number: string
+  }
+
   export type JournalEntryCountOrderByAggregateInput = {
     id?: SortOrder
     organizationId?: SortOrder
@@ -70406,11 +73399,23 @@ export namespace Prisma {
     type?: SortOrder
     status?: SortOrder
     source?: SortOrder
+    number?: SortOrder
     reference?: SortOrder
     description?: SortOrder
     transactionId?: SortOrder
-    postedAt?: SortOrder
+    adjustingEntryId?: SortOrder
+    reversalReasonId?: SortOrder
+    reversedEntryId?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
     postedById?: SortOrder
+    postedAt?: SortOrder
+    reversedById?: SortOrder
+    reversedAt?: SortOrder
+    voidedById?: SortOrder
+    voidedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -70422,11 +73427,23 @@ export namespace Prisma {
     type?: SortOrder
     status?: SortOrder
     source?: SortOrder
+    number?: SortOrder
     reference?: SortOrder
     description?: SortOrder
     transactionId?: SortOrder
-    postedAt?: SortOrder
+    adjustingEntryId?: SortOrder
+    reversalReasonId?: SortOrder
+    reversedEntryId?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
     postedById?: SortOrder
+    postedAt?: SortOrder
+    reversedById?: SortOrder
+    reversedAt?: SortOrder
+    voidedById?: SortOrder
+    voidedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -70438,11 +73455,23 @@ export namespace Prisma {
     type?: SortOrder
     status?: SortOrder
     source?: SortOrder
+    number?: SortOrder
     reference?: SortOrder
     description?: SortOrder
     transactionId?: SortOrder
-    postedAt?: SortOrder
+    adjustingEntryId?: SortOrder
+    reversalReasonId?: SortOrder
+    reversedEntryId?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
     postedById?: SortOrder
+    postedAt?: SortOrder
+    reversedById?: SortOrder
+    reversedAt?: SortOrder
+    voidedById?: SortOrder
+    voidedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -70482,21 +73511,52 @@ export namespace Prisma {
     isNot?: JournalEntryWhereInput
   }
 
+  export type ProjectNullableScalarRelationFilter = {
+    is?: ProjectWhereInput | null
+    isNot?: ProjectWhereInput | null
+  }
+
+  export type CostCentreNullableScalarRelationFilter = {
+    is?: CostCentreWhereInput | null
+    isNot?: CostCentreWhereInput | null
+  }
+
+  export type FundingSourceNullableScalarRelationFilter = {
+    is?: FundingSourceWhereInput | null
+    isNot?: FundingSourceWhereInput | null
+  }
+
+  export type JournalLineEntryIdLineNumberCompoundUniqueInput = {
+    entryId: string
+    lineNumber: number
+  }
+
   export type JournalLineCountOrderByAggregateInput = {
     id?: SortOrder
     organizationId?: SortOrder
     entryId?: SortOrder
     accountId?: SortOrder
+    lineNumber?: SortOrder
+    description?: SortOrder
     debit?: SortOrder
     credit?: SortOrder
     currencyCode?: SortOrder
-    description?: SortOrder
+    baseAmount?: SortOrder
+    fxRate?: SortOrder
+    projectId?: SortOrder
+    departmentId?: SortOrder
+    costCentreId?: SortOrder
+    locationId?: SortOrder
+    fundingSourceId?: SortOrder
     createdAt?: SortOrder
   }
 
   export type JournalLineAvgOrderByAggregateInput = {
+    lineNumber?: SortOrder
     debit?: SortOrder
     credit?: SortOrder
+    baseAmount?: SortOrder
+    fxRate?: SortOrder
   }
 
   export type JournalLineMaxOrderByAggregateInput = {
@@ -70504,10 +73564,18 @@ export namespace Prisma {
     organizationId?: SortOrder
     entryId?: SortOrder
     accountId?: SortOrder
+    lineNumber?: SortOrder
+    description?: SortOrder
     debit?: SortOrder
     credit?: SortOrder
     currencyCode?: SortOrder
-    description?: SortOrder
+    baseAmount?: SortOrder
+    fxRate?: SortOrder
+    projectId?: SortOrder
+    departmentId?: SortOrder
+    costCentreId?: SortOrder
+    locationId?: SortOrder
+    fundingSourceId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -70516,16 +73584,85 @@ export namespace Prisma {
     organizationId?: SortOrder
     entryId?: SortOrder
     accountId?: SortOrder
+    lineNumber?: SortOrder
+    description?: SortOrder
     debit?: SortOrder
     credit?: SortOrder
     currencyCode?: SortOrder
-    description?: SortOrder
+    baseAmount?: SortOrder
+    fxRate?: SortOrder
+    projectId?: SortOrder
+    departmentId?: SortOrder
+    costCentreId?: SortOrder
+    locationId?: SortOrder
+    fundingSourceId?: SortOrder
     createdAt?: SortOrder
   }
 
   export type JournalLineSumOrderByAggregateInput = {
+    lineNumber?: SortOrder
     debit?: SortOrder
     credit?: SortOrder
+    baseAmount?: SortOrder
+    fxRate?: SortOrder
+  }
+
+  export type EnumReversalReasonCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReversalReasonCategory | EnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumReversalReasonCategoryFilter<$PrismaModel> | $Enums.ReversalReasonCategory
+  }
+
+  export type ReversalReasonCodeOrganizationIdCodeCompoundUniqueInput = {
+    organizationId: string
+    code: string
+  }
+
+  export type ReversalReasonCodeCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReversalReasonCodeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReversalReasonCodeMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumReversalReasonCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReversalReasonCategory | EnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumReversalReasonCategoryWithAggregatesFilter<$PrismaModel> | $Enums.ReversalReasonCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReversalReasonCategoryFilter<$PrismaModel>
+    _max?: NestedEnumReversalReasonCategoryFilter<$PrismaModel>
   }
 
   export type EnumTransactionStatusFilter<$PrismaModel = never> = {
@@ -71568,6 +74705,34 @@ export namespace Prisma {
     connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
   }
 
+  export type JournalEntryCreateNestedManyWithoutSubmittedByInput = {
+    create?: XOR<JournalEntryCreateWithoutSubmittedByInput, JournalEntryUncheckedCreateWithoutSubmittedByInput> | JournalEntryCreateWithoutSubmittedByInput[] | JournalEntryUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutSubmittedByInput | JournalEntryCreateOrConnectWithoutSubmittedByInput[]
+    createMany?: JournalEntryCreateManySubmittedByInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalEntryCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<JournalEntryCreateWithoutApprovedByInput, JournalEntryUncheckedCreateWithoutApprovedByInput> | JournalEntryCreateWithoutApprovedByInput[] | JournalEntryUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutApprovedByInput | JournalEntryCreateOrConnectWithoutApprovedByInput[]
+    createMany?: JournalEntryCreateManyApprovedByInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalEntryCreateNestedManyWithoutPostedByInput = {
+    create?: XOR<JournalEntryCreateWithoutPostedByInput, JournalEntryUncheckedCreateWithoutPostedByInput> | JournalEntryCreateWithoutPostedByInput[] | JournalEntryUncheckedCreateWithoutPostedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutPostedByInput | JournalEntryCreateOrConnectWithoutPostedByInput[]
+    createMany?: JournalEntryCreateManyPostedByInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalEntryCreateNestedManyWithoutReversedByInput = {
+    create?: XOR<JournalEntryCreateWithoutReversedByInput, JournalEntryUncheckedCreateWithoutReversedByInput> | JournalEntryCreateWithoutReversedByInput[] | JournalEntryUncheckedCreateWithoutReversedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversedByInput | JournalEntryCreateOrConnectWithoutReversedByInput[]
+    createMany?: JournalEntryCreateManyReversedByInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -71664,6 +74829,34 @@ export namespace Prisma {
     connectOrCreate?: MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput | MasterDataChangeRequestCreateOrConnectWithoutApprovedByInput[]
     createMany?: MasterDataChangeRequestCreateManyApprovedByInputEnvelope
     connect?: MasterDataChangeRequestWhereUniqueInput | MasterDataChangeRequestWhereUniqueInput[]
+  }
+
+  export type JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput = {
+    create?: XOR<JournalEntryCreateWithoutSubmittedByInput, JournalEntryUncheckedCreateWithoutSubmittedByInput> | JournalEntryCreateWithoutSubmittedByInput[] | JournalEntryUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutSubmittedByInput | JournalEntryCreateOrConnectWithoutSubmittedByInput[]
+    createMany?: JournalEntryCreateManySubmittedByInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<JournalEntryCreateWithoutApprovedByInput, JournalEntryUncheckedCreateWithoutApprovedByInput> | JournalEntryCreateWithoutApprovedByInput[] | JournalEntryUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutApprovedByInput | JournalEntryCreateOrConnectWithoutApprovedByInput[]
+    createMany?: JournalEntryCreateManyApprovedByInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalEntryUncheckedCreateNestedManyWithoutPostedByInput = {
+    create?: XOR<JournalEntryCreateWithoutPostedByInput, JournalEntryUncheckedCreateWithoutPostedByInput> | JournalEntryCreateWithoutPostedByInput[] | JournalEntryUncheckedCreateWithoutPostedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutPostedByInput | JournalEntryCreateOrConnectWithoutPostedByInput[]
+    createMany?: JournalEntryCreateManyPostedByInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalEntryUncheckedCreateNestedManyWithoutReversedByInput = {
+    create?: XOR<JournalEntryCreateWithoutReversedByInput, JournalEntryUncheckedCreateWithoutReversedByInput> | JournalEntryCreateWithoutReversedByInput[] | JournalEntryUncheckedCreateWithoutReversedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversedByInput | JournalEntryCreateOrConnectWithoutReversedByInput[]
+    createMany?: JournalEntryCreateManyReversedByInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -71943,6 +75136,62 @@ export namespace Prisma {
     deleteMany?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
   }
 
+  export type JournalEntryUpdateManyWithoutSubmittedByNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutSubmittedByInput, JournalEntryUncheckedCreateWithoutSubmittedByInput> | JournalEntryCreateWithoutSubmittedByInput[] | JournalEntryUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutSubmittedByInput | JournalEntryCreateOrConnectWithoutSubmittedByInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutSubmittedByInput | JournalEntryUpsertWithWhereUniqueWithoutSubmittedByInput[]
+    createMany?: JournalEntryCreateManySubmittedByInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutSubmittedByInput | JournalEntryUpdateWithWhereUniqueWithoutSubmittedByInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutSubmittedByInput | JournalEntryUpdateManyWithWhereWithoutSubmittedByInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type JournalEntryUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutApprovedByInput, JournalEntryUncheckedCreateWithoutApprovedByInput> | JournalEntryCreateWithoutApprovedByInput[] | JournalEntryUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutApprovedByInput | JournalEntryCreateOrConnectWithoutApprovedByInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutApprovedByInput | JournalEntryUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: JournalEntryCreateManyApprovedByInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutApprovedByInput | JournalEntryUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutApprovedByInput | JournalEntryUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type JournalEntryUpdateManyWithoutPostedByNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutPostedByInput, JournalEntryUncheckedCreateWithoutPostedByInput> | JournalEntryCreateWithoutPostedByInput[] | JournalEntryUncheckedCreateWithoutPostedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutPostedByInput | JournalEntryCreateOrConnectWithoutPostedByInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutPostedByInput | JournalEntryUpsertWithWhereUniqueWithoutPostedByInput[]
+    createMany?: JournalEntryCreateManyPostedByInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutPostedByInput | JournalEntryUpdateWithWhereUniqueWithoutPostedByInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutPostedByInput | JournalEntryUpdateManyWithWhereWithoutPostedByInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type JournalEntryUpdateManyWithoutReversedByNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutReversedByInput, JournalEntryUncheckedCreateWithoutReversedByInput> | JournalEntryCreateWithoutReversedByInput[] | JournalEntryUncheckedCreateWithoutReversedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversedByInput | JournalEntryCreateOrConnectWithoutReversedByInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutReversedByInput | JournalEntryUpsertWithWhereUniqueWithoutReversedByInput[]
+    createMany?: JournalEntryCreateManyReversedByInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutReversedByInput | JournalEntryUpdateWithWhereUniqueWithoutReversedByInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutReversedByInput | JournalEntryUpdateManyWithWhereWithoutReversedByInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -72137,6 +75386,62 @@ export namespace Prisma {
     update?: MasterDataChangeRequestUpdateWithWhereUniqueWithoutApprovedByInput | MasterDataChangeRequestUpdateWithWhereUniqueWithoutApprovedByInput[]
     updateMany?: MasterDataChangeRequestUpdateManyWithWhereWithoutApprovedByInput | MasterDataChangeRequestUpdateManyWithWhereWithoutApprovedByInput[]
     deleteMany?: MasterDataChangeRequestScalarWhereInput | MasterDataChangeRequestScalarWhereInput[]
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutSubmittedByInput, JournalEntryUncheckedCreateWithoutSubmittedByInput> | JournalEntryCreateWithoutSubmittedByInput[] | JournalEntryUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutSubmittedByInput | JournalEntryCreateOrConnectWithoutSubmittedByInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutSubmittedByInput | JournalEntryUpsertWithWhereUniqueWithoutSubmittedByInput[]
+    createMany?: JournalEntryCreateManySubmittedByInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutSubmittedByInput | JournalEntryUpdateWithWhereUniqueWithoutSubmittedByInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutSubmittedByInput | JournalEntryUpdateManyWithWhereWithoutSubmittedByInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutApprovedByInput, JournalEntryUncheckedCreateWithoutApprovedByInput> | JournalEntryCreateWithoutApprovedByInput[] | JournalEntryUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutApprovedByInput | JournalEntryCreateOrConnectWithoutApprovedByInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutApprovedByInput | JournalEntryUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: JournalEntryCreateManyApprovedByInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutApprovedByInput | JournalEntryUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutApprovedByInput | JournalEntryUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutPostedByInput, JournalEntryUncheckedCreateWithoutPostedByInput> | JournalEntryCreateWithoutPostedByInput[] | JournalEntryUncheckedCreateWithoutPostedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutPostedByInput | JournalEntryCreateOrConnectWithoutPostedByInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutPostedByInput | JournalEntryUpsertWithWhereUniqueWithoutPostedByInput[]
+    createMany?: JournalEntryCreateManyPostedByInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutPostedByInput | JournalEntryUpdateWithWhereUniqueWithoutPostedByInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutPostedByInput | JournalEntryUpdateManyWithWhereWithoutPostedByInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutReversedByInput, JournalEntryUncheckedCreateWithoutReversedByInput> | JournalEntryCreateWithoutReversedByInput[] | JournalEntryUncheckedCreateWithoutReversedByInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversedByInput | JournalEntryCreateOrConnectWithoutReversedByInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutReversedByInput | JournalEntryUpsertWithWhereUniqueWithoutReversedByInput[]
+    createMany?: JournalEntryCreateManyReversedByInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutReversedByInput | JournalEntryUpdateWithWhereUniqueWithoutReversedByInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutReversedByInput | JournalEntryUpdateManyWithWhereWithoutReversedByInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutMfaDevicesInput = {
@@ -72804,6 +76109,13 @@ export namespace Prisma {
     connect?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
   }
 
+  export type ReversalReasonCodeCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ReversalReasonCodeCreateWithoutOrganizationInput, ReversalReasonCodeUncheckedCreateWithoutOrganizationInput> | ReversalReasonCodeCreateWithoutOrganizationInput[] | ReversalReasonCodeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ReversalReasonCodeCreateOrConnectWithoutOrganizationInput | ReversalReasonCodeCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ReversalReasonCodeCreateManyOrganizationInputEnvelope
+    connect?: ReversalReasonCodeWhereUniqueInput | ReversalReasonCodeWhereUniqueInput[]
+  }
+
   export type ProductServiceCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<ProductServiceCreateWithoutOrganizationInput, ProductServiceUncheckedCreateWithoutOrganizationInput> | ProductServiceCreateWithoutOrganizationInput[] | ProductServiceUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: ProductServiceCreateOrConnectWithoutOrganizationInput | ProductServiceCreateOrConnectWithoutOrganizationInput[]
@@ -72928,6 +76240,13 @@ export namespace Prisma {
     connectOrCreate?: ReasonCodeCreateOrConnectWithoutOrganizationInput | ReasonCodeCreateOrConnectWithoutOrganizationInput[]
     createMany?: ReasonCodeCreateManyOrganizationInputEnvelope
     connect?: ReasonCodeWhereUniqueInput | ReasonCodeWhereUniqueInput[]
+  }
+
+  export type ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ReversalReasonCodeCreateWithoutOrganizationInput, ReversalReasonCodeUncheckedCreateWithoutOrganizationInput> | ReversalReasonCodeCreateWithoutOrganizationInput[] | ReversalReasonCodeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ReversalReasonCodeCreateOrConnectWithoutOrganizationInput | ReversalReasonCodeCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ReversalReasonCodeCreateManyOrganizationInputEnvelope
+    connect?: ReversalReasonCodeWhereUniqueInput | ReversalReasonCodeWhereUniqueInput[]
   }
 
   export type ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput = {
@@ -73118,6 +76437,20 @@ export namespace Prisma {
     update?: ReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput | ReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: ReasonCodeUpdateManyWithWhereWithoutOrganizationInput | ReasonCodeUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: ReasonCodeScalarWhereInput | ReasonCodeScalarWhereInput[]
+  }
+
+  export type ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ReversalReasonCodeCreateWithoutOrganizationInput, ReversalReasonCodeUncheckedCreateWithoutOrganizationInput> | ReversalReasonCodeCreateWithoutOrganizationInput[] | ReversalReasonCodeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ReversalReasonCodeCreateOrConnectWithoutOrganizationInput | ReversalReasonCodeCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ReversalReasonCodeUpsertWithWhereUniqueWithoutOrganizationInput | ReversalReasonCodeUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ReversalReasonCodeCreateManyOrganizationInputEnvelope
+    set?: ReversalReasonCodeWhereUniqueInput | ReversalReasonCodeWhereUniqueInput[]
+    disconnect?: ReversalReasonCodeWhereUniqueInput | ReversalReasonCodeWhereUniqueInput[]
+    delete?: ReversalReasonCodeWhereUniqueInput | ReversalReasonCodeWhereUniqueInput[]
+    connect?: ReversalReasonCodeWhereUniqueInput | ReversalReasonCodeWhereUniqueInput[]
+    update?: ReversalReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput | ReversalReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ReversalReasonCodeUpdateManyWithWhereWithoutOrganizationInput | ReversalReasonCodeUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ReversalReasonCodeScalarWhereInput | ReversalReasonCodeScalarWhereInput[]
   }
 
   export type ProductServiceUpdateManyWithoutOrganizationNestedInput = {
@@ -73372,6 +76705,20 @@ export namespace Prisma {
     deleteMany?: ReasonCodeScalarWhereInput | ReasonCodeScalarWhereInput[]
   }
 
+  export type ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ReversalReasonCodeCreateWithoutOrganizationInput, ReversalReasonCodeUncheckedCreateWithoutOrganizationInput> | ReversalReasonCodeCreateWithoutOrganizationInput[] | ReversalReasonCodeUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ReversalReasonCodeCreateOrConnectWithoutOrganizationInput | ReversalReasonCodeCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ReversalReasonCodeUpsertWithWhereUniqueWithoutOrganizationInput | ReversalReasonCodeUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ReversalReasonCodeCreateManyOrganizationInputEnvelope
+    set?: ReversalReasonCodeWhereUniqueInput | ReversalReasonCodeWhereUniqueInput[]
+    disconnect?: ReversalReasonCodeWhereUniqueInput | ReversalReasonCodeWhereUniqueInput[]
+    delete?: ReversalReasonCodeWhereUniqueInput | ReversalReasonCodeWhereUniqueInput[]
+    connect?: ReversalReasonCodeWhereUniqueInput | ReversalReasonCodeWhereUniqueInput[]
+    update?: ReversalReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput | ReversalReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ReversalReasonCodeUpdateManyWithWhereWithoutOrganizationInput | ReversalReasonCodeUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ReversalReasonCodeScalarWhereInput | ReversalReasonCodeScalarWhereInput[]
+  }
+
   export type ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<ProductServiceCreateWithoutOrganizationInput, ProductServiceUncheckedCreateWithoutOrganizationInput> | ProductServiceCreateWithoutOrganizationInput[] | ProductServiceUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: ProductServiceCreateOrConnectWithoutOrganizationInput | ProductServiceCreateOrConnectWithoutOrganizationInput[]
@@ -73538,6 +76885,13 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
+  export type JournalLineCreateNestedManyWithoutLocationInput = {
+    create?: XOR<JournalLineCreateWithoutLocationInput, JournalLineUncheckedCreateWithoutLocationInput> | JournalLineCreateWithoutLocationInput[] | JournalLineUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutLocationInput | JournalLineCreateOrConnectWithoutLocationInput[]
+    createMany?: JournalLineCreateManyLocationInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
   export type LocationUncheckedCreateNestedManyWithoutParentInput = {
     create?: XOR<LocationCreateWithoutParentInput, LocationUncheckedCreateWithoutParentInput> | LocationCreateWithoutParentInput[] | LocationUncheckedCreateWithoutParentInput[]
     connectOrCreate?: LocationCreateOrConnectWithoutParentInput | LocationCreateOrConnectWithoutParentInput[]
@@ -73550,6 +76904,13 @@ export namespace Prisma {
     connectOrCreate?: UserCreateOrConnectWithoutPrimaryLocationInput | UserCreateOrConnectWithoutPrimaryLocationInput[]
     createMany?: UserCreateManyPrimaryLocationInputEnvelope
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type JournalLineUncheckedCreateNestedManyWithoutLocationInput = {
+    create?: XOR<JournalLineCreateWithoutLocationInput, JournalLineUncheckedCreateWithoutLocationInput> | JournalLineCreateWithoutLocationInput[] | JournalLineUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutLocationInput | JournalLineCreateOrConnectWithoutLocationInput[]
+    createMany?: JournalLineCreateManyLocationInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
   }
 
   export type EnumLocationTypeFieldUpdateOperationsInput = {
@@ -73602,6 +76963,20 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type JournalLineUpdateManyWithoutLocationNestedInput = {
+    create?: XOR<JournalLineCreateWithoutLocationInput, JournalLineUncheckedCreateWithoutLocationInput> | JournalLineCreateWithoutLocationInput[] | JournalLineUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutLocationInput | JournalLineCreateOrConnectWithoutLocationInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutLocationInput | JournalLineUpsertWithWhereUniqueWithoutLocationInput[]
+    createMany?: JournalLineCreateManyLocationInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutLocationInput | JournalLineUpdateWithWhereUniqueWithoutLocationInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutLocationInput | JournalLineUpdateManyWithWhereWithoutLocationInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
   export type LocationUncheckedUpdateManyWithoutParentNestedInput = {
     create?: XOR<LocationCreateWithoutParentInput, LocationUncheckedCreateWithoutParentInput> | LocationCreateWithoutParentInput[] | LocationUncheckedCreateWithoutParentInput[]
     connectOrCreate?: LocationCreateOrConnectWithoutParentInput | LocationCreateOrConnectWithoutParentInput[]
@@ -73628,6 +77003,20 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutPrimaryLocationInput | UserUpdateWithWhereUniqueWithoutPrimaryLocationInput[]
     updateMany?: UserUpdateManyWithWhereWithoutPrimaryLocationInput | UserUpdateManyWithWhereWithoutPrimaryLocationInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutLocationNestedInput = {
+    create?: XOR<JournalLineCreateWithoutLocationInput, JournalLineUncheckedCreateWithoutLocationInput> | JournalLineCreateWithoutLocationInput[] | JournalLineUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutLocationInput | JournalLineCreateOrConnectWithoutLocationInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutLocationInput | JournalLineUpsertWithWhereUniqueWithoutLocationInput[]
+    createMany?: JournalLineCreateManyLocationInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutLocationInput | JournalLineUpdateWithWhereUniqueWithoutLocationInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutLocationInput | JournalLineUpdateManyWithWhereWithoutLocationInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutDepartmentsInput = {
@@ -73663,6 +77052,13 @@ export namespace Prisma {
     connect?: CostCentreWhereUniqueInput | CostCentreWhereUniqueInput[]
   }
 
+  export type JournalLineCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<JournalLineCreateWithoutDepartmentInput, JournalLineUncheckedCreateWithoutDepartmentInput> | JournalLineCreateWithoutDepartmentInput[] | JournalLineUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutDepartmentInput | JournalLineCreateOrConnectWithoutDepartmentInput[]
+    createMany?: JournalLineCreateManyDepartmentInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
   export type DepartmentUncheckedCreateNestedManyWithoutParentInput = {
     create?: XOR<DepartmentCreateWithoutParentInput, DepartmentUncheckedCreateWithoutParentInput> | DepartmentCreateWithoutParentInput[] | DepartmentUncheckedCreateWithoutParentInput[]
     connectOrCreate?: DepartmentCreateOrConnectWithoutParentInput | DepartmentCreateOrConnectWithoutParentInput[]
@@ -73682,6 +77078,13 @@ export namespace Prisma {
     connectOrCreate?: CostCentreCreateOrConnectWithoutDepartmentInput | CostCentreCreateOrConnectWithoutDepartmentInput[]
     createMany?: CostCentreCreateManyDepartmentInputEnvelope
     connect?: CostCentreWhereUniqueInput | CostCentreWhereUniqueInput[]
+  }
+
+  export type JournalLineUncheckedCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<JournalLineCreateWithoutDepartmentInput, JournalLineUncheckedCreateWithoutDepartmentInput> | JournalLineCreateWithoutDepartmentInput[] | JournalLineUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutDepartmentInput | JournalLineCreateOrConnectWithoutDepartmentInput[]
+    createMany?: JournalLineCreateManyDepartmentInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
   }
 
   export type OrganizationUpdateOneRequiredWithoutDepartmentsNestedInput = {
@@ -73744,6 +77147,20 @@ export namespace Prisma {
     deleteMany?: CostCentreScalarWhereInput | CostCentreScalarWhereInput[]
   }
 
+  export type JournalLineUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<JournalLineCreateWithoutDepartmentInput, JournalLineUncheckedCreateWithoutDepartmentInput> | JournalLineCreateWithoutDepartmentInput[] | JournalLineUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutDepartmentInput | JournalLineCreateOrConnectWithoutDepartmentInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutDepartmentInput | JournalLineUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: JournalLineCreateManyDepartmentInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutDepartmentInput | JournalLineUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutDepartmentInput | JournalLineUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
   export type DepartmentUncheckedUpdateManyWithoutParentNestedInput = {
     create?: XOR<DepartmentCreateWithoutParentInput, DepartmentUncheckedCreateWithoutParentInput> | DepartmentCreateWithoutParentInput[] | DepartmentUncheckedCreateWithoutParentInput[]
     connectOrCreate?: DepartmentCreateOrConnectWithoutParentInput | DepartmentCreateOrConnectWithoutParentInput[]
@@ -73786,6 +77203,20 @@ export namespace Prisma {
     deleteMany?: CostCentreScalarWhereInput | CostCentreScalarWhereInput[]
   }
 
+  export type JournalLineUncheckedUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<JournalLineCreateWithoutDepartmentInput, JournalLineUncheckedCreateWithoutDepartmentInput> | JournalLineCreateWithoutDepartmentInput[] | JournalLineUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutDepartmentInput | JournalLineCreateOrConnectWithoutDepartmentInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutDepartmentInput | JournalLineUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: JournalLineCreateManyDepartmentInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutDepartmentInput | JournalLineUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutDepartmentInput | JournalLineUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
   export type OrganizationCreateNestedOneWithoutCostCentresInput = {
     create?: XOR<OrganizationCreateWithoutCostCentresInput, OrganizationUncheckedCreateWithoutCostCentresInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutCostCentresInput
@@ -73796,6 +77227,20 @@ export namespace Prisma {
     create?: XOR<DepartmentCreateWithoutCostCentresInput, DepartmentUncheckedCreateWithoutCostCentresInput>
     connectOrCreate?: DepartmentCreateOrConnectWithoutCostCentresInput
     connect?: DepartmentWhereUniqueInput
+  }
+
+  export type JournalLineCreateNestedManyWithoutCostCentreInput = {
+    create?: XOR<JournalLineCreateWithoutCostCentreInput, JournalLineUncheckedCreateWithoutCostCentreInput> | JournalLineCreateWithoutCostCentreInput[] | JournalLineUncheckedCreateWithoutCostCentreInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutCostCentreInput | JournalLineCreateOrConnectWithoutCostCentreInput[]
+    createMany?: JournalLineCreateManyCostCentreInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
+  export type JournalLineUncheckedCreateNestedManyWithoutCostCentreInput = {
+    create?: XOR<JournalLineCreateWithoutCostCentreInput, JournalLineUncheckedCreateWithoutCostCentreInput> | JournalLineCreateWithoutCostCentreInput[] | JournalLineUncheckedCreateWithoutCostCentreInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutCostCentreInput | JournalLineCreateOrConnectWithoutCostCentreInput[]
+    createMany?: JournalLineCreateManyCostCentreInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
   }
 
   export type OrganizationUpdateOneRequiredWithoutCostCentresNestedInput = {
@@ -73816,10 +77261,52 @@ export namespace Prisma {
     update?: XOR<XOR<DepartmentUpdateToOneWithWhereWithoutCostCentresInput, DepartmentUpdateWithoutCostCentresInput>, DepartmentUncheckedUpdateWithoutCostCentresInput>
   }
 
+  export type JournalLineUpdateManyWithoutCostCentreNestedInput = {
+    create?: XOR<JournalLineCreateWithoutCostCentreInput, JournalLineUncheckedCreateWithoutCostCentreInput> | JournalLineCreateWithoutCostCentreInput[] | JournalLineUncheckedCreateWithoutCostCentreInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutCostCentreInput | JournalLineCreateOrConnectWithoutCostCentreInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutCostCentreInput | JournalLineUpsertWithWhereUniqueWithoutCostCentreInput[]
+    createMany?: JournalLineCreateManyCostCentreInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutCostCentreInput | JournalLineUpdateWithWhereUniqueWithoutCostCentreInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutCostCentreInput | JournalLineUpdateManyWithWhereWithoutCostCentreInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutCostCentreNestedInput = {
+    create?: XOR<JournalLineCreateWithoutCostCentreInput, JournalLineUncheckedCreateWithoutCostCentreInput> | JournalLineCreateWithoutCostCentreInput[] | JournalLineUncheckedCreateWithoutCostCentreInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutCostCentreInput | JournalLineCreateOrConnectWithoutCostCentreInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutCostCentreInput | JournalLineUpsertWithWhereUniqueWithoutCostCentreInput[]
+    createMany?: JournalLineCreateManyCostCentreInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutCostCentreInput | JournalLineUpdateWithWhereUniqueWithoutCostCentreInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutCostCentreInput | JournalLineUpdateManyWithWhereWithoutCostCentreInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
   export type OrganizationCreateNestedOneWithoutProjectsInput = {
     create?: XOR<OrganizationCreateWithoutProjectsInput, OrganizationUncheckedCreateWithoutProjectsInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutProjectsInput
     connect?: OrganizationWhereUniqueInput
+  }
+
+  export type JournalLineCreateNestedManyWithoutProjectInput = {
+    create?: XOR<JournalLineCreateWithoutProjectInput, JournalLineUncheckedCreateWithoutProjectInput> | JournalLineCreateWithoutProjectInput[] | JournalLineUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutProjectInput | JournalLineCreateOrConnectWithoutProjectInput[]
+    createMany?: JournalLineCreateManyProjectInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
+  export type JournalLineUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<JournalLineCreateWithoutProjectInput, JournalLineUncheckedCreateWithoutProjectInput> | JournalLineCreateWithoutProjectInput[] | JournalLineUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutProjectInput | JournalLineCreateOrConnectWithoutProjectInput[]
+    createMany?: JournalLineCreateManyProjectInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
   }
 
   export type EnumProjectStatusFieldUpdateOperationsInput = {
@@ -73834,10 +77321,52 @@ export namespace Prisma {
     update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutProjectsInput, OrganizationUpdateWithoutProjectsInput>, OrganizationUncheckedUpdateWithoutProjectsInput>
   }
 
+  export type JournalLineUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<JournalLineCreateWithoutProjectInput, JournalLineUncheckedCreateWithoutProjectInput> | JournalLineCreateWithoutProjectInput[] | JournalLineUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutProjectInput | JournalLineCreateOrConnectWithoutProjectInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutProjectInput | JournalLineUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: JournalLineCreateManyProjectInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutProjectInput | JournalLineUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutProjectInput | JournalLineUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<JournalLineCreateWithoutProjectInput, JournalLineUncheckedCreateWithoutProjectInput> | JournalLineCreateWithoutProjectInput[] | JournalLineUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutProjectInput | JournalLineCreateOrConnectWithoutProjectInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutProjectInput | JournalLineUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: JournalLineCreateManyProjectInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutProjectInput | JournalLineUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutProjectInput | JournalLineUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
   export type OrganizationCreateNestedOneWithoutFundingSourcesInput = {
     create?: XOR<OrganizationCreateWithoutFundingSourcesInput, OrganizationUncheckedCreateWithoutFundingSourcesInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutFundingSourcesInput
     connect?: OrganizationWhereUniqueInput
+  }
+
+  export type JournalLineCreateNestedManyWithoutFundingSourceInput = {
+    create?: XOR<JournalLineCreateWithoutFundingSourceInput, JournalLineUncheckedCreateWithoutFundingSourceInput> | JournalLineCreateWithoutFundingSourceInput[] | JournalLineUncheckedCreateWithoutFundingSourceInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutFundingSourceInput | JournalLineCreateOrConnectWithoutFundingSourceInput[]
+    createMany?: JournalLineCreateManyFundingSourceInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
+  export type JournalLineUncheckedCreateNestedManyWithoutFundingSourceInput = {
+    create?: XOR<JournalLineCreateWithoutFundingSourceInput, JournalLineUncheckedCreateWithoutFundingSourceInput> | JournalLineCreateWithoutFundingSourceInput[] | JournalLineUncheckedCreateWithoutFundingSourceInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutFundingSourceInput | JournalLineCreateOrConnectWithoutFundingSourceInput[]
+    createMany?: JournalLineCreateManyFundingSourceInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
   }
 
   export type EnumFundingSourceTypeFieldUpdateOperationsInput = {
@@ -73850,6 +77379,34 @@ export namespace Prisma {
     upsert?: OrganizationUpsertWithoutFundingSourcesInput
     connect?: OrganizationWhereUniqueInput
     update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutFundingSourcesInput, OrganizationUpdateWithoutFundingSourcesInput>, OrganizationUncheckedUpdateWithoutFundingSourcesInput>
+  }
+
+  export type JournalLineUpdateManyWithoutFundingSourceNestedInput = {
+    create?: XOR<JournalLineCreateWithoutFundingSourceInput, JournalLineUncheckedCreateWithoutFundingSourceInput> | JournalLineCreateWithoutFundingSourceInput[] | JournalLineUncheckedCreateWithoutFundingSourceInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutFundingSourceInput | JournalLineCreateOrConnectWithoutFundingSourceInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput | JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput[]
+    createMany?: JournalLineCreateManyFundingSourceInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutFundingSourceInput | JournalLineUpdateWithWhereUniqueWithoutFundingSourceInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutFundingSourceInput | JournalLineUpdateManyWithWhereWithoutFundingSourceInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutFundingSourceNestedInput = {
+    create?: XOR<JournalLineCreateWithoutFundingSourceInput, JournalLineUncheckedCreateWithoutFundingSourceInput> | JournalLineCreateWithoutFundingSourceInput[] | JournalLineUncheckedCreateWithoutFundingSourceInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutFundingSourceInput | JournalLineCreateOrConnectWithoutFundingSourceInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput | JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput[]
+    createMany?: JournalLineCreateManyFundingSourceInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutFundingSourceInput | JournalLineUpdateWithWhereUniqueWithoutFundingSourceInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutFundingSourceInput | JournalLineUpdateManyWithWhereWithoutFundingSourceInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
   }
 
   export type ExchangeRateCreateNestedManyWithoutBaseCurrencyInput = {
@@ -74838,11 +78395,81 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput
   }
 
+  export type JournalEntryCreateNestedOneWithoutAdjustedEntriesInput = {
+    create?: XOR<JournalEntryCreateWithoutAdjustedEntriesInput, JournalEntryUncheckedCreateWithoutAdjustedEntriesInput>
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutAdjustedEntriesInput
+    connect?: JournalEntryWhereUniqueInput
+  }
+
+  export type JournalEntryCreateNestedManyWithoutAdjustingEntryInput = {
+    create?: XOR<JournalEntryCreateWithoutAdjustingEntryInput, JournalEntryUncheckedCreateWithoutAdjustingEntryInput> | JournalEntryCreateWithoutAdjustingEntryInput[] | JournalEntryUncheckedCreateWithoutAdjustingEntryInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutAdjustingEntryInput | JournalEntryCreateOrConnectWithoutAdjustingEntryInput[]
+    createMany?: JournalEntryCreateManyAdjustingEntryInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput = {
+    create?: XOR<ReversalReasonCodeCreateWithoutJournalEntriesInput, ReversalReasonCodeUncheckedCreateWithoutJournalEntriesInput>
+    connectOrCreate?: ReversalReasonCodeCreateOrConnectWithoutJournalEntriesInput
+    connect?: ReversalReasonCodeWhereUniqueInput
+  }
+
+  export type JournalEntryCreateNestedOneWithoutReversingEntriesInput = {
+    create?: XOR<JournalEntryCreateWithoutReversingEntriesInput, JournalEntryUncheckedCreateWithoutReversingEntriesInput>
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversingEntriesInput
+    connect?: JournalEntryWhereUniqueInput
+  }
+
+  export type JournalEntryCreateNestedManyWithoutReversedEntryInput = {
+    create?: XOR<JournalEntryCreateWithoutReversedEntryInput, JournalEntryUncheckedCreateWithoutReversedEntryInput> | JournalEntryCreateWithoutReversedEntryInput[] | JournalEntryUncheckedCreateWithoutReversedEntryInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversedEntryInput | JournalEntryCreateOrConnectWithoutReversedEntryInput[]
+    createMany?: JournalEntryCreateManyReversedEntryInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedOneWithoutJournalEntriesSubmittedInput = {
+    create?: XOR<UserCreateWithoutJournalEntriesSubmittedInput, UserUncheckedCreateWithoutJournalEntriesSubmittedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJournalEntriesSubmittedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutJournalEntriesApprovedInput = {
+    create?: XOR<UserCreateWithoutJournalEntriesApprovedInput, UserUncheckedCreateWithoutJournalEntriesApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJournalEntriesApprovedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutJournalEntriesPostedInput = {
+    create?: XOR<UserCreateWithoutJournalEntriesPostedInput, UserUncheckedCreateWithoutJournalEntriesPostedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJournalEntriesPostedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutJournalEntriesReversedInput = {
+    create?: XOR<UserCreateWithoutJournalEntriesReversedInput, UserUncheckedCreateWithoutJournalEntriesReversedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJournalEntriesReversedInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type JournalLineCreateNestedManyWithoutEntryInput = {
     create?: XOR<JournalLineCreateWithoutEntryInput, JournalLineUncheckedCreateWithoutEntryInput> | JournalLineCreateWithoutEntryInput[] | JournalLineUncheckedCreateWithoutEntryInput[]
     connectOrCreate?: JournalLineCreateOrConnectWithoutEntryInput | JournalLineCreateOrConnectWithoutEntryInput[]
     createMany?: JournalLineCreateManyEntryInputEnvelope
     connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
+  export type JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput = {
+    create?: XOR<JournalEntryCreateWithoutAdjustingEntryInput, JournalEntryUncheckedCreateWithoutAdjustingEntryInput> | JournalEntryCreateWithoutAdjustingEntryInput[] | JournalEntryUncheckedCreateWithoutAdjustingEntryInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutAdjustingEntryInput | JournalEntryCreateOrConnectWithoutAdjustingEntryInput[]
+    createMany?: JournalEntryCreateManyAdjustingEntryInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput = {
+    create?: XOR<JournalEntryCreateWithoutReversedEntryInput, JournalEntryUncheckedCreateWithoutReversedEntryInput> | JournalEntryCreateWithoutReversedEntryInput[] | JournalEntryUncheckedCreateWithoutReversedEntryInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversedEntryInput | JournalEntryCreateOrConnectWithoutReversedEntryInput[]
+    createMany?: JournalEntryCreateManyReversedEntryInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
   }
 
   export type JournalLineUncheckedCreateNestedManyWithoutEntryInput = {
@@ -74890,6 +78517,104 @@ export namespace Prisma {
     update?: XOR<XOR<TransactionUpdateToOneWithWhereWithoutJournalEntriesInput, TransactionUpdateWithoutJournalEntriesInput>, TransactionUncheckedUpdateWithoutJournalEntriesInput>
   }
 
+  export type JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutAdjustedEntriesInput, JournalEntryUncheckedCreateWithoutAdjustedEntriesInput>
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutAdjustedEntriesInput
+    upsert?: JournalEntryUpsertWithoutAdjustedEntriesInput
+    disconnect?: JournalEntryWhereInput | boolean
+    delete?: JournalEntryWhereInput | boolean
+    connect?: JournalEntryWhereUniqueInput
+    update?: XOR<XOR<JournalEntryUpdateToOneWithWhereWithoutAdjustedEntriesInput, JournalEntryUpdateWithoutAdjustedEntriesInput>, JournalEntryUncheckedUpdateWithoutAdjustedEntriesInput>
+  }
+
+  export type JournalEntryUpdateManyWithoutAdjustingEntryNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutAdjustingEntryInput, JournalEntryUncheckedCreateWithoutAdjustingEntryInput> | JournalEntryCreateWithoutAdjustingEntryInput[] | JournalEntryUncheckedCreateWithoutAdjustingEntryInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutAdjustingEntryInput | JournalEntryCreateOrConnectWithoutAdjustingEntryInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutAdjustingEntryInput | JournalEntryUpsertWithWhereUniqueWithoutAdjustingEntryInput[]
+    createMany?: JournalEntryCreateManyAdjustingEntryInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutAdjustingEntryInput | JournalEntryUpdateWithWhereUniqueWithoutAdjustingEntryInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutAdjustingEntryInput | JournalEntryUpdateManyWithWhereWithoutAdjustingEntryInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput = {
+    create?: XOR<ReversalReasonCodeCreateWithoutJournalEntriesInput, ReversalReasonCodeUncheckedCreateWithoutJournalEntriesInput>
+    connectOrCreate?: ReversalReasonCodeCreateOrConnectWithoutJournalEntriesInput
+    upsert?: ReversalReasonCodeUpsertWithoutJournalEntriesInput
+    disconnect?: ReversalReasonCodeWhereInput | boolean
+    delete?: ReversalReasonCodeWhereInput | boolean
+    connect?: ReversalReasonCodeWhereUniqueInput
+    update?: XOR<XOR<ReversalReasonCodeUpdateToOneWithWhereWithoutJournalEntriesInput, ReversalReasonCodeUpdateWithoutJournalEntriesInput>, ReversalReasonCodeUncheckedUpdateWithoutJournalEntriesInput>
+  }
+
+  export type JournalEntryUpdateOneWithoutReversingEntriesNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutReversingEntriesInput, JournalEntryUncheckedCreateWithoutReversingEntriesInput>
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversingEntriesInput
+    upsert?: JournalEntryUpsertWithoutReversingEntriesInput
+    disconnect?: JournalEntryWhereInput | boolean
+    delete?: JournalEntryWhereInput | boolean
+    connect?: JournalEntryWhereUniqueInput
+    update?: XOR<XOR<JournalEntryUpdateToOneWithWhereWithoutReversingEntriesInput, JournalEntryUpdateWithoutReversingEntriesInput>, JournalEntryUncheckedUpdateWithoutReversingEntriesInput>
+  }
+
+  export type JournalEntryUpdateManyWithoutReversedEntryNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutReversedEntryInput, JournalEntryUncheckedCreateWithoutReversedEntryInput> | JournalEntryCreateWithoutReversedEntryInput[] | JournalEntryUncheckedCreateWithoutReversedEntryInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversedEntryInput | JournalEntryCreateOrConnectWithoutReversedEntryInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutReversedEntryInput | JournalEntryUpsertWithWhereUniqueWithoutReversedEntryInput[]
+    createMany?: JournalEntryCreateManyReversedEntryInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutReversedEntryInput | JournalEntryUpdateWithWhereUniqueWithoutReversedEntryInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutReversedEntryInput | JournalEntryUpdateManyWithWhereWithoutReversedEntryInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type UserUpdateOneWithoutJournalEntriesSubmittedNestedInput = {
+    create?: XOR<UserCreateWithoutJournalEntriesSubmittedInput, UserUncheckedCreateWithoutJournalEntriesSubmittedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJournalEntriesSubmittedInput
+    upsert?: UserUpsertWithoutJournalEntriesSubmittedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJournalEntriesSubmittedInput, UserUpdateWithoutJournalEntriesSubmittedInput>, UserUncheckedUpdateWithoutJournalEntriesSubmittedInput>
+  }
+
+  export type UserUpdateOneWithoutJournalEntriesApprovedNestedInput = {
+    create?: XOR<UserCreateWithoutJournalEntriesApprovedInput, UserUncheckedCreateWithoutJournalEntriesApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJournalEntriesApprovedInput
+    upsert?: UserUpsertWithoutJournalEntriesApprovedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJournalEntriesApprovedInput, UserUpdateWithoutJournalEntriesApprovedInput>, UserUncheckedUpdateWithoutJournalEntriesApprovedInput>
+  }
+
+  export type UserUpdateOneWithoutJournalEntriesPostedNestedInput = {
+    create?: XOR<UserCreateWithoutJournalEntriesPostedInput, UserUncheckedCreateWithoutJournalEntriesPostedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJournalEntriesPostedInput
+    upsert?: UserUpsertWithoutJournalEntriesPostedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJournalEntriesPostedInput, UserUpdateWithoutJournalEntriesPostedInput>, UserUncheckedUpdateWithoutJournalEntriesPostedInput>
+  }
+
+  export type UserUpdateOneWithoutJournalEntriesReversedNestedInput = {
+    create?: XOR<UserCreateWithoutJournalEntriesReversedInput, UserUncheckedCreateWithoutJournalEntriesReversedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutJournalEntriesReversedInput
+    upsert?: UserUpsertWithoutJournalEntriesReversedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJournalEntriesReversedInput, UserUpdateWithoutJournalEntriesReversedInput>, UserUncheckedUpdateWithoutJournalEntriesReversedInput>
+  }
+
   export type JournalLineUpdateManyWithoutEntryNestedInput = {
     create?: XOR<JournalLineCreateWithoutEntryInput, JournalLineUncheckedCreateWithoutEntryInput> | JournalLineCreateWithoutEntryInput[] | JournalLineUncheckedCreateWithoutEntryInput[]
     connectOrCreate?: JournalLineCreateOrConnectWithoutEntryInput | JournalLineCreateOrConnectWithoutEntryInput[]
@@ -74902,6 +78627,34 @@ export namespace Prisma {
     update?: JournalLineUpdateWithWhereUniqueWithoutEntryInput | JournalLineUpdateWithWhereUniqueWithoutEntryInput[]
     updateMany?: JournalLineUpdateManyWithWhereWithoutEntryInput | JournalLineUpdateManyWithWhereWithoutEntryInput[]
     deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutAdjustingEntryInput, JournalEntryUncheckedCreateWithoutAdjustingEntryInput> | JournalEntryCreateWithoutAdjustingEntryInput[] | JournalEntryUncheckedCreateWithoutAdjustingEntryInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutAdjustingEntryInput | JournalEntryCreateOrConnectWithoutAdjustingEntryInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutAdjustingEntryInput | JournalEntryUpsertWithWhereUniqueWithoutAdjustingEntryInput[]
+    createMany?: JournalEntryCreateManyAdjustingEntryInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutAdjustingEntryInput | JournalEntryUpdateWithWhereUniqueWithoutAdjustingEntryInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutAdjustingEntryInput | JournalEntryUpdateManyWithWhereWithoutAdjustingEntryInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutReversedEntryInput, JournalEntryUncheckedCreateWithoutReversedEntryInput> | JournalEntryCreateWithoutReversedEntryInput[] | JournalEntryUncheckedCreateWithoutReversedEntryInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversedEntryInput | JournalEntryCreateOrConnectWithoutReversedEntryInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutReversedEntryInput | JournalEntryUpsertWithWhereUniqueWithoutReversedEntryInput[]
+    createMany?: JournalEntryCreateManyReversedEntryInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutReversedEntryInput | JournalEntryUpdateWithWhereUniqueWithoutReversedEntryInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutReversedEntryInput | JournalEntryUpdateManyWithWhereWithoutReversedEntryInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
   }
 
   export type JournalLineUncheckedUpdateManyWithoutEntryNestedInput = {
@@ -74942,6 +78695,36 @@ export namespace Prisma {
     connect?: CurrencyWhereUniqueInput
   }
 
+  export type ProjectCreateNestedOneWithoutJournalLinesInput = {
+    create?: XOR<ProjectCreateWithoutJournalLinesInput, ProjectUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutJournalLinesInput
+    connect?: ProjectWhereUniqueInput
+  }
+
+  export type DepartmentCreateNestedOneWithoutJournalLinesInput = {
+    create?: XOR<DepartmentCreateWithoutJournalLinesInput, DepartmentUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutJournalLinesInput
+    connect?: DepartmentWhereUniqueInput
+  }
+
+  export type CostCentreCreateNestedOneWithoutJournalLinesInput = {
+    create?: XOR<CostCentreCreateWithoutJournalLinesInput, CostCentreUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: CostCentreCreateOrConnectWithoutJournalLinesInput
+    connect?: CostCentreWhereUniqueInput
+  }
+
+  export type LocationCreateNestedOneWithoutJournalLinesInput = {
+    create?: XOR<LocationCreateWithoutJournalLinesInput, LocationUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: LocationCreateOrConnectWithoutJournalLinesInput
+    connect?: LocationWhereUniqueInput
+  }
+
+  export type FundingSourceCreateNestedOneWithoutJournalLinesInput = {
+    create?: XOR<FundingSourceCreateWithoutJournalLinesInput, FundingSourceUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: FundingSourceCreateOrConnectWithoutJournalLinesInput
+    connect?: FundingSourceWhereUniqueInput
+  }
+
   export type OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput = {
     create?: XOR<OrganizationCreateWithoutJournalLinesInput, OrganizationUncheckedCreateWithoutJournalLinesInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutJournalLinesInput
@@ -74972,6 +78755,116 @@ export namespace Prisma {
     upsert?: CurrencyUpsertWithoutJournalLinesInput
     connect?: CurrencyWhereUniqueInput
     update?: XOR<XOR<CurrencyUpdateToOneWithWhereWithoutJournalLinesInput, CurrencyUpdateWithoutJournalLinesInput>, CurrencyUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type ProjectUpdateOneWithoutJournalLinesNestedInput = {
+    create?: XOR<ProjectCreateWithoutJournalLinesInput, ProjectUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutJournalLinesInput
+    upsert?: ProjectUpsertWithoutJournalLinesInput
+    disconnect?: ProjectWhereInput | boolean
+    delete?: ProjectWhereInput | boolean
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutJournalLinesInput, ProjectUpdateWithoutJournalLinesInput>, ProjectUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type DepartmentUpdateOneWithoutJournalLinesNestedInput = {
+    create?: XOR<DepartmentCreateWithoutJournalLinesInput, DepartmentUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutJournalLinesInput
+    upsert?: DepartmentUpsertWithoutJournalLinesInput
+    disconnect?: DepartmentWhereInput | boolean
+    delete?: DepartmentWhereInput | boolean
+    connect?: DepartmentWhereUniqueInput
+    update?: XOR<XOR<DepartmentUpdateToOneWithWhereWithoutJournalLinesInput, DepartmentUpdateWithoutJournalLinesInput>, DepartmentUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type CostCentreUpdateOneWithoutJournalLinesNestedInput = {
+    create?: XOR<CostCentreCreateWithoutJournalLinesInput, CostCentreUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: CostCentreCreateOrConnectWithoutJournalLinesInput
+    upsert?: CostCentreUpsertWithoutJournalLinesInput
+    disconnect?: CostCentreWhereInput | boolean
+    delete?: CostCentreWhereInput | boolean
+    connect?: CostCentreWhereUniqueInput
+    update?: XOR<XOR<CostCentreUpdateToOneWithWhereWithoutJournalLinesInput, CostCentreUpdateWithoutJournalLinesInput>, CostCentreUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type LocationUpdateOneWithoutJournalLinesNestedInput = {
+    create?: XOR<LocationCreateWithoutJournalLinesInput, LocationUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: LocationCreateOrConnectWithoutJournalLinesInput
+    upsert?: LocationUpsertWithoutJournalLinesInput
+    disconnect?: LocationWhereInput | boolean
+    delete?: LocationWhereInput | boolean
+    connect?: LocationWhereUniqueInput
+    update?: XOR<XOR<LocationUpdateToOneWithWhereWithoutJournalLinesInput, LocationUpdateWithoutJournalLinesInput>, LocationUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type FundingSourceUpdateOneWithoutJournalLinesNestedInput = {
+    create?: XOR<FundingSourceCreateWithoutJournalLinesInput, FundingSourceUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: FundingSourceCreateOrConnectWithoutJournalLinesInput
+    upsert?: FundingSourceUpsertWithoutJournalLinesInput
+    disconnect?: FundingSourceWhereInput | boolean
+    delete?: FundingSourceWhereInput | boolean
+    connect?: FundingSourceWhereUniqueInput
+    update?: XOR<XOR<FundingSourceUpdateToOneWithWhereWithoutJournalLinesInput, FundingSourceUpdateWithoutJournalLinesInput>, FundingSourceUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutReversalReasonCodesInput = {
+    create?: XOR<OrganizationCreateWithoutReversalReasonCodesInput, OrganizationUncheckedCreateWithoutReversalReasonCodesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutReversalReasonCodesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type JournalEntryCreateNestedManyWithoutReversalReasonInput = {
+    create?: XOR<JournalEntryCreateWithoutReversalReasonInput, JournalEntryUncheckedCreateWithoutReversalReasonInput> | JournalEntryCreateWithoutReversalReasonInput[] | JournalEntryUncheckedCreateWithoutReversalReasonInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversalReasonInput | JournalEntryCreateOrConnectWithoutReversalReasonInput[]
+    createMany?: JournalEntryCreateManyReversalReasonInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalEntryUncheckedCreateNestedManyWithoutReversalReasonInput = {
+    create?: XOR<JournalEntryCreateWithoutReversalReasonInput, JournalEntryUncheckedCreateWithoutReversalReasonInput> | JournalEntryCreateWithoutReversalReasonInput[] | JournalEntryUncheckedCreateWithoutReversalReasonInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversalReasonInput | JournalEntryCreateOrConnectWithoutReversalReasonInput[]
+    createMany?: JournalEntryCreateManyReversalReasonInputEnvelope
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type EnumReversalReasonCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.ReversalReasonCategory
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutReversalReasonCodesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutReversalReasonCodesInput, OrganizationUncheckedCreateWithoutReversalReasonCodesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutReversalReasonCodesInput
+    upsert?: OrganizationUpsertWithoutReversalReasonCodesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutReversalReasonCodesInput, OrganizationUpdateWithoutReversalReasonCodesInput>, OrganizationUncheckedUpdateWithoutReversalReasonCodesInput>
+  }
+
+  export type JournalEntryUpdateManyWithoutReversalReasonNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutReversalReasonInput, JournalEntryUncheckedCreateWithoutReversalReasonInput> | JournalEntryCreateWithoutReversalReasonInput[] | JournalEntryUncheckedCreateWithoutReversalReasonInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversalReasonInput | JournalEntryCreateOrConnectWithoutReversalReasonInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput | JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput[]
+    createMany?: JournalEntryCreateManyReversalReasonInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutReversalReasonInput | JournalEntryUpdateWithWhereUniqueWithoutReversalReasonInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutReversalReasonInput | JournalEntryUpdateManyWithWhereWithoutReversalReasonInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutReversalReasonNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutReversalReasonInput, JournalEntryUncheckedCreateWithoutReversalReasonInput> | JournalEntryCreateWithoutReversalReasonInput[] | JournalEntryUncheckedCreateWithoutReversalReasonInput[]
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversalReasonInput | JournalEntryCreateOrConnectWithoutReversalReasonInput[]
+    upsert?: JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput | JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput[]
+    createMany?: JournalEntryCreateManyReversalReasonInputEnvelope
+    set?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    disconnect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    delete?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+    update?: JournalEntryUpdateWithWhereUniqueWithoutReversalReasonInput | JournalEntryUpdateWithWhereUniqueWithoutReversalReasonInput[]
+    updateMany?: JournalEntryUpdateManyWithWhereWithoutReversalReasonInput | JournalEntryUpdateManyWithWhereWithoutReversalReasonInput[]
+    deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutTransactionsInput = {
@@ -76140,6 +80033,23 @@ export namespace Prisma {
     _max?: NestedEnumJournalSourceFilter<$PrismaModel>
   }
 
+  export type NestedEnumReversalReasonCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReversalReasonCategory | EnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumReversalReasonCategoryFilter<$PrismaModel> | $Enums.ReversalReasonCategory
+  }
+
+  export type NestedEnumReversalReasonCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReversalReasonCategory | EnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReversalReasonCategory[] | ListEnumReversalReasonCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumReversalReasonCategoryWithAggregatesFilter<$PrismaModel> | $Enums.ReversalReasonCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReversalReasonCategoryFilter<$PrismaModel>
+    _max?: NestedEnumReversalReasonCategoryFilter<$PrismaModel>
+  }
+
   export type NestedEnumTransactionStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
@@ -76510,6 +80420,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutLocationsInput
     parent?: LocationCreateNestedOneWithoutChildrenInput
     children?: LocationCreateNestedManyWithoutParentInput
+    journalLines?: JournalLineCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateWithoutUsersInput = {
@@ -76529,6 +80440,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     children?: LocationUncheckedCreateNestedManyWithoutParentInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationCreateOrConnectWithoutUsersInput = {
@@ -76547,6 +80459,7 @@ export namespace Prisma {
     parent?: DepartmentCreateNestedOneWithoutChildrenInput
     children?: DepartmentCreateNestedManyWithoutParentInput
     costCentres?: CostCentreCreateNestedManyWithoutDepartmentInput
+    journalLines?: JournalLineCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutUsersInput = {
@@ -76560,6 +80473,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     children?: DepartmentUncheckedCreateNestedManyWithoutParentInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutDepartmentInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutUsersInput = {
@@ -76614,6 +80528,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedUsersInput = {
@@ -76663,6 +80581,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedUsersInput = {
@@ -76717,6 +80639,10 @@ export namespace Prisma {
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedUsersInput = {
@@ -76766,6 +80692,10 @@ export namespace Prisma {
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedUsersInput = {
@@ -77190,6 +81120,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedByInput = {
@@ -77239,6 +81173,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedByInput = {
@@ -77298,6 +81236,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedByInput = {
@@ -77347,6 +81289,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedByInput = {
@@ -77447,6 +81393,286 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type JournalEntryCreateWithoutSubmittedByInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutSubmittedByInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutSubmittedByInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutSubmittedByInput, JournalEntryUncheckedCreateWithoutSubmittedByInput>
+  }
+
+  export type JournalEntryCreateManySubmittedByInputEnvelope = {
+    data: JournalEntryCreateManySubmittedByInput | JournalEntryCreateManySubmittedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JournalEntryCreateWithoutApprovedByInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutApprovedByInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutApprovedByInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutApprovedByInput, JournalEntryUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type JournalEntryCreateManyApprovedByInputEnvelope = {
+    data: JournalEntryCreateManyApprovedByInput | JournalEntryCreateManyApprovedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JournalEntryCreateWithoutPostedByInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutPostedByInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutPostedByInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutPostedByInput, JournalEntryUncheckedCreateWithoutPostedByInput>
+  }
+
+  export type JournalEntryCreateManyPostedByInputEnvelope = {
+    data: JournalEntryCreateManyPostedByInput | JournalEntryCreateManyPostedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JournalEntryCreateWithoutReversedByInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutReversedByInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutReversedByInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutReversedByInput, JournalEntryUncheckedCreateWithoutReversedByInput>
+  }
+
+  export type JournalEntryCreateManyReversedByInputEnvelope = {
+    data: JournalEntryCreateManyReversedByInput | JournalEntryCreateManyReversedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type LocationUpsertWithoutUsersInput = {
     update: XOR<LocationUpdateWithoutUsersInput, LocationUncheckedUpdateWithoutUsersInput>
     create: XOR<LocationCreateWithoutUsersInput, LocationUncheckedCreateWithoutUsersInput>
@@ -77475,6 +81701,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutLocationsNestedInput
     parent?: LocationUpdateOneWithoutChildrenNestedInput
     children?: LocationUpdateManyWithoutParentNestedInput
+    journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateWithoutUsersInput = {
@@ -77494,6 +81721,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     children?: LocationUncheckedUpdateManyWithoutParentNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type DepartmentUpsertWithoutUsersInput = {
@@ -77518,6 +81746,7 @@ export namespace Prisma {
     parent?: DepartmentUpdateOneWithoutChildrenNestedInput
     children?: DepartmentUpdateManyWithoutParentNestedInput
     costCentres?: CostCentreUpdateManyWithoutDepartmentNestedInput
+    journalLines?: JournalLineUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutUsersInput = {
@@ -77531,6 +81760,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     children?: DepartmentUncheckedUpdateManyWithoutParentNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutDepartmentNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type UserUpsertWithoutCreatedUsersInput = {
@@ -77591,6 +81821,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedUsersInput = {
@@ -77640,6 +81874,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutUpdatedUsersInput = {
@@ -77700,6 +81938,10 @@ export namespace Prisma {
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedUsersInput = {
@@ -77749,6 +81991,10 @@ export namespace Prisma {
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutUserInput = {
@@ -78190,6 +82436,101 @@ export namespace Prisma {
     data: XOR<MasterDataChangeRequestUpdateManyMutationInput, MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByInput>
   }
 
+  export type JournalEntryUpsertWithWhereUniqueWithoutSubmittedByInput = {
+    where: JournalEntryWhereUniqueInput
+    update: XOR<JournalEntryUpdateWithoutSubmittedByInput, JournalEntryUncheckedUpdateWithoutSubmittedByInput>
+    create: XOR<JournalEntryCreateWithoutSubmittedByInput, JournalEntryUncheckedCreateWithoutSubmittedByInput>
+  }
+
+  export type JournalEntryUpdateWithWhereUniqueWithoutSubmittedByInput = {
+    where: JournalEntryWhereUniqueInput
+    data: XOR<JournalEntryUpdateWithoutSubmittedByInput, JournalEntryUncheckedUpdateWithoutSubmittedByInput>
+  }
+
+  export type JournalEntryUpdateManyWithWhereWithoutSubmittedByInput = {
+    where: JournalEntryScalarWhereInput
+    data: XOR<JournalEntryUpdateManyMutationInput, JournalEntryUncheckedUpdateManyWithoutSubmittedByInput>
+  }
+
+  export type JournalEntryScalarWhereInput = {
+    AND?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+    OR?: JournalEntryScalarWhereInput[]
+    NOT?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+    id?: StringFilter<"JournalEntry"> | string
+    organizationId?: StringFilter<"JournalEntry"> | string
+    periodId?: StringFilter<"JournalEntry"> | string
+    type?: EnumJournalEntryTypeFilter<"JournalEntry"> | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFilter<"JournalEntry"> | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFilter<"JournalEntry"> | $Enums.JournalSource
+    number?: StringNullableFilter<"JournalEntry"> | string | null
+    reference?: StringNullableFilter<"JournalEntry"> | string | null
+    description?: StringNullableFilter<"JournalEntry"> | string | null
+    transactionId?: StringNullableFilter<"JournalEntry"> | string | null
+    adjustingEntryId?: StringNullableFilter<"JournalEntry"> | string | null
+    reversalReasonId?: StringNullableFilter<"JournalEntry"> | string | null
+    reversedEntryId?: StringNullableFilter<"JournalEntry"> | string | null
+    submittedById?: StringNullableFilter<"JournalEntry"> | string | null
+    submittedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    approvedById?: StringNullableFilter<"JournalEntry"> | string | null
+    approvedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    postedById?: StringNullableFilter<"JournalEntry"> | string | null
+    postedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    reversedById?: StringNullableFilter<"JournalEntry"> | string | null
+    reversedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    voidedById?: StringNullableFilter<"JournalEntry"> | string | null
+    voidedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
+    createdAt?: DateTimeFilter<"JournalEntry"> | Date | string
+    updatedAt?: DateTimeFilter<"JournalEntry"> | Date | string
+  }
+
+  export type JournalEntryUpsertWithWhereUniqueWithoutApprovedByInput = {
+    where: JournalEntryWhereUniqueInput
+    update: XOR<JournalEntryUpdateWithoutApprovedByInput, JournalEntryUncheckedUpdateWithoutApprovedByInput>
+    create: XOR<JournalEntryCreateWithoutApprovedByInput, JournalEntryUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type JournalEntryUpdateWithWhereUniqueWithoutApprovedByInput = {
+    where: JournalEntryWhereUniqueInput
+    data: XOR<JournalEntryUpdateWithoutApprovedByInput, JournalEntryUncheckedUpdateWithoutApprovedByInput>
+  }
+
+  export type JournalEntryUpdateManyWithWhereWithoutApprovedByInput = {
+    where: JournalEntryScalarWhereInput
+    data: XOR<JournalEntryUpdateManyMutationInput, JournalEntryUncheckedUpdateManyWithoutApprovedByInput>
+  }
+
+  export type JournalEntryUpsertWithWhereUniqueWithoutPostedByInput = {
+    where: JournalEntryWhereUniqueInput
+    update: XOR<JournalEntryUpdateWithoutPostedByInput, JournalEntryUncheckedUpdateWithoutPostedByInput>
+    create: XOR<JournalEntryCreateWithoutPostedByInput, JournalEntryUncheckedCreateWithoutPostedByInput>
+  }
+
+  export type JournalEntryUpdateWithWhereUniqueWithoutPostedByInput = {
+    where: JournalEntryWhereUniqueInput
+    data: XOR<JournalEntryUpdateWithoutPostedByInput, JournalEntryUncheckedUpdateWithoutPostedByInput>
+  }
+
+  export type JournalEntryUpdateManyWithWhereWithoutPostedByInput = {
+    where: JournalEntryScalarWhereInput
+    data: XOR<JournalEntryUpdateManyMutationInput, JournalEntryUncheckedUpdateManyWithoutPostedByInput>
+  }
+
+  export type JournalEntryUpsertWithWhereUniqueWithoutReversedByInput = {
+    where: JournalEntryWhereUniqueInput
+    update: XOR<JournalEntryUpdateWithoutReversedByInput, JournalEntryUncheckedUpdateWithoutReversedByInput>
+    create: XOR<JournalEntryCreateWithoutReversedByInput, JournalEntryUncheckedCreateWithoutReversedByInput>
+  }
+
+  export type JournalEntryUpdateWithWhereUniqueWithoutReversedByInput = {
+    where: JournalEntryWhereUniqueInput
+    data: XOR<JournalEntryUpdateWithoutReversedByInput, JournalEntryUncheckedUpdateWithoutReversedByInput>
+  }
+
+  export type JournalEntryUpdateManyWithWhereWithoutReversedByInput = {
+    where: JournalEntryScalarWhereInput
+    data: XOR<JournalEntryUpdateManyMutationInput, JournalEntryUncheckedUpdateManyWithoutReversedByInput>
+  }
+
   export type UserCreateWithoutMfaDevicesInput = {
     id?: string
     email: string
@@ -78237,6 +82578,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutMfaDevicesInput = {
@@ -78286,6 +82631,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutMfaDevicesInput = {
@@ -78351,6 +82700,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMfaDevicesInput = {
@@ -78400,6 +82753,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -78449,6 +82806,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -78498,6 +82859,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -78563,6 +82928,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -78612,6 +82981,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserCreateWithoutLoginHistoryInput = {
@@ -78661,6 +83034,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutLoginHistoryInput = {
@@ -78710,6 +83087,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutLoginHistoryInput = {
@@ -78775,6 +83156,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLoginHistoryInput = {
@@ -78824,6 +83209,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type RolePermissionCreateWithoutRoleInput = {
@@ -79372,6 +83761,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -79421,6 +83814,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -79533,6 +83930,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -79582,6 +83983,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type RoleUpsertWithoutUserRolesInput = {
@@ -79840,6 +84245,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsGrantedInput = {
@@ -79889,6 +84298,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsGrantedInput = {
@@ -79943,6 +84356,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsReceivedInput = {
@@ -79992,6 +84409,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsReceivedInput = {
@@ -80104,6 +84525,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsGrantedInput = {
@@ -80153,6 +84578,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutDelegationsReceivedInput = {
@@ -80213,6 +84642,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsReceivedInput = {
@@ -80262,6 +84695,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type RoleUpsertWithoutDelegationsInput = {
@@ -80447,6 +84884,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutAccessReviewItemsInput = {
@@ -80496,6 +84937,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutAccessReviewItemsInput = {
@@ -80647,6 +85092,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccessReviewItemsInput = {
@@ -80696,6 +85145,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type RoleUpsertWithoutAccessReviewItemsInput = {
@@ -80790,6 +85243,7 @@ export namespace Prisma {
     parent?: LocationCreateNestedOneWithoutChildrenInput
     children?: LocationCreateNestedManyWithoutParentInput
     users?: UserCreateNestedManyWithoutPrimaryLocationInput
+    journalLines?: JournalLineCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateWithoutOrganizationInput = {
@@ -80809,6 +85263,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     children?: LocationUncheckedCreateNestedManyWithoutParentInput
     users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationCreateOrConnectWithoutOrganizationInput = {
@@ -80832,6 +85287,7 @@ export namespace Prisma {
     children?: DepartmentCreateNestedManyWithoutParentInput
     users?: UserCreateNestedManyWithoutHomeDepartmentInput
     costCentres?: CostCentreCreateNestedManyWithoutDepartmentInput
+    journalLines?: JournalLineCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutOrganizationInput = {
@@ -80845,6 +85301,7 @@ export namespace Prisma {
     children?: DepartmentUncheckedCreateNestedManyWithoutParentInput
     users?: UserUncheckedCreateNestedManyWithoutHomeDepartmentInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutDepartmentInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutOrganizationInput = {
@@ -80866,6 +85323,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     department?: DepartmentCreateNestedOneWithoutCostCentresInput
+    journalLines?: JournalLineCreateNestedManyWithoutCostCentreInput
   }
 
   export type CostCentreUncheckedCreateWithoutOrganizationInput = {
@@ -80877,6 +85335,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutCostCentreInput
   }
 
   export type CostCentreCreateOrConnectWithoutOrganizationInput = {
@@ -80900,6 +85359,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    journalLines?: JournalLineCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutOrganizationInput = {
@@ -80913,6 +85373,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutOrganizationInput = {
@@ -80936,6 +85397,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    journalLines?: JournalLineCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceUncheckedCreateWithoutOrganizationInput = {
@@ -80949,6 +85411,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceCreateOrConnectWithoutOrganizationInput = {
@@ -81034,6 +85497,40 @@ export namespace Prisma {
 
   export type ReasonCodeCreateManyOrganizationInputEnvelope = {
     data: ReasonCodeCreateManyOrganizationInput | ReasonCodeCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReversalReasonCodeCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    category: $Enums.ReversalReasonCategory
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalEntries?: JournalEntryCreateNestedManyWithoutReversalReasonInput
+  }
+
+  export type ReversalReasonCodeUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    category: $Enums.ReversalReasonCategory
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversalReasonInput
+  }
+
+  export type ReversalReasonCodeCreateOrConnectWithoutOrganizationInput = {
+    where: ReversalReasonCodeWhereUniqueInput
+    create: XOR<ReversalReasonCodeCreateWithoutOrganizationInput, ReversalReasonCodeUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ReversalReasonCodeCreateManyOrganizationInputEnvelope = {
+    data: ReversalReasonCodeCreateManyOrganizationInput | ReversalReasonCodeCreateManyOrganizationInput[]
     skipDuplicates?: boolean
   }
 
@@ -81258,14 +85755,28 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
     postedAt?: Date | string | null
-    postedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
     transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
   }
 
@@ -81275,13 +85786,27 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
     transactionId?: string | null
-    postedAt?: Date | string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
   }
 
@@ -81297,23 +85822,39 @@ export namespace Prisma {
 
   export type JournalLineCreateWithoutOrganizationInput = {
     id?: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
     entry: JournalEntryCreateNestedOneWithoutLinesInput
     account: AccountCreateNestedOneWithoutJournalLinesInput
     currency: CurrencyCreateNestedOneWithoutJournalLinesInput
+    project?: ProjectCreateNestedOneWithoutJournalLinesInput
+    department?: DepartmentCreateNestedOneWithoutJournalLinesInput
+    costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
+    location?: LocationCreateNestedOneWithoutJournalLinesInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutOrganizationInput = {
     id?: string
     entryId: string
     accountId: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
     currencyCode: string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
     createdAt?: Date | string
   }
 
@@ -81652,6 +86193,37 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ReasonCode"> | Date | string
   }
 
+  export type ReversalReasonCodeUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ReversalReasonCodeWhereUniqueInput
+    update: XOR<ReversalReasonCodeUpdateWithoutOrganizationInput, ReversalReasonCodeUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ReversalReasonCodeCreateWithoutOrganizationInput, ReversalReasonCodeUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ReversalReasonCodeUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ReversalReasonCodeWhereUniqueInput
+    data: XOR<ReversalReasonCodeUpdateWithoutOrganizationInput, ReversalReasonCodeUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ReversalReasonCodeUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ReversalReasonCodeScalarWhereInput
+    data: XOR<ReversalReasonCodeUpdateManyMutationInput, ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ReversalReasonCodeScalarWhereInput = {
+    AND?: ReversalReasonCodeScalarWhereInput | ReversalReasonCodeScalarWhereInput[]
+    OR?: ReversalReasonCodeScalarWhereInput[]
+    NOT?: ReversalReasonCodeScalarWhereInput | ReversalReasonCodeScalarWhereInput[]
+    id?: StringFilter<"ReversalReasonCode"> | string
+    organizationId?: StringFilter<"ReversalReasonCode"> | string
+    code?: StringFilter<"ReversalReasonCode"> | string
+    name?: StringFilter<"ReversalReasonCode"> | string
+    description?: StringNullableFilter<"ReversalReasonCode"> | string | null
+    category?: EnumReversalReasonCategoryFilter<"ReversalReasonCode"> | $Enums.ReversalReasonCategory
+    isActive?: BoolFilter<"ReversalReasonCode"> | boolean
+    createdAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
+    updatedAt?: DateTimeFilter<"ReversalReasonCode"> | Date | string
+  }
+
   export type ProductServiceUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: ProductServiceWhereUniqueInput
     update: XOR<ProductServiceUpdateWithoutOrganizationInput, ProductServiceUncheckedUpdateWithoutOrganizationInput>
@@ -81843,25 +86415,6 @@ export namespace Prisma {
     data: XOR<JournalEntryUpdateManyMutationInput, JournalEntryUncheckedUpdateManyWithoutOrganizationInput>
   }
 
-  export type JournalEntryScalarWhereInput = {
-    AND?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
-    OR?: JournalEntryScalarWhereInput[]
-    NOT?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
-    id?: StringFilter<"JournalEntry"> | string
-    organizationId?: StringFilter<"JournalEntry"> | string
-    periodId?: StringFilter<"JournalEntry"> | string
-    type?: EnumJournalEntryTypeFilter<"JournalEntry"> | $Enums.JournalEntryType
-    status?: EnumJournalEntryStatusFilter<"JournalEntry"> | $Enums.JournalEntryStatus
-    source?: EnumJournalSourceFilter<"JournalEntry"> | $Enums.JournalSource
-    reference?: StringNullableFilter<"JournalEntry"> | string | null
-    description?: StringNullableFilter<"JournalEntry"> | string | null
-    transactionId?: StringNullableFilter<"JournalEntry"> | string | null
-    postedAt?: DateTimeNullableFilter<"JournalEntry"> | Date | string | null
-    postedById?: StringNullableFilter<"JournalEntry"> | string | null
-    createdAt?: DateTimeFilter<"JournalEntry"> | Date | string
-    updatedAt?: DateTimeFilter<"JournalEntry"> | Date | string
-  }
-
   export type JournalLineUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: JournalLineWhereUniqueInput
     update: XOR<JournalLineUpdateWithoutOrganizationInput, JournalLineUncheckedUpdateWithoutOrganizationInput>
@@ -81886,10 +86439,18 @@ export namespace Prisma {
     organizationId?: StringFilter<"JournalLine"> | string
     entryId?: StringFilter<"JournalLine"> | string
     accountId?: StringFilter<"JournalLine"> | string
+    lineNumber?: IntFilter<"JournalLine"> | number
+    description?: StringNullableFilter<"JournalLine"> | string | null
     debit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
     credit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFilter<"JournalLine"> | string
-    description?: StringNullableFilter<"JournalLine"> | string | null
+    baseAmount?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+    fxRate?: DecimalNullableFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string | null
+    projectId?: StringNullableFilter<"JournalLine"> | string | null
+    departmentId?: StringNullableFilter<"JournalLine"> | string | null
+    costCentreId?: StringNullableFilter<"JournalLine"> | string | null
+    locationId?: StringNullableFilter<"JournalLine"> | string | null
+    fundingSourceId?: StringNullableFilter<"JournalLine"> | string | null
     createdAt?: DateTimeFilter<"JournalLine"> | Date | string
   }
 
@@ -82010,6 +86571,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -82047,6 +86609,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -82081,6 +86644,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutLocationsInput
     parent?: LocationCreateNestedOneWithoutChildrenInput
     users?: UserCreateNestedManyWithoutPrimaryLocationInput
+    journalLines?: JournalLineCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateWithoutChildrenInput = {
@@ -82100,6 +86664,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationCreateOrConnectWithoutChildrenInput = {
@@ -82124,6 +86689,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutLocationsInput
     children?: LocationCreateNestedManyWithoutParentInput
     users?: UserCreateNestedManyWithoutPrimaryLocationInput
+    journalLines?: JournalLineCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateWithoutParentInput = {
@@ -82143,6 +86709,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     children?: LocationUncheckedCreateNestedManyWithoutParentInput
     users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationCreateOrConnectWithoutParentInput = {
@@ -82202,6 +86769,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutPrimaryLocationInput = {
@@ -82251,6 +86822,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutPrimaryLocationInput = {
@@ -82260,6 +86835,54 @@ export namespace Prisma {
 
   export type UserCreateManyPrimaryLocationInputEnvelope = {
     data: UserCreateManyPrimaryLocationInput | UserCreateManyPrimaryLocationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JournalLineCreateWithoutLocationInput = {
+    id?: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    createdAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalLinesInput
+    entry: JournalEntryCreateNestedOneWithoutLinesInput
+    account: AccountCreateNestedOneWithoutJournalLinesInput
+    currency: CurrencyCreateNestedOneWithoutJournalLinesInput
+    project?: ProjectCreateNestedOneWithoutJournalLinesInput
+    department?: DepartmentCreateNestedOneWithoutJournalLinesInput
+    costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+  }
+
+  export type JournalLineUncheckedCreateWithoutLocationInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    fundingSourceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type JournalLineCreateOrConnectWithoutLocationInput = {
+    where: JournalLineWhereUniqueInput
+    create: XOR<JournalLineCreateWithoutLocationInput, JournalLineUncheckedCreateWithoutLocationInput>
+  }
+
+  export type JournalLineCreateManyLocationInputEnvelope = {
+    data: JournalLineCreateManyLocationInput | JournalLineCreateManyLocationInput[]
     skipDuplicates?: boolean
   }
 
@@ -82299,6 +86922,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -82336,6 +86960,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -82376,6 +87001,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutLocationsNestedInput
     parent?: LocationUpdateOneWithoutChildrenNestedInput
     users?: UserUpdateManyWithoutPrimaryLocationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateWithoutChildrenInput = {
@@ -82395,6 +87021,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUpsertWithWhereUniqueWithoutParentInput = {
@@ -82429,6 +87056,22 @@ export namespace Prisma {
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutPrimaryLocationInput>
   }
 
+  export type JournalLineUpsertWithWhereUniqueWithoutLocationInput = {
+    where: JournalLineWhereUniqueInput
+    update: XOR<JournalLineUpdateWithoutLocationInput, JournalLineUncheckedUpdateWithoutLocationInput>
+    create: XOR<JournalLineCreateWithoutLocationInput, JournalLineUncheckedCreateWithoutLocationInput>
+  }
+
+  export type JournalLineUpdateWithWhereUniqueWithoutLocationInput = {
+    where: JournalLineWhereUniqueInput
+    data: XOR<JournalLineUpdateWithoutLocationInput, JournalLineUncheckedUpdateWithoutLocationInput>
+  }
+
+  export type JournalLineUpdateManyWithWhereWithoutLocationInput = {
+    where: JournalLineScalarWhereInput
+    data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyWithoutLocationInput>
+  }
+
   export type OrganizationCreateWithoutDepartmentsInput = {
     id?: string
     code: string
@@ -82454,6 +87097,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -82491,6 +87135,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -82519,6 +87164,7 @@ export namespace Prisma {
     parent?: DepartmentCreateNestedOneWithoutChildrenInput
     users?: UserCreateNestedManyWithoutHomeDepartmentInput
     costCentres?: CostCentreCreateNestedManyWithoutDepartmentInput
+    journalLines?: JournalLineCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutChildrenInput = {
@@ -82532,6 +87178,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutHomeDepartmentInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutDepartmentInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutChildrenInput = {
@@ -82550,6 +87197,7 @@ export namespace Prisma {
     children?: DepartmentCreateNestedManyWithoutParentInput
     users?: UserCreateNestedManyWithoutHomeDepartmentInput
     costCentres?: CostCentreCreateNestedManyWithoutDepartmentInput
+    journalLines?: JournalLineCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutParentInput = {
@@ -82563,6 +87211,7 @@ export namespace Prisma {
     children?: DepartmentUncheckedCreateNestedManyWithoutParentInput
     users?: UserUncheckedCreateNestedManyWithoutHomeDepartmentInput
     costCentres?: CostCentreUncheckedCreateNestedManyWithoutDepartmentInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutParentInput = {
@@ -82622,6 +87271,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutHomeDepartmentInput = {
@@ -82671,6 +87324,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutHomeDepartmentInput = {
@@ -82692,6 +87349,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutCostCentresInput
+    journalLines?: JournalLineCreateNestedManyWithoutCostCentreInput
   }
 
   export type CostCentreUncheckedCreateWithoutDepartmentInput = {
@@ -82703,6 +87361,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutCostCentreInput
   }
 
   export type CostCentreCreateOrConnectWithoutDepartmentInput = {
@@ -82712,6 +87371,54 @@ export namespace Prisma {
 
   export type CostCentreCreateManyDepartmentInputEnvelope = {
     data: CostCentreCreateManyDepartmentInput | CostCentreCreateManyDepartmentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JournalLineCreateWithoutDepartmentInput = {
+    id?: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    createdAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalLinesInput
+    entry: JournalEntryCreateNestedOneWithoutLinesInput
+    account: AccountCreateNestedOneWithoutJournalLinesInput
+    currency: CurrencyCreateNestedOneWithoutJournalLinesInput
+    project?: ProjectCreateNestedOneWithoutJournalLinesInput
+    costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
+    location?: LocationCreateNestedOneWithoutJournalLinesInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+  }
+
+  export type JournalLineUncheckedCreateWithoutDepartmentInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type JournalLineCreateOrConnectWithoutDepartmentInput = {
+    where: JournalLineWhereUniqueInput
+    create: XOR<JournalLineCreateWithoutDepartmentInput, JournalLineUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type JournalLineCreateManyDepartmentInputEnvelope = {
+    data: JournalLineCreateManyDepartmentInput | JournalLineCreateManyDepartmentInput[]
     skipDuplicates?: boolean
   }
 
@@ -82751,6 +87458,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -82788,6 +87496,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -82822,6 +87531,7 @@ export namespace Prisma {
     parent?: DepartmentUpdateOneWithoutChildrenNestedInput
     users?: UserUpdateManyWithoutHomeDepartmentNestedInput
     costCentres?: CostCentreUpdateManyWithoutDepartmentNestedInput
+    journalLines?: JournalLineUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutChildrenInput = {
@@ -82835,6 +87545,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutHomeDepartmentNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutDepartmentNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUpsertWithWhereUniqueWithoutParentInput = {
@@ -82885,6 +87596,22 @@ export namespace Prisma {
     data: XOR<CostCentreUpdateManyMutationInput, CostCentreUncheckedUpdateManyWithoutDepartmentInput>
   }
 
+  export type JournalLineUpsertWithWhereUniqueWithoutDepartmentInput = {
+    where: JournalLineWhereUniqueInput
+    update: XOR<JournalLineUpdateWithoutDepartmentInput, JournalLineUncheckedUpdateWithoutDepartmentInput>
+    create: XOR<JournalLineCreateWithoutDepartmentInput, JournalLineUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type JournalLineUpdateWithWhereUniqueWithoutDepartmentInput = {
+    where: JournalLineWhereUniqueInput
+    data: XOR<JournalLineUpdateWithoutDepartmentInput, JournalLineUncheckedUpdateWithoutDepartmentInput>
+  }
+
+  export type JournalLineUpdateManyWithWhereWithoutDepartmentInput = {
+    where: JournalLineScalarWhereInput
+    data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyWithoutDepartmentInput>
+  }
+
   export type OrganizationCreateWithoutCostCentresInput = {
     id?: string
     code: string
@@ -82910,6 +87637,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -82947,6 +87675,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -82975,6 +87704,7 @@ export namespace Prisma {
     parent?: DepartmentCreateNestedOneWithoutChildrenInput
     children?: DepartmentCreateNestedManyWithoutParentInput
     users?: UserCreateNestedManyWithoutHomeDepartmentInput
+    journalLines?: JournalLineCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentUncheckedCreateWithoutCostCentresInput = {
@@ -82988,11 +87718,60 @@ export namespace Prisma {
     updatedAt?: Date | string
     children?: DepartmentUncheckedCreateNestedManyWithoutParentInput
     users?: UserUncheckedCreateNestedManyWithoutHomeDepartmentInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutDepartmentInput
   }
 
   export type DepartmentCreateOrConnectWithoutCostCentresInput = {
     where: DepartmentWhereUniqueInput
     create: XOR<DepartmentCreateWithoutCostCentresInput, DepartmentUncheckedCreateWithoutCostCentresInput>
+  }
+
+  export type JournalLineCreateWithoutCostCentreInput = {
+    id?: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    createdAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalLinesInput
+    entry: JournalEntryCreateNestedOneWithoutLinesInput
+    account: AccountCreateNestedOneWithoutJournalLinesInput
+    currency: CurrencyCreateNestedOneWithoutJournalLinesInput
+    project?: ProjectCreateNestedOneWithoutJournalLinesInput
+    department?: DepartmentCreateNestedOneWithoutJournalLinesInput
+    location?: LocationCreateNestedOneWithoutJournalLinesInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+  }
+
+  export type JournalLineUncheckedCreateWithoutCostCentreInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type JournalLineCreateOrConnectWithoutCostCentreInput = {
+    where: JournalLineWhereUniqueInput
+    create: XOR<JournalLineCreateWithoutCostCentreInput, JournalLineUncheckedCreateWithoutCostCentreInput>
+  }
+
+  export type JournalLineCreateManyCostCentreInputEnvelope = {
+    data: JournalLineCreateManyCostCentreInput | JournalLineCreateManyCostCentreInput[]
+    skipDuplicates?: boolean
   }
 
   export type OrganizationUpsertWithoutCostCentresInput = {
@@ -83031,6 +87810,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -83068,6 +87848,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -83102,6 +87883,7 @@ export namespace Prisma {
     parent?: DepartmentUpdateOneWithoutChildrenNestedInput
     children?: DepartmentUpdateManyWithoutParentNestedInput
     users?: UserUpdateManyWithoutHomeDepartmentNestedInput
+    journalLines?: JournalLineUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutCostCentresInput = {
@@ -83115,6 +87897,23 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     children?: DepartmentUncheckedUpdateManyWithoutParentNestedInput
     users?: UserUncheckedUpdateManyWithoutHomeDepartmentNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type JournalLineUpsertWithWhereUniqueWithoutCostCentreInput = {
+    where: JournalLineWhereUniqueInput
+    update: XOR<JournalLineUpdateWithoutCostCentreInput, JournalLineUncheckedUpdateWithoutCostCentreInput>
+    create: XOR<JournalLineCreateWithoutCostCentreInput, JournalLineUncheckedCreateWithoutCostCentreInput>
+  }
+
+  export type JournalLineUpdateWithWhereUniqueWithoutCostCentreInput = {
+    where: JournalLineWhereUniqueInput
+    data: XOR<JournalLineUpdateWithoutCostCentreInput, JournalLineUncheckedUpdateWithoutCostCentreInput>
+  }
+
+  export type JournalLineUpdateManyWithWhereWithoutCostCentreInput = {
+    where: JournalLineScalarWhereInput
+    data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyWithoutCostCentreInput>
   }
 
   export type OrganizationCreateWithoutProjectsInput = {
@@ -83142,6 +87941,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -83179,6 +87979,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -83194,6 +87995,54 @@ export namespace Prisma {
   export type OrganizationCreateOrConnectWithoutProjectsInput = {
     where: OrganizationWhereUniqueInput
     create: XOR<OrganizationCreateWithoutProjectsInput, OrganizationUncheckedCreateWithoutProjectsInput>
+  }
+
+  export type JournalLineCreateWithoutProjectInput = {
+    id?: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    createdAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalLinesInput
+    entry: JournalEntryCreateNestedOneWithoutLinesInput
+    account: AccountCreateNestedOneWithoutJournalLinesInput
+    currency: CurrencyCreateNestedOneWithoutJournalLinesInput
+    department?: DepartmentCreateNestedOneWithoutJournalLinesInput
+    costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
+    location?: LocationCreateNestedOneWithoutJournalLinesInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+  }
+
+  export type JournalLineUncheckedCreateWithoutProjectInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type JournalLineCreateOrConnectWithoutProjectInput = {
+    where: JournalLineWhereUniqueInput
+    create: XOR<JournalLineCreateWithoutProjectInput, JournalLineUncheckedCreateWithoutProjectInput>
+  }
+
+  export type JournalLineCreateManyProjectInputEnvelope = {
+    data: JournalLineCreateManyProjectInput | JournalLineCreateManyProjectInput[]
+    skipDuplicates?: boolean
   }
 
   export type OrganizationUpsertWithoutProjectsInput = {
@@ -83232,6 +88081,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -83269,6 +88119,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -83279,6 +88130,22 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type JournalLineUpsertWithWhereUniqueWithoutProjectInput = {
+    where: JournalLineWhereUniqueInput
+    update: XOR<JournalLineUpdateWithoutProjectInput, JournalLineUncheckedUpdateWithoutProjectInput>
+    create: XOR<JournalLineCreateWithoutProjectInput, JournalLineUncheckedCreateWithoutProjectInput>
+  }
+
+  export type JournalLineUpdateWithWhereUniqueWithoutProjectInput = {
+    where: JournalLineWhereUniqueInput
+    data: XOR<JournalLineUpdateWithoutProjectInput, JournalLineUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type JournalLineUpdateManyWithWhereWithoutProjectInput = {
+    where: JournalLineScalarWhereInput
+    data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyWithoutProjectInput>
   }
 
   export type OrganizationCreateWithoutFundingSourcesInput = {
@@ -83306,6 +88173,7 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -83343,6 +88211,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -83358,6 +88227,54 @@ export namespace Prisma {
   export type OrganizationCreateOrConnectWithoutFundingSourcesInput = {
     where: OrganizationWhereUniqueInput
     create: XOR<OrganizationCreateWithoutFundingSourcesInput, OrganizationUncheckedCreateWithoutFundingSourcesInput>
+  }
+
+  export type JournalLineCreateWithoutFundingSourceInput = {
+    id?: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    createdAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalLinesInput
+    entry: JournalEntryCreateNestedOneWithoutLinesInput
+    account: AccountCreateNestedOneWithoutJournalLinesInput
+    currency: CurrencyCreateNestedOneWithoutJournalLinesInput
+    project?: ProjectCreateNestedOneWithoutJournalLinesInput
+    department?: DepartmentCreateNestedOneWithoutJournalLinesInput
+    costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
+    location?: LocationCreateNestedOneWithoutJournalLinesInput
+  }
+
+  export type JournalLineUncheckedCreateWithoutFundingSourceInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type JournalLineCreateOrConnectWithoutFundingSourceInput = {
+    where: JournalLineWhereUniqueInput
+    create: XOR<JournalLineCreateWithoutFundingSourceInput, JournalLineUncheckedCreateWithoutFundingSourceInput>
+  }
+
+  export type JournalLineCreateManyFundingSourceInputEnvelope = {
+    data: JournalLineCreateManyFundingSourceInput | JournalLineCreateManyFundingSourceInput[]
+    skipDuplicates?: boolean
   }
 
   export type OrganizationUpsertWithoutFundingSourcesInput = {
@@ -83396,6 +88313,7 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -83433,6 +88351,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -83443,6 +88362,22 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput = {
+    where: JournalLineWhereUniqueInput
+    update: XOR<JournalLineUpdateWithoutFundingSourceInput, JournalLineUncheckedUpdateWithoutFundingSourceInput>
+    create: XOR<JournalLineCreateWithoutFundingSourceInput, JournalLineUncheckedCreateWithoutFundingSourceInput>
+  }
+
+  export type JournalLineUpdateWithWhereUniqueWithoutFundingSourceInput = {
+    where: JournalLineWhereUniqueInput
+    data: XOR<JournalLineUpdateWithoutFundingSourceInput, JournalLineUncheckedUpdateWithoutFundingSourceInput>
+  }
+
+  export type JournalLineUpdateManyWithWhereWithoutFundingSourceInput = {
+    where: JournalLineScalarWhereInput
+    data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyWithoutFundingSourceInput>
   }
 
   export type ExchangeRateCreateWithoutBaseCurrencyInput = {
@@ -83621,13 +88556,21 @@ export namespace Prisma {
 
   export type JournalLineCreateWithoutCurrencyInput = {
     id?: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutJournalLinesInput
     entry: JournalEntryCreateNestedOneWithoutLinesInput
     account: AccountCreateNestedOneWithoutJournalLinesInput
+    project?: ProjectCreateNestedOneWithoutJournalLinesInput
+    department?: DepartmentCreateNestedOneWithoutJournalLinesInput
+    costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
+    location?: LocationCreateNestedOneWithoutJournalLinesInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutCurrencyInput = {
@@ -83635,9 +88578,17 @@ export namespace Prisma {
     organizationId: string
     entryId: string
     accountId: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
     createdAt?: Date | string
   }
 
@@ -83963,6 +88914,7 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -84000,6 +88952,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -84064,6 +89017,10 @@ export namespace Prisma {
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsRequestedInput = {
@@ -84113,6 +89070,10 @@ export namespace Prisma {
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsRequestedInput = {
@@ -84167,6 +89128,10 @@ export namespace Prisma {
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsApprovedInput = {
@@ -84216,6 +89181,10 @@ export namespace Prisma {
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsApprovedInput = {
@@ -84293,6 +89262,7 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -84330,6 +89300,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -84400,6 +89371,10 @@ export namespace Prisma {
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsRequestedInput = {
@@ -84449,6 +89424,10 @@ export namespace Prisma {
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsApprovedInput = {
@@ -84509,6 +89488,10 @@ export namespace Prisma {
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsApprovedInput = {
@@ -84558,6 +89541,10 @@ export namespace Prisma {
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput = {
@@ -84701,6 +89688,7 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -84738,6 +89726,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -84791,6 +89780,7 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -84828,6 +89818,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -84866,6 +89857,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
     openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
@@ -84903,6 +89895,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
     openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
@@ -84997,6 +89990,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
     openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
@@ -85034,6 +90028,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
     openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -85118,6 +90113,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
     openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
@@ -85155,6 +90151,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
     openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
@@ -85352,23 +90349,39 @@ export namespace Prisma {
 
   export type JournalLineCreateWithoutAccountInput = {
     id?: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutJournalLinesInput
     entry: JournalEntryCreateNestedOneWithoutLinesInput
     currency: CurrencyCreateNestedOneWithoutJournalLinesInput
+    project?: ProjectCreateNestedOneWithoutJournalLinesInput
+    department?: DepartmentCreateNestedOneWithoutJournalLinesInput
+    costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
+    location?: LocationCreateNestedOneWithoutJournalLinesInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutAccountInput = {
     id?: string
     organizationId: string
     entryId: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
     currencyCode: string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
     createdAt?: Date | string
   }
 
@@ -85451,6 +90464,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
     openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
@@ -85488,6 +90502,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
     openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -85664,6 +90679,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
@@ -85701,6 +90717,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
@@ -85794,14 +90811,28 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
     postedAt?: Date | string | null
-    postedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
     transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
   }
 
@@ -85811,13 +90842,27 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
     transactionId?: string | null
-    postedAt?: Date | string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
   }
 
@@ -85868,6 +90913,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
@@ -85905,6 +90951,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -85990,6 +91037,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -86027,6 +91075,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -86217,6 +91266,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -86254,6 +91304,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -86446,6 +91497,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -86483,6 +91535,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -86673,6 +91726,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -86710,6 +91764,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -86902,6 +91957,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -86939,6 +91995,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -87025,25 +92082,784 @@ export namespace Prisma {
     create: XOR<TransactionCreateWithoutJournalEntriesInput, TransactionUncheckedCreateWithoutJournalEntriesInput>
   }
 
+  export type JournalEntryCreateWithoutAdjustedEntriesInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutAdjustedEntriesInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutAdjustedEntriesInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutAdjustedEntriesInput, JournalEntryUncheckedCreateWithoutAdjustedEntriesInput>
+  }
+
+  export type JournalEntryCreateWithoutAdjustingEntryInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutAdjustingEntryInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutAdjustingEntryInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutAdjustingEntryInput, JournalEntryUncheckedCreateWithoutAdjustingEntryInput>
+  }
+
+  export type JournalEntryCreateManyAdjustingEntryInputEnvelope = {
+    data: JournalEntryCreateManyAdjustingEntryInput | JournalEntryCreateManyAdjustingEntryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReversalReasonCodeCreateWithoutJournalEntriesInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    category: $Enums.ReversalReasonCategory
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutReversalReasonCodesInput
+  }
+
+  export type ReversalReasonCodeUncheckedCreateWithoutJournalEntriesInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    category: $Enums.ReversalReasonCategory
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReversalReasonCodeCreateOrConnectWithoutJournalEntriesInput = {
+    where: ReversalReasonCodeWhereUniqueInput
+    create: XOR<ReversalReasonCodeCreateWithoutJournalEntriesInput, ReversalReasonCodeUncheckedCreateWithoutJournalEntriesInput>
+  }
+
+  export type JournalEntryCreateWithoutReversingEntriesInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutReversingEntriesInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutReversingEntriesInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutReversingEntriesInput, JournalEntryUncheckedCreateWithoutReversingEntriesInput>
+  }
+
+  export type JournalEntryCreateWithoutReversedEntryInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutReversedEntryInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutReversedEntryInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutReversedEntryInput, JournalEntryUncheckedCreateWithoutReversedEntryInput>
+  }
+
+  export type JournalEntryCreateManyReversedEntryInputEnvelope = {
+    data: JournalEntryCreateManyReversedEntryInput | JournalEntryCreateManyReversedEntryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutJournalEntriesSubmittedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserUncheckedCreateWithoutJournalEntriesSubmittedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserCreateOrConnectWithoutJournalEntriesSubmittedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutJournalEntriesSubmittedInput, UserUncheckedCreateWithoutJournalEntriesSubmittedInput>
+  }
+
+  export type UserCreateWithoutJournalEntriesApprovedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserUncheckedCreateWithoutJournalEntriesApprovedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserCreateOrConnectWithoutJournalEntriesApprovedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutJournalEntriesApprovedInput, UserUncheckedCreateWithoutJournalEntriesApprovedInput>
+  }
+
+  export type UserCreateWithoutJournalEntriesPostedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserUncheckedCreateWithoutJournalEntriesPostedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserCreateOrConnectWithoutJournalEntriesPostedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutJournalEntriesPostedInput, UserUncheckedCreateWithoutJournalEntriesPostedInput>
+  }
+
+  export type UserCreateWithoutJournalEntriesReversedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+  }
+
+  export type UserUncheckedCreateWithoutJournalEntriesReversedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+  }
+
+  export type UserCreateOrConnectWithoutJournalEntriesReversedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutJournalEntriesReversedInput, UserUncheckedCreateWithoutJournalEntriesReversedInput>
+  }
+
   export type JournalLineCreateWithoutEntryInput = {
     id?: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
     createdAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutJournalLinesInput
     account: AccountCreateNestedOneWithoutJournalLinesInput
     currency: CurrencyCreateNestedOneWithoutJournalLinesInput
+    project?: ProjectCreateNestedOneWithoutJournalLinesInput
+    department?: DepartmentCreateNestedOneWithoutJournalLinesInput
+    costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
+    location?: LocationCreateNestedOneWithoutJournalLinesInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutEntryInput = {
     id?: string
     organizationId: string
     accountId: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
     currencyCode: string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
     createdAt?: Date | string
   }
 
@@ -87094,6 +92910,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -87131,6 +92948,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -87224,6 +93042,683 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type JournalEntryUpsertWithoutAdjustedEntriesInput = {
+    update: XOR<JournalEntryUpdateWithoutAdjustedEntriesInput, JournalEntryUncheckedUpdateWithoutAdjustedEntriesInput>
+    create: XOR<JournalEntryCreateWithoutAdjustedEntriesInput, JournalEntryUncheckedCreateWithoutAdjustedEntriesInput>
+    where?: JournalEntryWhereInput
+  }
+
+  export type JournalEntryUpdateToOneWithWhereWithoutAdjustedEntriesInput = {
+    where?: JournalEntryWhereInput
+    data: XOR<JournalEntryUpdateWithoutAdjustedEntriesInput, JournalEntryUncheckedUpdateWithoutAdjustedEntriesInput>
+  }
+
+  export type JournalEntryUpdateWithoutAdjustedEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutAdjustedEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUpsertWithWhereUniqueWithoutAdjustingEntryInput = {
+    where: JournalEntryWhereUniqueInput
+    update: XOR<JournalEntryUpdateWithoutAdjustingEntryInput, JournalEntryUncheckedUpdateWithoutAdjustingEntryInput>
+    create: XOR<JournalEntryCreateWithoutAdjustingEntryInput, JournalEntryUncheckedCreateWithoutAdjustingEntryInput>
+  }
+
+  export type JournalEntryUpdateWithWhereUniqueWithoutAdjustingEntryInput = {
+    where: JournalEntryWhereUniqueInput
+    data: XOR<JournalEntryUpdateWithoutAdjustingEntryInput, JournalEntryUncheckedUpdateWithoutAdjustingEntryInput>
+  }
+
+  export type JournalEntryUpdateManyWithWhereWithoutAdjustingEntryInput = {
+    where: JournalEntryScalarWhereInput
+    data: XOR<JournalEntryUpdateManyMutationInput, JournalEntryUncheckedUpdateManyWithoutAdjustingEntryInput>
+  }
+
+  export type ReversalReasonCodeUpsertWithoutJournalEntriesInput = {
+    update: XOR<ReversalReasonCodeUpdateWithoutJournalEntriesInput, ReversalReasonCodeUncheckedUpdateWithoutJournalEntriesInput>
+    create: XOR<ReversalReasonCodeCreateWithoutJournalEntriesInput, ReversalReasonCodeUncheckedCreateWithoutJournalEntriesInput>
+    where?: ReversalReasonCodeWhereInput
+  }
+
+  export type ReversalReasonCodeUpdateToOneWithWhereWithoutJournalEntriesInput = {
+    where?: ReversalReasonCodeWhereInput
+    data: XOR<ReversalReasonCodeUpdateWithoutJournalEntriesInput, ReversalReasonCodeUncheckedUpdateWithoutJournalEntriesInput>
+  }
+
+  export type ReversalReasonCodeUpdateWithoutJournalEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutReversalReasonCodesNestedInput
+  }
+
+  export type ReversalReasonCodeUncheckedUpdateWithoutJournalEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalEntryUpsertWithoutReversingEntriesInput = {
+    update: XOR<JournalEntryUpdateWithoutReversingEntriesInput, JournalEntryUncheckedUpdateWithoutReversingEntriesInput>
+    create: XOR<JournalEntryCreateWithoutReversingEntriesInput, JournalEntryUncheckedCreateWithoutReversingEntriesInput>
+    where?: JournalEntryWhereInput
+  }
+
+  export type JournalEntryUpdateToOneWithWhereWithoutReversingEntriesInput = {
+    where?: JournalEntryWhereInput
+    data: XOR<JournalEntryUpdateWithoutReversingEntriesInput, JournalEntryUncheckedUpdateWithoutReversingEntriesInput>
+  }
+
+  export type JournalEntryUpdateWithoutReversingEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutReversingEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUpsertWithWhereUniqueWithoutReversedEntryInput = {
+    where: JournalEntryWhereUniqueInput
+    update: XOR<JournalEntryUpdateWithoutReversedEntryInput, JournalEntryUncheckedUpdateWithoutReversedEntryInput>
+    create: XOR<JournalEntryCreateWithoutReversedEntryInput, JournalEntryUncheckedCreateWithoutReversedEntryInput>
+  }
+
+  export type JournalEntryUpdateWithWhereUniqueWithoutReversedEntryInput = {
+    where: JournalEntryWhereUniqueInput
+    data: XOR<JournalEntryUpdateWithoutReversedEntryInput, JournalEntryUncheckedUpdateWithoutReversedEntryInput>
+  }
+
+  export type JournalEntryUpdateManyWithWhereWithoutReversedEntryInput = {
+    where: JournalEntryScalarWhereInput
+    data: XOR<JournalEntryUpdateManyMutationInput, JournalEntryUncheckedUpdateManyWithoutReversedEntryInput>
+  }
+
+  export type UserUpsertWithoutJournalEntriesSubmittedInput = {
+    update: XOR<UserUpdateWithoutJournalEntriesSubmittedInput, UserUncheckedUpdateWithoutJournalEntriesSubmittedInput>
+    create: XOR<UserCreateWithoutJournalEntriesSubmittedInput, UserUncheckedCreateWithoutJournalEntriesSubmittedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutJournalEntriesSubmittedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutJournalEntriesSubmittedInput, UserUncheckedUpdateWithoutJournalEntriesSubmittedInput>
+  }
+
+  export type UserUpdateWithoutJournalEntriesSubmittedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutJournalEntriesSubmittedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUpsertWithoutJournalEntriesApprovedInput = {
+    update: XOR<UserUpdateWithoutJournalEntriesApprovedInput, UserUncheckedUpdateWithoutJournalEntriesApprovedInput>
+    create: XOR<UserCreateWithoutJournalEntriesApprovedInput, UserUncheckedCreateWithoutJournalEntriesApprovedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutJournalEntriesApprovedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutJournalEntriesApprovedInput, UserUncheckedUpdateWithoutJournalEntriesApprovedInput>
+  }
+
+  export type UserUpdateWithoutJournalEntriesApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutJournalEntriesApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUpsertWithoutJournalEntriesPostedInput = {
+    update: XOR<UserUpdateWithoutJournalEntriesPostedInput, UserUncheckedUpdateWithoutJournalEntriesPostedInput>
+    create: XOR<UserCreateWithoutJournalEntriesPostedInput, UserUncheckedCreateWithoutJournalEntriesPostedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutJournalEntriesPostedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutJournalEntriesPostedInput, UserUncheckedUpdateWithoutJournalEntriesPostedInput>
+  }
+
+  export type UserUpdateWithoutJournalEntriesPostedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutJournalEntriesPostedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUpsertWithoutJournalEntriesReversedInput = {
+    update: XOR<UserUpdateWithoutJournalEntriesReversedInput, UserUncheckedUpdateWithoutJournalEntriesReversedInput>
+    create: XOR<UserCreateWithoutJournalEntriesReversedInput, UserUncheckedCreateWithoutJournalEntriesReversedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutJournalEntriesReversedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutJournalEntriesReversedInput, UserUncheckedUpdateWithoutJournalEntriesReversedInput>
+  }
+
+  export type UserUpdateWithoutJournalEntriesReversedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutJournalEntriesReversedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+  }
+
   export type JournalLineUpsertWithWhereUniqueWithoutEntryInput = {
     where: JournalLineWhereUniqueInput
     update: XOR<JournalLineUpdateWithoutEntryInput, JournalLineUncheckedUpdateWithoutEntryInput>
@@ -87266,6 +93761,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -87303,6 +93799,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -87324,15 +93821,29 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
     postedAt?: Date | string | null
-    postedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
     period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
     transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
   }
 
   export type JournalEntryUncheckedCreateWithoutLinesInput = {
@@ -87342,13 +93853,27 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
     transactionId?: string | null
-    postedAt?: Date | string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutLinesInput = {
@@ -87450,6 +93975,179 @@ export namespace Prisma {
     create: XOR<CurrencyCreateWithoutJournalLinesInput, CurrencyUncheckedCreateWithoutJournalLinesInput>
   }
 
+  export type ProjectCreateWithoutJournalLinesInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    status?: $Enums.ProjectStatus
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutProjectsInput
+  }
+
+  export type ProjectUncheckedCreateWithoutJournalLinesInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    status?: $Enums.ProjectStatus
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProjectCreateOrConnectWithoutJournalLinesInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutJournalLinesInput, ProjectUncheckedCreateWithoutJournalLinesInput>
+  }
+
+  export type DepartmentCreateWithoutJournalLinesInput = {
+    id?: string
+    code: string
+    name: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutDepartmentsInput
+    parent?: DepartmentCreateNestedOneWithoutChildrenInput
+    children?: DepartmentCreateNestedManyWithoutParentInput
+    users?: UserCreateNestedManyWithoutHomeDepartmentInput
+    costCentres?: CostCentreCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type DepartmentUncheckedCreateWithoutJournalLinesInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    parentId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: DepartmentUncheckedCreateNestedManyWithoutParentInput
+    users?: UserUncheckedCreateNestedManyWithoutHomeDepartmentInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type DepartmentCreateOrConnectWithoutJournalLinesInput = {
+    where: DepartmentWhereUniqueInput
+    create: XOR<DepartmentCreateWithoutJournalLinesInput, DepartmentUncheckedCreateWithoutJournalLinesInput>
+  }
+
+  export type CostCentreCreateWithoutJournalLinesInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutCostCentresInput
+    department?: DepartmentCreateNestedOneWithoutCostCentresInput
+  }
+
+  export type CostCentreUncheckedCreateWithoutJournalLinesInput = {
+    id?: string
+    organizationId: string
+    departmentId?: string | null
+    code: string
+    name: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CostCentreCreateOrConnectWithoutJournalLinesInput = {
+    where: CostCentreWhereUniqueInput
+    create: XOR<CostCentreCreateWithoutJournalLinesInput, CostCentreUncheckedCreateWithoutJournalLinesInput>
+  }
+
+  export type LocationCreateWithoutJournalLinesInput = {
+    id?: string
+    code: string
+    name: string
+    type: $Enums.LocationType
+    isOwned?: boolean
+    permissionReference?: string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: string
+    isActive?: boolean
+    effectiveFrom?: Date | string | null
+    effectiveTo?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutLocationsInput
+    parent?: LocationCreateNestedOneWithoutChildrenInput
+    children?: LocationCreateNestedManyWithoutParentInput
+    users?: UserCreateNestedManyWithoutPrimaryLocationInput
+  }
+
+  export type LocationUncheckedCreateWithoutJournalLinesInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    type: $Enums.LocationType
+    isOwned?: boolean
+    permissionReference?: string | null
+    parentId?: string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: string
+    isActive?: boolean
+    effectiveFrom?: Date | string | null
+    effectiveTo?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: LocationUncheckedCreateNestedManyWithoutParentInput
+    users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
+  }
+
+  export type LocationCreateOrConnectWithoutJournalLinesInput = {
+    where: LocationWhereUniqueInput
+    create: XOR<LocationCreateWithoutJournalLinesInput, LocationUncheckedCreateWithoutJournalLinesInput>
+  }
+
+  export type FundingSourceCreateWithoutJournalLinesInput = {
+    id?: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description?: string | null
+    isRestricted?: boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutFundingSourcesInput
+  }
+
+  export type FundingSourceUncheckedCreateWithoutJournalLinesInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description?: string | null
+    isRestricted?: boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingSourceCreateOrConnectWithoutJournalLinesInput = {
+    where: FundingSourceWhereUniqueInput
+    create: XOR<FundingSourceCreateWithoutJournalLinesInput, FundingSourceUncheckedCreateWithoutJournalLinesInput>
+  }
+
   export type OrganizationUpsertWithoutJournalLinesInput = {
     update: XOR<OrganizationUpdateWithoutJournalLinesInput, OrganizationUncheckedUpdateWithoutJournalLinesInput>
     create: XOR<OrganizationCreateWithoutJournalLinesInput, OrganizationUncheckedCreateWithoutJournalLinesInput>
@@ -87487,6 +94185,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -87524,6 +94223,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -87551,15 +94251,29 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
     period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
     transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutLinesInput = {
@@ -87569,13 +94283,27 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     transactionId?: NullableStringFieldUpdateOperationsInput | string | null
-    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
   }
 
   export type AccountUpsertWithoutJournalLinesInput = {
@@ -87684,6 +94412,463 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
+  export type ProjectUpsertWithoutJournalLinesInput = {
+    update: XOR<ProjectUpdateWithoutJournalLinesInput, ProjectUncheckedUpdateWithoutJournalLinesInput>
+    create: XOR<ProjectCreateWithoutJournalLinesInput, ProjectUncheckedCreateWithoutJournalLinesInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutJournalLinesInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutJournalLinesInput, ProjectUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type ProjectUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutProjectsNestedInput
+  }
+
+  export type ProjectUncheckedUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DepartmentUpsertWithoutJournalLinesInput = {
+    update: XOR<DepartmentUpdateWithoutJournalLinesInput, DepartmentUncheckedUpdateWithoutJournalLinesInput>
+    create: XOR<DepartmentCreateWithoutJournalLinesInput, DepartmentUncheckedCreateWithoutJournalLinesInput>
+    where?: DepartmentWhereInput
+  }
+
+  export type DepartmentUpdateToOneWithWhereWithoutJournalLinesInput = {
+    where?: DepartmentWhereInput
+    data: XOR<DepartmentUpdateWithoutJournalLinesInput, DepartmentUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type DepartmentUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutDepartmentsNestedInput
+    parent?: DepartmentUpdateOneWithoutChildrenNestedInput
+    children?: DepartmentUpdateManyWithoutParentNestedInput
+    users?: UserUpdateManyWithoutHomeDepartmentNestedInput
+    costCentres?: CostCentreUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type DepartmentUncheckedUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: DepartmentUncheckedUpdateManyWithoutParentNestedInput
+    users?: UserUncheckedUpdateManyWithoutHomeDepartmentNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type CostCentreUpsertWithoutJournalLinesInput = {
+    update: XOR<CostCentreUpdateWithoutJournalLinesInput, CostCentreUncheckedUpdateWithoutJournalLinesInput>
+    create: XOR<CostCentreCreateWithoutJournalLinesInput, CostCentreUncheckedCreateWithoutJournalLinesInput>
+    where?: CostCentreWhereInput
+  }
+
+  export type CostCentreUpdateToOneWithWhereWithoutJournalLinesInput = {
+    where?: CostCentreWhereInput
+    data: XOR<CostCentreUpdateWithoutJournalLinesInput, CostCentreUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type CostCentreUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutCostCentresNestedInput
+    department?: DepartmentUpdateOneWithoutCostCentresNestedInput
+  }
+
+  export type CostCentreUncheckedUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LocationUpsertWithoutJournalLinesInput = {
+    update: XOR<LocationUpdateWithoutJournalLinesInput, LocationUncheckedUpdateWithoutJournalLinesInput>
+    create: XOR<LocationCreateWithoutJournalLinesInput, LocationUncheckedCreateWithoutJournalLinesInput>
+    where?: LocationWhereInput
+  }
+
+  export type LocationUpdateToOneWithWhereWithoutJournalLinesInput = {
+    where?: LocationWhereInput
+    data: XOR<LocationUpdateWithoutJournalLinesInput, LocationUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type LocationUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLocationTypeFieldUpdateOperationsInput | $Enums.LocationType
+    isOwned?: BoolFieldUpdateOperationsInput | boolean
+    permissionReference?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    effectiveFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutLocationsNestedInput
+    parent?: LocationUpdateOneWithoutChildrenNestedInput
+    children?: LocationUpdateManyWithoutParentNestedInput
+    users?: UserUpdateManyWithoutPrimaryLocationNestedInput
+  }
+
+  export type LocationUncheckedUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLocationTypeFieldUpdateOperationsInput | $Enums.LocationType
+    isOwned?: BoolFieldUpdateOperationsInput | boolean
+    permissionReference?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    effectiveFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: LocationUncheckedUpdateManyWithoutParentNestedInput
+    users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
+  }
+
+  export type FundingSourceUpsertWithoutJournalLinesInput = {
+    update: XOR<FundingSourceUpdateWithoutJournalLinesInput, FundingSourceUncheckedUpdateWithoutJournalLinesInput>
+    create: XOR<FundingSourceCreateWithoutJournalLinesInput, FundingSourceUncheckedCreateWithoutJournalLinesInput>
+    where?: FundingSourceWhereInput
+  }
+
+  export type FundingSourceUpdateToOneWithWhereWithoutJournalLinesInput = {
+    where?: FundingSourceWhereInput
+    data: XOR<FundingSourceUpdateWithoutJournalLinesInput, FundingSourceUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type FundingSourceUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutFundingSourcesNestedInput
+  }
+
+  export type FundingSourceUncheckedUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OrganizationCreateWithoutReversalReasonCodesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutReversalReasonCodesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutReversalReasonCodesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutReversalReasonCodesInput, OrganizationUncheckedCreateWithoutReversalReasonCodesInput>
+  }
+
+  export type JournalEntryCreateWithoutReversalReasonInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutReversalReasonInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutReversalReasonInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutReversalReasonInput, JournalEntryUncheckedCreateWithoutReversalReasonInput>
+  }
+
+  export type JournalEntryCreateManyReversalReasonInputEnvelope = {
+    data: JournalEntryCreateManyReversalReasonInput | JournalEntryCreateManyReversalReasonInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganizationUpsertWithoutReversalReasonCodesInput = {
+    update: XOR<OrganizationUpdateWithoutReversalReasonCodesInput, OrganizationUncheckedUpdateWithoutReversalReasonCodesInput>
+    create: XOR<OrganizationCreateWithoutReversalReasonCodesInput, OrganizationUncheckedCreateWithoutReversalReasonCodesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutReversalReasonCodesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutReversalReasonCodesInput, OrganizationUncheckedUpdateWithoutReversalReasonCodesInput>
+  }
+
+  export type OrganizationUpdateWithoutReversalReasonCodesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutReversalReasonCodesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput = {
+    where: JournalEntryWhereUniqueInput
+    update: XOR<JournalEntryUpdateWithoutReversalReasonInput, JournalEntryUncheckedUpdateWithoutReversalReasonInput>
+    create: XOR<JournalEntryCreateWithoutReversalReasonInput, JournalEntryUncheckedCreateWithoutReversalReasonInput>
+  }
+
+  export type JournalEntryUpdateWithWhereUniqueWithoutReversalReasonInput = {
+    where: JournalEntryWhereUniqueInput
+    data: XOR<JournalEntryUpdateWithoutReversalReasonInput, JournalEntryUncheckedUpdateWithoutReversalReasonInput>
+  }
+
+  export type JournalEntryUpdateManyWithWhereWithoutReversalReasonInput = {
+    where: JournalEntryScalarWhereInput
+    data: XOR<JournalEntryUpdateManyMutationInput, JournalEntryUncheckedUpdateManyWithoutReversalReasonInput>
+  }
+
   export type OrganizationCreateWithoutTransactionsInput = {
     id?: string
     code: string
@@ -87710,6 +94895,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -87747,6 +94933,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -87768,14 +94955,28 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
     postedAt?: Date | string | null
-    postedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
     period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
   }
 
@@ -87786,12 +94987,26 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
-    postedAt?: Date | string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
   }
 
@@ -87842,6 +95057,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -87879,6 +95095,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -87932,6 +95149,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -87969,6 +95187,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -88050,6 +95269,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -88087,6 +95307,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -88140,6 +95361,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -88177,6 +95399,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -88316,6 +95539,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -88353,6 +95577,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -88487,6 +95712,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
     accounts?: AccountCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
@@ -88524,6 +95750,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
     reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
     productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
     accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
     financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
@@ -88588,6 +95815,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutOrganizationMembershipsInput = {
@@ -88637,6 +95868,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutOrganizationMembershipsInput = {
@@ -88680,6 +95915,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
@@ -88717,6 +95953,7 @@ export namespace Prisma {
     fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
     masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
     productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
     financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -88787,6 +96024,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganizationMembershipsInput = {
@@ -88836,6 +96077,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type SecurityEventCreateWithoutAuditLogInput = {
@@ -89107,6 +96352,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -89156,6 +96405,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -89221,6 +96474,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -89270,6 +96527,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserCreateWithoutNotificationPreferencesInput = {
@@ -89319,6 +96580,10 @@ export namespace Prisma {
     updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationPreferencesInput = {
@@ -89368,6 +96633,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationPreferencesInput = {
@@ -89433,6 +96702,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationPreferencesInput = {
@@ -89482,6 +96755,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type OrganizationMembershipCreateManyUserInput = {
@@ -89717,6 +96994,114 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     effectiveDate?: Date | string | null
     expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JournalEntryCreateManySubmittedByInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JournalEntryCreateManyApprovedByInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JournalEntryCreateManyPostedByInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JournalEntryCreateManyReversedByInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -90173,6 +97558,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedByInput = {
@@ -90222,6 +97611,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCreatedByInput = {
@@ -90306,6 +97699,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedByInput = {
@@ -90355,6 +97752,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutUpdatedByInput = {
@@ -90488,6 +97889,354 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     effectiveDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalEntryUpdateWithoutSubmittedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutSubmittedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutSubmittedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalEntryUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalEntryUpdateWithoutPostedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutPostedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutPostedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalEntryUpdateWithoutReversedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutReversedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutReversedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -90913,6 +98662,17 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type ReversalReasonCodeCreateManyOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    category: $Enums.ReversalReasonCategory
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ProductServiceCreateManyOrganizationInput = {
     id?: string
     code: string
@@ -90994,11 +98754,23 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
     transactionId?: string | null
-    postedAt?: Date | string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -91007,10 +98779,18 @@ export namespace Prisma {
     id?: string
     entryId: string
     accountId: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
     currencyCode: string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
     createdAt?: Date | string
   }
 
@@ -91081,6 +98861,7 @@ export namespace Prisma {
     parent?: LocationUpdateOneWithoutChildrenNestedInput
     children?: LocationUpdateManyWithoutParentNestedInput
     users?: UserUpdateManyWithoutPrimaryLocationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateWithoutOrganizationInput = {
@@ -91100,6 +98881,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     children?: LocationUncheckedUpdateManyWithoutParentNestedInput
     users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateManyWithoutOrganizationInput = {
@@ -91130,6 +98912,7 @@ export namespace Prisma {
     children?: DepartmentUpdateManyWithoutParentNestedInput
     users?: UserUpdateManyWithoutHomeDepartmentNestedInput
     costCentres?: CostCentreUpdateManyWithoutDepartmentNestedInput
+    journalLines?: JournalLineUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutOrganizationInput = {
@@ -91143,6 +98926,7 @@ export namespace Prisma {
     children?: DepartmentUncheckedUpdateManyWithoutParentNestedInput
     users?: UserUncheckedUpdateManyWithoutHomeDepartmentNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutDepartmentNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateManyWithoutOrganizationInput = {
@@ -91164,6 +98948,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     department?: DepartmentUpdateOneWithoutCostCentresNestedInput
+    journalLines?: JournalLineUpdateManyWithoutCostCentreNestedInput
   }
 
   export type CostCentreUncheckedUpdateWithoutOrganizationInput = {
@@ -91175,6 +98960,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutCostCentreNestedInput
   }
 
   export type CostCentreUncheckedUpdateManyWithoutOrganizationInput = {
@@ -91199,6 +98985,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutOrganizationInput = {
@@ -91212,6 +98999,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateManyWithoutOrganizationInput = {
@@ -91238,6 +99026,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUpdateManyWithoutFundingSourceNestedInput
   }
 
   export type FundingSourceUncheckedUpdateWithoutOrganizationInput = {
@@ -91251,6 +99040,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutFundingSourceNestedInput
   }
 
   export type FundingSourceUncheckedUpdateManyWithoutOrganizationInput = {
@@ -91344,6 +99134,41 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReversalReasonCodeUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalEntries?: JournalEntryUpdateManyWithoutReversalReasonNestedInput
+  }
+
+  export type ReversalReasonCodeUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutReversalReasonNestedInput
+  }
+
+  export type ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumReversalReasonCategoryFieldUpdateOperationsInput | $Enums.ReversalReasonCategory
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -91595,14 +99420,28 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
     transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
   }
 
@@ -91612,13 +99451,27 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     transactionId?: NullableStringFieldUpdateOperationsInput | string | null
-    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
   }
 
@@ -91628,34 +99481,62 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     transactionId?: NullableStringFieldUpdateOperationsInput | string | null
-    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JournalLineUpdateWithoutOrganizationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     entry?: JournalEntryUpdateOneRequiredWithoutLinesNestedInput
     account?: AccountUpdateOneRequiredWithoutJournalLinesNestedInput
     currency?: CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput
+    project?: ProjectUpdateOneWithoutJournalLinesNestedInput
+    department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
+    costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
+    location?: LocationUpdateOneWithoutJournalLinesNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutOrganizationInput = {
     id?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -91663,10 +99544,18 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -91822,6 +99711,25 @@ export namespace Prisma {
     deletedAt?: Date | string | null
   }
 
+  export type JournalLineCreateManyLocationInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    fundingSourceId?: string | null
+    createdAt?: Date | string
+  }
+
   export type LocationUpdateWithoutParentInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
@@ -91839,6 +99747,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutLocationsNestedInput
     children?: LocationUpdateManyWithoutParentNestedInput
     users?: UserUpdateManyWithoutPrimaryLocationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateWithoutParentInput = {
@@ -91858,6 +99767,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     children?: LocationUncheckedUpdateManyWithoutParentNestedInput
     users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateManyWithoutParentInput = {
@@ -91924,6 +99834,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPrimaryLocationInput = {
@@ -91973,6 +99887,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutPrimaryLocationInput = {
@@ -92008,6 +99926,63 @@ export namespace Prisma {
     updatedById?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type JournalLineUpdateWithoutLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput
+    entry?: JournalEntryUpdateOneRequiredWithoutLinesNestedInput
+    account?: AccountUpdateOneRequiredWithoutJournalLinesNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput
+    project?: ProjectUpdateOneWithoutJournalLinesNestedInput
+    department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
+    costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+  }
+
+  export type JournalLineUncheckedUpdateWithoutLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DepartmentCreateManyParentInput = {
@@ -92066,6 +100041,25 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type JournalLineCreateManyDepartmentInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
+    createdAt?: Date | string
+  }
+
   export type DepartmentUpdateWithoutParentInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
@@ -92077,6 +100071,7 @@ export namespace Prisma {
     children?: DepartmentUpdateManyWithoutParentNestedInput
     users?: UserUpdateManyWithoutHomeDepartmentNestedInput
     costCentres?: CostCentreUpdateManyWithoutDepartmentNestedInput
+    journalLines?: JournalLineUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateWithoutParentInput = {
@@ -92090,6 +100085,7 @@ export namespace Prisma {
     children?: DepartmentUncheckedUpdateManyWithoutParentNestedInput
     users?: UserUncheckedUpdateManyWithoutHomeDepartmentNestedInput
     costCentres?: CostCentreUncheckedUpdateManyWithoutDepartmentNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
   export type DepartmentUncheckedUpdateManyWithoutParentInput = {
@@ -92149,6 +100145,10 @@ export namespace Prisma {
     updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHomeDepartmentInput = {
@@ -92198,6 +100198,10 @@ export namespace Prisma {
     updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
     changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutHomeDepartmentInput = {
@@ -92244,6 +100248,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutCostCentresNestedInput
+    journalLines?: JournalLineUpdateManyWithoutCostCentreNestedInput
   }
 
   export type CostCentreUncheckedUpdateWithoutDepartmentInput = {
@@ -92255,6 +100260,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutCostCentreNestedInput
   }
 
   export type CostCentreUncheckedUpdateManyWithoutDepartmentInput = {
@@ -92266,6 +100272,291 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineUpdateWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput
+    entry?: JournalEntryUpdateOneRequiredWithoutLinesNestedInput
+    account?: AccountUpdateOneRequiredWithoutJournalLinesNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput
+    project?: ProjectUpdateOneWithoutJournalLinesNestedInput
+    costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
+    location?: LocationUpdateOneWithoutJournalLinesNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+  }
+
+  export type JournalLineUncheckedUpdateWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineCreateManyCostCentreInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type JournalLineUpdateWithoutCostCentreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput
+    entry?: JournalEntryUpdateOneRequiredWithoutLinesNestedInput
+    account?: AccountUpdateOneRequiredWithoutJournalLinesNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput
+    project?: ProjectUpdateOneWithoutJournalLinesNestedInput
+    department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
+    location?: LocationUpdateOneWithoutJournalLinesNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+  }
+
+  export type JournalLineUncheckedUpdateWithoutCostCentreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutCostCentreInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineCreateManyProjectInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type JournalLineUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput
+    entry?: JournalEntryUpdateOneRequiredWithoutLinesNestedInput
+    account?: AccountUpdateOneRequiredWithoutJournalLinesNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput
+    department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
+    costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
+    location?: LocationUpdateOneWithoutJournalLinesNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+  }
+
+  export type JournalLineUncheckedUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineCreateManyFundingSourceInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type JournalLineUpdateWithoutFundingSourceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput
+    entry?: JournalEntryUpdateOneRequiredWithoutLinesNestedInput
+    account?: AccountUpdateOneRequiredWithoutJournalLinesNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput
+    project?: ProjectUpdateOneWithoutJournalLinesNestedInput
+    department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
+    costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
+    location?: LocationUpdateOneWithoutJournalLinesNestedInput
+  }
+
+  export type JournalLineUncheckedUpdateWithoutFundingSourceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutFundingSourceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ExchangeRateCreateManyBaseCurrencyInput = {
@@ -92335,9 +100626,17 @@ export namespace Prisma {
     organizationId: string
     entryId: string
     accountId: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
     createdAt?: Date | string
   }
 
@@ -92529,13 +100828,21 @@ export namespace Prisma {
 
   export type JournalLineUpdateWithoutCurrencyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput
     entry?: JournalEntryUpdateOneRequiredWithoutLinesNestedInput
     account?: AccountUpdateOneRequiredWithoutJournalLinesNestedInput
+    project?: ProjectUpdateOneWithoutJournalLinesNestedInput
+    department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
+    costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
+    location?: LocationUpdateOneWithoutJournalLinesNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutCurrencyInput = {
@@ -92543,9 +100850,17 @@ export namespace Prisma {
     organizationId?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -92554,9 +100869,17 @@ export namespace Prisma {
     organizationId?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -92655,10 +100978,18 @@ export namespace Prisma {
     id?: string
     organizationId: string
     entryId: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
     currencyCode: string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
     createdAt?: Date | string
   }
 
@@ -92814,23 +101145,39 @@ export namespace Prisma {
 
   export type JournalLineUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput
     entry?: JournalEntryUpdateOneRequiredWithoutLinesNestedInput
     currency?: CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput
+    project?: ProjectUpdateOneWithoutJournalLinesNestedInput
+    department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
+    costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
+    location?: LocationUpdateOneWithoutJournalLinesNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -92838,10 +101185,18 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     entryId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -92910,11 +101265,23 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
     transactionId?: string | null
-    postedAt?: Date | string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -93002,14 +101369,28 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
     transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
   }
 
@@ -93019,13 +101400,27 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     transactionId?: NullableStringFieldUpdateOperationsInput | string | null
-    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
   }
 
@@ -93035,45 +101430,309 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     transactionId?: NullableStringFieldUpdateOperationsInput | string | null
-    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalEntryCreateManyAdjustingEntryInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JournalEntryCreateManyReversedEntryInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type JournalLineCreateManyEntryInput = {
     id?: string
     organizationId: string
     accountId: string
+    lineNumber: number
+    description?: string | null
     debit?: Decimal | DecimalJsLike | number | string
     credit?: Decimal | DecimalJsLike | number | string
     currencyCode: string
-    description?: string | null
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
     createdAt?: Date | string
+  }
+
+  export type JournalEntryUpdateWithoutAdjustingEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutAdjustingEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutAdjustingEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalEntryUpdateWithoutReversedEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutReversedEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutReversedEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JournalLineUpdateWithoutEntryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput
     account?: AccountUpdateOneRequiredWithoutJournalLinesNestedInput
     currency?: CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput
+    project?: ProjectUpdateOneWithoutJournalLinesNestedInput
+    department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
+    costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
+    location?: LocationUpdateOneWithoutJournalLinesNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutEntryInput = {
     id?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -93081,11 +101740,133 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     organizationId?: StringFieldUpdateOperationsInput | string
     accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     currencyCode?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalEntryCreateManyReversalReasonInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JournalEntryUpdateWithoutReversalReasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutReversalReasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateManyWithoutReversalReasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JournalEntryCreateManyTransactionInput = {
@@ -93095,10 +101876,22 @@ export namespace Prisma {
     type?: $Enums.JournalEntryType
     status?: $Enums.JournalEntryStatus
     source?: $Enums.JournalSource
+    number?: string | null
     reference?: string | null
     description?: string | null
-    postedAt?: Date | string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -93108,14 +101901,28 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
     period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
   }
 
@@ -93126,12 +101933,26 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
   }
 
@@ -93142,10 +101963,22 @@ export namespace Prisma {
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
     status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
     source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

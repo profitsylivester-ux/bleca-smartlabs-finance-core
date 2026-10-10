@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { PrismaClient } from '../src/generated/prisma/client';
 import { hashPassword } from '../src/lib/auth/password';
-import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, CHART_OF_ACCOUNTS_PDF7, type AccountSeed } from './seed-data';
+import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, CHART_OF_ACCOUNTS_PDF7, REVERSAL_REASON_CODES, type AccountSeed } from './seed-data';
 
 /**
  * Idempotent seed.
@@ -192,6 +192,29 @@ async function seedChartOfAccounts(orgId: string) {
   return CHART_OF_ACCOUNTS_PDF7.length;
 }
 
+async function seedReversalReasonCodes(orgId: string) {
+  for (const rc of REVERSAL_REASON_CODES) {
+    await prisma.reversalReasonCode.upsert({
+      where: { organizationId_code: { organizationId: orgId, code: rc.code } },
+      create: {
+        organizationId: orgId,
+        code: rc.code,
+        name: rc.name,
+        description: rc.description,
+        category: rc.category,
+        isActive: true,
+      },
+      update: {
+        name: rc.name,
+        description: rc.description,
+        category: rc.category,
+        isActive: true,
+      },
+    });
+  }
+  return REVERSAL_REASON_CODES.length;
+}
+
 async function seedCeo(orgId: string) {
   const email = process.env.SEED_CEO_EMAIL?.trim();
   const password = process.env.SEED_CEO_PASSWORD;
@@ -280,6 +303,9 @@ async function main() {
 
   const coaCount = await seedChartOfAccounts(org.id);
   console.log(`  chart of accounts  ${coaCount} accounts (PDF §7)`);
+
+  const rrcCount = await seedReversalReasonCodes(org.id);
+  console.log(`  reversal reasons  ${rrcCount} codes`);
 
   const ceo = await seedCeo(org.id);
   console.log(`  CEO account     ${ceo.message}`);

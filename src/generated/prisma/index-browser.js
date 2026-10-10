@@ -574,11 +574,23 @@ exports.Prisma.JournalEntryScalarFieldEnum = {
   type: 'type',
   status: 'status',
   source: 'source',
+  number: 'number',
   reference: 'reference',
   description: 'description',
   transactionId: 'transactionId',
-  postedAt: 'postedAt',
+  adjustingEntryId: 'adjustingEntryId',
+  reversalReasonId: 'reversalReasonId',
+  reversedEntryId: 'reversedEntryId',
+  submittedById: 'submittedById',
+  submittedAt: 'submittedAt',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
   postedById: 'postedById',
+  postedAt: 'postedAt',
+  reversedById: 'reversedById',
+  reversedAt: 'reversedAt',
+  voidedById: 'voidedById',
+  voidedAt: 'voidedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -588,11 +600,31 @@ exports.Prisma.JournalLineScalarFieldEnum = {
   organizationId: 'organizationId',
   entryId: 'entryId',
   accountId: 'accountId',
+  lineNumber: 'lineNumber',
+  description: 'description',
   debit: 'debit',
   credit: 'credit',
   currencyCode: 'currencyCode',
-  description: 'description',
+  baseAmount: 'baseAmount',
+  fxRate: 'fxRate',
+  projectId: 'projectId',
+  departmentId: 'departmentId',
+  costCentreId: 'costCentreId',
+  locationId: 'locationId',
+  fundingSourceId: 'fundingSourceId',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.ReversalReasonCodeScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.TransactionScalarFieldEnum = {
@@ -1126,6 +1158,28 @@ exports.JournalSource = exports.$Enums.JournalSource = {
   IMPORT: 'IMPORT'
 };
 
+exports.ReversalReasonCategory = exports.$Enums.ReversalReasonCategory = {
+  DATA_ENTRY_ERROR: 'DATA_ENTRY_ERROR',
+  DUPLICATE: 'DUPLICATE',
+  MISCLASSIFICATION: 'MISCLASSIFICATION',
+  WRONG_AMOUNT: 'WRONG_AMOUNT',
+  WRONG_DATE: 'WRONG_DATE',
+  WRONG_PARTY: 'WRONG_PARTY',
+  CURRENCY_VARIANCE: 'CURRENCY_VARIANCE',
+  BANK_FEE: 'BANK_FEE',
+  RETURNED_PAYMENT: 'RETURNED_PAYMENT',
+  FX_VARIANCE: 'FX_VARIANCE',
+  SUPPLIER_CREDIT: 'SUPPLIER_CREDIT',
+  SYSTEM_CORRECTION: 'SYSTEM_CORRECTION',
+  PERIOD_MISALLOCATION: 'PERIOD_MISALLOCATION',
+  EARLY_PAYMENT_RECEIVED: 'EARLY_PAYMENT_RECEIVED',
+  LATE_PAYMENT: 'LATE_PAYMENT',
+  GOODWILL: 'GOODWILL',
+  WRITE_OFF: 'WRITE_OFF',
+  YEAR_END: 'YEAR_END',
+  OTHER: 'OTHER'
+};
+
 exports.TransactionStatus = exports.$Enums.TransactionStatus = {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED',
@@ -1329,6 +1383,7 @@ exports.Prisma.ModelName = {
   AccountBalanceSnapshot: 'AccountBalanceSnapshot',
   JournalEntry: 'JournalEntry',
   JournalLine: 'JournalLine',
+  ReversalReasonCode: 'ReversalReasonCode',
   Transaction: 'Transaction',
   Budget: 'Budget',
   BudgetLine: 'BudgetLine',

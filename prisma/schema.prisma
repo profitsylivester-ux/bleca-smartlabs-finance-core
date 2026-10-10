@@ -421,6 +421,29 @@ enum JournalSource {
   IMPORT
 }
 
+/// Reversal/Adjustment reason code categories (PDF §9, §62).
+enum ReversalReasonCategory {
+  DATA_ENTRY_ERROR
+  DUPLICATE
+  MISCLASSIFICATION
+  WRONG_AMOUNT
+  WRONG_DATE
+  WRONG_PARTY
+  CURRENCY_VARIANCE
+  BANK_FEE
+  RETURNED_PAYMENT
+  FX_VARIANCE
+  SUPPLIER_CREDIT
+  SYSTEM_CORRECTION
+  PERIOD_MISALLOCATION
+  EARLY_PAYMENT_RECEIVED
+  LATE_PAYMENT
+  GOODWILL
+  WRITE_OFF
+  YEAR_END
+  OTHER
+}
+
 enum TransactionStatus {
   DRAFT
   SUBMITTED
@@ -678,6 +701,10 @@ model User {
   updatedUsers            User[]                  @relation("UserUpdatedBy")
   changeRequestsRequested MasterDataChangeRequest[] @relation("ChangeRequestRequestedBy")
   changeRequestsApproved  MasterDataChangeRequest[] @relation("ChangeRequestApprovedBy")
+  journalEntriesSubmitted JournalEntry[] @relation("JournalEntrySubmittedBy")
+  journalEntriesApproved  JournalEntry[] @relation("JournalEntryApprovedBy")
+  journalEntriesPosted    JournalEntry[] @relation("JournalEntryPostedBy")
+  journalEntriesReversed  JournalEntry[] @relation("JournalEntryReversedBy")
 
   @@index([status, isActive])
   @@index([primaryLocationId])
@@ -1020,8 +1047,9 @@ model Organization {
   projects      Project[]
   fundingSources FundingSource[]
   masterDataChangeRequests MasterDataChangeRequest[]
-  reasonCodes   ReasonCode[]
-  productsServices ProductService[]
+  reasonCodes        ReasonCode[]
+  reversalReasonCodes ReversalReasonCode[]
+  productsServices   ProductService[]
   accounts      Account[]
   financialPeriods FinancialPeriod[]
   openingBalances OpeningBalance[]
@@ -1056,7 +1084,8 @@ model Location {
   createdAt            DateTime     @default(now()) @map("created_at")
   updatedAt            DateTime     @updatedAt @map("updated_at")
 
-  users User[] @relation("UserPrimaryLocation")
+  users            User[]         @relation("UserPrimaryLocation")
+  journalLines     JournalLine[]
 
   @@unique([organizationId, code])
   @@index([type, isActive])
@@ -1077,8 +1106,9 @@ model Department {
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
 
-  users      User[]       @relation("UserHomeDepartment")
-  costCentres CostCentre[]
+  users          User[]       @relation("UserHomeDepartment")
+  costCentres    CostCentre[]
+  journalLines   JournalLine[]
 
   @@unique([organizationId, code])
   @@index([parentId])
@@ -1097,6 +1127,8 @@ model CostCentre {
   isActive       Boolean      @default(true) @map("is_active")
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  journalLines JournalLine[]
 
   @@unique([organizationId, code])
   @@index([departmentId])
@@ -1117,6 +1149,8 @@ model Project {
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
 
+  journalLines JournalLine[]
+
   @@unique([organizationId, code])
   @@index([status, isActive])
   @@map("projects")
@@ -1135,6 +1169,8 @@ model FundingSource {
   isActive       Boolean           @default(true) @map("is_active")
   createdAt      DateTime          @default(now()) @map("created_at")
   updatedAt      DateTime          @updatedAt @map("updated_at")
+
+  journalLines JournalLine[]
 
   @@unique([organizationId, code])
   @@index([type, isActive])
@@ -1376,51 +1412,115 @@ model AccountBalanceSnapshot {
   @@map("account_balance_snapshots")
 }
 
-/// Minimal JournalEntry for M3 period-lock trigger (expanded in M4).
+/// JournalEntry — M4 double-entry core.
 model JournalEntry {
-  id             String              @id @default(cuid())
-  organizationId String              @map("organization_id")
-  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  periodId       String              @map("period_id")
-  period         FinancialPeriod     @relation(fields: [periodId], references: [id])
-  type           JournalEntryType    @default(STANDARD)
-  status         JournalEntryStatus  @default(DRAFT)
-  source         JournalSource       @default(MANUAL)
-  reference      String?
-  description  String?
-  transactionId  String?             @map("transaction_id")
-  transaction    Transaction?        @relation(fields: [transactionId], references: [id])
-  postedAt       DateTime?           @map("posted_at")
-  postedById     String?             @map("posted_by_id")
-  createdAt      DateTime            @default(now()) @map("created_at")
-  updatedAt      DateTime            @updatedAt @map("updated_at")
+  id                 String              @id @default(cuid())
+  organizationId     String              @map("organization_id")
+  organization       Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  periodId           String              @map("period_id")
+  period             FinancialPeriod     @relation(fields: [periodId], references: [id])
+  type               JournalEntryType    @default(STANDARD)
+  status             JournalEntryStatus  @default(DRAFT)
+  source             JournalSource       @default(MANUAL)
+  number             String?             // allocated on post
+  reference          String?
+  description        String?
+  transactionId      String?             @map("transaction_id")
+  transaction        Transaction?        @relation(fields: [transactionId], references: [id])
+  adjustingEntryId   String?             @map("adjusting_entry_id")
+  adjustingEntry     JournalEntry?       @relation("JournalEntryAdjustments", fields: [adjustingEntryId], references: [id])
+  adjustedEntries    JournalEntry[]      @relation("JournalEntryAdjustments")
+  reversalReasonId   String?             @map("reversal_reason_id")
+  reversalReason     ReversalReasonCode? @relation(fields: [reversalReasonId], references: [id])
+  reversedEntryId    String?             @map("reversed_entry_id")
+  reversedEntry      JournalEntry?       @relation("JournalEntryReversals", fields: [reversedEntryId], references: [id])
+  reversingEntries   JournalEntry[]      @relation("JournalEntryReversals")
+  submittedById      String?             @map("submitted_by_id")
+  submittedBy        User?               @relation("JournalEntrySubmittedBy", fields: [submittedById], references: [id])
+  submittedAt        DateTime?           @map("submitted_at")
+  approvedById       String?             @map("approved_by_id")
+  approvedBy         User?               @relation("JournalEntryApprovedBy", fields: [approvedById], references: [id])
+  approvedAt         DateTime?           @map("approved_at")
+  postedById         String?             @map("posted_by_id")
+  postedBy           User?               @relation("JournalEntryPostedBy", fields: [postedById], references: [id])
+  postedAt           DateTime?           @map("posted_at")
+  reversedById       String?             @map("reversed_by_id")
+  reversedBy         User?               @relation("JournalEntryReversedBy", fields: [reversedById], references: [id])
+  reversedAt         DateTime?           @map("reversed_at")
+  voidedById         String?             @map("voided_by_id")
+  voidedAt           DateTime?           @map("voided_at")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
 
-  lines          JournalLine[]
+  lines              JournalLine[]
 
+  @@unique([organizationId, number])
   @@index([periodId, status])
   @@index([transactionId])
+  @@index([adjustingEntryId])
+  @@index([reversedEntryId])
+  @@index([reversalReasonId])
   @@map("journal_entries")
 }
 
-/// Minimal JournalLine for M3 period-lock trigger (expanded in M4).
+/// JournalLine — M4 double-entry core. Every line belongs to exactly one entry.
 model JournalLine {
-  id             String        @id @default(cuid())
-  organizationId String        @map("organization_id")
-  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  entryId        String        @map("entry_id")
-  entry          JournalEntry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
-  accountId      String        @map("account_id")
-  account        Account       @relation(fields: [accountId], references: [id])
-  debit          Decimal       @default(0) @db.Decimal(20, 6)
-  credit         Decimal       @default(0) @db.Decimal(20, 6)
-  currencyCode   String        @db.Char(3) @map("currency_code")
-  currency       Currency      @relation(fields: [currencyCode], references: [code])
-  description  String?
-  createdAt      DateTime      @default(now()) @map("created_at")
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  entryId        String       @map("entry_id")
+  entry          JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  accountId      String       @map("account_id")
+  account        Account      @relation(fields: [accountId], references: [id])
+  lineNumber     Int          @map("line_number")
+  description    String?
+  debit          Decimal      @default(0) @db.Decimal(20, 6)
+  credit         Decimal      @default(0) @db.Decimal(20, 6)
+  currencyCode   String       @db.Char(3) @map("currency_code")
+  currency       Currency     @relation(fields: [currencyCode], references: [code])
+  baseAmount     Decimal      @db.Decimal(20, 6) @map("base_amount")
+  fxRate         Decimal?     @db.Decimal(20, 10) @map("fx_rate")
+  projectId      String?      @map("project_id")
+  project        Project?     @relation(fields: [projectId], references: [id])
+  departmentId   String?      @map("department_id")
+  department     Department?  @relation(fields: [departmentId], references: [id])
+  costCentreId   String?      @map("cost_centre_id")
+  costCentre     CostCentre?  @relation(fields: [costCentreId], references: [id])
+  locationId     String?      @map("location_id")
+  location       Location?    @relation(fields: [locationId], references: [id])
+  fundingSourceId String?     @map("funding_source_id")
+  fundingSource  FundingSource? @relation(fields: [fundingSourceId], references: [id])
+  createdAt      DateTime     @default(now()) @map("created_at")
 
   @@index([entryId])
   @@index([accountId])
+  @@index([projectId])
+  @@index([departmentId])
+  @@index([costCentreId])
+  @@index([locationId])
+  @@index([fundingSourceId])
+  @@unique([entryId, lineNumber])
   @@map("journal_lines")
+}
+
+/// Reversal reason codes — seeded reference data for reversal/adjustment audit trail.
+model ReversalReasonCode {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code           String
+  name           String
+  description    String?
+  category       ReversalReasonCategory
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  journalEntries JournalEntry[]
+
+  @@unique([organizationId, code])
+  @@index([category, isActive])
+  @@map("reversal_reason_codes")
 }
 
 /// Minimal Transaction for M3 period-lock trigger (expanded in M5).

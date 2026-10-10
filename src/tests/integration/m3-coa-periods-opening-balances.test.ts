@@ -309,16 +309,17 @@ describe('M3 Task 1: Period Lock Trigger', () => {
       },
     });
 
-    await prisma.journalLine.create({
-      data: {
-        organizationId: orgId,
-        entryId: entry.id,
-        accountId: testAccountId,
-        debit: 100,
-        credit: 0,
-        currencyCode: 'TZS',
-      },
-    });
+    // Insert both lines in a single multi-row INSERT so the AFTER INSERT trigger
+    // sees a balanced entry (debits=credits) after the statement completes
+    await prisma.$executeRawUnsafe(
+      `INSERT INTO journal_lines (id, organization_id, entry_id, account_id, line_number, debit, credit, currency_code, base_amount, created_at)
+       VALUES
+         (gen_random_uuid(), $1, $2, $3, 1, 100, 0, 'TZS', 100, now()),
+         (gen_random_uuid(), $1, $2, $3, 2, 0, 100, 'TZS', 100, now())`,
+      orgId,
+      entry.id,
+      testAccountId,
+    );
 
     const tx = await prisma.$executeRawUnsafe(
       `INSERT INTO transactions (id, organization_id, status, date, created_at, updated_at)
