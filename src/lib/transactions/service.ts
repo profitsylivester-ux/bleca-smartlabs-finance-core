@@ -28,7 +28,7 @@ interface CreateInput {
 
 interface TransactionRow {
   id: string;
-  status: string;
+  status: string | null;
   date: Date;
   description?: string;
   reference?: string;
@@ -308,7 +308,7 @@ export class TransactionService {
       scope: `POST /api/v1/transactions/${id}/submit`,
       actorId: actor.userId,
       body: { reason, evidenceDocumentId },
-      handler: async (tx: Tx) => this._doSubmit(tx, id, organizationId, actor, reason, evidenceDocumentId),
+      handler: async (tx: Tx) => { const r = await this._doSubmit(tx, id, organizationId, actor, reason, evidenceDocumentId); return { status: 200, body: r }; },
     });
 
     if (outcome.kind === 'REPLAYED') {
@@ -377,7 +377,7 @@ export class TransactionService {
       scope: `POST /api/v1/transactions/${id}/approve`,
       actorId: actor.userId,
       body: {},
-      handler: async (tx: Tx) => this._doAction(tx, id, organizationId, actor, 'APPROVED'),
+      handler: async (tx: Tx) => { const r = await this._doAction(tx, id, organizationId, actor, 'APPROVED'); return { status: 200, body: r }; },
     });
 
     if (outcome.kind === 'REPLAYED') {
