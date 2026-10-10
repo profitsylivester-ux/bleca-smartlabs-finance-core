@@ -8,6 +8,9 @@ let orgId: string;
 beforeAll(async () => {
   await seedTestFixtures(prisma);
 
+  // Clean up any journal data left by previous test files in the suite
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE journal_lines, journal_entries RESTART IDENTITY CASCADE`);
+
   const org = await prisma.organization.findFirstOrThrow({
     where: { code: 'BLECA' },
     select: { id: true },
@@ -20,6 +23,34 @@ afterAll(async () => {
 });
 
 describe('M4 Double-Entry Accounting', () => {
+  let lockedPeriodId: string;
+
+  beforeAll(async () => {
+    // Ensure a LOCKED period exists for the locked-period test
+    // (previous test files may have reopened the fixture-locked period)
+    const period = await prisma.financialPeriod.findFirst({
+      where: { organizationId: orgId, status: 'LOCKED' },
+      select: { id: true },
+    });
+    if (period) {
+      lockedPeriodId = period.id;
+    } else {
+      // Lock the first monthly period
+      const firstPeriod = await prisma.financialPeriod.findFirst({
+        where: { organizationId: orgId, type: 'MONTHLY' },
+        orderBy: { startDate: 'asc' },
+        select: { id: true },
+      });
+      if (firstPeriod) {
+        await prisma.financialPeriod.update({
+          where: { id: firstPeriod.id },
+          data: { status: 'LOCKED', lockedAt: new Date() },
+        });
+        lockedPeriodId = firstPeriod.id;
+      }
+    }
+  });
+
   it('unbalanced journal entry cannot post', async () => {
     const entry = await prisma.journalEntry.create({
       data: {
@@ -43,15 +74,10 @@ describe('M4 Double-Entry Accounting', () => {
   });
 
   it('locked-period posting rejected by DB trigger', async () => {
-    const lockedPeriod = await prisma.financialPeriod.findFirst({
-      where: { organizationId: orgId, status: 'LOCKED' },
-      select: { id: true },
-    });
-
     await expect(
       prisma.$executeRawUnsafe(
         `INSERT INTO journal_entries (id, organization_id, period_id, type, status, source, created_at, updated_at)
-         VALUES (gen_random_uuid(), '${orgId}', ${lockedPeriod!.id}, 'STANDARD', 'POSTED', 'MANUAL', now(), now())`,
+         VALUES (gen_random_uuid(), '${orgId}', ${lockedPeriodId}, 'STANDARD', 'POSTED', 'MANUAL', now(), now())`,
       ),
     ).rejects.toThrow();
   });
@@ -226,6 +252,13 @@ const reversalEntry = await prisma.journalEntry.create({
 
     expect(totalDebit).toBeDefined();
     expect(totalCredit).toBeDefined();
+  });
+});
+
+describe('M4 Double-Entry Accounting: System Integrity', () => {
+  beforeAll(async () => {
+    // Clean up any journal data from previous tests in this file and other test files
+    await prisma.$executeRawUnsafe(`TRUNCATE TABLE journal_lines, journal_entries RESTART IDENTITY CASCADE`);
   });
 
   it('trial balance: total debits == total credits', async () => {
