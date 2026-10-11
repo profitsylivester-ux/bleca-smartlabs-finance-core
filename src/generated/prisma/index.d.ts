@@ -107,6 +107,11 @@ export type ApprovalStepInstance = $Result.DefaultSelection<Prisma.$ApprovalStep
  */
 export type ApprovalDecisionRecord = $Result.DefaultSelection<Prisma.$ApprovalDecisionRecordPayload>
 /**
+ * Model SODWaiver
+ * 
+ */
+export type SODWaiver = $Result.DefaultSelection<Prisma.$SODWaiverPayload>
+/**
  * Model Organization
  * 
  */
@@ -804,7 +809,9 @@ export const AuditAction: {
   APPROVAL_REQUEST_REJECTED: 'APPROVAL_REQUEST_REJECTED',
   APPROVAL_REQUEST_CANCELLED: 'APPROVAL_REQUEST_CANCELLED',
   APPROVAL_STEP_DECIDED: 'APPROVAL_STEP_DECIDED',
-  APPROVAL_DECISION_RECORDED: 'APPROVAL_DECISION_RECORDED'
+  APPROVAL_DECISION_RECORDED: 'APPROVAL_DECISION_RECORDED',
+  SOD_WAIVER_GRANTED: 'SOD_WAIVER_GRANTED',
+  SOD_WAIVER_REJECTED: 'SOD_WAIVER_REJECTED'
 };
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
@@ -843,7 +850,8 @@ export const AuditEntityType: {
   APPROVAL_POLICY: 'APPROVAL_POLICY',
   APPROVAL_REQUEST: 'APPROVAL_REQUEST',
   APPROVAL_STEP_INSTANCE: 'APPROVAL_STEP_INSTANCE',
-  APPROVAL_DECISION_RECORD: 'APPROVAL_DECISION_RECORD'
+  APPROVAL_DECISION_RECORD: 'APPROVAL_DECISION_RECORD',
+  SOD_WAIVER: 'SOD_WAIVER'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -1081,6 +1089,16 @@ export const ApprovalDecision: {
 
 export type ApprovalDecision = (typeof ApprovalDecision)[keyof typeof ApprovalDecision]
 
+
+export const SODWaiverStatus: {
+  PENDING: 'PENDING',
+  GRANTED: 'GRANTED',
+  REJECTED: 'REJECTED',
+  EXPIRED: 'EXPIRED'
+};
+
+export type SODWaiverStatus = (typeof SODWaiverStatus)[keyof typeof SODWaiverStatus]
+
 }
 
 export type UserStatus = $Enums.UserStatus
@@ -1306,6 +1324,10 @@ export const ApprovalConditionOperator: typeof $Enums.ApprovalConditionOperator
 export type ApprovalDecision = $Enums.ApprovalDecision
 
 export const ApprovalDecision: typeof $Enums.ApprovalDecision
+
+export type SODWaiverStatus = $Enums.SODWaiverStatus
+
+export const SODWaiverStatus: typeof $Enums.SODWaiverStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1604,6 +1626,16 @@ export class PrismaClient<
     * ```
     */
   get approvalDecisionRecord(): Prisma.ApprovalDecisionRecordDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sODWaiver`: Exposes CRUD operations for the **SODWaiver** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SODWaivers
+    * const sODWaivers = await prisma.sODWaiver.findMany()
+    * ```
+    */
+  get sODWaiver(): Prisma.SODWaiverDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.organization`: Exposes CRUD operations for the **Organization** model.
@@ -2363,6 +2395,7 @@ export namespace Prisma {
     ApprovalRequest: 'ApprovalRequest',
     ApprovalStepInstance: 'ApprovalStepInstance',
     ApprovalDecisionRecord: 'ApprovalDecisionRecord',
+    SODWaiver: 'SODWaiver',
     Organization: 'Organization',
     Location: 'Location',
     Department: 'Department',
@@ -2411,7 +2444,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3744,6 +3777,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ApprovalDecisionRecordCountArgs<ExtArgs>
             result: $Utils.Optional<ApprovalDecisionRecordCountAggregateOutputType> | number
+          }
+        }
+      }
+      SODWaiver: {
+        payload: Prisma.$SODWaiverPayload<ExtArgs>
+        fields: Prisma.SODWaiverFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SODWaiverFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SODWaiverFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload>
+          }
+          findFirst: {
+            args: Prisma.SODWaiverFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SODWaiverFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload>
+          }
+          findMany: {
+            args: Prisma.SODWaiverFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload>[]
+          }
+          create: {
+            args: Prisma.SODWaiverCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload>
+          }
+          createMany: {
+            args: Prisma.SODWaiverCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SODWaiverCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload>[]
+          }
+          delete: {
+            args: Prisma.SODWaiverDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload>
+          }
+          update: {
+            args: Prisma.SODWaiverUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload>
+          }
+          deleteMany: {
+            args: Prisma.SODWaiverDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SODWaiverUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SODWaiverUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload>[]
+          }
+          upsert: {
+            args: Prisma.SODWaiverUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SODWaiverPayload>
+          }
+          aggregate: {
+            args: Prisma.SODWaiverAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSODWaiver>
+          }
+          groupBy: {
+            args: Prisma.SODWaiverGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SODWaiverGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SODWaiverCountArgs<ExtArgs>
+            result: $Utils.Optional<SODWaiverCountAggregateOutputType> | number
           }
         }
       }
@@ -6081,6 +6188,7 @@ export namespace Prisma {
     approvalRequest?: ApprovalRequestOmit
     approvalStepInstance?: ApprovalStepInstanceOmit
     approvalDecisionRecord?: ApprovalDecisionRecordOmit
+    sODWaiver?: SODWaiverOmit
     organization?: OrganizationOmit
     location?: LocationOmit
     department?: DepartmentOmit
@@ -6220,6 +6328,9 @@ export namespace Prisma {
     approvalDecisionRecords: number
     approvalPolicyStepAssigneeUser: number
     approvalStepInstanceAssigneeUser: number
+    sodWaiversAsUser: number
+    sodWaiversRecordedBy: number
+    sodWaiversReviewedBy: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6252,6 +6363,9 @@ export namespace Prisma {
     approvalDecisionRecords?: boolean | UserCountOutputTypeCountApprovalDecisionRecordsArgs
     approvalPolicyStepAssigneeUser?: boolean | UserCountOutputTypeCountApprovalPolicyStepAssigneeUserArgs
     approvalStepInstanceAssigneeUser?: boolean | UserCountOutputTypeCountApprovalStepInstanceAssigneeUserArgs
+    sodWaiversAsUser?: boolean | UserCountOutputTypeCountSodWaiversAsUserArgs
+    sodWaiversRecordedBy?: boolean | UserCountOutputTypeCountSodWaiversRecordedByArgs
+    sodWaiversReviewedBy?: boolean | UserCountOutputTypeCountSodWaiversReviewedByArgs
   }
 
   // Custom InputTypes
@@ -6468,6 +6582,27 @@ export namespace Prisma {
     where?: ApprovalStepInstanceWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSodWaiversAsUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SODWaiverWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSodWaiversRecordedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SODWaiverWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSodWaiversReviewedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SODWaiverWhereInput
+  }
+
 
   /**
    * Count Type RoleCountOutputType
@@ -6672,11 +6807,13 @@ export namespace Prisma {
   export type ApprovalRequestCountOutputType = {
     stepInstances: number
     decisionRecords: number
+    sodWaivers: number
   }
 
   export type ApprovalRequestCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stepInstances?: boolean | ApprovalRequestCountOutputTypeCountStepInstancesArgs
     decisionRecords?: boolean | ApprovalRequestCountOutputTypeCountDecisionRecordsArgs
+    sodWaivers?: boolean | ApprovalRequestCountOutputTypeCountSodWaiversArgs
   }
 
   // Custom InputTypes
@@ -6702,6 +6839,13 @@ export namespace Prisma {
    */
   export type ApprovalRequestCountOutputTypeCountDecisionRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ApprovalDecisionRecordWhereInput
+  }
+
+  /**
+   * ApprovalRequestCountOutputType without action
+   */
+  export type ApprovalRequestCountOutputTypeCountSodWaiversArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SODWaiverWhereInput
   }
 
 
@@ -8079,6 +8223,9 @@ export namespace Prisma {
     approvalDecisionRecords?: boolean | User$approvalDecisionRecordsArgs<ExtArgs>
     approvalPolicyStepAssigneeUser?: boolean | User$approvalPolicyStepAssigneeUserArgs<ExtArgs>
     approvalStepInstanceAssigneeUser?: boolean | User$approvalStepInstanceAssigneeUserArgs<ExtArgs>
+    sodWaiversAsUser?: boolean | User$sodWaiversAsUserArgs<ExtArgs>
+    sodWaiversRecordedBy?: boolean | User$sodWaiversRecordedByArgs<ExtArgs>
+    sodWaiversReviewedBy?: boolean | User$sodWaiversReviewedByArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8233,6 +8380,9 @@ export namespace Prisma {
     approvalDecisionRecords?: boolean | User$approvalDecisionRecordsArgs<ExtArgs>
     approvalPolicyStepAssigneeUser?: boolean | User$approvalPolicyStepAssigneeUserArgs<ExtArgs>
     approvalStepInstanceAssigneeUser?: boolean | User$approvalStepInstanceAssigneeUserArgs<ExtArgs>
+    sodWaiversAsUser?: boolean | User$sodWaiversAsUserArgs<ExtArgs>
+    sodWaiversRecordedBy?: boolean | User$sodWaiversRecordedByArgs<ExtArgs>
+    sodWaiversReviewedBy?: boolean | User$sodWaiversReviewedByArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8284,6 +8434,9 @@ export namespace Prisma {
       approvalDecisionRecords: Prisma.$ApprovalDecisionRecordPayload<ExtArgs>[]
       approvalPolicyStepAssigneeUser: Prisma.$ApprovalPolicyStepPayload<ExtArgs>[]
       approvalStepInstanceAssigneeUser: Prisma.$ApprovalStepInstancePayload<ExtArgs>[]
+      sodWaiversAsUser: Prisma.$SODWaiverPayload<ExtArgs>[]
+      sodWaiversRecordedBy: Prisma.$SODWaiverPayload<ExtArgs>[]
+      sodWaiversReviewedBy: Prisma.$SODWaiverPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8757,6 +8910,9 @@ export namespace Prisma {
     approvalDecisionRecords<T extends User$approvalDecisionRecordsArgs<ExtArgs> = {}>(args?: Subset<T, User$approvalDecisionRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     approvalPolicyStepAssigneeUser<T extends User$approvalPolicyStepAssigneeUserArgs<ExtArgs> = {}>(args?: Subset<T, User$approvalPolicyStepAssigneeUserArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     approvalStepInstanceAssigneeUser<T extends User$approvalStepInstanceAssigneeUserArgs<ExtArgs> = {}>(args?: Subset<T, User$approvalStepInstanceAssigneeUserArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sodWaiversAsUser<T extends User$sodWaiversAsUserArgs<ExtArgs> = {}>(args?: Subset<T, User$sodWaiversAsUserArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sodWaiversRecordedBy<T extends User$sodWaiversRecordedByArgs<ExtArgs> = {}>(args?: Subset<T, User$sodWaiversRecordedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sodWaiversReviewedBy<T extends User$sodWaiversReviewedByArgs<ExtArgs> = {}>(args?: Subset<T, User$sodWaiversReviewedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9984,6 +10140,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ApprovalStepInstanceScalarFieldEnum | ApprovalStepInstanceScalarFieldEnum[]
+  }
+
+  /**
+   * User.sodWaiversAsUser
+   */
+  export type User$sodWaiversAsUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    where?: SODWaiverWhereInput
+    orderBy?: SODWaiverOrderByWithRelationInput | SODWaiverOrderByWithRelationInput[]
+    cursor?: SODWaiverWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SODWaiverScalarFieldEnum | SODWaiverScalarFieldEnum[]
+  }
+
+  /**
+   * User.sodWaiversRecordedBy
+   */
+  export type User$sodWaiversRecordedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    where?: SODWaiverWhereInput
+    orderBy?: SODWaiverOrderByWithRelationInput | SODWaiverOrderByWithRelationInput[]
+    cursor?: SODWaiverWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SODWaiverScalarFieldEnum | SODWaiverScalarFieldEnum[]
+  }
+
+  /**
+   * User.sodWaiversReviewedBy
+   */
+  export type User$sodWaiversReviewedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    where?: SODWaiverWhereInput
+    orderBy?: SODWaiverOrderByWithRelationInput | SODWaiverOrderByWithRelationInput[]
+    cursor?: SODWaiverWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SODWaiverScalarFieldEnum | SODWaiverScalarFieldEnum[]
   }
 
   /**
@@ -26979,6 +27207,7 @@ export namespace Prisma {
     decidedBy?: boolean | ApprovalRequest$decidedByArgs<ExtArgs>
     stepInstances?: boolean | ApprovalRequest$stepInstancesArgs<ExtArgs>
     decisionRecords?: boolean | ApprovalRequest$decisionRecordsArgs<ExtArgs>
+    sodWaivers?: boolean | ApprovalRequest$sodWaiversArgs<ExtArgs>
     _count?: boolean | ApprovalRequestCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["approvalRequest"]>
 
@@ -27049,6 +27278,7 @@ export namespace Prisma {
     decidedBy?: boolean | ApprovalRequest$decidedByArgs<ExtArgs>
     stepInstances?: boolean | ApprovalRequest$stepInstancesArgs<ExtArgs>
     decisionRecords?: boolean | ApprovalRequest$decisionRecordsArgs<ExtArgs>
+    sodWaivers?: boolean | ApprovalRequest$sodWaiversArgs<ExtArgs>
     _count?: boolean | ApprovalRequestCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ApprovalRequestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -27073,6 +27303,7 @@ export namespace Prisma {
       decidedBy: Prisma.$UserPayload<ExtArgs> | null
       stepInstances: Prisma.$ApprovalStepInstancePayload<ExtArgs>[]
       decisionRecords: Prisma.$ApprovalDecisionRecordPayload<ExtArgs>[]
+      sodWaivers: Prisma.$SODWaiverPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -27489,6 +27720,7 @@ export namespace Prisma {
     decidedBy<T extends ApprovalRequest$decidedByArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalRequest$decidedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     stepInstances<T extends ApprovalRequest$stepInstancesArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalRequest$stepInstancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     decisionRecords<T extends ApprovalRequest$decisionRecordsArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalRequest$decisionRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sodWaivers<T extends ApprovalRequest$sodWaiversArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalRequest$sodWaiversArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -27992,6 +28224,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ApprovalDecisionRecordScalarFieldEnum | ApprovalDecisionRecordScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalRequest.sodWaivers
+   */
+  export type ApprovalRequest$sodWaiversArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    where?: SODWaiverWhereInput
+    orderBy?: SODWaiverOrderByWithRelationInput | SODWaiverOrderByWithRelationInput[]
+    cursor?: SODWaiverWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SODWaiverScalarFieldEnum | SODWaiverScalarFieldEnum[]
   }
 
   /**
@@ -30486,6 +30742,1185 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SODWaiver
+   */
+
+  export type AggregateSODWaiver = {
+    _count: SODWaiverCountAggregateOutputType | null
+    _min: SODWaiverMinAggregateOutputType | null
+    _max: SODWaiverMaxAggregateOutputType | null
+  }
+
+  export type SODWaiverMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    transactionId: string | null
+    reason: string | null
+    recordedById: string | null
+    recordedAt: Date | null
+    approvalRequestId: string | null
+    status: $Enums.SODWaiverStatus | null
+    reviewedById: string | null
+    reviewedAt: Date | null
+    reviewReason: string | null
+  }
+
+  export type SODWaiverMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    transactionId: string | null
+    reason: string | null
+    recordedById: string | null
+    recordedAt: Date | null
+    approvalRequestId: string | null
+    status: $Enums.SODWaiverStatus | null
+    reviewedById: string | null
+    reviewedAt: Date | null
+    reviewReason: string | null
+  }
+
+  export type SODWaiverCountAggregateOutputType = {
+    id: number
+    userId: number
+    transactionId: number
+    reason: number
+    recordedById: number
+    recordedAt: number
+    approvalRequestId: number
+    status: number
+    reviewedById: number
+    reviewedAt: number
+    reviewReason: number
+    _all: number
+  }
+
+
+  export type SODWaiverMinAggregateInputType = {
+    id?: true
+    userId?: true
+    transactionId?: true
+    reason?: true
+    recordedById?: true
+    recordedAt?: true
+    approvalRequestId?: true
+    status?: true
+    reviewedById?: true
+    reviewedAt?: true
+    reviewReason?: true
+  }
+
+  export type SODWaiverMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    transactionId?: true
+    reason?: true
+    recordedById?: true
+    recordedAt?: true
+    approvalRequestId?: true
+    status?: true
+    reviewedById?: true
+    reviewedAt?: true
+    reviewReason?: true
+  }
+
+  export type SODWaiverCountAggregateInputType = {
+    id?: true
+    userId?: true
+    transactionId?: true
+    reason?: true
+    recordedById?: true
+    recordedAt?: true
+    approvalRequestId?: true
+    status?: true
+    reviewedById?: true
+    reviewedAt?: true
+    reviewReason?: true
+    _all?: true
+  }
+
+  export type SODWaiverAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SODWaiver to aggregate.
+     */
+    where?: SODWaiverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SODWaivers to fetch.
+     */
+    orderBy?: SODWaiverOrderByWithRelationInput | SODWaiverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SODWaiverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SODWaivers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SODWaivers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SODWaivers
+    **/
+    _count?: true | SODWaiverCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SODWaiverMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SODWaiverMaxAggregateInputType
+  }
+
+  export type GetSODWaiverAggregateType<T extends SODWaiverAggregateArgs> = {
+        [P in keyof T & keyof AggregateSODWaiver]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSODWaiver[P]>
+      : GetScalarType<T[P], AggregateSODWaiver[P]>
+  }
+
+
+
+
+  export type SODWaiverGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SODWaiverWhereInput
+    orderBy?: SODWaiverOrderByWithAggregationInput | SODWaiverOrderByWithAggregationInput[]
+    by: SODWaiverScalarFieldEnum[] | SODWaiverScalarFieldEnum
+    having?: SODWaiverScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SODWaiverCountAggregateInputType | true
+    _min?: SODWaiverMinAggregateInputType
+    _max?: SODWaiverMaxAggregateInputType
+  }
+
+  export type SODWaiverGroupByOutputType = {
+    id: string
+    userId: string
+    transactionId: string
+    reason: string
+    recordedById: string
+    recordedAt: Date
+    approvalRequestId: string
+    status: $Enums.SODWaiverStatus
+    reviewedById: string | null
+    reviewedAt: Date | null
+    reviewReason: string | null
+    _count: SODWaiverCountAggregateOutputType | null
+    _min: SODWaiverMinAggregateOutputType | null
+    _max: SODWaiverMaxAggregateOutputType | null
+  }
+
+  type GetSODWaiverGroupByPayload<T extends SODWaiverGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SODWaiverGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SODWaiverGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SODWaiverGroupByOutputType[P]>
+            : GetScalarType<T[P], SODWaiverGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SODWaiverSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    transactionId?: boolean
+    reason?: boolean
+    recordedById?: boolean
+    recordedAt?: boolean
+    approvalRequestId?: boolean
+    status?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    reviewReason?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvalRequest?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | SODWaiver$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["sODWaiver"]>
+
+  export type SODWaiverSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    transactionId?: boolean
+    reason?: boolean
+    recordedById?: boolean
+    recordedAt?: boolean
+    approvalRequestId?: boolean
+    status?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    reviewReason?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvalRequest?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | SODWaiver$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["sODWaiver"]>
+
+  export type SODWaiverSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    transactionId?: boolean
+    reason?: boolean
+    recordedById?: boolean
+    recordedAt?: boolean
+    approvalRequestId?: boolean
+    status?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    reviewReason?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvalRequest?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | SODWaiver$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["sODWaiver"]>
+
+  export type SODWaiverSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    transactionId?: boolean
+    reason?: boolean
+    recordedById?: boolean
+    recordedAt?: boolean
+    approvalRequestId?: boolean
+    status?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    reviewReason?: boolean
+  }
+
+  export type SODWaiverOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "transactionId" | "reason" | "recordedById" | "recordedAt" | "approvalRequestId" | "status" | "reviewedById" | "reviewedAt" | "reviewReason", ExtArgs["result"]["sODWaiver"]>
+  export type SODWaiverInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvalRequest?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | SODWaiver$reviewedByArgs<ExtArgs>
+  }
+  export type SODWaiverIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvalRequest?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | SODWaiver$reviewedByArgs<ExtArgs>
+  }
+  export type SODWaiverIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    recordedBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvalRequest?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | SODWaiver$reviewedByArgs<ExtArgs>
+  }
+
+  export type $SODWaiverPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SODWaiver"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      recordedBy: Prisma.$UserPayload<ExtArgs>
+      approvalRequest: Prisma.$ApprovalRequestPayload<ExtArgs>
+      reviewedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      transactionId: string
+      reason: string
+      recordedById: string
+      recordedAt: Date
+      approvalRequestId: string
+      status: $Enums.SODWaiverStatus
+      reviewedById: string | null
+      reviewedAt: Date | null
+      reviewReason: string | null
+    }, ExtArgs["result"]["sODWaiver"]>
+    composites: {}
+  }
+
+  type SODWaiverGetPayload<S extends boolean | null | undefined | SODWaiverDefaultArgs> = $Result.GetResult<Prisma.$SODWaiverPayload, S>
+
+  type SODWaiverCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SODWaiverFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SODWaiverCountAggregateInputType | true
+    }
+
+  export interface SODWaiverDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SODWaiver'], meta: { name: 'SODWaiver' } }
+    /**
+     * Find zero or one SODWaiver that matches the filter.
+     * @param {SODWaiverFindUniqueArgs} args - Arguments to find a SODWaiver
+     * @example
+     * // Get one SODWaiver
+     * const sODWaiver = await prisma.sODWaiver.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SODWaiverFindUniqueArgs>(args: SelectSubset<T, SODWaiverFindUniqueArgs<ExtArgs>>): Prisma__SODWaiverClient<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SODWaiver that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SODWaiverFindUniqueOrThrowArgs} args - Arguments to find a SODWaiver
+     * @example
+     * // Get one SODWaiver
+     * const sODWaiver = await prisma.sODWaiver.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SODWaiverFindUniqueOrThrowArgs>(args: SelectSubset<T, SODWaiverFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SODWaiverClient<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SODWaiver that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SODWaiverFindFirstArgs} args - Arguments to find a SODWaiver
+     * @example
+     * // Get one SODWaiver
+     * const sODWaiver = await prisma.sODWaiver.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SODWaiverFindFirstArgs>(args?: SelectSubset<T, SODWaiverFindFirstArgs<ExtArgs>>): Prisma__SODWaiverClient<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SODWaiver that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SODWaiverFindFirstOrThrowArgs} args - Arguments to find a SODWaiver
+     * @example
+     * // Get one SODWaiver
+     * const sODWaiver = await prisma.sODWaiver.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SODWaiverFindFirstOrThrowArgs>(args?: SelectSubset<T, SODWaiverFindFirstOrThrowArgs<ExtArgs>>): Prisma__SODWaiverClient<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SODWaivers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SODWaiverFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SODWaivers
+     * const sODWaivers = await prisma.sODWaiver.findMany()
+     * 
+     * // Get first 10 SODWaivers
+     * const sODWaivers = await prisma.sODWaiver.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sODWaiverWithIdOnly = await prisma.sODWaiver.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SODWaiverFindManyArgs>(args?: SelectSubset<T, SODWaiverFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SODWaiver.
+     * @param {SODWaiverCreateArgs} args - Arguments to create a SODWaiver.
+     * @example
+     * // Create one SODWaiver
+     * const SODWaiver = await prisma.sODWaiver.create({
+     *   data: {
+     *     // ... data to create a SODWaiver
+     *   }
+     * })
+     * 
+     */
+    create<T extends SODWaiverCreateArgs>(args: SelectSubset<T, SODWaiverCreateArgs<ExtArgs>>): Prisma__SODWaiverClient<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SODWaivers.
+     * @param {SODWaiverCreateManyArgs} args - Arguments to create many SODWaivers.
+     * @example
+     * // Create many SODWaivers
+     * const sODWaiver = await prisma.sODWaiver.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SODWaiverCreateManyArgs>(args?: SelectSubset<T, SODWaiverCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SODWaivers and returns the data saved in the database.
+     * @param {SODWaiverCreateManyAndReturnArgs} args - Arguments to create many SODWaivers.
+     * @example
+     * // Create many SODWaivers
+     * const sODWaiver = await prisma.sODWaiver.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SODWaivers and only return the `id`
+     * const sODWaiverWithIdOnly = await prisma.sODWaiver.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SODWaiverCreateManyAndReturnArgs>(args?: SelectSubset<T, SODWaiverCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SODWaiver.
+     * @param {SODWaiverDeleteArgs} args - Arguments to delete one SODWaiver.
+     * @example
+     * // Delete one SODWaiver
+     * const SODWaiver = await prisma.sODWaiver.delete({
+     *   where: {
+     *     // ... filter to delete one SODWaiver
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SODWaiverDeleteArgs>(args: SelectSubset<T, SODWaiverDeleteArgs<ExtArgs>>): Prisma__SODWaiverClient<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SODWaiver.
+     * @param {SODWaiverUpdateArgs} args - Arguments to update one SODWaiver.
+     * @example
+     * // Update one SODWaiver
+     * const sODWaiver = await prisma.sODWaiver.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SODWaiverUpdateArgs>(args: SelectSubset<T, SODWaiverUpdateArgs<ExtArgs>>): Prisma__SODWaiverClient<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SODWaivers.
+     * @param {SODWaiverDeleteManyArgs} args - Arguments to filter SODWaivers to delete.
+     * @example
+     * // Delete a few SODWaivers
+     * const { count } = await prisma.sODWaiver.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SODWaiverDeleteManyArgs>(args?: SelectSubset<T, SODWaiverDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SODWaivers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SODWaiverUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SODWaivers
+     * const sODWaiver = await prisma.sODWaiver.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SODWaiverUpdateManyArgs>(args: SelectSubset<T, SODWaiverUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SODWaivers and returns the data updated in the database.
+     * @param {SODWaiverUpdateManyAndReturnArgs} args - Arguments to update many SODWaivers.
+     * @example
+     * // Update many SODWaivers
+     * const sODWaiver = await prisma.sODWaiver.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SODWaivers and only return the `id`
+     * const sODWaiverWithIdOnly = await prisma.sODWaiver.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SODWaiverUpdateManyAndReturnArgs>(args: SelectSubset<T, SODWaiverUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SODWaiver.
+     * @param {SODWaiverUpsertArgs} args - Arguments to update or create a SODWaiver.
+     * @example
+     * // Update or create a SODWaiver
+     * const sODWaiver = await prisma.sODWaiver.upsert({
+     *   create: {
+     *     // ... data to create a SODWaiver
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SODWaiver we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SODWaiverUpsertArgs>(args: SelectSubset<T, SODWaiverUpsertArgs<ExtArgs>>): Prisma__SODWaiverClient<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SODWaivers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SODWaiverCountArgs} args - Arguments to filter SODWaivers to count.
+     * @example
+     * // Count the number of SODWaivers
+     * const count = await prisma.sODWaiver.count({
+     *   where: {
+     *     // ... the filter for the SODWaivers we want to count
+     *   }
+     * })
+    **/
+    count<T extends SODWaiverCountArgs>(
+      args?: Subset<T, SODWaiverCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SODWaiverCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SODWaiver.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SODWaiverAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SODWaiverAggregateArgs>(args: Subset<T, SODWaiverAggregateArgs>): Prisma.PrismaPromise<GetSODWaiverAggregateType<T>>
+
+    /**
+     * Group by SODWaiver.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SODWaiverGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SODWaiverGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SODWaiverGroupByArgs['orderBy'] }
+        : { orderBy?: SODWaiverGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SODWaiverGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSODWaiverGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SODWaiver model
+   */
+  readonly fields: SODWaiverFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SODWaiver.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SODWaiverClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    recordedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    approvalRequest<T extends ApprovalRequestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalRequestDefaultArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    reviewedBy<T extends SODWaiver$reviewedByArgs<ExtArgs> = {}>(args?: Subset<T, SODWaiver$reviewedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SODWaiver model
+   */
+  interface SODWaiverFieldRefs {
+    readonly id: FieldRef<"SODWaiver", 'String'>
+    readonly userId: FieldRef<"SODWaiver", 'String'>
+    readonly transactionId: FieldRef<"SODWaiver", 'String'>
+    readonly reason: FieldRef<"SODWaiver", 'String'>
+    readonly recordedById: FieldRef<"SODWaiver", 'String'>
+    readonly recordedAt: FieldRef<"SODWaiver", 'DateTime'>
+    readonly approvalRequestId: FieldRef<"SODWaiver", 'String'>
+    readonly status: FieldRef<"SODWaiver", 'SODWaiverStatus'>
+    readonly reviewedById: FieldRef<"SODWaiver", 'String'>
+    readonly reviewedAt: FieldRef<"SODWaiver", 'DateTime'>
+    readonly reviewReason: FieldRef<"SODWaiver", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SODWaiver findUnique
+   */
+  export type SODWaiverFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    /**
+     * Filter, which SODWaiver to fetch.
+     */
+    where: SODWaiverWhereUniqueInput
+  }
+
+  /**
+   * SODWaiver findUniqueOrThrow
+   */
+  export type SODWaiverFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    /**
+     * Filter, which SODWaiver to fetch.
+     */
+    where: SODWaiverWhereUniqueInput
+  }
+
+  /**
+   * SODWaiver findFirst
+   */
+  export type SODWaiverFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    /**
+     * Filter, which SODWaiver to fetch.
+     */
+    where?: SODWaiverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SODWaivers to fetch.
+     */
+    orderBy?: SODWaiverOrderByWithRelationInput | SODWaiverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SODWaivers.
+     */
+    cursor?: SODWaiverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SODWaivers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SODWaivers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SODWaivers.
+     */
+    distinct?: SODWaiverScalarFieldEnum | SODWaiverScalarFieldEnum[]
+  }
+
+  /**
+   * SODWaiver findFirstOrThrow
+   */
+  export type SODWaiverFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    /**
+     * Filter, which SODWaiver to fetch.
+     */
+    where?: SODWaiverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SODWaivers to fetch.
+     */
+    orderBy?: SODWaiverOrderByWithRelationInput | SODWaiverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SODWaivers.
+     */
+    cursor?: SODWaiverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SODWaivers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SODWaivers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SODWaivers.
+     */
+    distinct?: SODWaiverScalarFieldEnum | SODWaiverScalarFieldEnum[]
+  }
+
+  /**
+   * SODWaiver findMany
+   */
+  export type SODWaiverFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    /**
+     * Filter, which SODWaivers to fetch.
+     */
+    where?: SODWaiverWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SODWaivers to fetch.
+     */
+    orderBy?: SODWaiverOrderByWithRelationInput | SODWaiverOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SODWaivers.
+     */
+    cursor?: SODWaiverWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SODWaivers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SODWaivers.
+     */
+    skip?: number
+    distinct?: SODWaiverScalarFieldEnum | SODWaiverScalarFieldEnum[]
+  }
+
+  /**
+   * SODWaiver create
+   */
+  export type SODWaiverCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SODWaiver.
+     */
+    data: XOR<SODWaiverCreateInput, SODWaiverUncheckedCreateInput>
+  }
+
+  /**
+   * SODWaiver createMany
+   */
+  export type SODWaiverCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SODWaivers.
+     */
+    data: SODWaiverCreateManyInput | SODWaiverCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SODWaiver createManyAndReturn
+   */
+  export type SODWaiverCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * The data used to create many SODWaivers.
+     */
+    data: SODWaiverCreateManyInput | SODWaiverCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SODWaiver update
+   */
+  export type SODWaiverUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SODWaiver.
+     */
+    data: XOR<SODWaiverUpdateInput, SODWaiverUncheckedUpdateInput>
+    /**
+     * Choose, which SODWaiver to update.
+     */
+    where: SODWaiverWhereUniqueInput
+  }
+
+  /**
+   * SODWaiver updateMany
+   */
+  export type SODWaiverUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SODWaivers.
+     */
+    data: XOR<SODWaiverUpdateManyMutationInput, SODWaiverUncheckedUpdateManyInput>
+    /**
+     * Filter which SODWaivers to update
+     */
+    where?: SODWaiverWhereInput
+    /**
+     * Limit how many SODWaivers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SODWaiver updateManyAndReturn
+   */
+  export type SODWaiverUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * The data used to update SODWaivers.
+     */
+    data: XOR<SODWaiverUpdateManyMutationInput, SODWaiverUncheckedUpdateManyInput>
+    /**
+     * Filter which SODWaivers to update
+     */
+    where?: SODWaiverWhereInput
+    /**
+     * Limit how many SODWaivers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SODWaiver upsert
+   */
+  export type SODWaiverUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SODWaiver to update in case it exists.
+     */
+    where: SODWaiverWhereUniqueInput
+    /**
+     * In case the SODWaiver found by the `where` argument doesn't exist, create a new SODWaiver with this data.
+     */
+    create: XOR<SODWaiverCreateInput, SODWaiverUncheckedCreateInput>
+    /**
+     * In case the SODWaiver was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SODWaiverUpdateInput, SODWaiverUncheckedUpdateInput>
+  }
+
+  /**
+   * SODWaiver delete
+   */
+  export type SODWaiverDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
+    /**
+     * Filter which SODWaiver to delete.
+     */
+    where: SODWaiverWhereUniqueInput
+  }
+
+  /**
+   * SODWaiver deleteMany
+   */
+  export type SODWaiverDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SODWaivers to delete
+     */
+    where?: SODWaiverWhereInput
+    /**
+     * Limit how many SODWaivers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SODWaiver.reviewedBy
+   */
+  export type SODWaiver$reviewedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * SODWaiver without action
+   */
+  export type SODWaiverDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SODWaiver
+     */
+    select?: SODWaiverSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SODWaiver
+     */
+    omit?: SODWaiverOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SODWaiverInclude<ExtArgs> | null
   }
 
 
@@ -68754,6 +70189,23 @@ export namespace Prisma {
   export type ApprovalDecisionRecordScalarFieldEnum = (typeof ApprovalDecisionRecordScalarFieldEnum)[keyof typeof ApprovalDecisionRecordScalarFieldEnum]
 
 
+  export const SODWaiverScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    transactionId: 'transactionId',
+    reason: 'reason',
+    recordedById: 'recordedById',
+    recordedAt: 'recordedAt',
+    approvalRequestId: 'approvalRequestId',
+    status: 'status',
+    reviewedById: 'reviewedById',
+    reviewedAt: 'reviewedAt',
+    reviewReason: 'reviewReason'
+  };
+
+  export type SODWaiverScalarFieldEnum = (typeof SODWaiverScalarFieldEnum)[keyof typeof SODWaiverScalarFieldEnum]
+
+
   export const OrganizationScalarFieldEnum: {
     id: 'id',
     code: 'code',
@@ -69718,6 +71170,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'SODWaiverStatus'
+   */
+  export type EnumSODWaiverStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SODWaiverStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SODWaiverStatus[]'
+   */
+  export type ListEnumSODWaiverStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SODWaiverStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'OrganizationType'
    */
   export type EnumOrganizationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganizationType'>
@@ -70308,6 +71774,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordListRelationFilter
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepListRelationFilter
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceListRelationFilter
+    sodWaiversAsUser?: SODWaiverListRelationFilter
+    sodWaiversRecordedBy?: SODWaiverListRelationFilter
+    sodWaiversReviewedBy?: SODWaiverListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -70377,6 +71846,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordOrderByRelationAggregateInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepOrderByRelationAggregateInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceOrderByRelationAggregateInput
+    sodWaiversAsUser?: SODWaiverOrderByRelationAggregateInput
+    sodWaiversRecordedBy?: SODWaiverOrderByRelationAggregateInput
+    sodWaiversReviewedBy?: SODWaiverOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -70449,6 +71921,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordListRelationFilter
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepListRelationFilter
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceListRelationFilter
+    sodWaiversAsUser?: SODWaiverListRelationFilter
+    sodWaiversRecordedBy?: SODWaiverListRelationFilter
+    sodWaiversReviewedBy?: SODWaiverListRelationFilter
   }, "id" | "emailNormalized" | "passwordResetToken">
 
   export type UserOrderByWithAggregationInput = {
@@ -71865,6 +73340,7 @@ export namespace Prisma {
     decidedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     stepInstances?: ApprovalStepInstanceListRelationFilter
     decisionRecords?: ApprovalDecisionRecordListRelationFilter
+    sodWaivers?: SODWaiverListRelationFilter
   }
 
   export type ApprovalRequestOrderByWithRelationInput = {
@@ -71888,6 +73364,7 @@ export namespace Prisma {
     decidedBy?: UserOrderByWithRelationInput
     stepInstances?: ApprovalStepInstanceOrderByRelationAggregateInput
     decisionRecords?: ApprovalDecisionRecordOrderByRelationAggregateInput
+    sodWaivers?: SODWaiverOrderByRelationAggregateInput
   }
 
   export type ApprovalRequestWhereUniqueInput = Prisma.AtLeast<{
@@ -71914,6 +73391,7 @@ export namespace Prisma {
     decidedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     stepInstances?: ApprovalStepInstanceListRelationFilter
     decisionRecords?: ApprovalDecisionRecordListRelationFilter
+    sodWaivers?: SODWaiverListRelationFilter
   }, "id">
 
   export type ApprovalRequestOrderByWithAggregationInput = {
@@ -72162,6 +73640,100 @@ export namespace Prisma {
     sodWaiverId?: StringNullableWithAggregatesFilter<"ApprovalDecisionRecord"> | string | null
     delegationId?: StringNullableWithAggregatesFilter<"ApprovalDecisionRecord"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ApprovalDecisionRecord"> | Date | string
+  }
+
+  export type SODWaiverWhereInput = {
+    AND?: SODWaiverWhereInput | SODWaiverWhereInput[]
+    OR?: SODWaiverWhereInput[]
+    NOT?: SODWaiverWhereInput | SODWaiverWhereInput[]
+    id?: StringFilter<"SODWaiver"> | string
+    userId?: StringFilter<"SODWaiver"> | string
+    transactionId?: StringFilter<"SODWaiver"> | string
+    reason?: StringFilter<"SODWaiver"> | string
+    recordedById?: StringFilter<"SODWaiver"> | string
+    recordedAt?: DateTimeFilter<"SODWaiver"> | Date | string
+    approvalRequestId?: StringFilter<"SODWaiver"> | string
+    status?: EnumSODWaiverStatusFilter<"SODWaiver"> | $Enums.SODWaiverStatus
+    reviewedById?: StringNullableFilter<"SODWaiver"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"SODWaiver"> | Date | string | null
+    reviewReason?: StringNullableFilter<"SODWaiver"> | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    recordedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    approvalRequest?: XOR<ApprovalRequestScalarRelationFilter, ApprovalRequestWhereInput>
+    reviewedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type SODWaiverOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    transactionId?: SortOrder
+    reason?: SortOrder
+    recordedById?: SortOrder
+    recordedAt?: SortOrder
+    approvalRequestId?: SortOrder
+    status?: SortOrder
+    reviewedById?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    reviewReason?: SortOrderInput | SortOrder
+    user?: UserOrderByWithRelationInput
+    recordedBy?: UserOrderByWithRelationInput
+    approvalRequest?: ApprovalRequestOrderByWithRelationInput
+    reviewedBy?: UserOrderByWithRelationInput
+  }
+
+  export type SODWaiverWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SODWaiverWhereInput | SODWaiverWhereInput[]
+    OR?: SODWaiverWhereInput[]
+    NOT?: SODWaiverWhereInput | SODWaiverWhereInput[]
+    userId?: StringFilter<"SODWaiver"> | string
+    transactionId?: StringFilter<"SODWaiver"> | string
+    reason?: StringFilter<"SODWaiver"> | string
+    recordedById?: StringFilter<"SODWaiver"> | string
+    recordedAt?: DateTimeFilter<"SODWaiver"> | Date | string
+    approvalRequestId?: StringFilter<"SODWaiver"> | string
+    status?: EnumSODWaiverStatusFilter<"SODWaiver"> | $Enums.SODWaiverStatus
+    reviewedById?: StringNullableFilter<"SODWaiver"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"SODWaiver"> | Date | string | null
+    reviewReason?: StringNullableFilter<"SODWaiver"> | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    recordedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    approvalRequest?: XOR<ApprovalRequestScalarRelationFilter, ApprovalRequestWhereInput>
+    reviewedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type SODWaiverOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    transactionId?: SortOrder
+    reason?: SortOrder
+    recordedById?: SortOrder
+    recordedAt?: SortOrder
+    approvalRequestId?: SortOrder
+    status?: SortOrder
+    reviewedById?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    reviewReason?: SortOrderInput | SortOrder
+    _count?: SODWaiverCountOrderByAggregateInput
+    _max?: SODWaiverMaxOrderByAggregateInput
+    _min?: SODWaiverMinOrderByAggregateInput
+  }
+
+  export type SODWaiverScalarWhereWithAggregatesInput = {
+    AND?: SODWaiverScalarWhereWithAggregatesInput | SODWaiverScalarWhereWithAggregatesInput[]
+    OR?: SODWaiverScalarWhereWithAggregatesInput[]
+    NOT?: SODWaiverScalarWhereWithAggregatesInput | SODWaiverScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SODWaiver"> | string
+    userId?: StringWithAggregatesFilter<"SODWaiver"> | string
+    transactionId?: StringWithAggregatesFilter<"SODWaiver"> | string
+    reason?: StringWithAggregatesFilter<"SODWaiver"> | string
+    recordedById?: StringWithAggregatesFilter<"SODWaiver"> | string
+    recordedAt?: DateTimeWithAggregatesFilter<"SODWaiver"> | Date | string
+    approvalRequestId?: StringWithAggregatesFilter<"SODWaiver"> | string
+    status?: EnumSODWaiverStatusWithAggregatesFilter<"SODWaiver"> | $Enums.SODWaiverStatus
+    reviewedById?: StringNullableWithAggregatesFilter<"SODWaiver"> | string | null
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"SODWaiver"> | Date | string | null
+    reviewReason?: StringNullableWithAggregatesFilter<"SODWaiver"> | string | null
   }
 
   export type OrganizationWhereInput = {
@@ -75427,6 +76999,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -75492,6 +77067,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUpdateInput = {
@@ -75557,6 +77135,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -75622,6 +77203,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -77223,6 +78807,7 @@ export namespace Prisma {
     decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
     stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
     decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestUncheckedCreateInput = {
@@ -77242,6 +78827,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
     decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverUncheckedCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestUpdateInput = {
@@ -77261,6 +78847,7 @@ export namespace Prisma {
     decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
     stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
     decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateInput = {
@@ -77280,6 +78867,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
     decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUncheckedUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestCreateManyInput = {
@@ -77541,6 +79129,100 @@ export namespace Prisma {
     sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
     delegationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SODWaiverCreateInput = {
+    id?: string
+    transactionId: string
+    reason: string
+    recordedAt?: Date | string
+    status?: $Enums.SODWaiverStatus
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+    user: UserCreateNestedOneWithoutSodWaiversAsUserInput
+    recordedBy: UserCreateNestedOneWithoutSodWaiversRecordedByInput
+    approvalRequest: ApprovalRequestCreateNestedOneWithoutSodWaiversInput
+    reviewedBy?: UserCreateNestedOneWithoutSodWaiversReviewedByInput
+  }
+
+  export type SODWaiverUncheckedCreateInput = {
+    id?: string
+    userId: string
+    transactionId: string
+    reason: string
+    recordedById: string
+    recordedAt?: Date | string
+    approvalRequestId: string
+    status?: $Enums.SODWaiverStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+  }
+
+  export type SODWaiverUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutSodWaiversAsUserNestedInput
+    recordedBy?: UserUpdateOneRequiredWithoutSodWaiversRecordedByNestedInput
+    approvalRequest?: ApprovalRequestUpdateOneRequiredWithoutSodWaiversNestedInput
+    reviewedBy?: UserUpdateOneWithoutSodWaiversReviewedByNestedInput
+  }
+
+  export type SODWaiverUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedById?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvalRequestId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SODWaiverCreateManyInput = {
+    id?: string
+    userId: string
+    transactionId: string
+    reason: string
+    recordedById: string
+    recordedAt?: Date | string
+    approvalRequestId: string
+    status?: $Enums.SODWaiverStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+  }
+
+  export type SODWaiverUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SODWaiverUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedById?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvalRequestId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrganizationCreateInput = {
@@ -81265,6 +82947,12 @@ export namespace Prisma {
     none?: ApprovalPolicyStepWhereInput
   }
 
+  export type SODWaiverListRelationFilter = {
+    every?: SODWaiverWhereInput
+    some?: SODWaiverWhereInput
+    none?: SODWaiverWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -81335,6 +83023,10 @@ export namespace Prisma {
   }
 
   export type ApprovalPolicyStepOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SODWaiverOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -82931,6 +84623,65 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumApprovalDecisionFilter<$PrismaModel>
     _max?: NestedEnumApprovalDecisionFilter<$PrismaModel>
+  }
+
+  export type EnumSODWaiverStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SODWaiverStatus | EnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SODWaiverStatus[] | ListEnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SODWaiverStatus[] | ListEnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSODWaiverStatusFilter<$PrismaModel> | $Enums.SODWaiverStatus
+  }
+
+  export type SODWaiverCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    transactionId?: SortOrder
+    reason?: SortOrder
+    recordedById?: SortOrder
+    recordedAt?: SortOrder
+    approvalRequestId?: SortOrder
+    status?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    reviewReason?: SortOrder
+  }
+
+  export type SODWaiverMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    transactionId?: SortOrder
+    reason?: SortOrder
+    recordedById?: SortOrder
+    recordedAt?: SortOrder
+    approvalRequestId?: SortOrder
+    status?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    reviewReason?: SortOrder
+  }
+
+  export type SODWaiverMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    transactionId?: SortOrder
+    reason?: SortOrder
+    recordedById?: SortOrder
+    recordedAt?: SortOrder
+    approvalRequestId?: SortOrder
+    status?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    reviewReason?: SortOrder
+  }
+
+  export type EnumSODWaiverStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SODWaiverStatus | EnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SODWaiverStatus[] | ListEnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SODWaiverStatus[] | ListEnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSODWaiverStatusWithAggregatesFilter<$PrismaModel> | $Enums.SODWaiverStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSODWaiverStatusFilter<$PrismaModel>
+    _max?: NestedEnumSODWaiverStatusFilter<$PrismaModel>
   }
 
   export type EnumOrganizationTypeFilter<$PrismaModel = never> = {
@@ -85790,6 +87541,27 @@ export namespace Prisma {
     connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
   }
 
+  export type SODWaiverCreateNestedManyWithoutUserInput = {
+    create?: XOR<SODWaiverCreateWithoutUserInput, SODWaiverUncheckedCreateWithoutUserInput> | SODWaiverCreateWithoutUserInput[] | SODWaiverUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutUserInput | SODWaiverCreateOrConnectWithoutUserInput[]
+    createMany?: SODWaiverCreateManyUserInputEnvelope
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+  }
+
+  export type SODWaiverCreateNestedManyWithoutRecordedByInput = {
+    create?: XOR<SODWaiverCreateWithoutRecordedByInput, SODWaiverUncheckedCreateWithoutRecordedByInput> | SODWaiverCreateWithoutRecordedByInput[] | SODWaiverUncheckedCreateWithoutRecordedByInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutRecordedByInput | SODWaiverCreateOrConnectWithoutRecordedByInput[]
+    createMany?: SODWaiverCreateManyRecordedByInputEnvelope
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+  }
+
+  export type SODWaiverCreateNestedManyWithoutReviewedByInput = {
+    create?: XOR<SODWaiverCreateWithoutReviewedByInput, SODWaiverUncheckedCreateWithoutReviewedByInput> | SODWaiverCreateWithoutReviewedByInput[] | SODWaiverUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutReviewedByInput | SODWaiverCreateOrConnectWithoutReviewedByInput[]
+    createMany?: SODWaiverCreateManyReviewedByInputEnvelope
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -85991,6 +87763,27 @@ export namespace Prisma {
     connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput | ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput[]
     createMany?: ApprovalStepInstanceCreateManyAssigneeUserInputEnvelope
     connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+  }
+
+  export type SODWaiverUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SODWaiverCreateWithoutUserInput, SODWaiverUncheckedCreateWithoutUserInput> | SODWaiverCreateWithoutUserInput[] | SODWaiverUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutUserInput | SODWaiverCreateOrConnectWithoutUserInput[]
+    createMany?: SODWaiverCreateManyUserInputEnvelope
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+  }
+
+  export type SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput = {
+    create?: XOR<SODWaiverCreateWithoutRecordedByInput, SODWaiverUncheckedCreateWithoutRecordedByInput> | SODWaiverCreateWithoutRecordedByInput[] | SODWaiverUncheckedCreateWithoutRecordedByInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutRecordedByInput | SODWaiverCreateOrConnectWithoutRecordedByInput[]
+    createMany?: SODWaiverCreateManyRecordedByInputEnvelope
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+  }
+
+  export type SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput = {
+    create?: XOR<SODWaiverCreateWithoutReviewedByInput, SODWaiverUncheckedCreateWithoutReviewedByInput> | SODWaiverCreateWithoutReviewedByInput[] | SODWaiverUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutReviewedByInput | SODWaiverCreateOrConnectWithoutReviewedByInput[]
+    createMany?: SODWaiverCreateManyReviewedByInputEnvelope
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -86480,6 +88273,48 @@ export namespace Prisma {
     deleteMany?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
   }
 
+  export type SODWaiverUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SODWaiverCreateWithoutUserInput, SODWaiverUncheckedCreateWithoutUserInput> | SODWaiverCreateWithoutUserInput[] | SODWaiverUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutUserInput | SODWaiverCreateOrConnectWithoutUserInput[]
+    upsert?: SODWaiverUpsertWithWhereUniqueWithoutUserInput | SODWaiverUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SODWaiverCreateManyUserInputEnvelope
+    set?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    disconnect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    delete?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    update?: SODWaiverUpdateWithWhereUniqueWithoutUserInput | SODWaiverUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SODWaiverUpdateManyWithWhereWithoutUserInput | SODWaiverUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
+  }
+
+  export type SODWaiverUpdateManyWithoutRecordedByNestedInput = {
+    create?: XOR<SODWaiverCreateWithoutRecordedByInput, SODWaiverUncheckedCreateWithoutRecordedByInput> | SODWaiverCreateWithoutRecordedByInput[] | SODWaiverUncheckedCreateWithoutRecordedByInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutRecordedByInput | SODWaiverCreateOrConnectWithoutRecordedByInput[]
+    upsert?: SODWaiverUpsertWithWhereUniqueWithoutRecordedByInput | SODWaiverUpsertWithWhereUniqueWithoutRecordedByInput[]
+    createMany?: SODWaiverCreateManyRecordedByInputEnvelope
+    set?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    disconnect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    delete?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    update?: SODWaiverUpdateWithWhereUniqueWithoutRecordedByInput | SODWaiverUpdateWithWhereUniqueWithoutRecordedByInput[]
+    updateMany?: SODWaiverUpdateManyWithWhereWithoutRecordedByInput | SODWaiverUpdateManyWithWhereWithoutRecordedByInput[]
+    deleteMany?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
+  }
+
+  export type SODWaiverUpdateManyWithoutReviewedByNestedInput = {
+    create?: XOR<SODWaiverCreateWithoutReviewedByInput, SODWaiverUncheckedCreateWithoutReviewedByInput> | SODWaiverCreateWithoutReviewedByInput[] | SODWaiverUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutReviewedByInput | SODWaiverCreateOrConnectWithoutReviewedByInput[]
+    upsert?: SODWaiverUpsertWithWhereUniqueWithoutReviewedByInput | SODWaiverUpsertWithWhereUniqueWithoutReviewedByInput[]
+    createMany?: SODWaiverCreateManyReviewedByInputEnvelope
+    set?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    disconnect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    delete?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    update?: SODWaiverUpdateWithWhereUniqueWithoutReviewedByInput | SODWaiverUpdateWithWhereUniqueWithoutReviewedByInput[]
+    updateMany?: SODWaiverUpdateManyWithWhereWithoutReviewedByInput | SODWaiverUpdateManyWithWhereWithoutReviewedByInput[]
+    deleteMany?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -86884,6 +88719,48 @@ export namespace Prisma {
     update?: ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeUserInput | ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeUserInput[]
     updateMany?: ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeUserInput | ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeUserInput[]
     deleteMany?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
+  }
+
+  export type SODWaiverUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SODWaiverCreateWithoutUserInput, SODWaiverUncheckedCreateWithoutUserInput> | SODWaiverCreateWithoutUserInput[] | SODWaiverUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutUserInput | SODWaiverCreateOrConnectWithoutUserInput[]
+    upsert?: SODWaiverUpsertWithWhereUniqueWithoutUserInput | SODWaiverUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SODWaiverCreateManyUserInputEnvelope
+    set?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    disconnect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    delete?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    update?: SODWaiverUpdateWithWhereUniqueWithoutUserInput | SODWaiverUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SODWaiverUpdateManyWithWhereWithoutUserInput | SODWaiverUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
+  }
+
+  export type SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput = {
+    create?: XOR<SODWaiverCreateWithoutRecordedByInput, SODWaiverUncheckedCreateWithoutRecordedByInput> | SODWaiverCreateWithoutRecordedByInput[] | SODWaiverUncheckedCreateWithoutRecordedByInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutRecordedByInput | SODWaiverCreateOrConnectWithoutRecordedByInput[]
+    upsert?: SODWaiverUpsertWithWhereUniqueWithoutRecordedByInput | SODWaiverUpsertWithWhereUniqueWithoutRecordedByInput[]
+    createMany?: SODWaiverCreateManyRecordedByInputEnvelope
+    set?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    disconnect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    delete?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    update?: SODWaiverUpdateWithWhereUniqueWithoutRecordedByInput | SODWaiverUpdateWithWhereUniqueWithoutRecordedByInput[]
+    updateMany?: SODWaiverUpdateManyWithWhereWithoutRecordedByInput | SODWaiverUpdateManyWithWhereWithoutRecordedByInput[]
+    deleteMany?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
+  }
+
+  export type SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput = {
+    create?: XOR<SODWaiverCreateWithoutReviewedByInput, SODWaiverUncheckedCreateWithoutReviewedByInput> | SODWaiverCreateWithoutReviewedByInput[] | SODWaiverUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutReviewedByInput | SODWaiverCreateOrConnectWithoutReviewedByInput[]
+    upsert?: SODWaiverUpsertWithWhereUniqueWithoutReviewedByInput | SODWaiverUpsertWithWhereUniqueWithoutReviewedByInput[]
+    createMany?: SODWaiverCreateManyReviewedByInputEnvelope
+    set?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    disconnect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    delete?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    update?: SODWaiverUpdateWithWhereUniqueWithoutReviewedByInput | SODWaiverUpdateWithWhereUniqueWithoutReviewedByInput[]
+    updateMany?: SODWaiverUpdateManyWithWhereWithoutReviewedByInput | SODWaiverUpdateManyWithWhereWithoutReviewedByInput[]
+    deleteMany?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutMfaDevicesInput = {
@@ -87789,6 +89666,13 @@ export namespace Prisma {
     connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
   }
 
+  export type SODWaiverCreateNestedManyWithoutApprovalRequestInput = {
+    create?: XOR<SODWaiverCreateWithoutApprovalRequestInput, SODWaiverUncheckedCreateWithoutApprovalRequestInput> | SODWaiverCreateWithoutApprovalRequestInput[] | SODWaiverUncheckedCreateWithoutApprovalRequestInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutApprovalRequestInput | SODWaiverCreateOrConnectWithoutApprovalRequestInput[]
+    createMany?: SODWaiverCreateManyApprovalRequestInputEnvelope
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+  }
+
   export type ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput = {
     create?: XOR<ApprovalStepInstanceCreateWithoutRequestInput, ApprovalStepInstanceUncheckedCreateWithoutRequestInput> | ApprovalStepInstanceCreateWithoutRequestInput[] | ApprovalStepInstanceUncheckedCreateWithoutRequestInput[]
     connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutRequestInput | ApprovalStepInstanceCreateOrConnectWithoutRequestInput[]
@@ -87801,6 +89685,13 @@ export namespace Prisma {
     connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutRequestInput | ApprovalDecisionRecordCreateOrConnectWithoutRequestInput[]
     createMany?: ApprovalDecisionRecordCreateManyRequestInputEnvelope
     connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+  }
+
+  export type SODWaiverUncheckedCreateNestedManyWithoutApprovalRequestInput = {
+    create?: XOR<SODWaiverCreateWithoutApprovalRequestInput, SODWaiverUncheckedCreateWithoutApprovalRequestInput> | SODWaiverCreateWithoutApprovalRequestInput[] | SODWaiverUncheckedCreateWithoutApprovalRequestInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutApprovalRequestInput | SODWaiverCreateOrConnectWithoutApprovalRequestInput[]
+    createMany?: SODWaiverCreateManyApprovalRequestInputEnvelope
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
   }
 
   export type EnumApprovalRequestStatusFieldUpdateOperationsInput = {
@@ -87869,6 +89760,20 @@ export namespace Prisma {
     deleteMany?: ApprovalDecisionRecordScalarWhereInput | ApprovalDecisionRecordScalarWhereInput[]
   }
 
+  export type SODWaiverUpdateManyWithoutApprovalRequestNestedInput = {
+    create?: XOR<SODWaiverCreateWithoutApprovalRequestInput, SODWaiverUncheckedCreateWithoutApprovalRequestInput> | SODWaiverCreateWithoutApprovalRequestInput[] | SODWaiverUncheckedCreateWithoutApprovalRequestInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutApprovalRequestInput | SODWaiverCreateOrConnectWithoutApprovalRequestInput[]
+    upsert?: SODWaiverUpsertWithWhereUniqueWithoutApprovalRequestInput | SODWaiverUpsertWithWhereUniqueWithoutApprovalRequestInput[]
+    createMany?: SODWaiverCreateManyApprovalRequestInputEnvelope
+    set?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    disconnect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    delete?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    update?: SODWaiverUpdateWithWhereUniqueWithoutApprovalRequestInput | SODWaiverUpdateWithWhereUniqueWithoutApprovalRequestInput[]
+    updateMany?: SODWaiverUpdateManyWithWhereWithoutApprovalRequestInput | SODWaiverUpdateManyWithWhereWithoutApprovalRequestInput[]
+    deleteMany?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
+  }
+
   export type ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput = {
     create?: XOR<ApprovalStepInstanceCreateWithoutRequestInput, ApprovalStepInstanceUncheckedCreateWithoutRequestInput> | ApprovalStepInstanceCreateWithoutRequestInput[] | ApprovalStepInstanceUncheckedCreateWithoutRequestInput[]
     connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutRequestInput | ApprovalStepInstanceCreateOrConnectWithoutRequestInput[]
@@ -87895,6 +89800,20 @@ export namespace Prisma {
     update?: ApprovalDecisionRecordUpdateWithWhereUniqueWithoutRequestInput | ApprovalDecisionRecordUpdateWithWhereUniqueWithoutRequestInput[]
     updateMany?: ApprovalDecisionRecordUpdateManyWithWhereWithoutRequestInput | ApprovalDecisionRecordUpdateManyWithWhereWithoutRequestInput[]
     deleteMany?: ApprovalDecisionRecordScalarWhereInput | ApprovalDecisionRecordScalarWhereInput[]
+  }
+
+  export type SODWaiverUncheckedUpdateManyWithoutApprovalRequestNestedInput = {
+    create?: XOR<SODWaiverCreateWithoutApprovalRequestInput, SODWaiverUncheckedCreateWithoutApprovalRequestInput> | SODWaiverCreateWithoutApprovalRequestInput[] | SODWaiverUncheckedCreateWithoutApprovalRequestInput[]
+    connectOrCreate?: SODWaiverCreateOrConnectWithoutApprovalRequestInput | SODWaiverCreateOrConnectWithoutApprovalRequestInput[]
+    upsert?: SODWaiverUpsertWithWhereUniqueWithoutApprovalRequestInput | SODWaiverUpsertWithWhereUniqueWithoutApprovalRequestInput[]
+    createMany?: SODWaiverCreateManyApprovalRequestInputEnvelope
+    set?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    disconnect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    delete?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+    update?: SODWaiverUpdateWithWhereUniqueWithoutApprovalRequestInput | SODWaiverUpdateWithWhereUniqueWithoutApprovalRequestInput[]
+    updateMany?: SODWaiverUpdateManyWithWhereWithoutApprovalRequestInput | SODWaiverUpdateManyWithWhereWithoutApprovalRequestInput[]
+    deleteMany?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
   }
 
   export type ApprovalRequestCreateNestedOneWithoutStepInstancesInput = {
@@ -88045,6 +89964,68 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutApprovalDecisionRecordsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovalDecisionRecordsInput, UserUpdateWithoutApprovalDecisionRecordsInput>, UserUncheckedUpdateWithoutApprovalDecisionRecordsInput>
+  }
+
+  export type UserCreateNestedOneWithoutSodWaiversAsUserInput = {
+    create?: XOR<UserCreateWithoutSodWaiversAsUserInput, UserUncheckedCreateWithoutSodWaiversAsUserInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSodWaiversAsUserInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutSodWaiversRecordedByInput = {
+    create?: XOR<UserCreateWithoutSodWaiversRecordedByInput, UserUncheckedCreateWithoutSodWaiversRecordedByInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSodWaiversRecordedByInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ApprovalRequestCreateNestedOneWithoutSodWaiversInput = {
+    create?: XOR<ApprovalRequestCreateWithoutSodWaiversInput, ApprovalRequestUncheckedCreateWithoutSodWaiversInput>
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutSodWaiversInput
+    connect?: ApprovalRequestWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutSodWaiversReviewedByInput = {
+    create?: XOR<UserCreateWithoutSodWaiversReviewedByInput, UserUncheckedCreateWithoutSodWaiversReviewedByInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSodWaiversReviewedByInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumSODWaiverStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SODWaiverStatus
+  }
+
+  export type UserUpdateOneRequiredWithoutSodWaiversAsUserNestedInput = {
+    create?: XOR<UserCreateWithoutSodWaiversAsUserInput, UserUncheckedCreateWithoutSodWaiversAsUserInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSodWaiversAsUserInput
+    upsert?: UserUpsertWithoutSodWaiversAsUserInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSodWaiversAsUserInput, UserUpdateWithoutSodWaiversAsUserInput>, UserUncheckedUpdateWithoutSodWaiversAsUserInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutSodWaiversRecordedByNestedInput = {
+    create?: XOR<UserCreateWithoutSodWaiversRecordedByInput, UserUncheckedCreateWithoutSodWaiversRecordedByInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSodWaiversRecordedByInput
+    upsert?: UserUpsertWithoutSodWaiversRecordedByInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSodWaiversRecordedByInput, UserUpdateWithoutSodWaiversRecordedByInput>, UserUncheckedUpdateWithoutSodWaiversRecordedByInput>
+  }
+
+  export type ApprovalRequestUpdateOneRequiredWithoutSodWaiversNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutSodWaiversInput, ApprovalRequestUncheckedCreateWithoutSodWaiversInput>
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutSodWaiversInput
+    upsert?: ApprovalRequestUpsertWithoutSodWaiversInput
+    connect?: ApprovalRequestWhereUniqueInput
+    update?: XOR<XOR<ApprovalRequestUpdateToOneWithWhereWithoutSodWaiversInput, ApprovalRequestUpdateWithoutSodWaiversInput>, ApprovalRequestUncheckedUpdateWithoutSodWaiversInput>
+  }
+
+  export type UserUpdateOneWithoutSodWaiversReviewedByNestedInput = {
+    create?: XOR<UserCreateWithoutSodWaiversReviewedByInput, UserUncheckedCreateWithoutSodWaiversReviewedByInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSodWaiversReviewedByInput
+    upsert?: UserUpsertWithoutSodWaiversReviewedByInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSodWaiversReviewedByInput, UserUpdateWithoutSodWaiversReviewedByInput>, UserUncheckedUpdateWithoutSodWaiversReviewedByInput>
   }
 
   export type OrganizationMembershipCreateNestedManyWithoutOrganizationInput = {
@@ -92499,6 +94480,23 @@ export namespace Prisma {
     _max?: NestedEnumApprovalDecisionFilter<$PrismaModel>
   }
 
+  export type NestedEnumSODWaiverStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SODWaiverStatus | EnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SODWaiverStatus[] | ListEnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SODWaiverStatus[] | ListEnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSODWaiverStatusFilter<$PrismaModel> | $Enums.SODWaiverStatus
+  }
+
+  export type NestedEnumSODWaiverStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SODWaiverStatus | EnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SODWaiverStatus[] | ListEnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SODWaiverStatus[] | ListEnumSODWaiverStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSODWaiverStatusWithAggregatesFilter<$PrismaModel> | $Enums.SODWaiverStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSODWaiverStatusFilter<$PrismaModel>
+    _max?: NestedEnumSODWaiverStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumOrganizationTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.OrganizationType | EnumOrganizationTypeFieldRefInput<$PrismaModel>
     in?: $Enums.OrganizationType[] | ListEnumOrganizationTypeFieldRefInput<$PrismaModel>
@@ -93336,6 +95334,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedUsersInput = {
@@ -93400,6 +95401,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedUsersInput = {
@@ -93469,6 +95473,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedUsersInput = {
@@ -93533,6 +95540,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedUsersInput = {
@@ -93972,6 +95982,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedByInput = {
@@ -94036,6 +96049,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedByInput = {
@@ -94110,6 +96126,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedByInput = {
@@ -94174,6 +96193,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedByInput = {
@@ -94980,6 +97002,7 @@ export namespace Prisma {
     decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
     stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
     decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestUncheckedCreateWithoutSubmittedByInput = {
@@ -94998,6 +97021,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
     decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverUncheckedCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestCreateOrConnectWithoutSubmittedByInput = {
@@ -95026,6 +97050,7 @@ export namespace Prisma {
     submittedBy: UserCreateNestedOneWithoutApprovalRequestsSubmittedInput
     stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
     decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestUncheckedCreateWithoutDecidedByInput = {
@@ -95044,6 +97069,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
     decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverUncheckedCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestCreateOrConnectWithoutDecidedByInput = {
@@ -95228,6 +97254,114 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SODWaiverCreateWithoutUserInput = {
+    id?: string
+    transactionId: string
+    reason: string
+    recordedAt?: Date | string
+    status?: $Enums.SODWaiverStatus
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+    recordedBy: UserCreateNestedOneWithoutSodWaiversRecordedByInput
+    approvalRequest: ApprovalRequestCreateNestedOneWithoutSodWaiversInput
+    reviewedBy?: UserCreateNestedOneWithoutSodWaiversReviewedByInput
+  }
+
+  export type SODWaiverUncheckedCreateWithoutUserInput = {
+    id?: string
+    transactionId: string
+    reason: string
+    recordedById: string
+    recordedAt?: Date | string
+    approvalRequestId: string
+    status?: $Enums.SODWaiverStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+  }
+
+  export type SODWaiverCreateOrConnectWithoutUserInput = {
+    where: SODWaiverWhereUniqueInput
+    create: XOR<SODWaiverCreateWithoutUserInput, SODWaiverUncheckedCreateWithoutUserInput>
+  }
+
+  export type SODWaiverCreateManyUserInputEnvelope = {
+    data: SODWaiverCreateManyUserInput | SODWaiverCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SODWaiverCreateWithoutRecordedByInput = {
+    id?: string
+    transactionId: string
+    reason: string
+    recordedAt?: Date | string
+    status?: $Enums.SODWaiverStatus
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+    user: UserCreateNestedOneWithoutSodWaiversAsUserInput
+    approvalRequest: ApprovalRequestCreateNestedOneWithoutSodWaiversInput
+    reviewedBy?: UserCreateNestedOneWithoutSodWaiversReviewedByInput
+  }
+
+  export type SODWaiverUncheckedCreateWithoutRecordedByInput = {
+    id?: string
+    userId: string
+    transactionId: string
+    reason: string
+    recordedAt?: Date | string
+    approvalRequestId: string
+    status?: $Enums.SODWaiverStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+  }
+
+  export type SODWaiverCreateOrConnectWithoutRecordedByInput = {
+    where: SODWaiverWhereUniqueInput
+    create: XOR<SODWaiverCreateWithoutRecordedByInput, SODWaiverUncheckedCreateWithoutRecordedByInput>
+  }
+
+  export type SODWaiverCreateManyRecordedByInputEnvelope = {
+    data: SODWaiverCreateManyRecordedByInput | SODWaiverCreateManyRecordedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SODWaiverCreateWithoutReviewedByInput = {
+    id?: string
+    transactionId: string
+    reason: string
+    recordedAt?: Date | string
+    status?: $Enums.SODWaiverStatus
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+    user: UserCreateNestedOneWithoutSodWaiversAsUserInput
+    recordedBy: UserCreateNestedOneWithoutSodWaiversRecordedByInput
+    approvalRequest: ApprovalRequestCreateNestedOneWithoutSodWaiversInput
+  }
+
+  export type SODWaiverUncheckedCreateWithoutReviewedByInput = {
+    id?: string
+    userId: string
+    transactionId: string
+    reason: string
+    recordedById: string
+    recordedAt?: Date | string
+    approvalRequestId: string
+    status?: $Enums.SODWaiverStatus
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+  }
+
+  export type SODWaiverCreateOrConnectWithoutReviewedByInput = {
+    where: SODWaiverWhereUniqueInput
+    create: XOR<SODWaiverCreateWithoutReviewedByInput, SODWaiverUncheckedCreateWithoutReviewedByInput>
+  }
+
+  export type SODWaiverCreateManyReviewedByInputEnvelope = {
+    data: SODWaiverCreateManyReviewedByInput | SODWaiverCreateManyReviewedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type LocationUpsertWithoutUsersInput = {
     update: XOR<LocationUpdateWithoutUsersInput, LocationUncheckedUpdateWithoutUsersInput>
     create: XOR<LocationCreateWithoutUsersInput, LocationUncheckedCreateWithoutUsersInput>
@@ -95395,6 +97529,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedUsersInput = {
@@ -95459,6 +97596,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutUpdatedUsersInput = {
@@ -95534,6 +97674,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedUsersInput = {
@@ -95598,6 +97741,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutUserInput = {
@@ -96427,6 +98573,71 @@ export namespace Prisma {
     data: XOR<ApprovalStepInstanceUpdateManyMutationInput, ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserInput>
   }
 
+  export type SODWaiverUpsertWithWhereUniqueWithoutUserInput = {
+    where: SODWaiverWhereUniqueInput
+    update: XOR<SODWaiverUpdateWithoutUserInput, SODWaiverUncheckedUpdateWithoutUserInput>
+    create: XOR<SODWaiverCreateWithoutUserInput, SODWaiverUncheckedCreateWithoutUserInput>
+  }
+
+  export type SODWaiverUpdateWithWhereUniqueWithoutUserInput = {
+    where: SODWaiverWhereUniqueInput
+    data: XOR<SODWaiverUpdateWithoutUserInput, SODWaiverUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SODWaiverUpdateManyWithWhereWithoutUserInput = {
+    where: SODWaiverScalarWhereInput
+    data: XOR<SODWaiverUpdateManyMutationInput, SODWaiverUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SODWaiverScalarWhereInput = {
+    AND?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
+    OR?: SODWaiverScalarWhereInput[]
+    NOT?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
+    id?: StringFilter<"SODWaiver"> | string
+    userId?: StringFilter<"SODWaiver"> | string
+    transactionId?: StringFilter<"SODWaiver"> | string
+    reason?: StringFilter<"SODWaiver"> | string
+    recordedById?: StringFilter<"SODWaiver"> | string
+    recordedAt?: DateTimeFilter<"SODWaiver"> | Date | string
+    approvalRequestId?: StringFilter<"SODWaiver"> | string
+    status?: EnumSODWaiverStatusFilter<"SODWaiver"> | $Enums.SODWaiverStatus
+    reviewedById?: StringNullableFilter<"SODWaiver"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"SODWaiver"> | Date | string | null
+    reviewReason?: StringNullableFilter<"SODWaiver"> | string | null
+  }
+
+  export type SODWaiverUpsertWithWhereUniqueWithoutRecordedByInput = {
+    where: SODWaiverWhereUniqueInput
+    update: XOR<SODWaiverUpdateWithoutRecordedByInput, SODWaiverUncheckedUpdateWithoutRecordedByInput>
+    create: XOR<SODWaiverCreateWithoutRecordedByInput, SODWaiverUncheckedCreateWithoutRecordedByInput>
+  }
+
+  export type SODWaiverUpdateWithWhereUniqueWithoutRecordedByInput = {
+    where: SODWaiverWhereUniqueInput
+    data: XOR<SODWaiverUpdateWithoutRecordedByInput, SODWaiverUncheckedUpdateWithoutRecordedByInput>
+  }
+
+  export type SODWaiverUpdateManyWithWhereWithoutRecordedByInput = {
+    where: SODWaiverScalarWhereInput
+    data: XOR<SODWaiverUpdateManyMutationInput, SODWaiverUncheckedUpdateManyWithoutRecordedByInput>
+  }
+
+  export type SODWaiverUpsertWithWhereUniqueWithoutReviewedByInput = {
+    where: SODWaiverWhereUniqueInput
+    update: XOR<SODWaiverUpdateWithoutReviewedByInput, SODWaiverUncheckedUpdateWithoutReviewedByInput>
+    create: XOR<SODWaiverCreateWithoutReviewedByInput, SODWaiverUncheckedCreateWithoutReviewedByInput>
+  }
+
+  export type SODWaiverUpdateWithWhereUniqueWithoutReviewedByInput = {
+    where: SODWaiverWhereUniqueInput
+    data: XOR<SODWaiverUpdateWithoutReviewedByInput, SODWaiverUncheckedUpdateWithoutReviewedByInput>
+  }
+
+  export type SODWaiverUpdateManyWithWhereWithoutReviewedByInput = {
+    where: SODWaiverScalarWhereInput
+    data: XOR<SODWaiverUpdateManyMutationInput, SODWaiverUncheckedUpdateManyWithoutReviewedByInput>
+  }
+
   export type UserCreateWithoutMfaDevicesInput = {
     id?: string
     email: string
@@ -96489,6 +98700,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutMfaDevicesInput = {
@@ -96553,6 +98767,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutMfaDevicesInput = {
@@ -96633,6 +98850,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMfaDevicesInput = {
@@ -96697,6 +98917,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -96761,6 +98984,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -96825,6 +99051,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -96905,6 +99134,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -96969,6 +99201,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserCreateWithoutLoginHistoryInput = {
@@ -97033,6 +99268,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutLoginHistoryInput = {
@@ -97097,6 +99335,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutLoginHistoryInput = {
@@ -97177,6 +99418,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLoginHistoryInput = {
@@ -97241,6 +99485,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type RolePermissionCreateWithoutRoleInput = {
@@ -97936,6 +100183,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -98000,6 +100250,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -98131,6 +100384,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -98195,6 +100451,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type RoleUpsertWithoutUserRolesInput = {
@@ -98480,6 +100739,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsGrantedInput = {
@@ -98544,6 +100806,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsGrantedInput = {
@@ -98613,6 +100878,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsReceivedInput = {
@@ -98677,6 +100945,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsReceivedInput = {
@@ -98808,6 +101079,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsGrantedInput = {
@@ -98872,6 +101146,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutDelegationsReceivedInput = {
@@ -98947,6 +101224,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsReceivedInput = {
@@ -99011,6 +101291,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type RoleUpsertWithoutDelegationsInput = {
@@ -99215,6 +101498,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutAccessReviewItemsInput = {
@@ -99279,6 +101565,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutAccessReviewItemsInput = {
@@ -99449,6 +101738,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccessReviewItemsInput = {
@@ -99513,6 +101805,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type RoleUpsertWithoutAccessReviewItemsInput = {
@@ -99719,6 +102014,7 @@ export namespace Prisma {
     decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
     stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
     decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestUncheckedCreateWithoutPolicyInput = {
@@ -99737,6 +102033,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
     decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverUncheckedCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestCreateOrConnectWithoutPolicyInput = {
@@ -100020,6 +102317,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -100084,6 +102384,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -100262,6 +102565,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -100326,6 +102632,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type OrganizationCreateWithoutApprovalRequestsInput = {
@@ -100510,6 +102819,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalRequestsSubmittedInput = {
@@ -100574,6 +102886,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalRequestsSubmittedInput = {
@@ -100643,6 +102958,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalRequestsDecidedInput = {
@@ -100707,6 +103025,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalRequestsDecidedInput = {
@@ -100791,6 +103112,42 @@ export namespace Prisma {
 
   export type ApprovalDecisionRecordCreateManyRequestInputEnvelope = {
     data: ApprovalDecisionRecordCreateManyRequestInput | ApprovalDecisionRecordCreateManyRequestInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SODWaiverCreateWithoutApprovalRequestInput = {
+    id?: string
+    transactionId: string
+    reason: string
+    recordedAt?: Date | string
+    status?: $Enums.SODWaiverStatus
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+    user: UserCreateNestedOneWithoutSodWaiversAsUserInput
+    recordedBy: UserCreateNestedOneWithoutSodWaiversRecordedByInput
+    reviewedBy?: UserCreateNestedOneWithoutSodWaiversReviewedByInput
+  }
+
+  export type SODWaiverUncheckedCreateWithoutApprovalRequestInput = {
+    id?: string
+    userId: string
+    transactionId: string
+    reason: string
+    recordedById: string
+    recordedAt?: Date | string
+    status?: $Enums.SODWaiverStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+  }
+
+  export type SODWaiverCreateOrConnectWithoutApprovalRequestInput = {
+    where: SODWaiverWhereUniqueInput
+    create: XOR<SODWaiverCreateWithoutApprovalRequestInput, SODWaiverUncheckedCreateWithoutApprovalRequestInput>
+  }
+
+  export type SODWaiverCreateManyApprovalRequestInputEnvelope = {
+    data: SODWaiverCreateManyApprovalRequestInput | SODWaiverCreateManyApprovalRequestInput[]
     skipDuplicates?: boolean
   }
 
@@ -100999,6 +103356,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalRequestsSubmittedInput = {
@@ -101063,6 +103423,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutApprovalRequestsDecidedInput = {
@@ -101138,6 +103501,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalRequestsDecidedInput = {
@@ -101202,6 +103568,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type ApprovalStepInstanceUpsertWithWhereUniqueWithoutRequestInput = {
@@ -101236,6 +103605,22 @@ export namespace Prisma {
     data: XOR<ApprovalDecisionRecordUpdateManyMutationInput, ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestInput>
   }
 
+  export type SODWaiverUpsertWithWhereUniqueWithoutApprovalRequestInput = {
+    where: SODWaiverWhereUniqueInput
+    update: XOR<SODWaiverUpdateWithoutApprovalRequestInput, SODWaiverUncheckedUpdateWithoutApprovalRequestInput>
+    create: XOR<SODWaiverCreateWithoutApprovalRequestInput, SODWaiverUncheckedCreateWithoutApprovalRequestInput>
+  }
+
+  export type SODWaiverUpdateWithWhereUniqueWithoutApprovalRequestInput = {
+    where: SODWaiverWhereUniqueInput
+    data: XOR<SODWaiverUpdateWithoutApprovalRequestInput, SODWaiverUncheckedUpdateWithoutApprovalRequestInput>
+  }
+
+  export type SODWaiverUpdateManyWithWhereWithoutApprovalRequestInput = {
+    where: SODWaiverScalarWhereInput
+    data: XOR<SODWaiverUpdateManyMutationInput, SODWaiverUncheckedUpdateManyWithoutApprovalRequestInput>
+  }
+
   export type ApprovalRequestCreateWithoutStepInstancesInput = {
     id?: string
     entityType: $Enums.ApprovalEntityType
@@ -101252,6 +103637,7 @@ export namespace Prisma {
     submittedBy: UserCreateNestedOneWithoutApprovalRequestsSubmittedInput
     decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
     decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestUncheckedCreateWithoutStepInstancesInput = {
@@ -101270,6 +103656,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverUncheckedCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestCreateOrConnectWithoutStepInstancesInput = {
@@ -101390,6 +103777,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -101454,6 +103844,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -101523,6 +103916,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalStepInstancesDecidedInput = {
@@ -101587,6 +103983,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalStepInstancesDecidedInput = {
@@ -101655,6 +104054,7 @@ export namespace Prisma {
     submittedBy?: UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput
     decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
     decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateWithoutStepInstancesInput = {
@@ -101673,6 +104073,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUncheckedUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type RoleUpsertWithoutApprovalStepInstanceAssigneeRoleInput = {
@@ -101805,6 +104206,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -101869,6 +104273,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutApprovalStepInstancesDecidedInput = {
@@ -101944,6 +104351,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalStepInstancesDecidedInput = {
@@ -102008,6 +104418,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type ApprovalDecisionRecordUpsertWithWhereUniqueWithoutStepInstanceInput = {
@@ -102042,6 +104455,7 @@ export namespace Prisma {
     submittedBy: UserCreateNestedOneWithoutApprovalRequestsSubmittedInput
     decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
     stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestUncheckedCreateWithoutDecisionRecordsInput = {
@@ -102060,6 +104474,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverUncheckedCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestCreateOrConnectWithoutDecisionRecordsInput = {
@@ -102170,6 +104585,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalDecisionRecordsInput = {
@@ -102234,6 +104652,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalDecisionRecordsInput = {
@@ -102268,6 +104689,7 @@ export namespace Prisma {
     submittedBy?: UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput
     decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
     stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateWithoutDecisionRecordsInput = {
@@ -102286,6 +104708,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUncheckedUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalStepInstanceUpsertWithoutDecisionsInput = {
@@ -102408,6 +104831,9 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalDecisionRecordsInput = {
@@ -102472,6 +104898,953 @@ export namespace Prisma {
     approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+  }
+
+  export type UserCreateWithoutSodWaiversAsUserInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+  }
+
+  export type UserUncheckedCreateWithoutSodWaiversAsUserInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+  }
+
+  export type UserCreateOrConnectWithoutSodWaiversAsUserInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSodWaiversAsUserInput, UserUncheckedCreateWithoutSodWaiversAsUserInput>
+  }
+
+  export type UserCreateWithoutSodWaiversRecordedByInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+  }
+
+  export type UserUncheckedCreateWithoutSodWaiversRecordedByInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+  }
+
+  export type UserCreateOrConnectWithoutSodWaiversRecordedByInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSodWaiversRecordedByInput, UserUncheckedCreateWithoutSodWaiversRecordedByInput>
+  }
+
+  export type ApprovalRequestCreateWithoutSodWaiversInput = {
+    id?: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutApprovalRequestsInput
+    policy: ApprovalPolicyCreateNestedOneWithoutRequestsInput
+    submittedBy: UserCreateNestedOneWithoutApprovalRequestsSubmittedInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
+    stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestUncheckedCreateWithoutSodWaiversInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestCreateOrConnectWithoutSodWaiversInput = {
+    where: ApprovalRequestWhereUniqueInput
+    create: XOR<ApprovalRequestCreateWithoutSodWaiversInput, ApprovalRequestUncheckedCreateWithoutSodWaiversInput>
+  }
+
+  export type UserCreateWithoutSodWaiversReviewedByInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+  }
+
+  export type UserUncheckedCreateWithoutSodWaiversReviewedByInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+  }
+
+  export type UserCreateOrConnectWithoutSodWaiversReviewedByInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSodWaiversReviewedByInput, UserUncheckedCreateWithoutSodWaiversReviewedByInput>
+  }
+
+  export type UserUpsertWithoutSodWaiversAsUserInput = {
+    update: XOR<UserUpdateWithoutSodWaiversAsUserInput, UserUncheckedUpdateWithoutSodWaiversAsUserInput>
+    create: XOR<UserCreateWithoutSodWaiversAsUserInput, UserUncheckedCreateWithoutSodWaiversAsUserInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSodWaiversAsUserInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSodWaiversAsUserInput, UserUncheckedUpdateWithoutSodWaiversAsUserInput>
+  }
+
+  export type UserUpdateWithoutSodWaiversAsUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSodWaiversAsUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+  }
+
+  export type UserUpsertWithoutSodWaiversRecordedByInput = {
+    update: XOR<UserUpdateWithoutSodWaiversRecordedByInput, UserUncheckedUpdateWithoutSodWaiversRecordedByInput>
+    create: XOR<UserCreateWithoutSodWaiversRecordedByInput, UserUncheckedCreateWithoutSodWaiversRecordedByInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSodWaiversRecordedByInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSodWaiversRecordedByInput, UserUncheckedUpdateWithoutSodWaiversRecordedByInput>
+  }
+
+  export type UserUpdateWithoutSodWaiversRecordedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSodWaiversRecordedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+  }
+
+  export type ApprovalRequestUpsertWithoutSodWaiversInput = {
+    update: XOR<ApprovalRequestUpdateWithoutSodWaiversInput, ApprovalRequestUncheckedUpdateWithoutSodWaiversInput>
+    create: XOR<ApprovalRequestCreateWithoutSodWaiversInput, ApprovalRequestUncheckedCreateWithoutSodWaiversInput>
+    where?: ApprovalRequestWhereInput
+  }
+
+  export type ApprovalRequestUpdateToOneWithWhereWithoutSodWaiversInput = {
+    where?: ApprovalRequestWhereInput
+    data: XOR<ApprovalRequestUpdateWithoutSodWaiversInput, ApprovalRequestUncheckedUpdateWithoutSodWaiversInput>
+  }
+
+  export type ApprovalRequestUpdateWithoutSodWaiversInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutApprovalRequestsNestedInput
+    policy?: ApprovalPolicyUpdateOneRequiredWithoutRequestsNestedInput
+    submittedBy?: UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
+    stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateWithoutSodWaiversInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type UserUpsertWithoutSodWaiversReviewedByInput = {
+    update: XOR<UserUpdateWithoutSodWaiversReviewedByInput, UserUncheckedUpdateWithoutSodWaiversReviewedByInput>
+    create: XOR<UserCreateWithoutSodWaiversReviewedByInput, UserUncheckedCreateWithoutSodWaiversReviewedByInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSodWaiversReviewedByInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSodWaiversReviewedByInput, UserUncheckedUpdateWithoutSodWaiversReviewedByInput>
+  }
+
+  export type UserUpdateWithoutSodWaiversReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSodWaiversReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
   }
 
   export type OrganizationMembershipCreateWithoutOrganizationInput = {
@@ -103356,6 +106729,7 @@ export namespace Prisma {
     decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
     stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
     decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestUncheckedCreateWithoutOrganizationInput = {
@@ -103374,6 +106748,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
     decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+    sodWaivers?: SODWaiverUncheckedCreateNestedManyWithoutApprovalRequestInput
   }
 
   export type ApprovalRequestCreateOrConnectWithoutOrganizationInput = {
@@ -104247,6 +107622,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutPrimaryLocationInput = {
@@ -104311,6 +107689,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutPrimaryLocationInput = {
@@ -104883,6 +108264,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutHomeDepartmentInput = {
@@ -104947,6 +108331,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutHomeDepartmentInput = {
@@ -107189,6 +110576,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsRequestedInput = {
@@ -107253,6 +110643,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsRequestedInput = {
@@ -107322,6 +110715,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsApprovedInput = {
@@ -107386,6 +110782,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsApprovedInput = {
@@ -107591,6 +110990,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsRequestedInput = {
@@ -107655,6 +111057,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsApprovedInput = {
@@ -107730,6 +111135,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsApprovedInput = {
@@ -107794,6 +111202,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput = {
@@ -110920,6 +114331,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesSubmittedInput = {
@@ -110984,6 +114398,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesSubmittedInput = {
@@ -111053,6 +114470,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesApprovedInput = {
@@ -111117,6 +114537,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesApprovedInput = {
@@ -111186,6 +114609,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesPostedInput = {
@@ -111250,6 +114676,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesPostedInput = {
@@ -111319,6 +114748,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesReversedInput = {
@@ -111383,6 +114815,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesReversedInput = {
@@ -111945,6 +115380,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesSubmittedInput = {
@@ -112009,6 +115447,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesApprovedInput = {
@@ -112084,6 +115525,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesApprovedInput = {
@@ -112148,6 +115592,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesPostedInput = {
@@ -112223,6 +115670,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesPostedInput = {
@@ -112287,6 +115737,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesReversedInput = {
@@ -112362,6 +115815,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesReversedInput = {
@@ -112426,6 +115882,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutEntryInput = {
@@ -114148,6 +117607,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsCreatedInput = {
@@ -114212,6 +117674,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsCreatedInput = {
@@ -114281,6 +117746,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsSubmittedInput = {
@@ -114345,6 +117813,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsSubmittedInput = {
@@ -114414,6 +117885,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsApprovedInput = {
@@ -114478,6 +117952,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsApprovedInput = {
@@ -114547,6 +118024,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsPostedInput = {
@@ -114611,6 +118091,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsPostedInput = {
@@ -114680,6 +118163,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsReversedInput = {
@@ -114744,6 +118230,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsReversedInput = {
@@ -115498,6 +118987,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsCreatedInput = {
@@ -115562,6 +119054,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsSubmittedInput = {
@@ -115637,6 +119132,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsSubmittedInput = {
@@ -115701,6 +119199,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsApprovedInput = {
@@ -115776,6 +119277,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsApprovedInput = {
@@ -115840,6 +119344,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsPostedInput = {
@@ -115915,6 +119422,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsPostedInput = {
@@ -115979,6 +119489,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsReversedInput = {
@@ -116054,6 +119567,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsReversedInput = {
@@ -116118,6 +119634,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type ReversalReasonCodeUpsertWithoutTransactionsInput = {
@@ -117003,6 +120522,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutOrganizationMembershipsInput = {
@@ -117067,6 +120589,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutOrganizationMembershipsInput = {
@@ -117238,6 +120763,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganizationMembershipsInput = {
@@ -117302,6 +120830,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type SecurityEventCreateWithoutAuditLogInput = {
@@ -117588,6 +121119,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -117652,6 +121186,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -117732,6 +121269,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -117796,6 +121336,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserCreateWithoutNotificationPreferencesInput = {
@@ -117860,6 +121403,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationPreferencesInput = {
@@ -117924,6 +121470,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationPreferencesInput = {
@@ -118004,6 +121553,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationPreferencesInput = {
@@ -118068,6 +121620,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type OrganizationMembershipCreateManyUserInput = {
@@ -118681,6 +122236,45 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type SODWaiverCreateManyUserInput = {
+    id?: string
+    transactionId: string
+    reason: string
+    recordedById: string
+    recordedAt?: Date | string
+    approvalRequestId: string
+    status?: $Enums.SODWaiverStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+  }
+
+  export type SODWaiverCreateManyRecordedByInput = {
+    id?: string
+    userId: string
+    transactionId: string
+    reason: string
+    recordedAt?: Date | string
+    approvalRequestId: string
+    status?: $Enums.SODWaiverStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+  }
+
+  export type SODWaiverCreateManyReviewedByInput = {
+    id?: string
+    userId: string
+    transactionId: string
+    reason: string
+    recordedById: string
+    recordedAt?: Date | string
+    approvalRequestId: string
+    status?: $Enums.SODWaiverStatus
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
+  }
+
   export type OrganizationMembershipUpdateWithoutUserInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -119148,6 +122742,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedByInput = {
@@ -119212,6 +122809,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCreatedByInput = {
@@ -119311,6 +122911,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedByInput = {
@@ -119375,6 +122978,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutUpdatedByInput = {
@@ -120406,6 +124012,7 @@ export namespace Prisma {
     decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
     stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
     decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateWithoutSubmittedByInput = {
@@ -120424,6 +124031,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
     decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUncheckedUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateManyWithoutSubmittedByInput = {
@@ -120458,6 +124066,7 @@ export namespace Prisma {
     submittedBy?: UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput
     stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
     decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateWithoutDecidedByInput = {
@@ -120476,6 +124085,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
     decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUncheckedUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateManyWithoutDecidedByInput = {
@@ -120688,6 +124298,123 @@ export namespace Prisma {
     decidedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SODWaiverUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedBy?: UserUpdateOneRequiredWithoutSodWaiversRecordedByNestedInput
+    approvalRequest?: ApprovalRequestUpdateOneRequiredWithoutSodWaiversNestedInput
+    reviewedBy?: UserUpdateOneWithoutSodWaiversReviewedByNestedInput
+  }
+
+  export type SODWaiverUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedById?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvalRequestId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SODWaiverUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedById?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvalRequestId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SODWaiverUpdateWithoutRecordedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutSodWaiversAsUserNestedInput
+    approvalRequest?: ApprovalRequestUpdateOneRequiredWithoutSodWaiversNestedInput
+    reviewedBy?: UserUpdateOneWithoutSodWaiversReviewedByNestedInput
+  }
+
+  export type SODWaiverUncheckedUpdateWithoutRecordedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvalRequestId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SODWaiverUncheckedUpdateManyWithoutRecordedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvalRequestId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SODWaiverUpdateWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutSodWaiversAsUserNestedInput
+    recordedBy?: UserUpdateOneRequiredWithoutSodWaiversRecordedByNestedInput
+    approvalRequest?: ApprovalRequestUpdateOneRequiredWithoutSodWaiversNestedInput
+  }
+
+  export type SODWaiverUncheckedUpdateWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedById?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvalRequestId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SODWaiverUncheckedUpdateManyWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedById?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvalRequestId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RolePermissionCreateManyRoleInput = {
@@ -121260,6 +124987,7 @@ export namespace Prisma {
     decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
     stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
     decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateWithoutPolicyInput = {
@@ -121278,6 +125006,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
     decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUncheckedUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateManyWithoutPolicyInput = {
@@ -121323,6 +125052,19 @@ export namespace Prisma {
     sodWaiverId?: string | null
     delegationId?: string | null
     createdAt?: Date | string
+  }
+
+  export type SODWaiverCreateManyApprovalRequestInput = {
+    id?: string
+    userId: string
+    transactionId: string
+    reason: string
+    recordedById: string
+    recordedAt?: Date | string
+    status?: $Enums.SODWaiverStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    reviewReason?: string | null
   }
 
   export type ApprovalStepInstanceUpdateWithoutRequestInput = {
@@ -121412,6 +125154,45 @@ export namespace Prisma {
     sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
     delegationId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SODWaiverUpdateWithoutApprovalRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutSodWaiversAsUserNestedInput
+    recordedBy?: UserUpdateOneRequiredWithoutSodWaiversRecordedByNestedInput
+    reviewedBy?: UserUpdateOneWithoutSodWaiversReviewedByNestedInput
+  }
+
+  export type SODWaiverUncheckedUpdateWithoutApprovalRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedById?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SODWaiverUncheckedUpdateManyWithoutApprovalRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    transactionId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    recordedById?: StringFieldUpdateOperationsInput | string
+    recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ApprovalDecisionRecordCreateManyStepInstanceInput = {
@@ -122756,6 +126537,7 @@ export namespace Prisma {
     decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
     stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
     decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateWithoutOrganizationInput = {
@@ -122774,6 +126556,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
     decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+    sodWaivers?: SODWaiverUncheckedUpdateManyWithoutApprovalRequestNestedInput
   }
 
   export type ApprovalRequestUncheckedUpdateManyWithoutOrganizationInput = {
@@ -123018,6 +126801,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPrimaryLocationInput = {
@@ -123082,6 +126868,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutPrimaryLocationInput = {
@@ -123493,6 +127282,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHomeDepartmentInput = {
@@ -123557,6 +127349,9 @@ export namespace Prisma {
     approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
     approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutHomeDepartmentInput = {

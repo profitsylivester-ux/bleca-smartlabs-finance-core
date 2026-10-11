@@ -504,6 +504,8 @@ enum AuditAction {
   APPROVAL_REQUEST_CANCELLED
   APPROVAL_STEP_DECIDED
   APPROVAL_DECISION_RECORDED
+  SOD_WAIVER_GRANTED
+  SOD_WAIVER_REJECTED
 }
 
 enum AuditEntityType {
@@ -540,6 +542,7 @@ enum AuditEntityType {
   APPROVAL_REQUEST
   APPROVAL_STEP_INSTANCE
   APPROVAL_DECISION_RECORD
+  SOD_WAIVER
 }
 
 enum AuditResult {
@@ -729,6 +732,14 @@ enum ApprovalDecision {
   CANCELLED
 }
 
+/// Approval Workflow enums (M6) --------------------------------------------------
+enum SODWaiverStatus {
+  PENDING
+  GRANTED
+  REJECTED
+  EXPIRED
+}
+
 // ============================================================================
 // B1. IDENTITY, ACCESS & AUTHENTICATION   (PDF 4, PDF 5)
 // ============================================================================
@@ -816,6 +827,9 @@ model User {
   approvalDecisionRecords     ApprovalDecisionRecord[] @relation("ApprovalDecisionRecordActor")
   approvalPolicyStepAssigneeUser ApprovalPolicyStep[] @relation("ApprovalPolicyStepAssigneeUser")
   approvalStepInstanceAssigneeUser ApprovalStepInstance[] @relation("ApprovalStepInstanceAssigneeUser")
+  sodWaiversAsUser            SODWaiver[] @relation("SODWaiverUser")
+  sodWaiversRecordedBy        SODWaiver[] @relation("SODWaiverRecordedBy")
+  sodWaiversReviewedBy        SODWaiver[] @relation("SODWaiverReviewedBy")
 
   @@index([status, isActive])
   @@index([primaryLocationId])
@@ -1194,6 +1208,7 @@ model ApprovalRequest {
 
   stepInstances    ApprovalStepInstance[] @relation("ApprovalRequestStepInstances")
   decisionRecords  ApprovalDecisionRecord[] @relation("ApprovalRequestDecisionRecords")
+  sodWaivers       SODWaiver[]
 
   @@index([organizationId, entityType, entityId])
   @@index([status])
@@ -1250,6 +1265,30 @@ model ApprovalDecisionRecord {
   @@index([stepInstanceId])
   @@index([actorId])
   @@map("approval_decision_records")
+}
+
+model SODWaiver {
+  id                 String         @id @default(cuid())
+  userId             String         @map("user_id")
+  user               User           @relation("SODWaiverUser", fields: [userId], references: [id], onDelete: Cascade)
+  transactionId      String         @map("transaction_id")
+  reason             String
+  recordedById       String         @map("recorded_by_id")
+  recordedBy         User           @relation("SODWaiverRecordedBy", fields: [recordedById], references: [id])
+  recordedAt         DateTime       @default(now()) @map("recorded_at")
+  approvalRequestId  String         @map("approval_request_id")
+  approvalRequest    ApprovalRequest @relation(fields: [approvalRequestId], references: [id], onDelete: Cascade)
+  status             SODWaiverStatus @default(PENDING)
+  reviewedById       String?        @map("reviewed_by_id")
+  reviewedBy         User?          @relation("SODWaiverReviewedBy", fields: [reviewedById], references: [id])
+  reviewedAt         DateTime?      @map("reviewed_at")
+  reviewReason       String?        @map("review_reason")
+
+  @@index([userId])
+  @@index([transactionId])
+  @@index([approvalRequestId])
+  @@index([status])
+  @@map("sod_waivers")
 }
 
 // ============================================================================

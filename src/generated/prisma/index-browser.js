@@ -412,6 +412,20 @@ exports.Prisma.ApprovalDecisionRecordScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SODWaiverScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  transactionId: 'transactionId',
+  reason: 'reason',
+  recordedById: 'recordedById',
+  recordedAt: 'recordedAt',
+  approvalRequestId: 'approvalRequestId',
+  status: 'status',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  reviewReason: 'reviewReason'
+};
+
 exports.Prisma.OrganizationScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -1135,6 +1149,13 @@ exports.ApprovalDecision = exports.$Enums.ApprovalDecision = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.SODWaiverStatus = exports.$Enums.SODWaiverStatus = {
+  PENDING: 'PENDING',
+  GRANTED: 'GRANTED',
+  REJECTED: 'REJECTED',
+  EXPIRED: 'EXPIRED'
+};
+
 exports.OrganizationType = exports.$Enums.OrganizationType = {
   SINGLE_ENTITY: 'SINGLE_ENTITY'
 };
@@ -1221,7 +1242,8 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   APPROVAL_POLICY: 'APPROVAL_POLICY',
   APPROVAL_REQUEST: 'APPROVAL_REQUEST',
   APPROVAL_STEP_INSTANCE: 'APPROVAL_STEP_INSTANCE',
-  APPROVAL_DECISION_RECORD: 'APPROVAL_DECISION_RECORD'
+  APPROVAL_DECISION_RECORD: 'APPROVAL_DECISION_RECORD',
+  SOD_WAIVER: 'SOD_WAIVER'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -1457,7 +1479,9 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   APPROVAL_REQUEST_REJECTED: 'APPROVAL_REQUEST_REJECTED',
   APPROVAL_REQUEST_CANCELLED: 'APPROVAL_REQUEST_CANCELLED',
   APPROVAL_STEP_DECIDED: 'APPROVAL_STEP_DECIDED',
-  APPROVAL_DECISION_RECORDED: 'APPROVAL_DECISION_RECORDED'
+  APPROVAL_DECISION_RECORDED: 'APPROVAL_DECISION_RECORDED',
+  SOD_WAIVER_GRANTED: 'SOD_WAIVER_GRANTED',
+  SOD_WAIVER_REJECTED: 'SOD_WAIVER_REJECTED'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -1569,6 +1593,7 @@ exports.Prisma.ModelName = {
   ApprovalRequest: 'ApprovalRequest',
   ApprovalStepInstance: 'ApprovalStepInstance',
   ApprovalDecisionRecord: 'ApprovalDecisionRecord',
+  SODWaiver: 'SODWaiver',
   Organization: 'Organization',
   Location: 'Location',
   Department: 'Department',

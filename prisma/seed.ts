@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { PrismaClient } from '../src/generated/prisma/client';
+import { PrismaClient, Prisma } from '../src/generated/prisma/client';
 import { hashPassword } from '../src/lib/auth/password';
 import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, CHART_OF_ACCOUNTS_PDF7, REVERSAL_REASON_CODES, type AccountSeed } from './seed-data';
 
@@ -253,10 +253,10 @@ async function seedApprovalPolicy(orgId: string) {
           assigneeType: 'ROLE',
           assigneeRoleId: ceoRole.id,
           resolutionMode: 'ANY',
-          conditionOperator: 'ALWAYS',
-          conditionValue: null,
-          isRequired: true,
-          isFinalApprover: true,
+conditionOperator: 'ALWAYS',
+            conditionValue: Prisma.JsonNull,
+            isRequired: true,
+            isFinalApprover: true,
         },
       ],
     });
@@ -292,8 +292,8 @@ async function seedApprovalPolicy(orgId: string) {
             assigneeType: 'ROLE',
             assigneeRoleId: ceoRole.id,
             resolutionMode: 'ANY',
-            conditionOperator: 'ALWAYS',
-            conditionValue: null,
+conditionOperator: 'ALWAYS',
+            conditionValue: Prisma.JsonNull,
             isRequired: true,
             isFinalApprover: true,
           },
