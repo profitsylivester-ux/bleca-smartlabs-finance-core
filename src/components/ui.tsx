@@ -1,4 +1,5 @@
 import { cn } from '@/lib/format';
+import React, { useState, useEffect } from 'react';
 
 export function Button({
   className,
@@ -221,4 +222,71 @@ export function Select({ className, ...props }: React.SelectHTMLAttributes<HTMLS
 
 export function SelectOption({ value, children, ...props }: React.OptionHTMLAttributes<HTMLOptionElement>) {
   return <option value={value} {...props}>{children}</option>;
+}
+
+export function Tabs({ value, onValueChange, children, className, ...props }: {
+  value: string;
+  onValueChange: (value: string) => void;
+  children: React.ReactNode | ((props: { value: string; onValueChange: (value: string) => void }) => React.ReactNode);
+  className?: string;
+}) {
+  return (
+    <div className={className} {...props}>
+      {typeof children === 'function' ? children({ value, onValueChange }) : children}
+    </div>
+  );
+}
+
+export function TabsList({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn('flex gap-1 p-1 border-border-subtle rounded-md border bg-surface-muted', className)} {...props}>
+      {children}
+    </div>
+  );
+}
+
+export function TabsTrigger({ value, children, className, ...props }: {
+  value: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <button
+      role="tab"
+      aria-selected="false"
+      className={cn(
+        'px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
+        'hover:bg-white/50',
+        'data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-navy-800',
+        className,
+      )}
+      onClick={() => {
+        const event = new CustomEvent('tabs-trigger-click', { detail: { value } });
+        window.dispatchEvent(event);
+      }}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function TabsContent({ value, children, className, ...props }: {
+  value: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const [activeValue, setActiveValue] = useState(value);
+
+  useEffect(() => {
+    const handleClick = (e: CustomEvent) => {
+      setActiveValue(e.detail.value);
+    };
+    window.addEventListener('tabs-trigger-click', handleClick as EventListener);
+    return () => window.removeEventListener('tabs-trigger-click', handleClick as EventListener);
+  }, []);
+
+  if (activeValue !== value) return null;
+
+  return <div className={cn('mt-2', className)} {...props}>{children}</div>;
 }
