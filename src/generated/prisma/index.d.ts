@@ -153,6 +153,12 @@ export type TreasuryAccount = $Result.DefaultSelection<Prisma.$TreasuryAccountPa
  */
 export type PaymentSchedule = $Result.DefaultSelection<Prisma.$PaymentSchedulePayload>
 /**
+ * Model Transfer
+ * Transfers — PDF §10: single balanced JournalEntry with credit on source, debit on destination.
+ * Cross-currency produces FX difference entry. Never distorts P&L.
+ */
+export type Transfer = $Result.DefaultSelection<Prisma.$TransferPayload>
+/**
  * Model Currency
  * 
  */
@@ -877,7 +883,8 @@ export const AuditEntityType: {
   APPROVAL_DECISION_RECORD: 'APPROVAL_DECISION_RECORD',
   SOD_WAIVER: 'SOD_WAIVER',
   TREASURY_ACCOUNT: 'TREASURY_ACCOUNT',
-  PAYMENT_SCHEDULE: 'PAYMENT_SCHEDULE'
+  PAYMENT_SCHEDULE: 'PAYMENT_SCHEDULE',
+  TRANSFER: 'TRANSFER'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -1125,6 +1132,19 @@ export const SODWaiverStatus: {
 
 export type SODWaiverStatus = (typeof SODWaiverStatus)[keyof typeof SODWaiverStatus]
 
+
+export const TransferStatus: {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  PROCESSED: 'PROCESSED',
+  FAILED: 'FAILED',
+  REVERSED: 'REVERSED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type TransferStatus = (typeof TransferStatus)[keyof typeof TransferStatus]
+
 }
 
 export type UserStatus = $Enums.UserStatus
@@ -1358,6 +1378,10 @@ export const ApprovalDecision: typeof $Enums.ApprovalDecision
 export type SODWaiverStatus = $Enums.SODWaiverStatus
 
 export const SODWaiverStatus: typeof $Enums.SODWaiverStatus
+
+export type TransferStatus = $Enums.TransferStatus
+
+export const TransferStatus: typeof $Enums.TransferStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1746,6 +1770,16 @@ export class PrismaClient<
     * ```
     */
   get paymentSchedule(): Prisma.PaymentScheduleDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transfer`: Exposes CRUD operations for the **Transfer** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Transfers
+    * const transfers = await prisma.transfer.findMany()
+    * ```
+    */
+  get transfer(): Prisma.TransferDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.currency`: Exposes CRUD operations for the **Currency** model.
@@ -2454,6 +2488,7 @@ export namespace Prisma {
     FundingSource: 'FundingSource',
     TreasuryAccount: 'TreasuryAccount',
     PaymentSchedule: 'PaymentSchedule',
+    Transfer: 'Transfer',
     Currency: 'Currency',
     ExchangeRate: 'ExchangeRate',
     MasterDataChangeRequest: 'MasterDataChangeRequest',
@@ -2496,7 +2531,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "treasuryAccount" | "paymentSchedule" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "treasuryAccount" | "paymentSchedule" | "transfer" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4498,6 +4533,80 @@ export namespace Prisma {
           }
         }
       }
+      Transfer: {
+        payload: Prisma.$TransferPayload<ExtArgs>
+        fields: Prisma.TransferFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransferFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransferFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload>
+          }
+          findFirst: {
+            args: Prisma.TransferFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransferFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload>
+          }
+          findMany: {
+            args: Prisma.TransferFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload>[]
+          }
+          create: {
+            args: Prisma.TransferCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload>
+          }
+          createMany: {
+            args: Prisma.TransferCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TransferCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload>[]
+          }
+          delete: {
+            args: Prisma.TransferDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload>
+          }
+          update: {
+            args: Prisma.TransferUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload>
+          }
+          deleteMany: {
+            args: Prisma.TransferDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransferUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TransferUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload>[]
+          }
+          upsert: {
+            args: Prisma.TransferUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferPayload>
+          }
+          aggregate: {
+            args: Prisma.TransferAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransfer>
+          }
+          groupBy: {
+            args: Prisma.TransferGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransferGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TransferCountArgs<ExtArgs>
+            result: $Utils.Optional<TransferCountAggregateOutputType> | number
+          }
+        }
+      }
       Currency: {
         payload: Prisma.$CurrencyPayload<ExtArgs>
         fields: Prisma.CurrencyFieldRefs
@@ -6397,6 +6506,7 @@ export namespace Prisma {
     fundingSource?: FundingSourceOmit
     treasuryAccount?: TreasuryAccountOmit
     paymentSchedule?: PaymentScheduleOmit
+    transfer?: TransferOmit
     currency?: CurrencyOmit
     exchangeRate?: ExchangeRateOmit
     masterDataChangeRequest?: MasterDataChangeRequestOmit
@@ -6533,6 +6643,10 @@ export namespace Prisma {
     sodWaiversAsUser: number
     sodWaiversRecordedBy: number
     sodWaiversReviewedBy: number
+    transfersSubmitted: number
+    transfersApproved: number
+    transfersProcessed: number
+    transfersReversed: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6568,6 +6682,10 @@ export namespace Prisma {
     sodWaiversAsUser?: boolean | UserCountOutputTypeCountSodWaiversAsUserArgs
     sodWaiversRecordedBy?: boolean | UserCountOutputTypeCountSodWaiversRecordedByArgs
     sodWaiversReviewedBy?: boolean | UserCountOutputTypeCountSodWaiversReviewedByArgs
+    transfersSubmitted?: boolean | UserCountOutputTypeCountTransfersSubmittedArgs
+    transfersApproved?: boolean | UserCountOutputTypeCountTransfersApprovedArgs
+    transfersProcessed?: boolean | UserCountOutputTypeCountTransfersProcessedArgs
+    transfersReversed?: boolean | UserCountOutputTypeCountTransfersReversedArgs
   }
 
   // Custom InputTypes
@@ -6803,6 +6921,34 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSodWaiversReviewedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SODWaiverWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTransfersSubmittedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTransfersApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTransfersProcessedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTransfersReversedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
   }
 
 
@@ -7110,6 +7256,7 @@ export namespace Prisma {
     approvalRequests: number
     treasuryAccounts: number
     paymentSchedules: number
+    transfers: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7136,6 +7283,7 @@ export namespace Prisma {
     approvalRequests?: boolean | OrganizationCountOutputTypeCountApprovalRequestsArgs
     treasuryAccounts?: boolean | OrganizationCountOutputTypeCountTreasuryAccountsArgs
     paymentSchedules?: boolean | OrganizationCountOutputTypeCountPaymentSchedulesArgs
+    transfers?: boolean | OrganizationCountOutputTypeCountTransfersArgs
   }
 
   // Custom InputTypes
@@ -7308,6 +7456,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountPaymentSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PaymentScheduleWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
   }
 
 
@@ -7582,12 +7737,16 @@ export namespace Prisma {
     journalLines: number
     transactions: number
     paymentSchedules: number
+    transfersAsSource: number
+    transfersAsDestination: number
   }
 
   export type TreasuryAccountCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     journalLines?: boolean | TreasuryAccountCountOutputTypeCountJournalLinesArgs
     transactions?: boolean | TreasuryAccountCountOutputTypeCountTransactionsArgs
     paymentSchedules?: boolean | TreasuryAccountCountOutputTypeCountPaymentSchedulesArgs
+    transfersAsSource?: boolean | TreasuryAccountCountOutputTypeCountTransfersAsSourceArgs
+    transfersAsDestination?: boolean | TreasuryAccountCountOutputTypeCountTransfersAsDestinationArgs
   }
 
   // Custom InputTypes
@@ -7622,6 +7781,20 @@ export namespace Prisma {
     where?: PaymentScheduleWhereInput
   }
 
+  /**
+   * TreasuryAccountCountOutputType without action
+   */
+  export type TreasuryAccountCountOutputTypeCountTransfersAsSourceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
+  }
+
+  /**
+   * TreasuryAccountCountOutputType without action
+   */
+  export type TreasuryAccountCountOutputTypeCountTransfersAsDestinationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
+  }
+
 
   /**
    * Count Type CurrencyCountOutputType
@@ -7637,6 +7810,8 @@ export namespace Prisma {
     transactions: number
     treasuryAccounts: number
     paymentSchedules: number
+    transfers: number
+    transfersAsDestinationCurrency: number
   }
 
   export type CurrencyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7649,6 +7824,8 @@ export namespace Prisma {
     transactions?: boolean | CurrencyCountOutputTypeCountTransactionsArgs
     treasuryAccounts?: boolean | CurrencyCountOutputTypeCountTreasuryAccountsArgs
     paymentSchedules?: boolean | CurrencyCountOutputTypeCountPaymentSchedulesArgs
+    transfers?: boolean | CurrencyCountOutputTypeCountTransfersArgs
+    transfersAsDestinationCurrency?: boolean | CurrencyCountOutputTypeCountTransfersAsDestinationCurrencyArgs
   }
 
   // Custom InputTypes
@@ -7723,6 +7900,20 @@ export namespace Prisma {
    */
   export type CurrencyCountOutputTypeCountPaymentSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PaymentScheduleWhereInput
+  }
+
+  /**
+   * CurrencyCountOutputType without action
+   */
+  export type CurrencyCountOutputTypeCountTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
+  }
+
+  /**
+   * CurrencyCountOutputType without action
+   */
+  export type CurrencyCountOutputTypeCountTransfersAsDestinationCurrencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
   }
 
 
@@ -7899,12 +8090,16 @@ export namespace Prisma {
     adjustedEntries: number
     reversingEntries: number
     lines: number
+    transfers: number
+    reversalTransfers: number
   }
 
   export type JournalEntryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     adjustedEntries?: boolean | JournalEntryCountOutputTypeCountAdjustedEntriesArgs
     reversingEntries?: boolean | JournalEntryCountOutputTypeCountReversingEntriesArgs
     lines?: boolean | JournalEntryCountOutputTypeCountLinesArgs
+    transfers?: boolean | JournalEntryCountOutputTypeCountTransfersArgs
+    reversalTransfers?: boolean | JournalEntryCountOutputTypeCountReversalTransfersArgs
   }
 
   // Custom InputTypes
@@ -7939,6 +8134,20 @@ export namespace Prisma {
     where?: JournalLineWhereInput
   }
 
+  /**
+   * JournalEntryCountOutputType without action
+   */
+  export type JournalEntryCountOutputTypeCountTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
+  }
+
+  /**
+   * JournalEntryCountOutputType without action
+   */
+  export type JournalEntryCountOutputTypeCountReversalTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
+  }
+
 
   /**
    * Count Type ReversalReasonCodeCountOutputType
@@ -7947,11 +8156,13 @@ export namespace Prisma {
   export type ReversalReasonCodeCountOutputType = {
     journalEntries: number
     transactions: number
+    transfers: number
   }
 
   export type ReversalReasonCodeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     journalEntries?: boolean | ReversalReasonCodeCountOutputTypeCountJournalEntriesArgs
     transactions?: boolean | ReversalReasonCodeCountOutputTypeCountTransactionsArgs
+    transfers?: boolean | ReversalReasonCodeCountOutputTypeCountTransfersArgs
   }
 
   // Custom InputTypes
@@ -7977,6 +8188,13 @@ export namespace Prisma {
    */
   export type ReversalReasonCodeCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransactionWhereInput
+  }
+
+  /**
+   * ReversalReasonCodeCountOutputType without action
+   */
+  export type ReversalReasonCodeCountOutputTypeCountTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
   }
 
 
@@ -8540,6 +8758,10 @@ export namespace Prisma {
     sodWaiversAsUser?: boolean | User$sodWaiversAsUserArgs<ExtArgs>
     sodWaiversRecordedBy?: boolean | User$sodWaiversRecordedByArgs<ExtArgs>
     sodWaiversReviewedBy?: boolean | User$sodWaiversReviewedByArgs<ExtArgs>
+    transfersSubmitted?: boolean | User$transfersSubmittedArgs<ExtArgs>
+    transfersApproved?: boolean | User$transfersApprovedArgs<ExtArgs>
+    transfersProcessed?: boolean | User$transfersProcessedArgs<ExtArgs>
+    transfersReversed?: boolean | User$transfersReversedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8697,6 +8919,10 @@ export namespace Prisma {
     sodWaiversAsUser?: boolean | User$sodWaiversAsUserArgs<ExtArgs>
     sodWaiversRecordedBy?: boolean | User$sodWaiversRecordedByArgs<ExtArgs>
     sodWaiversReviewedBy?: boolean | User$sodWaiversReviewedByArgs<ExtArgs>
+    transfersSubmitted?: boolean | User$transfersSubmittedArgs<ExtArgs>
+    transfersApproved?: boolean | User$transfersApprovedArgs<ExtArgs>
+    transfersProcessed?: boolean | User$transfersProcessedArgs<ExtArgs>
+    transfersReversed?: boolean | User$transfersReversedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8751,6 +8977,10 @@ export namespace Prisma {
       sodWaiversAsUser: Prisma.$SODWaiverPayload<ExtArgs>[]
       sodWaiversRecordedBy: Prisma.$SODWaiverPayload<ExtArgs>[]
       sodWaiversReviewedBy: Prisma.$SODWaiverPayload<ExtArgs>[]
+      transfersSubmitted: Prisma.$TransferPayload<ExtArgs>[]
+      transfersApproved: Prisma.$TransferPayload<ExtArgs>[]
+      transfersProcessed: Prisma.$TransferPayload<ExtArgs>[]
+      transfersReversed: Prisma.$TransferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9227,6 +9457,10 @@ export namespace Prisma {
     sodWaiversAsUser<T extends User$sodWaiversAsUserArgs<ExtArgs> = {}>(args?: Subset<T, User$sodWaiversAsUserArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sodWaiversRecordedBy<T extends User$sodWaiversRecordedByArgs<ExtArgs> = {}>(args?: Subset<T, User$sodWaiversRecordedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sodWaiversReviewedBy<T extends User$sodWaiversReviewedByArgs<ExtArgs> = {}>(args?: Subset<T, User$sodWaiversReviewedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SODWaiverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfersSubmitted<T extends User$transfersSubmittedArgs<ExtArgs> = {}>(args?: Subset<T, User$transfersSubmittedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfersApproved<T extends User$transfersApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$transfersApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfersProcessed<T extends User$transfersProcessedArgs<ExtArgs> = {}>(args?: Subset<T, User$transfersProcessedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfersReversed<T extends User$transfersReversedArgs<ExtArgs> = {}>(args?: Subset<T, User$transfersReversedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10526,6 +10760,102 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SODWaiverScalarFieldEnum | SODWaiverScalarFieldEnum[]
+  }
+
+  /**
+   * User.transfersSubmitted
+   */
+  export type User$transfersSubmittedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * User.transfersApproved
+   */
+  export type User$transfersApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * User.transfersProcessed
+   */
+  export type User$transfersProcessedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * User.transfersReversed
+   */
+  export type User$transfersReversedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
   }
 
   /**
@@ -32551,6 +32881,7 @@ export namespace Prisma {
     approvalRequests?: boolean | Organization$approvalRequestsArgs<ExtArgs>
     treasuryAccounts?: boolean | Organization$treasuryAccountsArgs<ExtArgs>
     paymentSchedules?: boolean | Organization$paymentSchedulesArgs<ExtArgs>
+    transfers?: boolean | Organization$transfersArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -32639,6 +32970,7 @@ export namespace Prisma {
     approvalRequests?: boolean | Organization$approvalRequestsArgs<ExtArgs>
     treasuryAccounts?: boolean | Organization$treasuryAccountsArgs<ExtArgs>
     paymentSchedules?: boolean | Organization$paymentSchedulesArgs<ExtArgs>
+    transfers?: boolean | Organization$transfersArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -32670,6 +33002,7 @@ export namespace Prisma {
       approvalRequests: Prisma.$ApprovalRequestPayload<ExtArgs>[]
       treasuryAccounts: Prisma.$TreasuryAccountPayload<ExtArgs>[]
       paymentSchedules: Prisma.$PaymentSchedulePayload<ExtArgs>[]
+      transfers: Prisma.$TransferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -33112,6 +33445,7 @@ export namespace Prisma {
     approvalRequests<T extends Organization$approvalRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$approvalRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     treasuryAccounts<T extends Organization$treasuryAccountsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$treasuryAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     paymentSchedules<T extends Organization$paymentSchedulesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$paymentSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfers<T extends Organization$transfersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$transfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -34095,6 +34429,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PaymentScheduleScalarFieldEnum | PaymentScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.transfers
+   */
+  export type Organization$transfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
   }
 
   /**
@@ -40594,6 +40952,8 @@ export namespace Prisma {
     journalLines?: boolean | TreasuryAccount$journalLinesArgs<ExtArgs>
     transactions?: boolean | TreasuryAccount$transactionsArgs<ExtArgs>
     paymentSchedules?: boolean | TreasuryAccount$paymentSchedulesArgs<ExtArgs>
+    transfersAsSource?: boolean | TreasuryAccount$transfersAsSourceArgs<ExtArgs>
+    transfersAsDestination?: boolean | TreasuryAccount$transfersAsDestinationArgs<ExtArgs>
     _count?: boolean | TreasuryAccountCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["treasuryAccount"]>
 
@@ -40671,6 +41031,8 @@ export namespace Prisma {
     journalLines?: boolean | TreasuryAccount$journalLinesArgs<ExtArgs>
     transactions?: boolean | TreasuryAccount$transactionsArgs<ExtArgs>
     paymentSchedules?: boolean | TreasuryAccount$paymentSchedulesArgs<ExtArgs>
+    transfersAsSource?: boolean | TreasuryAccount$transfersAsSourceArgs<ExtArgs>
+    transfersAsDestination?: boolean | TreasuryAccount$transfersAsDestinationArgs<ExtArgs>
     _count?: boolean | TreasuryAccountCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TreasuryAccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -40699,6 +41061,8 @@ export namespace Prisma {
       journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
       paymentSchedules: Prisma.$PaymentSchedulePayload<ExtArgs>[]
+      transfersAsSource: Prisma.$TransferPayload<ExtArgs>[]
+      transfersAsDestination: Prisma.$TransferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -41124,6 +41488,8 @@ export namespace Prisma {
     journalLines<T extends TreasuryAccount$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccount$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends TreasuryAccount$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccount$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     paymentSchedules<T extends TreasuryAccount$paymentSchedulesArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccount$paymentSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfersAsSource<T extends TreasuryAccount$transfersAsSourceArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccount$transfersAsSourceArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfersAsDestination<T extends TreasuryAccount$transfersAsDestinationArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccount$transfersAsDestinationArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -41671,6 +42037,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PaymentScheduleScalarFieldEnum | PaymentScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * TreasuryAccount.transfersAsSource
+   */
+  export type TreasuryAccount$transfersAsSourceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * TreasuryAccount.transfersAsDestination
+   */
+  export type TreasuryAccount$transfersAsDestinationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
   }
 
   /**
@@ -42905,6 +43319,1619 @@ export namespace Prisma {
 
 
   /**
+   * Model Transfer
+   */
+
+  export type AggregateTransfer = {
+    _count: TransferCountAggregateOutputType | null
+    _avg: TransferAvgAggregateOutputType | null
+    _sum: TransferSumAggregateOutputType | null
+    _min: TransferMinAggregateOutputType | null
+    _max: TransferMaxAggregateOutputType | null
+  }
+
+  export type TransferAvgAggregateOutputType = {
+    amount: Decimal | null
+    destinationAmount: Decimal | null
+    fxRate: Decimal | null
+  }
+
+  export type TransferSumAggregateOutputType = {
+    amount: Decimal | null
+    destinationAmount: Decimal | null
+    fxRate: Decimal | null
+  }
+
+  export type TransferMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    status: $Enums.TransferStatus | null
+    sourceAccountId: string | null
+    destinationAccountId: string | null
+    amount: Decimal | null
+    currencyCode: string | null
+    destinationAmount: Decimal | null
+    destinationCurrencyCode: string | null
+    fxRate: Decimal | null
+    description: string | null
+    reference: string | null
+    submittedById: string | null
+    submittedAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
+    processedById: string | null
+    processedAt: Date | null
+    reversedById: string | null
+    reversedAt: Date | null
+    reversalReasonId: string | null
+    journalEntryId: string | null
+    reversalJournalEntryId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransferMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    status: $Enums.TransferStatus | null
+    sourceAccountId: string | null
+    destinationAccountId: string | null
+    amount: Decimal | null
+    currencyCode: string | null
+    destinationAmount: Decimal | null
+    destinationCurrencyCode: string | null
+    fxRate: Decimal | null
+    description: string | null
+    reference: string | null
+    submittedById: string | null
+    submittedAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
+    processedById: string | null
+    processedAt: Date | null
+    reversedById: string | null
+    reversedAt: Date | null
+    reversalReasonId: string | null
+    journalEntryId: string | null
+    reversalJournalEntryId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransferCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    code: number
+    status: number
+    sourceAccountId: number
+    destinationAccountId: number
+    amount: number
+    currencyCode: number
+    destinationAmount: number
+    destinationCurrencyCode: number
+    fxRate: number
+    description: number
+    reference: number
+    submittedById: number
+    submittedAt: number
+    approvedById: number
+    approvedAt: number
+    processedById: number
+    processedAt: number
+    reversedById: number
+    reversedAt: number
+    reversalReasonId: number
+    journalEntryId: number
+    reversalJournalEntryId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TransferAvgAggregateInputType = {
+    amount?: true
+    destinationAmount?: true
+    fxRate?: true
+  }
+
+  export type TransferSumAggregateInputType = {
+    amount?: true
+    destinationAmount?: true
+    fxRate?: true
+  }
+
+  export type TransferMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    status?: true
+    sourceAccountId?: true
+    destinationAccountId?: true
+    amount?: true
+    currencyCode?: true
+    destinationAmount?: true
+    destinationCurrencyCode?: true
+    fxRate?: true
+    description?: true
+    reference?: true
+    submittedById?: true
+    submittedAt?: true
+    approvedById?: true
+    approvedAt?: true
+    processedById?: true
+    processedAt?: true
+    reversedById?: true
+    reversedAt?: true
+    reversalReasonId?: true
+    journalEntryId?: true
+    reversalJournalEntryId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransferMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    status?: true
+    sourceAccountId?: true
+    destinationAccountId?: true
+    amount?: true
+    currencyCode?: true
+    destinationAmount?: true
+    destinationCurrencyCode?: true
+    fxRate?: true
+    description?: true
+    reference?: true
+    submittedById?: true
+    submittedAt?: true
+    approvedById?: true
+    approvedAt?: true
+    processedById?: true
+    processedAt?: true
+    reversedById?: true
+    reversedAt?: true
+    reversalReasonId?: true
+    journalEntryId?: true
+    reversalJournalEntryId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransferCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    status?: true
+    sourceAccountId?: true
+    destinationAccountId?: true
+    amount?: true
+    currencyCode?: true
+    destinationAmount?: true
+    destinationCurrencyCode?: true
+    fxRate?: true
+    description?: true
+    reference?: true
+    submittedById?: true
+    submittedAt?: true
+    approvedById?: true
+    approvedAt?: true
+    processedById?: true
+    processedAt?: true
+    reversedById?: true
+    reversedAt?: true
+    reversalReasonId?: true
+    journalEntryId?: true
+    reversalJournalEntryId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TransferAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transfer to aggregate.
+     */
+    where?: TransferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transfers to fetch.
+     */
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transfers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transfers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Transfers
+    **/
+    _count?: true | TransferCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TransferAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TransferSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransferMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransferMaxAggregateInputType
+  }
+
+  export type GetTransferAggregateType<T extends TransferAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransfer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransfer[P]>
+      : GetScalarType<T[P], AggregateTransfer[P]>
+  }
+
+
+
+
+  export type TransferGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithAggregationInput | TransferOrderByWithAggregationInput[]
+    by: TransferScalarFieldEnum[] | TransferScalarFieldEnum
+    having?: TransferScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransferCountAggregateInputType | true
+    _avg?: TransferAvgAggregateInputType
+    _sum?: TransferSumAggregateInputType
+    _min?: TransferMinAggregateInputType
+    _max?: TransferMaxAggregateInputType
+  }
+
+  export type TransferGroupByOutputType = {
+    id: string
+    organizationId: string
+    code: string
+    status: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal
+    currencyCode: string
+    destinationAmount: Decimal | null
+    destinationCurrencyCode: string | null
+    fxRate: Decimal | null
+    description: string | null
+    reference: string | null
+    submittedById: string | null
+    submittedAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
+    processedById: string | null
+    processedAt: Date | null
+    reversedById: string | null
+    reversedAt: Date | null
+    reversalReasonId: string | null
+    journalEntryId: string | null
+    reversalJournalEntryId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: TransferCountAggregateOutputType | null
+    _avg: TransferAvgAggregateOutputType | null
+    _sum: TransferSumAggregateOutputType | null
+    _min: TransferMinAggregateOutputType | null
+    _max: TransferMaxAggregateOutputType | null
+  }
+
+  type GetTransferGroupByPayload<T extends TransferGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransferGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransferGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransferGroupByOutputType[P]>
+            : GetScalarType<T[P], TransferGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransferSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    status?: boolean
+    sourceAccountId?: boolean
+    destinationAccountId?: boolean
+    amount?: boolean
+    currencyCode?: boolean
+    destinationAmount?: boolean
+    destinationCurrencyCode?: boolean
+    fxRate?: boolean
+    description?: boolean
+    reference?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    processedById?: boolean
+    processedAt?: boolean
+    reversedById?: boolean
+    reversedAt?: boolean
+    reversalReasonId?: boolean
+    journalEntryId?: boolean
+    reversalJournalEntryId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    sourceAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    destinationAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    destinationCurrency?: boolean | Transfer$destinationCurrencyArgs<ExtArgs>
+    submittedBy?: boolean | Transfer$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | Transfer$approvedByArgs<ExtArgs>
+    processedBy?: boolean | Transfer$processedByArgs<ExtArgs>
+    reversedBy?: boolean | Transfer$reversedByArgs<ExtArgs>
+    reversalReason?: boolean | Transfer$reversalReasonArgs<ExtArgs>
+    journalEntry?: boolean | Transfer$journalEntryArgs<ExtArgs>
+    reversalJournalEntry?: boolean | Transfer$reversalJournalEntryArgs<ExtArgs>
+  }, ExtArgs["result"]["transfer"]>
+
+  export type TransferSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    status?: boolean
+    sourceAccountId?: boolean
+    destinationAccountId?: boolean
+    amount?: boolean
+    currencyCode?: boolean
+    destinationAmount?: boolean
+    destinationCurrencyCode?: boolean
+    fxRate?: boolean
+    description?: boolean
+    reference?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    processedById?: boolean
+    processedAt?: boolean
+    reversedById?: boolean
+    reversedAt?: boolean
+    reversalReasonId?: boolean
+    journalEntryId?: boolean
+    reversalJournalEntryId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    sourceAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    destinationAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    destinationCurrency?: boolean | Transfer$destinationCurrencyArgs<ExtArgs>
+    submittedBy?: boolean | Transfer$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | Transfer$approvedByArgs<ExtArgs>
+    processedBy?: boolean | Transfer$processedByArgs<ExtArgs>
+    reversedBy?: boolean | Transfer$reversedByArgs<ExtArgs>
+    reversalReason?: boolean | Transfer$reversalReasonArgs<ExtArgs>
+    journalEntry?: boolean | Transfer$journalEntryArgs<ExtArgs>
+    reversalJournalEntry?: boolean | Transfer$reversalJournalEntryArgs<ExtArgs>
+  }, ExtArgs["result"]["transfer"]>
+
+  export type TransferSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    status?: boolean
+    sourceAccountId?: boolean
+    destinationAccountId?: boolean
+    amount?: boolean
+    currencyCode?: boolean
+    destinationAmount?: boolean
+    destinationCurrencyCode?: boolean
+    fxRate?: boolean
+    description?: boolean
+    reference?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    processedById?: boolean
+    processedAt?: boolean
+    reversedById?: boolean
+    reversedAt?: boolean
+    reversalReasonId?: boolean
+    journalEntryId?: boolean
+    reversalJournalEntryId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    sourceAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    destinationAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    destinationCurrency?: boolean | Transfer$destinationCurrencyArgs<ExtArgs>
+    submittedBy?: boolean | Transfer$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | Transfer$approvedByArgs<ExtArgs>
+    processedBy?: boolean | Transfer$processedByArgs<ExtArgs>
+    reversedBy?: boolean | Transfer$reversedByArgs<ExtArgs>
+    reversalReason?: boolean | Transfer$reversalReasonArgs<ExtArgs>
+    journalEntry?: boolean | Transfer$journalEntryArgs<ExtArgs>
+    reversalJournalEntry?: boolean | Transfer$reversalJournalEntryArgs<ExtArgs>
+  }, ExtArgs["result"]["transfer"]>
+
+  export type TransferSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    status?: boolean
+    sourceAccountId?: boolean
+    destinationAccountId?: boolean
+    amount?: boolean
+    currencyCode?: boolean
+    destinationAmount?: boolean
+    destinationCurrencyCode?: boolean
+    fxRate?: boolean
+    description?: boolean
+    reference?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    processedById?: boolean
+    processedAt?: boolean
+    reversedById?: boolean
+    reversedAt?: boolean
+    reversalReasonId?: boolean
+    journalEntryId?: boolean
+    reversalJournalEntryId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TransferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "code" | "status" | "sourceAccountId" | "destinationAccountId" | "amount" | "currencyCode" | "destinationAmount" | "destinationCurrencyCode" | "fxRate" | "description" | "reference" | "submittedById" | "submittedAt" | "approvedById" | "approvedAt" | "processedById" | "processedAt" | "reversedById" | "reversedAt" | "reversalReasonId" | "journalEntryId" | "reversalJournalEntryId" | "createdAt" | "updatedAt", ExtArgs["result"]["transfer"]>
+  export type TransferInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    sourceAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    destinationAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    destinationCurrency?: boolean | Transfer$destinationCurrencyArgs<ExtArgs>
+    submittedBy?: boolean | Transfer$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | Transfer$approvedByArgs<ExtArgs>
+    processedBy?: boolean | Transfer$processedByArgs<ExtArgs>
+    reversedBy?: boolean | Transfer$reversedByArgs<ExtArgs>
+    reversalReason?: boolean | Transfer$reversalReasonArgs<ExtArgs>
+    journalEntry?: boolean | Transfer$journalEntryArgs<ExtArgs>
+    reversalJournalEntry?: boolean | Transfer$reversalJournalEntryArgs<ExtArgs>
+  }
+  export type TransferIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    sourceAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    destinationAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    destinationCurrency?: boolean | Transfer$destinationCurrencyArgs<ExtArgs>
+    submittedBy?: boolean | Transfer$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | Transfer$approvedByArgs<ExtArgs>
+    processedBy?: boolean | Transfer$processedByArgs<ExtArgs>
+    reversedBy?: boolean | Transfer$reversedByArgs<ExtArgs>
+    reversalReason?: boolean | Transfer$reversalReasonArgs<ExtArgs>
+    journalEntry?: boolean | Transfer$journalEntryArgs<ExtArgs>
+    reversalJournalEntry?: boolean | Transfer$reversalJournalEntryArgs<ExtArgs>
+  }
+  export type TransferIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    sourceAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    destinationAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    destinationCurrency?: boolean | Transfer$destinationCurrencyArgs<ExtArgs>
+    submittedBy?: boolean | Transfer$submittedByArgs<ExtArgs>
+    approvedBy?: boolean | Transfer$approvedByArgs<ExtArgs>
+    processedBy?: boolean | Transfer$processedByArgs<ExtArgs>
+    reversedBy?: boolean | Transfer$reversedByArgs<ExtArgs>
+    reversalReason?: boolean | Transfer$reversalReasonArgs<ExtArgs>
+    journalEntry?: boolean | Transfer$journalEntryArgs<ExtArgs>
+    reversalJournalEntry?: boolean | Transfer$reversalJournalEntryArgs<ExtArgs>
+  }
+
+  export type $TransferPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Transfer"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      sourceAccount: Prisma.$TreasuryAccountPayload<ExtArgs>
+      destinationAccount: Prisma.$TreasuryAccountPayload<ExtArgs>
+      currency: Prisma.$CurrencyPayload<ExtArgs>
+      destinationCurrency: Prisma.$CurrencyPayload<ExtArgs> | null
+      submittedBy: Prisma.$UserPayload<ExtArgs> | null
+      approvedBy: Prisma.$UserPayload<ExtArgs> | null
+      processedBy: Prisma.$UserPayload<ExtArgs> | null
+      reversedBy: Prisma.$UserPayload<ExtArgs> | null
+      reversalReason: Prisma.$ReversalReasonCodePayload<ExtArgs> | null
+      journalEntry: Prisma.$JournalEntryPayload<ExtArgs> | null
+      reversalJournalEntry: Prisma.$JournalEntryPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      code: string
+      status: $Enums.TransferStatus
+      sourceAccountId: string
+      destinationAccountId: string
+      amount: Prisma.Decimal
+      currencyCode: string
+      destinationAmount: Prisma.Decimal | null
+      destinationCurrencyCode: string | null
+      fxRate: Prisma.Decimal | null
+      description: string | null
+      reference: string | null
+      submittedById: string | null
+      submittedAt: Date | null
+      approvedById: string | null
+      approvedAt: Date | null
+      processedById: string | null
+      processedAt: Date | null
+      reversedById: string | null
+      reversedAt: Date | null
+      reversalReasonId: string | null
+      journalEntryId: string | null
+      reversalJournalEntryId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["transfer"]>
+    composites: {}
+  }
+
+  type TransferGetPayload<S extends boolean | null | undefined | TransferDefaultArgs> = $Result.GetResult<Prisma.$TransferPayload, S>
+
+  type TransferCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransferFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransferCountAggregateInputType | true
+    }
+
+  export interface TransferDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Transfer'], meta: { name: 'Transfer' } }
+    /**
+     * Find zero or one Transfer that matches the filter.
+     * @param {TransferFindUniqueArgs} args - Arguments to find a Transfer
+     * @example
+     * // Get one Transfer
+     * const transfer = await prisma.transfer.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransferFindUniqueArgs>(args: SelectSubset<T, TransferFindUniqueArgs<ExtArgs>>): Prisma__TransferClient<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Transfer that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransferFindUniqueOrThrowArgs} args - Arguments to find a Transfer
+     * @example
+     * // Get one Transfer
+     * const transfer = await prisma.transfer.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransferFindUniqueOrThrowArgs>(args: SelectSubset<T, TransferFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransferClient<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transfer that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferFindFirstArgs} args - Arguments to find a Transfer
+     * @example
+     * // Get one Transfer
+     * const transfer = await prisma.transfer.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransferFindFirstArgs>(args?: SelectSubset<T, TransferFindFirstArgs<ExtArgs>>): Prisma__TransferClient<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transfer that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferFindFirstOrThrowArgs} args - Arguments to find a Transfer
+     * @example
+     * // Get one Transfer
+     * const transfer = await prisma.transfer.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransferFindFirstOrThrowArgs>(args?: SelectSubset<T, TransferFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransferClient<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Transfers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Transfers
+     * const transfers = await prisma.transfer.findMany()
+     * 
+     * // Get first 10 Transfers
+     * const transfers = await prisma.transfer.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transferWithIdOnly = await prisma.transfer.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransferFindManyArgs>(args?: SelectSubset<T, TransferFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Transfer.
+     * @param {TransferCreateArgs} args - Arguments to create a Transfer.
+     * @example
+     * // Create one Transfer
+     * const Transfer = await prisma.transfer.create({
+     *   data: {
+     *     // ... data to create a Transfer
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransferCreateArgs>(args: SelectSubset<T, TransferCreateArgs<ExtArgs>>): Prisma__TransferClient<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Transfers.
+     * @param {TransferCreateManyArgs} args - Arguments to create many Transfers.
+     * @example
+     * // Create many Transfers
+     * const transfer = await prisma.transfer.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransferCreateManyArgs>(args?: SelectSubset<T, TransferCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Transfers and returns the data saved in the database.
+     * @param {TransferCreateManyAndReturnArgs} args - Arguments to create many Transfers.
+     * @example
+     * // Create many Transfers
+     * const transfer = await prisma.transfer.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Transfers and only return the `id`
+     * const transferWithIdOnly = await prisma.transfer.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TransferCreateManyAndReturnArgs>(args?: SelectSubset<T, TransferCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Transfer.
+     * @param {TransferDeleteArgs} args - Arguments to delete one Transfer.
+     * @example
+     * // Delete one Transfer
+     * const Transfer = await prisma.transfer.delete({
+     *   where: {
+     *     // ... filter to delete one Transfer
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransferDeleteArgs>(args: SelectSubset<T, TransferDeleteArgs<ExtArgs>>): Prisma__TransferClient<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Transfer.
+     * @param {TransferUpdateArgs} args - Arguments to update one Transfer.
+     * @example
+     * // Update one Transfer
+     * const transfer = await prisma.transfer.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransferUpdateArgs>(args: SelectSubset<T, TransferUpdateArgs<ExtArgs>>): Prisma__TransferClient<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Transfers.
+     * @param {TransferDeleteManyArgs} args - Arguments to filter Transfers to delete.
+     * @example
+     * // Delete a few Transfers
+     * const { count } = await prisma.transfer.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransferDeleteManyArgs>(args?: SelectSubset<T, TransferDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transfers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Transfers
+     * const transfer = await prisma.transfer.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransferUpdateManyArgs>(args: SelectSubset<T, TransferUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transfers and returns the data updated in the database.
+     * @param {TransferUpdateManyAndReturnArgs} args - Arguments to update many Transfers.
+     * @example
+     * // Update many Transfers
+     * const transfer = await prisma.transfer.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Transfers and only return the `id`
+     * const transferWithIdOnly = await prisma.transfer.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TransferUpdateManyAndReturnArgs>(args: SelectSubset<T, TransferUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Transfer.
+     * @param {TransferUpsertArgs} args - Arguments to update or create a Transfer.
+     * @example
+     * // Update or create a Transfer
+     * const transfer = await prisma.transfer.upsert({
+     *   create: {
+     *     // ... data to create a Transfer
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Transfer we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransferUpsertArgs>(args: SelectSubset<T, TransferUpsertArgs<ExtArgs>>): Prisma__TransferClient<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Transfers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferCountArgs} args - Arguments to filter Transfers to count.
+     * @example
+     * // Count the number of Transfers
+     * const count = await prisma.transfer.count({
+     *   where: {
+     *     // ... the filter for the Transfers we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransferCountArgs>(
+      args?: Subset<T, TransferCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransferCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Transfer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransferAggregateArgs>(args: Subset<T, TransferAggregateArgs>): Prisma.PrismaPromise<GetTransferAggregateType<T>>
+
+    /**
+     * Group by Transfer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransferGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransferGroupByArgs['orderBy'] }
+        : { orderBy?: TransferGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransferGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransferGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Transfer model
+   */
+  readonly fields: TransferFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Transfer.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransferClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    sourceAccount<T extends TreasuryAccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccountDefaultArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    destinationAccount<T extends TreasuryAccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccountDefaultArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    currency<T extends CurrencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CurrencyDefaultArgs<ExtArgs>>): Prisma__CurrencyClient<$Result.GetResult<Prisma.$CurrencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    destinationCurrency<T extends Transfer$destinationCurrencyArgs<ExtArgs> = {}>(args?: Subset<T, Transfer$destinationCurrencyArgs<ExtArgs>>): Prisma__CurrencyClient<$Result.GetResult<Prisma.$CurrencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    submittedBy<T extends Transfer$submittedByArgs<ExtArgs> = {}>(args?: Subset<T, Transfer$submittedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    approvedBy<T extends Transfer$approvedByArgs<ExtArgs> = {}>(args?: Subset<T, Transfer$approvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    processedBy<T extends Transfer$processedByArgs<ExtArgs> = {}>(args?: Subset<T, Transfer$processedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    reversedBy<T extends Transfer$reversedByArgs<ExtArgs> = {}>(args?: Subset<T, Transfer$reversedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    reversalReason<T extends Transfer$reversalReasonArgs<ExtArgs> = {}>(args?: Subset<T, Transfer$reversalReasonArgs<ExtArgs>>): Prisma__ReversalReasonCodeClient<$Result.GetResult<Prisma.$ReversalReasonCodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    journalEntry<T extends Transfer$journalEntryArgs<ExtArgs> = {}>(args?: Subset<T, Transfer$journalEntryArgs<ExtArgs>>): Prisma__JournalEntryClient<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    reversalJournalEntry<T extends Transfer$reversalJournalEntryArgs<ExtArgs> = {}>(args?: Subset<T, Transfer$reversalJournalEntryArgs<ExtArgs>>): Prisma__JournalEntryClient<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Transfer model
+   */
+  interface TransferFieldRefs {
+    readonly id: FieldRef<"Transfer", 'String'>
+    readonly organizationId: FieldRef<"Transfer", 'String'>
+    readonly code: FieldRef<"Transfer", 'String'>
+    readonly status: FieldRef<"Transfer", 'TransferStatus'>
+    readonly sourceAccountId: FieldRef<"Transfer", 'String'>
+    readonly destinationAccountId: FieldRef<"Transfer", 'String'>
+    readonly amount: FieldRef<"Transfer", 'Decimal'>
+    readonly currencyCode: FieldRef<"Transfer", 'String'>
+    readonly destinationAmount: FieldRef<"Transfer", 'Decimal'>
+    readonly destinationCurrencyCode: FieldRef<"Transfer", 'String'>
+    readonly fxRate: FieldRef<"Transfer", 'Decimal'>
+    readonly description: FieldRef<"Transfer", 'String'>
+    readonly reference: FieldRef<"Transfer", 'String'>
+    readonly submittedById: FieldRef<"Transfer", 'String'>
+    readonly submittedAt: FieldRef<"Transfer", 'DateTime'>
+    readonly approvedById: FieldRef<"Transfer", 'String'>
+    readonly approvedAt: FieldRef<"Transfer", 'DateTime'>
+    readonly processedById: FieldRef<"Transfer", 'String'>
+    readonly processedAt: FieldRef<"Transfer", 'DateTime'>
+    readonly reversedById: FieldRef<"Transfer", 'String'>
+    readonly reversedAt: FieldRef<"Transfer", 'DateTime'>
+    readonly reversalReasonId: FieldRef<"Transfer", 'String'>
+    readonly journalEntryId: FieldRef<"Transfer", 'String'>
+    readonly reversalJournalEntryId: FieldRef<"Transfer", 'String'>
+    readonly createdAt: FieldRef<"Transfer", 'DateTime'>
+    readonly updatedAt: FieldRef<"Transfer", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Transfer findUnique
+   */
+  export type TransferFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    /**
+     * Filter, which Transfer to fetch.
+     */
+    where: TransferWhereUniqueInput
+  }
+
+  /**
+   * Transfer findUniqueOrThrow
+   */
+  export type TransferFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    /**
+     * Filter, which Transfer to fetch.
+     */
+    where: TransferWhereUniqueInput
+  }
+
+  /**
+   * Transfer findFirst
+   */
+  export type TransferFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    /**
+     * Filter, which Transfer to fetch.
+     */
+    where?: TransferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transfers to fetch.
+     */
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transfers.
+     */
+    cursor?: TransferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transfers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transfers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transfers.
+     */
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * Transfer findFirstOrThrow
+   */
+  export type TransferFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    /**
+     * Filter, which Transfer to fetch.
+     */
+    where?: TransferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transfers to fetch.
+     */
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transfers.
+     */
+    cursor?: TransferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transfers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transfers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transfers.
+     */
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * Transfer findMany
+   */
+  export type TransferFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    /**
+     * Filter, which Transfers to fetch.
+     */
+    where?: TransferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transfers to fetch.
+     */
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Transfers.
+     */
+    cursor?: TransferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transfers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transfers.
+     */
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * Transfer create
+   */
+  export type TransferCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Transfer.
+     */
+    data: XOR<TransferCreateInput, TransferUncheckedCreateInput>
+  }
+
+  /**
+   * Transfer createMany
+   */
+  export type TransferCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Transfers.
+     */
+    data: TransferCreateManyInput | TransferCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Transfer createManyAndReturn
+   */
+  export type TransferCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * The data used to create many Transfers.
+     */
+    data: TransferCreateManyInput | TransferCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transfer update
+   */
+  export type TransferUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Transfer.
+     */
+    data: XOR<TransferUpdateInput, TransferUncheckedUpdateInput>
+    /**
+     * Choose, which Transfer to update.
+     */
+    where: TransferWhereUniqueInput
+  }
+
+  /**
+   * Transfer updateMany
+   */
+  export type TransferUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Transfers.
+     */
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyInput>
+    /**
+     * Filter which Transfers to update
+     */
+    where?: TransferWhereInput
+    /**
+     * Limit how many Transfers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transfer updateManyAndReturn
+   */
+  export type TransferUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * The data used to update Transfers.
+     */
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyInput>
+    /**
+     * Filter which Transfers to update
+     */
+    where?: TransferWhereInput
+    /**
+     * Limit how many Transfers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transfer upsert
+   */
+  export type TransferUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Transfer to update in case it exists.
+     */
+    where: TransferWhereUniqueInput
+    /**
+     * In case the Transfer found by the `where` argument doesn't exist, create a new Transfer with this data.
+     */
+    create: XOR<TransferCreateInput, TransferUncheckedCreateInput>
+    /**
+     * In case the Transfer was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransferUpdateInput, TransferUncheckedUpdateInput>
+  }
+
+  /**
+   * Transfer delete
+   */
+  export type TransferDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    /**
+     * Filter which Transfer to delete.
+     */
+    where: TransferWhereUniqueInput
+  }
+
+  /**
+   * Transfer deleteMany
+   */
+  export type TransferDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transfers to delete
+     */
+    where?: TransferWhereInput
+    /**
+     * Limit how many Transfers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transfer.destinationCurrency
+   */
+  export type Transfer$destinationCurrencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Currency
+     */
+    select?: CurrencySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Currency
+     */
+    omit?: CurrencyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CurrencyInclude<ExtArgs> | null
+    where?: CurrencyWhereInput
+  }
+
+  /**
+   * Transfer.submittedBy
+   */
+  export type Transfer$submittedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Transfer.approvedBy
+   */
+  export type Transfer$approvedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Transfer.processedBy
+   */
+  export type Transfer$processedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Transfer.reversedBy
+   */
+  export type Transfer$reversedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Transfer.reversalReason
+   */
+  export type Transfer$reversalReasonArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReversalReasonCode
+     */
+    select?: ReversalReasonCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReversalReasonCode
+     */
+    omit?: ReversalReasonCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReversalReasonCodeInclude<ExtArgs> | null
+    where?: ReversalReasonCodeWhereInput
+  }
+
+  /**
+   * Transfer.journalEntry
+   */
+  export type Transfer$journalEntryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+  }
+
+  /**
+   * Transfer.reversalJournalEntry
+   */
+  export type Transfer$reversalJournalEntryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalEntry
+     */
+    select?: JournalEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalEntry
+     */
+    omit?: JournalEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalEntryInclude<ExtArgs> | null
+    where?: JournalEntryWhereInput
+  }
+
+  /**
+   * Transfer without action
+   */
+  export type TransferDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Currency
    */
 
@@ -43151,6 +45178,8 @@ export namespace Prisma {
     transactions?: boolean | Currency$transactionsArgs<ExtArgs>
     treasuryAccounts?: boolean | Currency$treasuryAccountsArgs<ExtArgs>
     paymentSchedules?: boolean | Currency$paymentSchedulesArgs<ExtArgs>
+    transfers?: boolean | Currency$transfersArgs<ExtArgs>
+    transfersAsDestinationCurrency?: boolean | Currency$transfersAsDestinationCurrencyArgs<ExtArgs>
     _count?: boolean | CurrencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["currency"]>
 
@@ -43204,6 +45233,8 @@ export namespace Prisma {
     transactions?: boolean | Currency$transactionsArgs<ExtArgs>
     treasuryAccounts?: boolean | Currency$treasuryAccountsArgs<ExtArgs>
     paymentSchedules?: boolean | Currency$paymentSchedulesArgs<ExtArgs>
+    transfers?: boolean | Currency$transfersArgs<ExtArgs>
+    transfersAsDestinationCurrency?: boolean | Currency$transfersAsDestinationCurrencyArgs<ExtArgs>
     _count?: boolean | CurrencyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CurrencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -43221,6 +45252,8 @@ export namespace Prisma {
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
       treasuryAccounts: Prisma.$TreasuryAccountPayload<ExtArgs>[]
       paymentSchedules: Prisma.$PaymentSchedulePayload<ExtArgs>[]
+      transfers: Prisma.$TransferPayload<ExtArgs>[]
+      transfersAsDestinationCurrency: Prisma.$TransferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -43636,6 +45669,8 @@ export namespace Prisma {
     transactions<T extends Currency$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Currency$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     treasuryAccounts<T extends Currency$treasuryAccountsArgs<ExtArgs> = {}>(args?: Subset<T, Currency$treasuryAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     paymentSchedules<T extends Currency$paymentSchedulesArgs<ExtArgs> = {}>(args?: Subset<T, Currency$paymentSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfers<T extends Currency$transfersArgs<ExtArgs> = {}>(args?: Subset<T, Currency$transfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfersAsDestinationCurrency<T extends Currency$transfersAsDestinationCurrencyArgs<ExtArgs> = {}>(args?: Subset<T, Currency$transfersAsDestinationCurrencyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -44276,6 +46311,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PaymentScheduleScalarFieldEnum | PaymentScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * Currency.transfers
+   */
+  export type Currency$transfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * Currency.transfersAsDestinationCurrency
+   */
+  export type Currency$transfersAsDestinationCurrencyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
   }
 
   /**
@@ -55621,6 +57704,8 @@ export namespace Prisma {
     postedBy?: boolean | JournalEntry$postedByArgs<ExtArgs>
     reversedBy?: boolean | JournalEntry$reversedByArgs<ExtArgs>
     lines?: boolean | JournalEntry$linesArgs<ExtArgs>
+    transfers?: boolean | JournalEntry$transfersArgs<ExtArgs>
+    reversalTransfers?: boolean | JournalEntry$reversalTransfersArgs<ExtArgs>
     _count?: boolean | JournalEntryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["journalEntry"]>
 
@@ -55743,6 +57828,8 @@ export namespace Prisma {
     postedBy?: boolean | JournalEntry$postedByArgs<ExtArgs>
     reversedBy?: boolean | JournalEntry$reversedByArgs<ExtArgs>
     lines?: boolean | JournalEntry$linesArgs<ExtArgs>
+    transfers?: boolean | JournalEntry$transfersArgs<ExtArgs>
+    reversalTransfers?: boolean | JournalEntry$reversalTransfersArgs<ExtArgs>
     _count?: boolean | JournalEntryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JournalEntryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -55786,6 +57873,8 @@ export namespace Prisma {
       postedBy: Prisma.$UserPayload<ExtArgs> | null
       reversedBy: Prisma.$UserPayload<ExtArgs> | null
       lines: Prisma.$JournalLinePayload<ExtArgs>[]
+      transfers: Prisma.$TransferPayload<ExtArgs>[]
+      reversalTransfers: Prisma.$TransferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -56220,6 +58309,8 @@ export namespace Prisma {
     postedBy<T extends JournalEntry$postedByArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$postedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     reversedBy<T extends JournalEntry$reversedByArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$reversedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     lines<T extends JournalEntry$linesArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$linesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfers<T extends JournalEntry$transfersArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$transfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reversalTransfers<T extends JournalEntry$reversalTransfersArgs<ExtArgs> = {}>(args?: Subset<T, JournalEntry$reversalTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -56891,6 +58982,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
+   * JournalEntry.transfers
+   */
+  export type JournalEntry$transfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * JournalEntry.reversalTransfers
+   */
+  export type JournalEntry$reversalTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
   }
 
   /**
@@ -58574,6 +60713,7 @@ export namespace Prisma {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     journalEntries?: boolean | ReversalReasonCode$journalEntriesArgs<ExtArgs>
     transactions?: boolean | ReversalReasonCode$transactionsArgs<ExtArgs>
+    transfers?: boolean | ReversalReasonCode$transfersArgs<ExtArgs>
     _count?: boolean | ReversalReasonCodeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reversalReasonCode"]>
 
@@ -58620,6 +60760,7 @@ export namespace Prisma {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     journalEntries?: boolean | ReversalReasonCode$journalEntriesArgs<ExtArgs>
     transactions?: boolean | ReversalReasonCode$transactionsArgs<ExtArgs>
+    transfers?: boolean | ReversalReasonCode$transfersArgs<ExtArgs>
     _count?: boolean | ReversalReasonCodeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ReversalReasonCodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -58635,6 +60776,7 @@ export namespace Prisma {
       organization: Prisma.$OrganizationPayload<ExtArgs>
       journalEntries: Prisma.$JournalEntryPayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      transfers: Prisma.$TransferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -59043,6 +61185,7 @@ export namespace Prisma {
     organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     journalEntries<T extends ReversalReasonCode$journalEntriesArgs<ExtArgs> = {}>(args?: Subset<T, ReversalReasonCode$journalEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends ReversalReasonCode$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, ReversalReasonCode$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transfers<T extends ReversalReasonCode$transfersArgs<ExtArgs> = {}>(args?: Subset<T, ReversalReasonCode$transfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -59522,6 +61665,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * ReversalReasonCode.transfers
+   */
+  export type ReversalReasonCode$transfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transfer
+     */
+    select?: TransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transfer
+     */
+    omit?: TransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferInclude<ExtArgs> | null
+    where?: TransferWhereInput
+    orderBy?: TransferOrderByWithRelationInput | TransferOrderByWithRelationInput[]
+    cursor?: TransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
   }
 
   /**
@@ -73505,6 +75672,38 @@ export namespace Prisma {
   export type PaymentScheduleScalarFieldEnum = (typeof PaymentScheduleScalarFieldEnum)[keyof typeof PaymentScheduleScalarFieldEnum]
 
 
+  export const TransferScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    code: 'code',
+    status: 'status',
+    sourceAccountId: 'sourceAccountId',
+    destinationAccountId: 'destinationAccountId',
+    amount: 'amount',
+    currencyCode: 'currencyCode',
+    destinationAmount: 'destinationAmount',
+    destinationCurrencyCode: 'destinationCurrencyCode',
+    fxRate: 'fxRate',
+    description: 'description',
+    reference: 'reference',
+    submittedById: 'submittedById',
+    submittedAt: 'submittedAt',
+    approvedById: 'approvedById',
+    approvedAt: 'approvedAt',
+    processedById: 'processedById',
+    processedAt: 'processedAt',
+    reversedById: 'reversedById',
+    reversedAt: 'reversedAt',
+    reversalReasonId: 'reversalReasonId',
+    journalEntryId: 'journalEntryId',
+    reversalJournalEntryId: 'reversalJournalEntryId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TransferScalarFieldEnum = (typeof TransferScalarFieldEnum)[keyof typeof TransferScalarFieldEnum]
+
+
   export const CurrencyScalarFieldEnum: {
     id: 'id',
     code: 'code',
@@ -74462,6 +76661,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'TransferStatus'
+   */
+  export type EnumTransferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransferStatus[]'
+   */
+  export type ListEnumTransferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'CurrencyType'
    */
   export type EnumCurrencyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CurrencyType'>
@@ -74985,6 +77198,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverListRelationFilter
     sodWaiversRecordedBy?: SODWaiverListRelationFilter
     sodWaiversReviewedBy?: SODWaiverListRelationFilter
+    transfersSubmitted?: TransferListRelationFilter
+    transfersApproved?: TransferListRelationFilter
+    transfersProcessed?: TransferListRelationFilter
+    transfersReversed?: TransferListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -75057,6 +77274,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverOrderByRelationAggregateInput
     sodWaiversRecordedBy?: SODWaiverOrderByRelationAggregateInput
     sodWaiversReviewedBy?: SODWaiverOrderByRelationAggregateInput
+    transfersSubmitted?: TransferOrderByRelationAggregateInput
+    transfersApproved?: TransferOrderByRelationAggregateInput
+    transfersProcessed?: TransferOrderByRelationAggregateInput
+    transfersReversed?: TransferOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -75132,6 +77353,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverListRelationFilter
     sodWaiversRecordedBy?: SODWaiverListRelationFilter
     sodWaiversReviewedBy?: SODWaiverListRelationFilter
+    transfersSubmitted?: TransferListRelationFilter
+    transfersApproved?: TransferListRelationFilter
+    transfersProcessed?: TransferListRelationFilter
+    transfersReversed?: TransferListRelationFilter
   }, "id" | "emailNormalized" | "passwordResetToken">
 
   export type UserOrderByWithAggregationInput = {
@@ -76988,6 +79213,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestListRelationFilter
     treasuryAccounts?: TreasuryAccountListRelationFilter
     paymentSchedules?: PaymentScheduleListRelationFilter
+    transfers?: TransferListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -77031,6 +79257,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestOrderByRelationAggregateInput
     treasuryAccounts?: TreasuryAccountOrderByRelationAggregateInput
     paymentSchedules?: PaymentScheduleOrderByRelationAggregateInput
+    transfers?: TransferOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -77077,6 +79304,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestListRelationFilter
     treasuryAccounts?: TreasuryAccountListRelationFilter
     paymentSchedules?: PaymentScheduleListRelationFilter
+    transfers?: TransferListRelationFilter
   }, "id" | "code">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -77639,6 +79867,8 @@ export namespace Prisma {
     journalLines?: JournalLineListRelationFilter
     transactions?: TransactionListRelationFilter
     paymentSchedules?: PaymentScheduleListRelationFilter
+    transfersAsSource?: TransferListRelationFilter
+    transfersAsDestination?: TransferListRelationFilter
   }
 
   export type TreasuryAccountOrderByWithRelationInput = {
@@ -77665,6 +79895,8 @@ export namespace Prisma {
     journalLines?: JournalLineOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
     paymentSchedules?: PaymentScheduleOrderByRelationAggregateInput
+    transfersAsSource?: TransferOrderByRelationAggregateInput
+    transfersAsDestination?: TransferOrderByRelationAggregateInput
   }
 
   export type TreasuryAccountWhereUniqueInput = Prisma.AtLeast<{
@@ -77695,6 +79927,8 @@ export namespace Prisma {
     journalLines?: JournalLineListRelationFilter
     transactions?: TransactionListRelationFilter
     paymentSchedules?: PaymentScheduleListRelationFilter
+    transfersAsSource?: TransferListRelationFilter
+    transfersAsDestination?: TransferListRelationFilter
   }, "id" | "organizationId_code">
 
   export type TreasuryAccountOrderByWithAggregationInput = {
@@ -77843,6 +80077,202 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"PaymentSchedule"> | Date | string
   }
 
+  export type TransferWhereInput = {
+    AND?: TransferWhereInput | TransferWhereInput[]
+    OR?: TransferWhereInput[]
+    NOT?: TransferWhereInput | TransferWhereInput[]
+    id?: StringFilter<"Transfer"> | string
+    organizationId?: StringFilter<"Transfer"> | string
+    code?: StringFilter<"Transfer"> | string
+    status?: EnumTransferStatusFilter<"Transfer"> | $Enums.TransferStatus
+    sourceAccountId?: StringFilter<"Transfer"> | string
+    destinationAccountId?: StringFilter<"Transfer"> | string
+    amount?: DecimalFilter<"Transfer"> | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFilter<"Transfer"> | string
+    destinationAmount?: DecimalNullableFilter<"Transfer"> | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: StringNullableFilter<"Transfer"> | string | null
+    fxRate?: DecimalNullableFilter<"Transfer"> | Decimal | DecimalJsLike | number | string | null
+    description?: StringNullableFilter<"Transfer"> | string | null
+    reference?: StringNullableFilter<"Transfer"> | string | null
+    submittedById?: StringNullableFilter<"Transfer"> | string | null
+    submittedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    approvedById?: StringNullableFilter<"Transfer"> | string | null
+    approvedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    processedById?: StringNullableFilter<"Transfer"> | string | null
+    processedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    reversedById?: StringNullableFilter<"Transfer"> | string | null
+    reversedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    reversalReasonId?: StringNullableFilter<"Transfer"> | string | null
+    journalEntryId?: StringNullableFilter<"Transfer"> | string | null
+    reversalJournalEntryId?: StringNullableFilter<"Transfer"> | string | null
+    createdAt?: DateTimeFilter<"Transfer"> | Date | string
+    updatedAt?: DateTimeFilter<"Transfer"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    sourceAccount?: XOR<TreasuryAccountScalarRelationFilter, TreasuryAccountWhereInput>
+    destinationAccount?: XOR<TreasuryAccountScalarRelationFilter, TreasuryAccountWhereInput>
+    currency?: XOR<CurrencyScalarRelationFilter, CurrencyWhereInput>
+    destinationCurrency?: XOR<CurrencyNullableScalarRelationFilter, CurrencyWhereInput> | null
+    submittedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    processedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    reversedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    reversalReason?: XOR<ReversalReasonCodeNullableScalarRelationFilter, ReversalReasonCodeWhereInput> | null
+    journalEntry?: XOR<JournalEntryNullableScalarRelationFilter, JournalEntryWhereInput> | null
+    reversalJournalEntry?: XOR<JournalEntryNullableScalarRelationFilter, JournalEntryWhereInput> | null
+  }
+
+  export type TransferOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    status?: SortOrder
+    sourceAccountId?: SortOrder
+    destinationAccountId?: SortOrder
+    amount?: SortOrder
+    currencyCode?: SortOrder
+    destinationAmount?: SortOrderInput | SortOrder
+    destinationCurrencyCode?: SortOrderInput | SortOrder
+    fxRate?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    reference?: SortOrderInput | SortOrder
+    submittedById?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    processedById?: SortOrderInput | SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    reversedById?: SortOrderInput | SortOrder
+    reversedAt?: SortOrderInput | SortOrder
+    reversalReasonId?: SortOrderInput | SortOrder
+    journalEntryId?: SortOrderInput | SortOrder
+    reversalJournalEntryId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    sourceAccount?: TreasuryAccountOrderByWithRelationInput
+    destinationAccount?: TreasuryAccountOrderByWithRelationInput
+    currency?: CurrencyOrderByWithRelationInput
+    destinationCurrency?: CurrencyOrderByWithRelationInput
+    submittedBy?: UserOrderByWithRelationInput
+    approvedBy?: UserOrderByWithRelationInput
+    processedBy?: UserOrderByWithRelationInput
+    reversedBy?: UserOrderByWithRelationInput
+    reversalReason?: ReversalReasonCodeOrderByWithRelationInput
+    journalEntry?: JournalEntryOrderByWithRelationInput
+    reversalJournalEntry?: JournalEntryOrderByWithRelationInput
+  }
+
+  export type TransferWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_code?: TransferOrganizationIdCodeCompoundUniqueInput
+    AND?: TransferWhereInput | TransferWhereInput[]
+    OR?: TransferWhereInput[]
+    NOT?: TransferWhereInput | TransferWhereInput[]
+    organizationId?: StringFilter<"Transfer"> | string
+    code?: StringFilter<"Transfer"> | string
+    status?: EnumTransferStatusFilter<"Transfer"> | $Enums.TransferStatus
+    sourceAccountId?: StringFilter<"Transfer"> | string
+    destinationAccountId?: StringFilter<"Transfer"> | string
+    amount?: DecimalFilter<"Transfer"> | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFilter<"Transfer"> | string
+    destinationAmount?: DecimalNullableFilter<"Transfer"> | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: StringNullableFilter<"Transfer"> | string | null
+    fxRate?: DecimalNullableFilter<"Transfer"> | Decimal | DecimalJsLike | number | string | null
+    description?: StringNullableFilter<"Transfer"> | string | null
+    reference?: StringNullableFilter<"Transfer"> | string | null
+    submittedById?: StringNullableFilter<"Transfer"> | string | null
+    submittedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    approvedById?: StringNullableFilter<"Transfer"> | string | null
+    approvedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    processedById?: StringNullableFilter<"Transfer"> | string | null
+    processedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    reversedById?: StringNullableFilter<"Transfer"> | string | null
+    reversedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    reversalReasonId?: StringNullableFilter<"Transfer"> | string | null
+    journalEntryId?: StringNullableFilter<"Transfer"> | string | null
+    reversalJournalEntryId?: StringNullableFilter<"Transfer"> | string | null
+    createdAt?: DateTimeFilter<"Transfer"> | Date | string
+    updatedAt?: DateTimeFilter<"Transfer"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    sourceAccount?: XOR<TreasuryAccountScalarRelationFilter, TreasuryAccountWhereInput>
+    destinationAccount?: XOR<TreasuryAccountScalarRelationFilter, TreasuryAccountWhereInput>
+    currency?: XOR<CurrencyScalarRelationFilter, CurrencyWhereInput>
+    destinationCurrency?: XOR<CurrencyNullableScalarRelationFilter, CurrencyWhereInput> | null
+    submittedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    processedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    reversedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    reversalReason?: XOR<ReversalReasonCodeNullableScalarRelationFilter, ReversalReasonCodeWhereInput> | null
+    journalEntry?: XOR<JournalEntryNullableScalarRelationFilter, JournalEntryWhereInput> | null
+    reversalJournalEntry?: XOR<JournalEntryNullableScalarRelationFilter, JournalEntryWhereInput> | null
+  }, "id" | "organizationId_code">
+
+  export type TransferOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    status?: SortOrder
+    sourceAccountId?: SortOrder
+    destinationAccountId?: SortOrder
+    amount?: SortOrder
+    currencyCode?: SortOrder
+    destinationAmount?: SortOrderInput | SortOrder
+    destinationCurrencyCode?: SortOrderInput | SortOrder
+    fxRate?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    reference?: SortOrderInput | SortOrder
+    submittedById?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    processedById?: SortOrderInput | SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    reversedById?: SortOrderInput | SortOrder
+    reversedAt?: SortOrderInput | SortOrder
+    reversalReasonId?: SortOrderInput | SortOrder
+    journalEntryId?: SortOrderInput | SortOrder
+    reversalJournalEntryId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TransferCountOrderByAggregateInput
+    _avg?: TransferAvgOrderByAggregateInput
+    _max?: TransferMaxOrderByAggregateInput
+    _min?: TransferMinOrderByAggregateInput
+    _sum?: TransferSumOrderByAggregateInput
+  }
+
+  export type TransferScalarWhereWithAggregatesInput = {
+    AND?: TransferScalarWhereWithAggregatesInput | TransferScalarWhereWithAggregatesInput[]
+    OR?: TransferScalarWhereWithAggregatesInput[]
+    NOT?: TransferScalarWhereWithAggregatesInput | TransferScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Transfer"> | string
+    organizationId?: StringWithAggregatesFilter<"Transfer"> | string
+    code?: StringWithAggregatesFilter<"Transfer"> | string
+    status?: EnumTransferStatusWithAggregatesFilter<"Transfer"> | $Enums.TransferStatus
+    sourceAccountId?: StringWithAggregatesFilter<"Transfer"> | string
+    destinationAccountId?: StringWithAggregatesFilter<"Transfer"> | string
+    amount?: DecimalWithAggregatesFilter<"Transfer"> | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringWithAggregatesFilter<"Transfer"> | string
+    destinationAmount?: DecimalNullableWithAggregatesFilter<"Transfer"> | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: StringNullableWithAggregatesFilter<"Transfer"> | string | null
+    fxRate?: DecimalNullableWithAggregatesFilter<"Transfer"> | Decimal | DecimalJsLike | number | string | null
+    description?: StringNullableWithAggregatesFilter<"Transfer"> | string | null
+    reference?: StringNullableWithAggregatesFilter<"Transfer"> | string | null
+    submittedById?: StringNullableWithAggregatesFilter<"Transfer"> | string | null
+    submittedAt?: DateTimeNullableWithAggregatesFilter<"Transfer"> | Date | string | null
+    approvedById?: StringNullableWithAggregatesFilter<"Transfer"> | string | null
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"Transfer"> | Date | string | null
+    processedById?: StringNullableWithAggregatesFilter<"Transfer"> | string | null
+    processedAt?: DateTimeNullableWithAggregatesFilter<"Transfer"> | Date | string | null
+    reversedById?: StringNullableWithAggregatesFilter<"Transfer"> | string | null
+    reversedAt?: DateTimeNullableWithAggregatesFilter<"Transfer"> | Date | string | null
+    reversalReasonId?: StringNullableWithAggregatesFilter<"Transfer"> | string | null
+    journalEntryId?: StringNullableWithAggregatesFilter<"Transfer"> | string | null
+    reversalJournalEntryId?: StringNullableWithAggregatesFilter<"Transfer"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Transfer"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Transfer"> | Date | string
+  }
+
   export type CurrencyWhereInput = {
     AND?: CurrencyWhereInput | CurrencyWhereInput[]
     OR?: CurrencyWhereInput[]
@@ -77866,6 +80296,8 @@ export namespace Prisma {
     transactions?: TransactionListRelationFilter
     treasuryAccounts?: TreasuryAccountListRelationFilter
     paymentSchedules?: PaymentScheduleListRelationFilter
+    transfers?: TransferListRelationFilter
+    transfersAsDestinationCurrency?: TransferListRelationFilter
   }
 
   export type CurrencyOrderByWithRelationInput = {
@@ -77888,6 +80320,8 @@ export namespace Prisma {
     transactions?: TransactionOrderByRelationAggregateInput
     treasuryAccounts?: TreasuryAccountOrderByRelationAggregateInput
     paymentSchedules?: PaymentScheduleOrderByRelationAggregateInput
+    transfers?: TransferOrderByRelationAggregateInput
+    transfersAsDestinationCurrency?: TransferOrderByRelationAggregateInput
   }
 
   export type CurrencyWhereUniqueInput = Prisma.AtLeast<{
@@ -77913,6 +80347,8 @@ export namespace Prisma {
     transactions?: TransactionListRelationFilter
     treasuryAccounts?: TreasuryAccountListRelationFilter
     paymentSchedules?: PaymentScheduleListRelationFilter
+    transfers?: TransferListRelationFilter
+    transfersAsDestinationCurrency?: TransferListRelationFilter
   }, "id" | "code">
 
   export type CurrencyOrderByWithAggregationInput = {
@@ -78882,6 +81318,8 @@ export namespace Prisma {
     postedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     reversedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     lines?: JournalLineListRelationFilter
+    transfers?: TransferListRelationFilter
+    reversalTransfers?: TransferListRelationFilter
   }
 
   export type JournalEntryOrderByWithRelationInput = {
@@ -78923,6 +81361,8 @@ export namespace Prisma {
     postedBy?: UserOrderByWithRelationInput
     reversedBy?: UserOrderByWithRelationInput
     lines?: JournalLineOrderByRelationAggregateInput
+    transfers?: TransferOrderByRelationAggregateInput
+    reversalTransfers?: TransferOrderByRelationAggregateInput
   }
 
   export type JournalEntryWhereUniqueInput = Prisma.AtLeast<{
@@ -78968,6 +81408,8 @@ export namespace Prisma {
     postedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     reversedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     lines?: JournalLineListRelationFilter
+    transfers?: TransferListRelationFilter
+    reversalTransfers?: TransferListRelationFilter
   }, "id" | "organizationId_number">
 
   export type JournalEntryOrderByWithAggregationInput = {
@@ -79198,6 +81640,7 @@ export namespace Prisma {
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     journalEntries?: JournalEntryListRelationFilter
     transactions?: TransactionListRelationFilter
+    transfers?: TransferListRelationFilter
   }
 
   export type ReversalReasonCodeOrderByWithRelationInput = {
@@ -79213,6 +81656,7 @@ export namespace Prisma {
     organization?: OrganizationOrderByWithRelationInput
     journalEntries?: JournalEntryOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
+    transfers?: TransferOrderByRelationAggregateInput
   }
 
   export type ReversalReasonCodeWhereUniqueInput = Prisma.AtLeast<{
@@ -79232,6 +81676,7 @@ export namespace Prisma {
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     journalEntries?: JournalEntryListRelationFilter
     transactions?: TransactionListRelationFilter
+    transfers?: TransferListRelationFilter
   }, "id" | "organizationId_code">
 
   export type ReversalReasonCodeOrderByWithAggregationInput = {
@@ -80478,6 +82923,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -80546,6 +82995,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUpdateInput = {
@@ -80614,6 +83067,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -80682,6 +83139,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -82742,6 +85203,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -82785,6 +85247,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -82828,6 +85291,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -82871,6 +85335,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -83495,6 +85960,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountUncheckedCreateInput = {
@@ -83516,6 +85983,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferUncheckedCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferUncheckedCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountUpdateInput = {
@@ -83537,6 +86006,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateInput = {
@@ -83558,6 +86029,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUncheckedUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountCreateManyInput = {
@@ -83718,6 +86191,197 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransferCreateInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferCreateManyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CurrencyCreateInput = {
     id?: string
     code: string
@@ -83738,6 +86402,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUncheckedCreateInput = {
@@ -83760,6 +86426,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUpdateInput = {
@@ -83782,6 +86450,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateInput = {
@@ -83804,6 +86474,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyCreateManyInput = {
@@ -84836,6 +87508,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateInput = {
@@ -84867,6 +87541,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUpdateInput = {
@@ -84898,6 +87574,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateInput = {
@@ -84929,6 +87607,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryCreateManyInput = {
@@ -85154,6 +87834,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutReversalReasonCodesInput
     journalEntries?: JournalEntryCreateNestedManyWithoutReversalReasonInput
     transactions?: TransactionCreateNestedManyWithoutReversalReasonInput
+    transfers?: TransferCreateNestedManyWithoutReversalReasonInput
   }
 
   export type ReversalReasonCodeUncheckedCreateInput = {
@@ -85168,6 +87849,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversalReasonInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutReversalReasonInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutReversalReasonInput
   }
 
   export type ReversalReasonCodeUpdateInput = {
@@ -85182,6 +87864,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutReversalReasonCodesNestedInput
     journalEntries?: JournalEntryUpdateManyWithoutReversalReasonNestedInput
     transactions?: TransactionUpdateManyWithoutReversalReasonNestedInput
+    transfers?: TransferUpdateManyWithoutReversalReasonNestedInput
   }
 
   export type ReversalReasonCodeUncheckedUpdateInput = {
@@ -85196,6 +87879,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     journalEntries?: JournalEntryUncheckedUpdateManyWithoutReversalReasonNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutReversalReasonNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutReversalReasonNestedInput
   }
 
   export type ReversalReasonCodeCreateManyInput = {
@@ -86711,6 +89395,12 @@ export namespace Prisma {
     none?: SODWaiverWhereInput
   }
 
+  export type TransferListRelationFilter = {
+    every?: TransferWhereInput
+    some?: TransferWhereInput
+    none?: TransferWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -86785,6 +89475,10 @@ export namespace Prisma {
   }
 
   export type SODWaiverOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransferOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -89185,6 +91879,142 @@ export namespace Prisma {
     _max?: NestedDecimalFilter<$PrismaModel>
   }
 
+  export type EnumTransferStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferStatus | EnumTransferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferStatusFilter<$PrismaModel> | $Enums.TransferStatus
+  }
+
+  export type CurrencyNullableScalarRelationFilter = {
+    is?: CurrencyWhereInput | null
+    isNot?: CurrencyWhereInput | null
+  }
+
+  export type ReversalReasonCodeNullableScalarRelationFilter = {
+    is?: ReversalReasonCodeWhereInput | null
+    isNot?: ReversalReasonCodeWhereInput | null
+  }
+
+  export type JournalEntryNullableScalarRelationFilter = {
+    is?: JournalEntryWhereInput | null
+    isNot?: JournalEntryWhereInput | null
+  }
+
+  export type TransferOrganizationIdCodeCompoundUniqueInput = {
+    organizationId: string
+    code: string
+  }
+
+  export type TransferCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    status?: SortOrder
+    sourceAccountId?: SortOrder
+    destinationAccountId?: SortOrder
+    amount?: SortOrder
+    currencyCode?: SortOrder
+    destinationAmount?: SortOrder
+    destinationCurrencyCode?: SortOrder
+    fxRate?: SortOrder
+    description?: SortOrder
+    reference?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    processedById?: SortOrder
+    processedAt?: SortOrder
+    reversedById?: SortOrder
+    reversedAt?: SortOrder
+    reversalReasonId?: SortOrder
+    journalEntryId?: SortOrder
+    reversalJournalEntryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransferAvgOrderByAggregateInput = {
+    amount?: SortOrder
+    destinationAmount?: SortOrder
+    fxRate?: SortOrder
+  }
+
+  export type TransferMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    status?: SortOrder
+    sourceAccountId?: SortOrder
+    destinationAccountId?: SortOrder
+    amount?: SortOrder
+    currencyCode?: SortOrder
+    destinationAmount?: SortOrder
+    destinationCurrencyCode?: SortOrder
+    fxRate?: SortOrder
+    description?: SortOrder
+    reference?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    processedById?: SortOrder
+    processedAt?: SortOrder
+    reversedById?: SortOrder
+    reversedAt?: SortOrder
+    reversalReasonId?: SortOrder
+    journalEntryId?: SortOrder
+    reversalJournalEntryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransferMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    status?: SortOrder
+    sourceAccountId?: SortOrder
+    destinationAccountId?: SortOrder
+    amount?: SortOrder
+    currencyCode?: SortOrder
+    destinationAmount?: SortOrder
+    destinationCurrencyCode?: SortOrder
+    fxRate?: SortOrder
+    description?: SortOrder
+    reference?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    processedById?: SortOrder
+    processedAt?: SortOrder
+    reversedById?: SortOrder
+    reversedAt?: SortOrder
+    reversalReasonId?: SortOrder
+    journalEntryId?: SortOrder
+    reversalJournalEntryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransferSumOrderByAggregateInput = {
+    amount?: SortOrder
+    destinationAmount?: SortOrder
+    fxRate?: SortOrder
+  }
+
+  export type EnumTransferStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferStatus | EnumTransferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransferStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransferStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransferStatusFilter<$PrismaModel>
+  }
+
   export type EnumCurrencyTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.CurrencyType | EnumCurrencyTypeFieldRefInput<$PrismaModel>
     in?: $Enums.CurrencyType[] | ListEnumCurrencyTypeFieldRefInput<$PrismaModel>
@@ -89511,11 +92341,6 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type CurrencyNullableScalarRelationFilter = {
-    is?: CurrencyWhereInput | null
-    isNot?: CurrencyWhereInput | null
   }
 
   export type ProductServiceOrganizationIdCodeCompoundUniqueInput = {
@@ -89973,16 +92798,6 @@ export namespace Prisma {
   export type TransactionNullableScalarRelationFilter = {
     is?: TransactionWhereInput | null
     isNot?: TransactionWhereInput | null
-  }
-
-  export type JournalEntryNullableScalarRelationFilter = {
-    is?: JournalEntryWhereInput | null
-    isNot?: JournalEntryWhereInput | null
-  }
-
-  export type ReversalReasonCodeNullableScalarRelationFilter = {
-    is?: ReversalReasonCodeWhereInput | null
-    isNot?: ReversalReasonCodeWhereInput | null
   }
 
   export type JournalEntryOrganizationIdNumberCompoundUniqueInput = {
@@ -91493,6 +94308,34 @@ export namespace Prisma {
     connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
   }
 
+  export type TransferCreateNestedManyWithoutSubmittedByInput = {
+    create?: XOR<TransferCreateWithoutSubmittedByInput, TransferUncheckedCreateWithoutSubmittedByInput> | TransferCreateWithoutSubmittedByInput[] | TransferUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutSubmittedByInput | TransferCreateOrConnectWithoutSubmittedByInput[]
+    createMany?: TransferCreateManySubmittedByInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<TransferCreateWithoutApprovedByInput, TransferUncheckedCreateWithoutApprovedByInput> | TransferCreateWithoutApprovedByInput[] | TransferUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutApprovedByInput | TransferCreateOrConnectWithoutApprovedByInput[]
+    createMany?: TransferCreateManyApprovedByInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferCreateNestedManyWithoutProcessedByInput = {
+    create?: XOR<TransferCreateWithoutProcessedByInput, TransferUncheckedCreateWithoutProcessedByInput> | TransferCreateWithoutProcessedByInput[] | TransferUncheckedCreateWithoutProcessedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutProcessedByInput | TransferCreateOrConnectWithoutProcessedByInput[]
+    createMany?: TransferCreateManyProcessedByInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferCreateNestedManyWithoutReversedByInput = {
+    create?: XOR<TransferCreateWithoutReversedByInput, TransferUncheckedCreateWithoutReversedByInput> | TransferCreateWithoutReversedByInput[] | TransferUncheckedCreateWithoutReversedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversedByInput | TransferCreateOrConnectWithoutReversedByInput[]
+    createMany?: TransferCreateManyReversedByInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -91715,6 +94558,34 @@ export namespace Prisma {
     connectOrCreate?: SODWaiverCreateOrConnectWithoutReviewedByInput | SODWaiverCreateOrConnectWithoutReviewedByInput[]
     createMany?: SODWaiverCreateManyReviewedByInputEnvelope
     connect?: SODWaiverWhereUniqueInput | SODWaiverWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutSubmittedByInput = {
+    create?: XOR<TransferCreateWithoutSubmittedByInput, TransferUncheckedCreateWithoutSubmittedByInput> | TransferCreateWithoutSubmittedByInput[] | TransferUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutSubmittedByInput | TransferCreateOrConnectWithoutSubmittedByInput[]
+    createMany?: TransferCreateManySubmittedByInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<TransferCreateWithoutApprovedByInput, TransferUncheckedCreateWithoutApprovedByInput> | TransferCreateWithoutApprovedByInput[] | TransferUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutApprovedByInput | TransferCreateOrConnectWithoutApprovedByInput[]
+    createMany?: TransferCreateManyApprovedByInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutProcessedByInput = {
+    create?: XOR<TransferCreateWithoutProcessedByInput, TransferUncheckedCreateWithoutProcessedByInput> | TransferCreateWithoutProcessedByInput[] | TransferUncheckedCreateWithoutProcessedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutProcessedByInput | TransferCreateOrConnectWithoutProcessedByInput[]
+    createMany?: TransferCreateManyProcessedByInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutReversedByInput = {
+    create?: XOR<TransferCreateWithoutReversedByInput, TransferUncheckedCreateWithoutReversedByInput> | TransferCreateWithoutReversedByInput[] | TransferUncheckedCreateWithoutReversedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversedByInput | TransferCreateOrConnectWithoutReversedByInput[]
+    createMany?: TransferCreateManyReversedByInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -92246,6 +95117,62 @@ export namespace Prisma {
     deleteMany?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
   }
 
+  export type TransferUpdateManyWithoutSubmittedByNestedInput = {
+    create?: XOR<TransferCreateWithoutSubmittedByInput, TransferUncheckedCreateWithoutSubmittedByInput> | TransferCreateWithoutSubmittedByInput[] | TransferUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutSubmittedByInput | TransferCreateOrConnectWithoutSubmittedByInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutSubmittedByInput | TransferUpsertWithWhereUniqueWithoutSubmittedByInput[]
+    createMany?: TransferCreateManySubmittedByInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutSubmittedByInput | TransferUpdateWithWhereUniqueWithoutSubmittedByInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutSubmittedByInput | TransferUpdateManyWithWhereWithoutSubmittedByInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<TransferCreateWithoutApprovedByInput, TransferUncheckedCreateWithoutApprovedByInput> | TransferCreateWithoutApprovedByInput[] | TransferUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutApprovedByInput | TransferCreateOrConnectWithoutApprovedByInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutApprovedByInput | TransferUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: TransferCreateManyApprovedByInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutApprovedByInput | TransferUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutApprovedByInput | TransferUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUpdateManyWithoutProcessedByNestedInput = {
+    create?: XOR<TransferCreateWithoutProcessedByInput, TransferUncheckedCreateWithoutProcessedByInput> | TransferCreateWithoutProcessedByInput[] | TransferUncheckedCreateWithoutProcessedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutProcessedByInput | TransferCreateOrConnectWithoutProcessedByInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutProcessedByInput | TransferUpsertWithWhereUniqueWithoutProcessedByInput[]
+    createMany?: TransferCreateManyProcessedByInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutProcessedByInput | TransferUpdateWithWhereUniqueWithoutProcessedByInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutProcessedByInput | TransferUpdateManyWithWhereWithoutProcessedByInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUpdateManyWithoutReversedByNestedInput = {
+    create?: XOR<TransferCreateWithoutReversedByInput, TransferUncheckedCreateWithoutReversedByInput> | TransferCreateWithoutReversedByInput[] | TransferUncheckedCreateWithoutReversedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversedByInput | TransferCreateOrConnectWithoutReversedByInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutReversedByInput | TransferUpsertWithWhereUniqueWithoutReversedByInput[]
+    createMany?: TransferCreateManyReversedByInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutReversedByInput | TransferUpdateWithWhereUniqueWithoutReversedByInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutReversedByInput | TransferUpdateManyWithWhereWithoutReversedByInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -92692,6 +95619,62 @@ export namespace Prisma {
     update?: SODWaiverUpdateWithWhereUniqueWithoutReviewedByInput | SODWaiverUpdateWithWhereUniqueWithoutReviewedByInput[]
     updateMany?: SODWaiverUpdateManyWithWhereWithoutReviewedByInput | SODWaiverUpdateManyWithWhereWithoutReviewedByInput[]
     deleteMany?: SODWaiverScalarWhereInput | SODWaiverScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutSubmittedByNestedInput = {
+    create?: XOR<TransferCreateWithoutSubmittedByInput, TransferUncheckedCreateWithoutSubmittedByInput> | TransferCreateWithoutSubmittedByInput[] | TransferUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutSubmittedByInput | TransferCreateOrConnectWithoutSubmittedByInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutSubmittedByInput | TransferUpsertWithWhereUniqueWithoutSubmittedByInput[]
+    createMany?: TransferCreateManySubmittedByInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutSubmittedByInput | TransferUpdateWithWhereUniqueWithoutSubmittedByInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutSubmittedByInput | TransferUpdateManyWithWhereWithoutSubmittedByInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<TransferCreateWithoutApprovedByInput, TransferUncheckedCreateWithoutApprovedByInput> | TransferCreateWithoutApprovedByInput[] | TransferUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutApprovedByInput | TransferCreateOrConnectWithoutApprovedByInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutApprovedByInput | TransferUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: TransferCreateManyApprovedByInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutApprovedByInput | TransferUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutApprovedByInput | TransferUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutProcessedByNestedInput = {
+    create?: XOR<TransferCreateWithoutProcessedByInput, TransferUncheckedCreateWithoutProcessedByInput> | TransferCreateWithoutProcessedByInput[] | TransferUncheckedCreateWithoutProcessedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutProcessedByInput | TransferCreateOrConnectWithoutProcessedByInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutProcessedByInput | TransferUpsertWithWhereUniqueWithoutProcessedByInput[]
+    createMany?: TransferCreateManyProcessedByInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutProcessedByInput | TransferUpdateWithWhereUniqueWithoutProcessedByInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutProcessedByInput | TransferUpdateManyWithWhereWithoutProcessedByInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutReversedByNestedInput = {
+    create?: XOR<TransferCreateWithoutReversedByInput, TransferUncheckedCreateWithoutReversedByInput> | TransferCreateWithoutReversedByInput[] | TransferUncheckedCreateWithoutReversedByInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversedByInput | TransferCreateOrConnectWithoutReversedByInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutReversedByInput | TransferUpsertWithWhereUniqueWithoutReversedByInput[]
+    createMany?: TransferCreateManyReversedByInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutReversedByInput | TransferUpdateWithWhereUniqueWithoutReversedByInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutReversedByInput | TransferUpdateManyWithWhereWithoutReversedByInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutMfaDevicesInput = {
@@ -94120,6 +97103,13 @@ export namespace Prisma {
     connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
   }
 
+  export type TransferCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<TransferCreateWithoutOrganizationInput, TransferUncheckedCreateWithoutOrganizationInput> | TransferCreateWithoutOrganizationInput[] | TransferUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutOrganizationInput | TransferCreateOrConnectWithoutOrganizationInput[]
+    createMany?: TransferCreateManyOrganizationInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -94279,6 +97269,13 @@ export namespace Prisma {
     connectOrCreate?: PaymentScheduleCreateOrConnectWithoutOrganizationInput | PaymentScheduleCreateOrConnectWithoutOrganizationInput[]
     createMany?: PaymentScheduleCreateManyOrganizationInputEnvelope
     connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<TransferCreateWithoutOrganizationInput, TransferUncheckedCreateWithoutOrganizationInput> | TransferCreateWithoutOrganizationInput[] | TransferUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutOrganizationInput | TransferCreateOrConnectWithoutOrganizationInput[]
+    createMany?: TransferCreateManyOrganizationInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
   }
 
   export type EnumOrganizationTypeFieldUpdateOperationsInput = {
@@ -94611,6 +97608,20 @@ export namespace Prisma {
     deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
   }
 
+  export type TransferUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<TransferCreateWithoutOrganizationInput, TransferUncheckedCreateWithoutOrganizationInput> | TransferCreateWithoutOrganizationInput[] | TransferUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutOrganizationInput | TransferCreateOrConnectWithoutOrganizationInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutOrganizationInput | TransferUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: TransferCreateManyOrganizationInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutOrganizationInput | TransferUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutOrganizationInput | TransferUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -94931,6 +97942,20 @@ export namespace Prisma {
     update?: PaymentScheduleUpdateWithWhereUniqueWithoutOrganizationInput | PaymentScheduleUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: PaymentScheduleUpdateManyWithWhereWithoutOrganizationInput | PaymentScheduleUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<TransferCreateWithoutOrganizationInput, TransferUncheckedCreateWithoutOrganizationInput> | TransferCreateWithoutOrganizationInput[] | TransferUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutOrganizationInput | TransferCreateOrConnectWithoutOrganizationInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutOrganizationInput | TransferUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: TransferCreateManyOrganizationInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutOrganizationInput | TransferUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutOrganizationInput | TransferUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutLocationsInput = {
@@ -95828,6 +98853,20 @@ export namespace Prisma {
     connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
   }
 
+  export type TransferCreateNestedManyWithoutSourceAccountInput = {
+    create?: XOR<TransferCreateWithoutSourceAccountInput, TransferUncheckedCreateWithoutSourceAccountInput> | TransferCreateWithoutSourceAccountInput[] | TransferUncheckedCreateWithoutSourceAccountInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutSourceAccountInput | TransferCreateOrConnectWithoutSourceAccountInput[]
+    createMany?: TransferCreateManySourceAccountInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferCreateNestedManyWithoutDestinationAccountInput = {
+    create?: XOR<TransferCreateWithoutDestinationAccountInput, TransferUncheckedCreateWithoutDestinationAccountInput> | TransferCreateWithoutDestinationAccountInput[] | TransferUncheckedCreateWithoutDestinationAccountInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutDestinationAccountInput | TransferCreateOrConnectWithoutDestinationAccountInput[]
+    createMany?: TransferCreateManyDestinationAccountInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
   export type JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput = {
     create?: XOR<JournalLineCreateWithoutTreasuryAccountInput, JournalLineUncheckedCreateWithoutTreasuryAccountInput> | JournalLineCreateWithoutTreasuryAccountInput[] | JournalLineUncheckedCreateWithoutTreasuryAccountInput[]
     connectOrCreate?: JournalLineCreateOrConnectWithoutTreasuryAccountInput | JournalLineCreateOrConnectWithoutTreasuryAccountInput[]
@@ -95847,6 +98886,20 @@ export namespace Prisma {
     connectOrCreate?: PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput | PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput[]
     createMany?: PaymentScheduleCreateManyTreasuryAccountInputEnvelope
     connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutSourceAccountInput = {
+    create?: XOR<TransferCreateWithoutSourceAccountInput, TransferUncheckedCreateWithoutSourceAccountInput> | TransferCreateWithoutSourceAccountInput[] | TransferUncheckedCreateWithoutSourceAccountInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutSourceAccountInput | TransferCreateOrConnectWithoutSourceAccountInput[]
+    createMany?: TransferCreateManySourceAccountInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutDestinationAccountInput = {
+    create?: XOR<TransferCreateWithoutDestinationAccountInput, TransferUncheckedCreateWithoutDestinationAccountInput> | TransferCreateWithoutDestinationAccountInput[] | TransferUncheckedCreateWithoutDestinationAccountInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutDestinationAccountInput | TransferCreateOrConnectWithoutDestinationAccountInput[]
+    createMany?: TransferCreateManyDestinationAccountInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
   }
 
   export type EnumTreasuryAccountKindFieldUpdateOperationsInput = {
@@ -95939,6 +98992,34 @@ export namespace Prisma {
     deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
   }
 
+  export type TransferUpdateManyWithoutSourceAccountNestedInput = {
+    create?: XOR<TransferCreateWithoutSourceAccountInput, TransferUncheckedCreateWithoutSourceAccountInput> | TransferCreateWithoutSourceAccountInput[] | TransferUncheckedCreateWithoutSourceAccountInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutSourceAccountInput | TransferCreateOrConnectWithoutSourceAccountInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutSourceAccountInput | TransferUpsertWithWhereUniqueWithoutSourceAccountInput[]
+    createMany?: TransferCreateManySourceAccountInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutSourceAccountInput | TransferUpdateWithWhereUniqueWithoutSourceAccountInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutSourceAccountInput | TransferUpdateManyWithWhereWithoutSourceAccountInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUpdateManyWithoutDestinationAccountNestedInput = {
+    create?: XOR<TransferCreateWithoutDestinationAccountInput, TransferUncheckedCreateWithoutDestinationAccountInput> | TransferCreateWithoutDestinationAccountInput[] | TransferUncheckedCreateWithoutDestinationAccountInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutDestinationAccountInput | TransferCreateOrConnectWithoutDestinationAccountInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutDestinationAccountInput | TransferUpsertWithWhereUniqueWithoutDestinationAccountInput[]
+    createMany?: TransferCreateManyDestinationAccountInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutDestinationAccountInput | TransferUpdateWithWhereUniqueWithoutDestinationAccountInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutDestinationAccountInput | TransferUpdateManyWithWhereWithoutDestinationAccountInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
   export type JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput = {
     create?: XOR<JournalLineCreateWithoutTreasuryAccountInput, JournalLineUncheckedCreateWithoutTreasuryAccountInput> | JournalLineCreateWithoutTreasuryAccountInput[] | JournalLineUncheckedCreateWithoutTreasuryAccountInput[]
     connectOrCreate?: JournalLineCreateOrConnectWithoutTreasuryAccountInput | JournalLineCreateOrConnectWithoutTreasuryAccountInput[]
@@ -95979,6 +99060,34 @@ export namespace Prisma {
     update?: PaymentScheduleUpdateWithWhereUniqueWithoutTreasuryAccountInput | PaymentScheduleUpdateWithWhereUniqueWithoutTreasuryAccountInput[]
     updateMany?: PaymentScheduleUpdateManyWithWhereWithoutTreasuryAccountInput | PaymentScheduleUpdateManyWithWhereWithoutTreasuryAccountInput[]
     deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutSourceAccountNestedInput = {
+    create?: XOR<TransferCreateWithoutSourceAccountInput, TransferUncheckedCreateWithoutSourceAccountInput> | TransferCreateWithoutSourceAccountInput[] | TransferUncheckedCreateWithoutSourceAccountInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutSourceAccountInput | TransferCreateOrConnectWithoutSourceAccountInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutSourceAccountInput | TransferUpsertWithWhereUniqueWithoutSourceAccountInput[]
+    createMany?: TransferCreateManySourceAccountInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutSourceAccountInput | TransferUpdateWithWhereUniqueWithoutSourceAccountInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutSourceAccountInput | TransferUpdateManyWithWhereWithoutSourceAccountInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput = {
+    create?: XOR<TransferCreateWithoutDestinationAccountInput, TransferUncheckedCreateWithoutDestinationAccountInput> | TransferCreateWithoutDestinationAccountInput[] | TransferUncheckedCreateWithoutDestinationAccountInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutDestinationAccountInput | TransferCreateOrConnectWithoutDestinationAccountInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutDestinationAccountInput | TransferUpsertWithWhereUniqueWithoutDestinationAccountInput[]
+    createMany?: TransferCreateManyDestinationAccountInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutDestinationAccountInput | TransferUpdateWithWhereUniqueWithoutDestinationAccountInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutDestinationAccountInput | TransferUpdateManyWithWhereWithoutDestinationAccountInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutPaymentSchedulesInput = {
@@ -96029,6 +99138,194 @@ export namespace Prisma {
     upsert?: CurrencyUpsertWithoutPaymentSchedulesInput
     connect?: CurrencyWhereUniqueInput
     update?: XOR<XOR<CurrencyUpdateToOneWithWhereWithoutPaymentSchedulesInput, CurrencyUpdateWithoutPaymentSchedulesInput>, CurrencyUncheckedUpdateWithoutPaymentSchedulesInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutTransfersInput = {
+    create?: XOR<OrganizationCreateWithoutTransfersInput, OrganizationUncheckedCreateWithoutTransfersInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutTransfersInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput = {
+    create?: XOR<TreasuryAccountCreateWithoutTransfersAsSourceInput, TreasuryAccountUncheckedCreateWithoutTransfersAsSourceInput>
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutTransfersAsSourceInput
+    connect?: TreasuryAccountWhereUniqueInput
+  }
+
+  export type TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput = {
+    create?: XOR<TreasuryAccountCreateWithoutTransfersAsDestinationInput, TreasuryAccountUncheckedCreateWithoutTransfersAsDestinationInput>
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutTransfersAsDestinationInput
+    connect?: TreasuryAccountWhereUniqueInput
+  }
+
+  export type CurrencyCreateNestedOneWithoutTransfersInput = {
+    create?: XOR<CurrencyCreateWithoutTransfersInput, CurrencyUncheckedCreateWithoutTransfersInput>
+    connectOrCreate?: CurrencyCreateOrConnectWithoutTransfersInput
+    connect?: CurrencyWhereUniqueInput
+  }
+
+  export type CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput = {
+    create?: XOR<CurrencyCreateWithoutTransfersAsDestinationCurrencyInput, CurrencyUncheckedCreateWithoutTransfersAsDestinationCurrencyInput>
+    connectOrCreate?: CurrencyCreateOrConnectWithoutTransfersAsDestinationCurrencyInput
+    connect?: CurrencyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTransfersSubmittedInput = {
+    create?: XOR<UserCreateWithoutTransfersSubmittedInput, UserUncheckedCreateWithoutTransfersSubmittedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransfersSubmittedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTransfersApprovedInput = {
+    create?: XOR<UserCreateWithoutTransfersApprovedInput, UserUncheckedCreateWithoutTransfersApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransfersApprovedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTransfersProcessedInput = {
+    create?: XOR<UserCreateWithoutTransfersProcessedInput, UserUncheckedCreateWithoutTransfersProcessedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransfersProcessedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTransfersReversedInput = {
+    create?: XOR<UserCreateWithoutTransfersReversedInput, UserUncheckedCreateWithoutTransfersReversedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransfersReversedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ReversalReasonCodeCreateNestedOneWithoutTransfersInput = {
+    create?: XOR<ReversalReasonCodeCreateWithoutTransfersInput, ReversalReasonCodeUncheckedCreateWithoutTransfersInput>
+    connectOrCreate?: ReversalReasonCodeCreateOrConnectWithoutTransfersInput
+    connect?: ReversalReasonCodeWhereUniqueInput
+  }
+
+  export type JournalEntryCreateNestedOneWithoutTransfersInput = {
+    create?: XOR<JournalEntryCreateWithoutTransfersInput, JournalEntryUncheckedCreateWithoutTransfersInput>
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutTransfersInput
+    connect?: JournalEntryWhereUniqueInput
+  }
+
+  export type JournalEntryCreateNestedOneWithoutReversalTransfersInput = {
+    create?: XOR<JournalEntryCreateWithoutReversalTransfersInput, JournalEntryUncheckedCreateWithoutReversalTransfersInput>
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversalTransfersInput
+    connect?: JournalEntryWhereUniqueInput
+  }
+
+  export type EnumTransferStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TransferStatus
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutTransfersNestedInput = {
+    create?: XOR<OrganizationCreateWithoutTransfersInput, OrganizationUncheckedCreateWithoutTransfersInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutTransfersInput
+    upsert?: OrganizationUpsertWithoutTransfersInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutTransfersInput, OrganizationUpdateWithoutTransfersInput>, OrganizationUncheckedUpdateWithoutTransfersInput>
+  }
+
+  export type TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutTransfersAsSourceInput, TreasuryAccountUncheckedCreateWithoutTransfersAsSourceInput>
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutTransfersAsSourceInput
+    upsert?: TreasuryAccountUpsertWithoutTransfersAsSourceInput
+    connect?: TreasuryAccountWhereUniqueInput
+    update?: XOR<XOR<TreasuryAccountUpdateToOneWithWhereWithoutTransfersAsSourceInput, TreasuryAccountUpdateWithoutTransfersAsSourceInput>, TreasuryAccountUncheckedUpdateWithoutTransfersAsSourceInput>
+  }
+
+  export type TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutTransfersAsDestinationInput, TreasuryAccountUncheckedCreateWithoutTransfersAsDestinationInput>
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutTransfersAsDestinationInput
+    upsert?: TreasuryAccountUpsertWithoutTransfersAsDestinationInput
+    connect?: TreasuryAccountWhereUniqueInput
+    update?: XOR<XOR<TreasuryAccountUpdateToOneWithWhereWithoutTransfersAsDestinationInput, TreasuryAccountUpdateWithoutTransfersAsDestinationInput>, TreasuryAccountUncheckedUpdateWithoutTransfersAsDestinationInput>
+  }
+
+  export type CurrencyUpdateOneRequiredWithoutTransfersNestedInput = {
+    create?: XOR<CurrencyCreateWithoutTransfersInput, CurrencyUncheckedCreateWithoutTransfersInput>
+    connectOrCreate?: CurrencyCreateOrConnectWithoutTransfersInput
+    upsert?: CurrencyUpsertWithoutTransfersInput
+    connect?: CurrencyWhereUniqueInput
+    update?: XOR<XOR<CurrencyUpdateToOneWithWhereWithoutTransfersInput, CurrencyUpdateWithoutTransfersInput>, CurrencyUncheckedUpdateWithoutTransfersInput>
+  }
+
+  export type CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput = {
+    create?: XOR<CurrencyCreateWithoutTransfersAsDestinationCurrencyInput, CurrencyUncheckedCreateWithoutTransfersAsDestinationCurrencyInput>
+    connectOrCreate?: CurrencyCreateOrConnectWithoutTransfersAsDestinationCurrencyInput
+    upsert?: CurrencyUpsertWithoutTransfersAsDestinationCurrencyInput
+    disconnect?: CurrencyWhereInput | boolean
+    delete?: CurrencyWhereInput | boolean
+    connect?: CurrencyWhereUniqueInput
+    update?: XOR<XOR<CurrencyUpdateToOneWithWhereWithoutTransfersAsDestinationCurrencyInput, CurrencyUpdateWithoutTransfersAsDestinationCurrencyInput>, CurrencyUncheckedUpdateWithoutTransfersAsDestinationCurrencyInput>
+  }
+
+  export type UserUpdateOneWithoutTransfersSubmittedNestedInput = {
+    create?: XOR<UserCreateWithoutTransfersSubmittedInput, UserUncheckedCreateWithoutTransfersSubmittedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransfersSubmittedInput
+    upsert?: UserUpsertWithoutTransfersSubmittedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTransfersSubmittedInput, UserUpdateWithoutTransfersSubmittedInput>, UserUncheckedUpdateWithoutTransfersSubmittedInput>
+  }
+
+  export type UserUpdateOneWithoutTransfersApprovedNestedInput = {
+    create?: XOR<UserCreateWithoutTransfersApprovedInput, UserUncheckedCreateWithoutTransfersApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransfersApprovedInput
+    upsert?: UserUpsertWithoutTransfersApprovedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTransfersApprovedInput, UserUpdateWithoutTransfersApprovedInput>, UserUncheckedUpdateWithoutTransfersApprovedInput>
+  }
+
+  export type UserUpdateOneWithoutTransfersProcessedNestedInput = {
+    create?: XOR<UserCreateWithoutTransfersProcessedInput, UserUncheckedCreateWithoutTransfersProcessedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransfersProcessedInput
+    upsert?: UserUpsertWithoutTransfersProcessedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTransfersProcessedInput, UserUpdateWithoutTransfersProcessedInput>, UserUncheckedUpdateWithoutTransfersProcessedInput>
+  }
+
+  export type UserUpdateOneWithoutTransfersReversedNestedInput = {
+    create?: XOR<UserCreateWithoutTransfersReversedInput, UserUncheckedCreateWithoutTransfersReversedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransfersReversedInput
+    upsert?: UserUpsertWithoutTransfersReversedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTransfersReversedInput, UserUpdateWithoutTransfersReversedInput>, UserUncheckedUpdateWithoutTransfersReversedInput>
+  }
+
+  export type ReversalReasonCodeUpdateOneWithoutTransfersNestedInput = {
+    create?: XOR<ReversalReasonCodeCreateWithoutTransfersInput, ReversalReasonCodeUncheckedCreateWithoutTransfersInput>
+    connectOrCreate?: ReversalReasonCodeCreateOrConnectWithoutTransfersInput
+    upsert?: ReversalReasonCodeUpsertWithoutTransfersInput
+    disconnect?: ReversalReasonCodeWhereInput | boolean
+    delete?: ReversalReasonCodeWhereInput | boolean
+    connect?: ReversalReasonCodeWhereUniqueInput
+    update?: XOR<XOR<ReversalReasonCodeUpdateToOneWithWhereWithoutTransfersInput, ReversalReasonCodeUpdateWithoutTransfersInput>, ReversalReasonCodeUncheckedUpdateWithoutTransfersInput>
+  }
+
+  export type JournalEntryUpdateOneWithoutTransfersNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutTransfersInput, JournalEntryUncheckedCreateWithoutTransfersInput>
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutTransfersInput
+    upsert?: JournalEntryUpsertWithoutTransfersInput
+    disconnect?: JournalEntryWhereInput | boolean
+    delete?: JournalEntryWhereInput | boolean
+    connect?: JournalEntryWhereUniqueInput
+    update?: XOR<XOR<JournalEntryUpdateToOneWithWhereWithoutTransfersInput, JournalEntryUpdateWithoutTransfersInput>, JournalEntryUncheckedUpdateWithoutTransfersInput>
+  }
+
+  export type JournalEntryUpdateOneWithoutReversalTransfersNestedInput = {
+    create?: XOR<JournalEntryCreateWithoutReversalTransfersInput, JournalEntryUncheckedCreateWithoutReversalTransfersInput>
+    connectOrCreate?: JournalEntryCreateOrConnectWithoutReversalTransfersInput
+    upsert?: JournalEntryUpsertWithoutReversalTransfersInput
+    disconnect?: JournalEntryWhereInput | boolean
+    delete?: JournalEntryWhereInput | boolean
+    connect?: JournalEntryWhereUniqueInput
+    update?: XOR<XOR<JournalEntryUpdateToOneWithWhereWithoutReversalTransfersInput, JournalEntryUpdateWithoutReversalTransfersInput>, JournalEntryUncheckedUpdateWithoutReversalTransfersInput>
   }
 
   export type ExchangeRateCreateNestedManyWithoutBaseCurrencyInput = {
@@ -96094,6 +99391,20 @@ export namespace Prisma {
     connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
   }
 
+  export type TransferCreateNestedManyWithoutCurrencyInput = {
+    create?: XOR<TransferCreateWithoutCurrencyInput, TransferUncheckedCreateWithoutCurrencyInput> | TransferCreateWithoutCurrencyInput[] | TransferUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutCurrencyInput | TransferCreateOrConnectWithoutCurrencyInput[]
+    createMany?: TransferCreateManyCurrencyInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferCreateNestedManyWithoutDestinationCurrencyInput = {
+    create?: XOR<TransferCreateWithoutDestinationCurrencyInput, TransferUncheckedCreateWithoutDestinationCurrencyInput> | TransferCreateWithoutDestinationCurrencyInput[] | TransferUncheckedCreateWithoutDestinationCurrencyInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutDestinationCurrencyInput | TransferCreateOrConnectWithoutDestinationCurrencyInput[]
+    createMany?: TransferCreateManyDestinationCurrencyInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
   export type ExchangeRateUncheckedCreateNestedManyWithoutBaseCurrencyInput = {
     create?: XOR<ExchangeRateCreateWithoutBaseCurrencyInput, ExchangeRateUncheckedCreateWithoutBaseCurrencyInput> | ExchangeRateCreateWithoutBaseCurrencyInput[] | ExchangeRateUncheckedCreateWithoutBaseCurrencyInput[]
     connectOrCreate?: ExchangeRateCreateOrConnectWithoutBaseCurrencyInput | ExchangeRateCreateOrConnectWithoutBaseCurrencyInput[]
@@ -96155,6 +99466,20 @@ export namespace Prisma {
     connectOrCreate?: PaymentScheduleCreateOrConnectWithoutCurrencyInput | PaymentScheduleCreateOrConnectWithoutCurrencyInput[]
     createMany?: PaymentScheduleCreateManyCurrencyInputEnvelope
     connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutCurrencyInput = {
+    create?: XOR<TransferCreateWithoutCurrencyInput, TransferUncheckedCreateWithoutCurrencyInput> | TransferCreateWithoutCurrencyInput[] | TransferUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutCurrencyInput | TransferCreateOrConnectWithoutCurrencyInput[]
+    createMany?: TransferCreateManyCurrencyInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput = {
+    create?: XOR<TransferCreateWithoutDestinationCurrencyInput, TransferUncheckedCreateWithoutDestinationCurrencyInput> | TransferCreateWithoutDestinationCurrencyInput[] | TransferUncheckedCreateWithoutDestinationCurrencyInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutDestinationCurrencyInput | TransferCreateOrConnectWithoutDestinationCurrencyInput[]
+    createMany?: TransferCreateManyDestinationCurrencyInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
   }
 
   export type EnumCurrencyTypeFieldUpdateOperationsInput = {
@@ -96287,6 +99612,34 @@ export namespace Prisma {
     deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
   }
 
+  export type TransferUpdateManyWithoutCurrencyNestedInput = {
+    create?: XOR<TransferCreateWithoutCurrencyInput, TransferUncheckedCreateWithoutCurrencyInput> | TransferCreateWithoutCurrencyInput[] | TransferUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutCurrencyInput | TransferCreateOrConnectWithoutCurrencyInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutCurrencyInput | TransferUpsertWithWhereUniqueWithoutCurrencyInput[]
+    createMany?: TransferCreateManyCurrencyInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutCurrencyInput | TransferUpdateWithWhereUniqueWithoutCurrencyInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutCurrencyInput | TransferUpdateManyWithWhereWithoutCurrencyInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUpdateManyWithoutDestinationCurrencyNestedInput = {
+    create?: XOR<TransferCreateWithoutDestinationCurrencyInput, TransferUncheckedCreateWithoutDestinationCurrencyInput> | TransferCreateWithoutDestinationCurrencyInput[] | TransferUncheckedCreateWithoutDestinationCurrencyInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutDestinationCurrencyInput | TransferCreateOrConnectWithoutDestinationCurrencyInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutDestinationCurrencyInput | TransferUpsertWithWhereUniqueWithoutDestinationCurrencyInput[]
+    createMany?: TransferCreateManyDestinationCurrencyInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutDestinationCurrencyInput | TransferUpdateWithWhereUniqueWithoutDestinationCurrencyInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutDestinationCurrencyInput | TransferUpdateManyWithWhereWithoutDestinationCurrencyInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
   export type ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput = {
     create?: XOR<ExchangeRateCreateWithoutBaseCurrencyInput, ExchangeRateUncheckedCreateWithoutBaseCurrencyInput> | ExchangeRateCreateWithoutBaseCurrencyInput[] | ExchangeRateUncheckedCreateWithoutBaseCurrencyInput[]
     connectOrCreate?: ExchangeRateCreateOrConnectWithoutBaseCurrencyInput | ExchangeRateCreateOrConnectWithoutBaseCurrencyInput[]
@@ -96411,6 +99764,34 @@ export namespace Prisma {
     update?: PaymentScheduleUpdateWithWhereUniqueWithoutCurrencyInput | PaymentScheduleUpdateWithWhereUniqueWithoutCurrencyInput[]
     updateMany?: PaymentScheduleUpdateManyWithWhereWithoutCurrencyInput | PaymentScheduleUpdateManyWithWhereWithoutCurrencyInput[]
     deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutCurrencyNestedInput = {
+    create?: XOR<TransferCreateWithoutCurrencyInput, TransferUncheckedCreateWithoutCurrencyInput> | TransferCreateWithoutCurrencyInput[] | TransferUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutCurrencyInput | TransferCreateOrConnectWithoutCurrencyInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutCurrencyInput | TransferUpsertWithWhereUniqueWithoutCurrencyInput[]
+    createMany?: TransferCreateManyCurrencyInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutCurrencyInput | TransferUpdateWithWhereUniqueWithoutCurrencyInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutCurrencyInput | TransferUpdateManyWithWhereWithoutCurrencyInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput = {
+    create?: XOR<TransferCreateWithoutDestinationCurrencyInput, TransferUncheckedCreateWithoutDestinationCurrencyInput> | TransferCreateWithoutDestinationCurrencyInput[] | TransferUncheckedCreateWithoutDestinationCurrencyInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutDestinationCurrencyInput | TransferCreateOrConnectWithoutDestinationCurrencyInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutDestinationCurrencyInput | TransferUpsertWithWhereUniqueWithoutDestinationCurrencyInput[]
+    createMany?: TransferCreateManyDestinationCurrencyInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutDestinationCurrencyInput | TransferUpdateWithWhereUniqueWithoutDestinationCurrencyInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutDestinationCurrencyInput | TransferUpdateManyWithWhereWithoutDestinationCurrencyInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
   }
 
   export type CurrencyCreateNestedOneWithoutExchangeRatesBaseInput = {
@@ -97282,6 +100663,20 @@ export namespace Prisma {
     connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
   }
 
+  export type TransferCreateNestedManyWithoutJournalEntryInput = {
+    create?: XOR<TransferCreateWithoutJournalEntryInput, TransferUncheckedCreateWithoutJournalEntryInput> | TransferCreateWithoutJournalEntryInput[] | TransferUncheckedCreateWithoutJournalEntryInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutJournalEntryInput | TransferCreateOrConnectWithoutJournalEntryInput[]
+    createMany?: TransferCreateManyJournalEntryInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferCreateNestedManyWithoutReversalJournalEntryInput = {
+    create?: XOR<TransferCreateWithoutReversalJournalEntryInput, TransferUncheckedCreateWithoutReversalJournalEntryInput> | TransferCreateWithoutReversalJournalEntryInput[] | TransferUncheckedCreateWithoutReversalJournalEntryInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversalJournalEntryInput | TransferCreateOrConnectWithoutReversalJournalEntryInput[]
+    createMany?: TransferCreateManyReversalJournalEntryInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
   export type JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput = {
     create?: XOR<JournalEntryCreateWithoutAdjustingEntryInput, JournalEntryUncheckedCreateWithoutAdjustingEntryInput> | JournalEntryCreateWithoutAdjustingEntryInput[] | JournalEntryUncheckedCreateWithoutAdjustingEntryInput[]
     connectOrCreate?: JournalEntryCreateOrConnectWithoutAdjustingEntryInput | JournalEntryCreateOrConnectWithoutAdjustingEntryInput[]
@@ -97301,6 +100696,20 @@ export namespace Prisma {
     connectOrCreate?: JournalLineCreateOrConnectWithoutEntryInput | JournalLineCreateOrConnectWithoutEntryInput[]
     createMany?: JournalLineCreateManyEntryInputEnvelope
     connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutJournalEntryInput = {
+    create?: XOR<TransferCreateWithoutJournalEntryInput, TransferUncheckedCreateWithoutJournalEntryInput> | TransferCreateWithoutJournalEntryInput[] | TransferUncheckedCreateWithoutJournalEntryInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutJournalEntryInput | TransferCreateOrConnectWithoutJournalEntryInput[]
+    createMany?: TransferCreateManyJournalEntryInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput = {
+    create?: XOR<TransferCreateWithoutReversalJournalEntryInput, TransferUncheckedCreateWithoutReversalJournalEntryInput> | TransferCreateWithoutReversalJournalEntryInput[] | TransferUncheckedCreateWithoutReversalJournalEntryInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversalJournalEntryInput | TransferCreateOrConnectWithoutReversalJournalEntryInput[]
+    createMany?: TransferCreateManyReversalJournalEntryInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
   }
 
   export type EnumJournalEntryTypeFieldUpdateOperationsInput = {
@@ -97453,6 +100862,34 @@ export namespace Prisma {
     deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
   }
 
+  export type TransferUpdateManyWithoutJournalEntryNestedInput = {
+    create?: XOR<TransferCreateWithoutJournalEntryInput, TransferUncheckedCreateWithoutJournalEntryInput> | TransferCreateWithoutJournalEntryInput[] | TransferUncheckedCreateWithoutJournalEntryInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutJournalEntryInput | TransferCreateOrConnectWithoutJournalEntryInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutJournalEntryInput | TransferUpsertWithWhereUniqueWithoutJournalEntryInput[]
+    createMany?: TransferCreateManyJournalEntryInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutJournalEntryInput | TransferUpdateWithWhereUniqueWithoutJournalEntryInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutJournalEntryInput | TransferUpdateManyWithWhereWithoutJournalEntryInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUpdateManyWithoutReversalJournalEntryNestedInput = {
+    create?: XOR<TransferCreateWithoutReversalJournalEntryInput, TransferUncheckedCreateWithoutReversalJournalEntryInput> | TransferCreateWithoutReversalJournalEntryInput[] | TransferUncheckedCreateWithoutReversalJournalEntryInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversalJournalEntryInput | TransferCreateOrConnectWithoutReversalJournalEntryInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutReversalJournalEntryInput | TransferUpsertWithWhereUniqueWithoutReversalJournalEntryInput[]
+    createMany?: TransferCreateManyReversalJournalEntryInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutReversalJournalEntryInput | TransferUpdateWithWhereUniqueWithoutReversalJournalEntryInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutReversalJournalEntryInput | TransferUpdateManyWithWhereWithoutReversalJournalEntryInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
   export type JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput = {
     create?: XOR<JournalEntryCreateWithoutAdjustingEntryInput, JournalEntryUncheckedCreateWithoutAdjustingEntryInput> | JournalEntryCreateWithoutAdjustingEntryInput[] | JournalEntryUncheckedCreateWithoutAdjustingEntryInput[]
     connectOrCreate?: JournalEntryCreateOrConnectWithoutAdjustingEntryInput | JournalEntryCreateOrConnectWithoutAdjustingEntryInput[]
@@ -97493,6 +100930,34 @@ export namespace Prisma {
     update?: JournalLineUpdateWithWhereUniqueWithoutEntryInput | JournalLineUpdateWithWhereUniqueWithoutEntryInput[]
     updateMany?: JournalLineUpdateManyWithWhereWithoutEntryInput | JournalLineUpdateManyWithWhereWithoutEntryInput[]
     deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutJournalEntryNestedInput = {
+    create?: XOR<TransferCreateWithoutJournalEntryInput, TransferUncheckedCreateWithoutJournalEntryInput> | TransferCreateWithoutJournalEntryInput[] | TransferUncheckedCreateWithoutJournalEntryInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutJournalEntryInput | TransferCreateOrConnectWithoutJournalEntryInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutJournalEntryInput | TransferUpsertWithWhereUniqueWithoutJournalEntryInput[]
+    createMany?: TransferCreateManyJournalEntryInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutJournalEntryInput | TransferUpdateWithWhereUniqueWithoutJournalEntryInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutJournalEntryInput | TransferUpdateManyWithWhereWithoutJournalEntryInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput = {
+    create?: XOR<TransferCreateWithoutReversalJournalEntryInput, TransferUncheckedCreateWithoutReversalJournalEntryInput> | TransferCreateWithoutReversalJournalEntryInput[] | TransferUncheckedCreateWithoutReversalJournalEntryInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversalJournalEntryInput | TransferCreateOrConnectWithoutReversalJournalEntryInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutReversalJournalEntryInput | TransferUpsertWithWhereUniqueWithoutReversalJournalEntryInput[]
+    createMany?: TransferCreateManyReversalJournalEntryInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutReversalJournalEntryInput | TransferUpdateWithWhereUniqueWithoutReversalJournalEntryInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutReversalJournalEntryInput | TransferUpdateManyWithWhereWithoutReversalJournalEntryInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutJournalLinesInput = {
@@ -97667,6 +101132,13 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type TransferCreateNestedManyWithoutReversalReasonInput = {
+    create?: XOR<TransferCreateWithoutReversalReasonInput, TransferUncheckedCreateWithoutReversalReasonInput> | TransferCreateWithoutReversalReasonInput[] | TransferUncheckedCreateWithoutReversalReasonInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversalReasonInput | TransferCreateOrConnectWithoutReversalReasonInput[]
+    createMany?: TransferCreateManyReversalReasonInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
   export type JournalEntryUncheckedCreateNestedManyWithoutReversalReasonInput = {
     create?: XOR<JournalEntryCreateWithoutReversalReasonInput, JournalEntryUncheckedCreateWithoutReversalReasonInput> | JournalEntryCreateWithoutReversalReasonInput[] | JournalEntryUncheckedCreateWithoutReversalReasonInput[]
     connectOrCreate?: JournalEntryCreateOrConnectWithoutReversalReasonInput | JournalEntryCreateOrConnectWithoutReversalReasonInput[]
@@ -97679,6 +101151,13 @@ export namespace Prisma {
     connectOrCreate?: TransactionCreateOrConnectWithoutReversalReasonInput | TransactionCreateOrConnectWithoutReversalReasonInput[]
     createMany?: TransactionCreateManyReversalReasonInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type TransferUncheckedCreateNestedManyWithoutReversalReasonInput = {
+    create?: XOR<TransferCreateWithoutReversalReasonInput, TransferUncheckedCreateWithoutReversalReasonInput> | TransferCreateWithoutReversalReasonInput[] | TransferUncheckedCreateWithoutReversalReasonInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversalReasonInput | TransferCreateOrConnectWithoutReversalReasonInput[]
+    createMany?: TransferCreateManyReversalReasonInputEnvelope
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
   }
 
   export type OrganizationUpdateOneRequiredWithoutReversalReasonCodesNestedInput = {
@@ -97717,6 +101196,20 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type TransferUpdateManyWithoutReversalReasonNestedInput = {
+    create?: XOR<TransferCreateWithoutReversalReasonInput, TransferUncheckedCreateWithoutReversalReasonInput> | TransferCreateWithoutReversalReasonInput[] | TransferUncheckedCreateWithoutReversalReasonInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversalReasonInput | TransferCreateOrConnectWithoutReversalReasonInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutReversalReasonInput | TransferUpsertWithWhereUniqueWithoutReversalReasonInput[]
+    createMany?: TransferCreateManyReversalReasonInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutReversalReasonInput | TransferUpdateWithWhereUniqueWithoutReversalReasonInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutReversalReasonInput | TransferUpdateManyWithWhereWithoutReversalReasonInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
   export type JournalEntryUncheckedUpdateManyWithoutReversalReasonNestedInput = {
     create?: XOR<JournalEntryCreateWithoutReversalReasonInput, JournalEntryUncheckedCreateWithoutReversalReasonInput> | JournalEntryCreateWithoutReversalReasonInput[] | JournalEntryUncheckedCreateWithoutReversalReasonInput[]
     connectOrCreate?: JournalEntryCreateOrConnectWithoutReversalReasonInput | JournalEntryCreateOrConnectWithoutReversalReasonInput[]
@@ -97743,6 +101236,20 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutReversalReasonInput | TransactionUpdateWithWhereUniqueWithoutReversalReasonInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutReversalReasonInput | TransactionUpdateManyWithWhereWithoutReversalReasonInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type TransferUncheckedUpdateManyWithoutReversalReasonNestedInput = {
+    create?: XOR<TransferCreateWithoutReversalReasonInput, TransferUncheckedCreateWithoutReversalReasonInput> | TransferCreateWithoutReversalReasonInput[] | TransferUncheckedCreateWithoutReversalReasonInput[]
+    connectOrCreate?: TransferCreateOrConnectWithoutReversalReasonInput | TransferCreateOrConnectWithoutReversalReasonInput[]
+    upsert?: TransferUpsertWithWhereUniqueWithoutReversalReasonInput | TransferUpsertWithWhereUniqueWithoutReversalReasonInput[]
+    createMany?: TransferCreateManyReversalReasonInputEnvelope
+    set?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    disconnect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    delete?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+    update?: TransferUpdateWithWhereUniqueWithoutReversalReasonInput | TransferUpdateWithWhereUniqueWithoutReversalReasonInput[]
+    updateMany?: TransferUpdateManyWithWhereWithoutReversalReasonInput | TransferUpdateManyWithWhereWithoutReversalReasonInput[]
+    deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutTransactionsInput = {
@@ -99129,6 +102636,23 @@ export namespace Prisma {
     _max?: NestedDecimalFilter<$PrismaModel>
   }
 
+  export type NestedEnumTransferStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferStatus | EnumTransferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferStatusFilter<$PrismaModel> | $Enums.TransferStatus
+  }
+
+  export type NestedEnumTransferStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransferStatus | EnumTransferStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransferStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransferStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransferStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransferStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumCurrencyTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.CurrencyType | EnumCurrencyTypeFieldRefInput<$PrismaModel>
     in?: $Enums.CurrencyType[] | ListEnumCurrencyTypeFieldRefInput<$PrismaModel>
@@ -99859,6 +103383,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedUsersInput = {
@@ -99926,6 +103454,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedUsersInput = {
@@ -99998,6 +103530,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedUsersInput = {
@@ -100065,6 +103601,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedUsersInput = {
@@ -100507,6 +104047,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedByInput = {
@@ -100574,6 +104118,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedByInput = {
@@ -100651,6 +104199,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedByInput = {
@@ -100718,6 +104270,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedByInput = {
@@ -100846,6 +104402,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutSubmittedByInput = {
@@ -100876,6 +104434,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutSubmittedByInput = {
@@ -100916,6 +104476,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutApprovedByInput = {
@@ -100946,6 +104508,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutApprovedByInput = {
@@ -100986,6 +104550,8 @@ export namespace Prisma {
     approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutPostedByInput = {
@@ -101016,6 +104582,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutPostedByInput = {
@@ -101056,6 +104624,8 @@ export namespace Prisma {
     approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutReversedByInput = {
@@ -101086,6 +104656,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutReversedByInput = {
@@ -101894,6 +105466,270 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TransferCreateWithoutSubmittedByInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutSubmittedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutSubmittedByInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutSubmittedByInput, TransferUncheckedCreateWithoutSubmittedByInput>
+  }
+
+  export type TransferCreateManySubmittedByInputEnvelope = {
+    data: TransferCreateManySubmittedByInput | TransferCreateManySubmittedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferCreateWithoutApprovedByInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutApprovedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutApprovedByInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutApprovedByInput, TransferUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type TransferCreateManyApprovedByInputEnvelope = {
+    data: TransferCreateManyApprovedByInput | TransferCreateManyApprovedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferCreateWithoutProcessedByInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutProcessedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutProcessedByInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutProcessedByInput, TransferUncheckedCreateWithoutProcessedByInput>
+  }
+
+  export type TransferCreateManyProcessedByInputEnvelope = {
+    data: TransferCreateManyProcessedByInput | TransferCreateManyProcessedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferCreateWithoutReversedByInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutReversedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutReversedByInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutReversedByInput, TransferUncheckedCreateWithoutReversedByInput>
+  }
+
+  export type TransferCreateManyReversedByInputEnvelope = {
+    data: TransferCreateManyReversedByInput | TransferCreateManyReversedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type LocationUpsertWithoutUsersInput = {
     update: XOR<LocationUpdateWithoutUsersInput, LocationUncheckedUpdateWithoutUsersInput>
     create: XOR<LocationCreateWithoutUsersInput, LocationUncheckedCreateWithoutUsersInput>
@@ -102066,6 +105902,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedUsersInput = {
@@ -102133,6 +105973,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutUpdatedUsersInput = {
@@ -102211,6 +106055,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedUsersInput = {
@@ -102278,6 +106126,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutUserInput = {
@@ -103173,6 +107025,102 @@ export namespace Prisma {
     data: XOR<SODWaiverUpdateManyMutationInput, SODWaiverUncheckedUpdateManyWithoutReviewedByInput>
   }
 
+  export type TransferUpsertWithWhereUniqueWithoutSubmittedByInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutSubmittedByInput, TransferUncheckedUpdateWithoutSubmittedByInput>
+    create: XOR<TransferCreateWithoutSubmittedByInput, TransferUncheckedCreateWithoutSubmittedByInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutSubmittedByInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutSubmittedByInput, TransferUncheckedUpdateWithoutSubmittedByInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutSubmittedByInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutSubmittedByInput>
+  }
+
+  export type TransferScalarWhereInput = {
+    AND?: TransferScalarWhereInput | TransferScalarWhereInput[]
+    OR?: TransferScalarWhereInput[]
+    NOT?: TransferScalarWhereInput | TransferScalarWhereInput[]
+    id?: StringFilter<"Transfer"> | string
+    organizationId?: StringFilter<"Transfer"> | string
+    code?: StringFilter<"Transfer"> | string
+    status?: EnumTransferStatusFilter<"Transfer"> | $Enums.TransferStatus
+    sourceAccountId?: StringFilter<"Transfer"> | string
+    destinationAccountId?: StringFilter<"Transfer"> | string
+    amount?: DecimalFilter<"Transfer"> | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFilter<"Transfer"> | string
+    destinationAmount?: DecimalNullableFilter<"Transfer"> | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: StringNullableFilter<"Transfer"> | string | null
+    fxRate?: DecimalNullableFilter<"Transfer"> | Decimal | DecimalJsLike | number | string | null
+    description?: StringNullableFilter<"Transfer"> | string | null
+    reference?: StringNullableFilter<"Transfer"> | string | null
+    submittedById?: StringNullableFilter<"Transfer"> | string | null
+    submittedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    approvedById?: StringNullableFilter<"Transfer"> | string | null
+    approvedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    processedById?: StringNullableFilter<"Transfer"> | string | null
+    processedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    reversedById?: StringNullableFilter<"Transfer"> | string | null
+    reversedAt?: DateTimeNullableFilter<"Transfer"> | Date | string | null
+    reversalReasonId?: StringNullableFilter<"Transfer"> | string | null
+    journalEntryId?: StringNullableFilter<"Transfer"> | string | null
+    reversalJournalEntryId?: StringNullableFilter<"Transfer"> | string | null
+    createdAt?: DateTimeFilter<"Transfer"> | Date | string
+    updatedAt?: DateTimeFilter<"Transfer"> | Date | string
+  }
+
+  export type TransferUpsertWithWhereUniqueWithoutApprovedByInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutApprovedByInput, TransferUncheckedUpdateWithoutApprovedByInput>
+    create: XOR<TransferCreateWithoutApprovedByInput, TransferUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutApprovedByInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutApprovedByInput, TransferUncheckedUpdateWithoutApprovedByInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutApprovedByInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutApprovedByInput>
+  }
+
+  export type TransferUpsertWithWhereUniqueWithoutProcessedByInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutProcessedByInput, TransferUncheckedUpdateWithoutProcessedByInput>
+    create: XOR<TransferCreateWithoutProcessedByInput, TransferUncheckedCreateWithoutProcessedByInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutProcessedByInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutProcessedByInput, TransferUncheckedUpdateWithoutProcessedByInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutProcessedByInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutProcessedByInput>
+  }
+
+  export type TransferUpsertWithWhereUniqueWithoutReversedByInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutReversedByInput, TransferUncheckedUpdateWithoutReversedByInput>
+    create: XOR<TransferCreateWithoutReversedByInput, TransferUncheckedCreateWithoutReversedByInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutReversedByInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutReversedByInput, TransferUncheckedUpdateWithoutReversedByInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutReversedByInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutReversedByInput>
+  }
+
   export type UserCreateWithoutMfaDevicesInput = {
     id?: string
     email: string
@@ -103238,6 +107186,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutMfaDevicesInput = {
@@ -103305,6 +107257,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutMfaDevicesInput = {
@@ -103388,6 +107344,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMfaDevicesInput = {
@@ -103455,6 +107415,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -103522,6 +107486,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -103589,6 +107557,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -103672,6 +107644,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -103739,6 +107715,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserCreateWithoutLoginHistoryInput = {
@@ -103806,6 +107786,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutLoginHistoryInput = {
@@ -103873,6 +107857,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutLoginHistoryInput = {
@@ -103956,6 +107944,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLoginHistoryInput = {
@@ -104023,6 +108015,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type RolePermissionCreateWithoutRoleInput = {
@@ -104721,6 +108717,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -104788,6 +108788,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -104922,6 +108926,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -104989,6 +108997,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type RoleUpsertWithoutUserRolesInput = {
@@ -105277,6 +109289,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsGrantedInput = {
@@ -105344,6 +109360,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsGrantedInput = {
@@ -105416,6 +109436,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsReceivedInput = {
@@ -105483,6 +109507,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsReceivedInput = {
@@ -105617,6 +109645,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsGrantedInput = {
@@ -105684,6 +109716,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutDelegationsReceivedInput = {
@@ -105762,6 +109798,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsReceivedInput = {
@@ -105829,6 +109869,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type RoleUpsertWithoutDelegationsInput = {
@@ -106036,6 +110080,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutAccessReviewItemsInput = {
@@ -106103,6 +110151,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutAccessReviewItemsInput = {
@@ -106276,6 +110328,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccessReviewItemsInput = {
@@ -106343,6 +110399,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type RoleUpsertWithoutAccessReviewItemsInput = {
@@ -106442,6 +110502,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutApprovalPoliciesInput = {
@@ -106484,6 +110545,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutApprovalPoliciesInput = {
@@ -106636,6 +110698,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutApprovalPoliciesInput = {
@@ -106678,6 +110741,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ApprovalPolicyStepUpsertWithWhereUniqueWithoutPolicyInput = {
@@ -106863,6 +110927,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -106930,6 +110998,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -107111,6 +111183,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -107178,6 +111254,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type OrganizationCreateWithoutApprovalRequestsInput = {
@@ -107220,6 +111300,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutApprovalRequestsInput = {
@@ -107262,6 +111343,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutApprovalRequestsInput = {
@@ -107369,6 +111451,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalRequestsSubmittedInput = {
@@ -107436,6 +111522,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalRequestsSubmittedInput = {
@@ -107508,6 +111598,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalRequestsDecidedInput = {
@@ -107575,6 +111669,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalRequestsDecidedInput = {
@@ -107749,6 +111847,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutApprovalRequestsInput = {
@@ -107791,6 +111890,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ApprovalPolicyUpsertWithoutRequestsInput = {
@@ -107910,6 +112010,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalRequestsSubmittedInput = {
@@ -107977,6 +112081,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutApprovalRequestsDecidedInput = {
@@ -108055,6 +112163,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalRequestsDecidedInput = {
@@ -108122,6 +112234,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type ApprovalStepInstanceUpsertWithWhereUniqueWithoutRequestInput = {
@@ -108331,6 +112447,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -108398,6 +112518,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -108470,6 +112594,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalStepInstancesDecidedInput = {
@@ -108537,6 +112665,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalStepInstancesDecidedInput = {
@@ -108760,6 +112892,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -108827,6 +112963,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutApprovalStepInstancesDecidedInput = {
@@ -108905,6 +113045,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalStepInstancesDecidedInput = {
@@ -108972,6 +113116,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type ApprovalDecisionRecordUpsertWithWhereUniqueWithoutStepInstanceInput = {
@@ -109139,6 +113287,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalDecisionRecordsInput = {
@@ -109206,6 +113358,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalDecisionRecordsInput = {
@@ -109385,6 +113541,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalDecisionRecordsInput = {
@@ -109452,6 +113612,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserCreateWithoutSodWaiversAsUserInput = {
@@ -109519,6 +113683,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutSodWaiversAsUserInput = {
@@ -109586,6 +113754,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutSodWaiversAsUserInput = {
@@ -109658,6 +113830,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutSodWaiversRecordedByInput = {
@@ -109725,6 +113901,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutSodWaiversRecordedByInput = {
@@ -109840,6 +114020,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutSodWaiversReviewedByInput = {
@@ -109907,6 +114091,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutSodWaiversReviewedByInput = {
@@ -109990,6 +114178,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSodWaiversAsUserInput = {
@@ -110057,6 +114249,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutSodWaiversRecordedByInput = {
@@ -110135,6 +114331,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSodWaiversRecordedByInput = {
@@ -110202,6 +114402,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type ApprovalRequestUpsertWithoutSodWaiversInput = {
@@ -110329,6 +114533,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSodWaiversReviewedByInput = {
@@ -110396,6 +114604,10 @@ export namespace Prisma {
     approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type OrganizationMembershipCreateWithoutOrganizationInput = {
@@ -110719,6 +114931,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     journalEntries?: JournalEntryCreateNestedManyWithoutReversalReasonInput
     transactions?: TransactionCreateNestedManyWithoutReversalReasonInput
+    transfers?: TransferCreateNestedManyWithoutReversalReasonInput
   }
 
   export type ReversalReasonCodeUncheckedCreateWithoutOrganizationInput = {
@@ -110732,6 +114945,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversalReasonInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutReversalReasonInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutReversalReasonInput
   }
 
   export type ReversalReasonCodeCreateOrConnectWithoutOrganizationInput = {
@@ -110992,6 +115206,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutOrganizationInput = {
@@ -111022,6 +115238,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutOrganizationInput = {
@@ -111340,6 +115558,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountUncheckedCreateWithoutOrganizationInput = {
@@ -111360,6 +115580,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferUncheckedCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferUncheckedCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountCreateOrConnectWithoutOrganizationInput = {
@@ -111409,6 +115631,72 @@ export namespace Prisma {
 
   export type PaymentScheduleCreateManyOrganizationInputEnvelope = {
     data: PaymentScheduleCreateManyOrganizationInput | PaymentScheduleCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutOrganizationInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutOrganizationInput, TransferUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type TransferCreateManyOrganizationInputEnvelope = {
+    data: TransferCreateManyOrganizationInput | TransferCreateManyOrganizationInput[]
     skipDuplicates?: boolean
   }
 
@@ -112100,6 +116388,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"PaymentSchedule"> | Date | string
   }
 
+  export type TransferUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutOrganizationInput, TransferUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<TransferCreateWithoutOrganizationInput, TransferUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutOrganizationInput, TransferUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutOrganizationInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
   export type OrganizationCreateWithoutLocationsInput = {
     id?: string
     code: string
@@ -112140,6 +116444,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -112182,6 +116487,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -112357,6 +116663,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutPrimaryLocationInput = {
@@ -112424,6 +116734,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutPrimaryLocationInput = {
@@ -112588,6 +116902,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountUncheckedCreateWithoutLocationInput = {
@@ -112608,6 +116924,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferUncheckedCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferUncheckedCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountCreateOrConnectWithoutLocationInput = {
@@ -112671,6 +116989,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -112713,6 +117032,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type LocationUpsertWithoutChildrenInput = {
@@ -112890,6 +117210,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -112932,6 +117253,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -113079,6 +117401,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutHomeDepartmentInput = {
@@ -113146,6 +117472,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutHomeDepartmentInput = {
@@ -113379,6 +117709,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -113421,6 +117752,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutChildrenInput = {
@@ -113584,6 +117916,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCostCentresInput = {
@@ -113626,6 +117959,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCostCentresInput = {
@@ -113853,6 +118187,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCostCentresInput = {
@@ -113895,6 +118230,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutCostCentresInput = {
@@ -114010,6 +118346,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProjectsInput = {
@@ -114052,6 +118389,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProjectsInput = {
@@ -114244,6 +118582,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProjectsInput = {
@@ -114286,6 +118625,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutProjectInput = {
@@ -114360,6 +118700,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFundingSourcesInput = {
@@ -114402,6 +118743,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFundingSourcesInput = {
@@ -114561,6 +118903,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountUncheckedCreateWithoutFundingSourceInput = {
@@ -114581,6 +118925,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferUncheckedCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferUncheckedCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountCreateOrConnectWithoutFundingSourceInput = {
@@ -114644,6 +118990,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFundingSourcesInput = {
@@ -114686,6 +119033,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput = {
@@ -114776,6 +119124,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTreasuryAccountsInput = {
@@ -114818,6 +119167,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTreasuryAccountsInput = {
@@ -114844,6 +119194,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutTreasuryAccountsInput = {
@@ -114865,6 +119217,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutTreasuryAccountsInput = {
@@ -115189,6 +119543,138 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TransferCreateWithoutSourceAccountInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutSourceAccountInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutSourceAccountInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutSourceAccountInput, TransferUncheckedCreateWithoutSourceAccountInput>
+  }
+
+  export type TransferCreateManySourceAccountInputEnvelope = {
+    data: TransferCreateManySourceAccountInput | TransferCreateManySourceAccountInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferCreateWithoutDestinationAccountInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutDestinationAccountInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutDestinationAccountInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutDestinationAccountInput, TransferUncheckedCreateWithoutDestinationAccountInput>
+  }
+
+  export type TransferCreateManyDestinationAccountInputEnvelope = {
+    data: TransferCreateManyDestinationAccountInput | TransferCreateManyDestinationAccountInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationUpsertWithoutTreasuryAccountsInput = {
     update: XOR<OrganizationUpdateWithoutTreasuryAccountsInput, OrganizationUncheckedUpdateWithoutTreasuryAccountsInput>
     create: XOR<OrganizationCreateWithoutTreasuryAccountsInput, OrganizationUncheckedCreateWithoutTreasuryAccountsInput>
@@ -115240,6 +119726,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTreasuryAccountsInput = {
@@ -115282,6 +119769,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CurrencyUpsertWithoutTreasuryAccountsInput = {
@@ -115314,6 +119802,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutTreasuryAccountsInput = {
@@ -115335,6 +119825,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type AccountUpsertWithoutTreasuryAccountsInput = {
@@ -115546,6 +120038,38 @@ export namespace Prisma {
     data: XOR<PaymentScheduleUpdateManyMutationInput, PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountInput>
   }
 
+  export type TransferUpsertWithWhereUniqueWithoutSourceAccountInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutSourceAccountInput, TransferUncheckedUpdateWithoutSourceAccountInput>
+    create: XOR<TransferCreateWithoutSourceAccountInput, TransferUncheckedCreateWithoutSourceAccountInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutSourceAccountInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutSourceAccountInput, TransferUncheckedUpdateWithoutSourceAccountInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutSourceAccountInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutSourceAccountInput>
+  }
+
+  export type TransferUpsertWithWhereUniqueWithoutDestinationAccountInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutDestinationAccountInput, TransferUncheckedUpdateWithoutDestinationAccountInput>
+    create: XOR<TransferCreateWithoutDestinationAccountInput, TransferUncheckedCreateWithoutDestinationAccountInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutDestinationAccountInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutDestinationAccountInput, TransferUncheckedUpdateWithoutDestinationAccountInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutDestinationAccountInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutDestinationAccountInput>
+  }
+
   export type OrganizationCreateWithoutPaymentSchedulesInput = {
     id?: string
     code: string
@@ -115586,6 +120110,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutPaymentSchedulesInput = {
@@ -115628,6 +120153,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutPaymentSchedulesInput = {
@@ -115653,6 +120179,8 @@ export namespace Prisma {
     fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
     journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountUncheckedCreateWithoutPaymentSchedulesInput = {
@@ -115673,6 +120201,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferUncheckedCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferUncheckedCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountCreateOrConnectWithoutPaymentSchedulesInput = {
@@ -115699,6 +120229,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutPaymentSchedulesInput = {
@@ -115720,6 +120252,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutPaymentSchedulesInput = {
@@ -115778,6 +120312,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutPaymentSchedulesInput = {
@@ -115820,6 +120355,7 @@ export namespace Prisma {
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TreasuryAccountUpsertWithoutPaymentSchedulesInput = {
@@ -115851,6 +120387,8 @@ export namespace Prisma {
     fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
     journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateWithoutPaymentSchedulesInput = {
@@ -115871,6 +120409,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUncheckedUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type CurrencyUpsertWithoutPaymentSchedulesInput = {
@@ -115903,6 +120443,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutPaymentSchedulesInput = {
@@ -115924,6 +120466,2180 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
+  }
+
+  export type OrganizationCreateWithoutTransfersInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutTransfersInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutTransfersInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutTransfersInput, OrganizationUncheckedCreateWithoutTransfersInput>
+  }
+
+  export type TreasuryAccountCreateWithoutTransfersAsSourceInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTreasuryAccountsInput
+    currency: CurrencyCreateNestedOneWithoutTreasuryAccountsInput
+    ledgerAccount: AccountCreateNestedOneWithoutTreasuryAccountsInput
+    location?: LocationCreateNestedOneWithoutTreasuryAccountsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
+    journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsDestination?: TransferCreateNestedManyWithoutDestinationAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateWithoutTransfersAsSourceInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsDestination?: TransferUncheckedCreateNestedManyWithoutDestinationAccountInput
+  }
+
+  export type TreasuryAccountCreateOrConnectWithoutTransfersAsSourceInput = {
+    where: TreasuryAccountWhereUniqueInput
+    create: XOR<TreasuryAccountCreateWithoutTransfersAsSourceInput, TreasuryAccountUncheckedCreateWithoutTransfersAsSourceInput>
+  }
+
+  export type TreasuryAccountCreateWithoutTransfersAsDestinationInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTreasuryAccountsInput
+    currency: CurrencyCreateNestedOneWithoutTreasuryAccountsInput
+    ledgerAccount: AccountCreateNestedOneWithoutTreasuryAccountsInput
+    location?: LocationCreateNestedOneWithoutTreasuryAccountsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
+    journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferCreateNestedManyWithoutSourceAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateWithoutTransfersAsDestinationInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferUncheckedCreateNestedManyWithoutSourceAccountInput
+  }
+
+  export type TreasuryAccountCreateOrConnectWithoutTransfersAsDestinationInput = {
+    where: TreasuryAccountWhereUniqueInput
+    create: XOR<TreasuryAccountCreateWithoutTransfersAsDestinationInput, TreasuryAccountUncheckedCreateWithoutTransfersAsDestinationInput>
+  }
+
+  export type CurrencyCreateWithoutTransfersInput = {
+    id?: string
+    code: string
+    name: string
+    symbol?: string | null
+    type?: $Enums.CurrencyType
+    decimalPlaces?: number
+    isBase?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exchangeRatesBase?: ExchangeRateCreateNestedManyWithoutBaseCurrencyInput
+    exchangeRatesQuote?: ExchangeRateCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceCreateNestedManyWithoutCurrencyInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutCurrencyInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
+    journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
+    transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
+  }
+
+  export type CurrencyUncheckedCreateWithoutTransfersInput = {
+    id?: string
+    code: string
+    name: string
+    symbol?: string | null
+    type?: $Enums.CurrencyType
+    decimalPlaces?: number
+    isBase?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exchangeRatesBase?: ExchangeRateUncheckedCreateNestedManyWithoutBaseCurrencyInput
+    exchangeRatesQuote?: ExchangeRateUncheckedCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutCurrencyInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
+  }
+
+  export type CurrencyCreateOrConnectWithoutTransfersInput = {
+    where: CurrencyWhereUniqueInput
+    create: XOR<CurrencyCreateWithoutTransfersInput, CurrencyUncheckedCreateWithoutTransfersInput>
+  }
+
+  export type CurrencyCreateWithoutTransfersAsDestinationCurrencyInput = {
+    id?: string
+    code: string
+    name: string
+    symbol?: string | null
+    type?: $Enums.CurrencyType
+    decimalPlaces?: number
+    isBase?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exchangeRatesBase?: ExchangeRateCreateNestedManyWithoutBaseCurrencyInput
+    exchangeRatesQuote?: ExchangeRateCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceCreateNestedManyWithoutCurrencyInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutCurrencyInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
+    journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
+    transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+  }
+
+  export type CurrencyUncheckedCreateWithoutTransfersAsDestinationCurrencyInput = {
+    id?: string
+    code: string
+    name: string
+    symbol?: string | null
+    type?: $Enums.CurrencyType
+    decimalPlaces?: number
+    isBase?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exchangeRatesBase?: ExchangeRateUncheckedCreateNestedManyWithoutBaseCurrencyInput
+    exchangeRatesQuote?: ExchangeRateUncheckedCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutCurrencyInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+  }
+
+  export type CurrencyCreateOrConnectWithoutTransfersAsDestinationCurrencyInput = {
+    where: CurrencyWhereUniqueInput
+    create: XOR<CurrencyCreateWithoutTransfersAsDestinationCurrencyInput, CurrencyUncheckedCreateWithoutTransfersAsDestinationCurrencyInput>
+  }
+
+  export type UserCreateWithoutTransfersSubmittedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserUncheckedCreateWithoutTransfersSubmittedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserCreateOrConnectWithoutTransfersSubmittedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTransfersSubmittedInput, UserUncheckedCreateWithoutTransfersSubmittedInput>
+  }
+
+  export type UserCreateWithoutTransfersApprovedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserUncheckedCreateWithoutTransfersApprovedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserCreateOrConnectWithoutTransfersApprovedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTransfersApprovedInput, UserUncheckedCreateWithoutTransfersApprovedInput>
+  }
+
+  export type UserCreateWithoutTransfersProcessedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserUncheckedCreateWithoutTransfersProcessedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+  }
+
+  export type UserCreateOrConnectWithoutTransfersProcessedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTransfersProcessedInput, UserUncheckedCreateWithoutTransfersProcessedInput>
+  }
+
+  export type UserCreateWithoutTransfersReversedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+  }
+
+  export type UserUncheckedCreateWithoutTransfersReversedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+  }
+
+  export type UserCreateOrConnectWithoutTransfersReversedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTransfersReversedInput, UserUncheckedCreateWithoutTransfersReversedInput>
+  }
+
+  export type ReversalReasonCodeCreateWithoutTransfersInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    category: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutReversalReasonCodesInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutReversalReasonInput
+    transactions?: TransactionCreateNestedManyWithoutReversalReasonInput
+  }
+
+  export type ReversalReasonCodeUncheckedCreateWithoutTransfersInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    category: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversalReasonInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutReversalReasonInput
+  }
+
+  export type ReversalReasonCodeCreateOrConnectWithoutTransfersInput = {
+    where: ReversalReasonCodeWhereUniqueInput
+    create: XOR<ReversalReasonCodeCreateWithoutTransfersInput, ReversalReasonCodeUncheckedCreateWithoutTransfersInput>
+  }
+
+  export type JournalEntryCreateWithoutTransfersInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutTransfersInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutTransfersInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutTransfersInput, JournalEntryUncheckedCreateWithoutTransfersInput>
+  }
+
+  export type JournalEntryCreateWithoutReversalTransfersInput = {
+    id?: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalEntriesInput
+    period: FinancialPeriodCreateNestedOneWithoutJournalEntriesInput
+    transaction?: TransactionCreateNestedOneWithoutJournalEntriesInput
+    adjustingEntry?: JournalEntryCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: JournalEntryCreateNestedManyWithoutAdjustingEntryInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutJournalEntriesInput
+    reversedEntry?: JournalEntryCreateNestedOneWithoutReversingEntriesInput
+    reversingEntries?: JournalEntryCreateNestedManyWithoutReversedEntryInput
+    submittedBy?: UserCreateNestedOneWithoutJournalEntriesSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
+    postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
+    reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+  }
+
+  export type JournalEntryUncheckedCreateWithoutReversalTransfersInput = {
+    id?: string
+    organizationId: string
+    periodId: string
+    type?: $Enums.JournalEntryType
+    status?: $Enums.JournalEntryStatus
+    source?: $Enums.JournalSource
+    number?: string | null
+    reference?: string | null
+    description?: string | null
+    transactionId?: string | null
+    adjustingEntryId?: string | null
+    reversalReasonId?: string | null
+    reversedEntryId?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+  }
+
+  export type JournalEntryCreateOrConnectWithoutReversalTransfersInput = {
+    where: JournalEntryWhereUniqueInput
+    create: XOR<JournalEntryCreateWithoutReversalTransfersInput, JournalEntryUncheckedCreateWithoutReversalTransfersInput>
+  }
+
+  export type OrganizationUpsertWithoutTransfersInput = {
+    update: XOR<OrganizationUpdateWithoutTransfersInput, OrganizationUncheckedUpdateWithoutTransfersInput>
+    create: XOR<OrganizationCreateWithoutTransfersInput, OrganizationUncheckedCreateWithoutTransfersInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutTransfersInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutTransfersInput, OrganizationUncheckedUpdateWithoutTransfersInput>
+  }
+
+  export type OrganizationUpdateWithoutTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type TreasuryAccountUpsertWithoutTransfersAsSourceInput = {
+    update: XOR<TreasuryAccountUpdateWithoutTransfersAsSourceInput, TreasuryAccountUncheckedUpdateWithoutTransfersAsSourceInput>
+    create: XOR<TreasuryAccountCreateWithoutTransfersAsSourceInput, TreasuryAccountUncheckedCreateWithoutTransfersAsSourceInput>
+    where?: TreasuryAccountWhereInput
+  }
+
+  export type TreasuryAccountUpdateToOneWithWhereWithoutTransfersAsSourceInput = {
+    where?: TreasuryAccountWhereInput
+    data: XOR<TreasuryAccountUpdateWithoutTransfersAsSourceInput, TreasuryAccountUncheckedUpdateWithoutTransfersAsSourceInput>
+  }
+
+  export type TreasuryAccountUpdateWithoutTransfersAsSourceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    ledgerAccount?: AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    location?: LocationUpdateOneWithoutTreasuryAccountsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsDestination?: TransferUpdateManyWithoutDestinationAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateWithoutTransfersAsSourceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsDestination?: TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput
+  }
+
+  export type TreasuryAccountUpsertWithoutTransfersAsDestinationInput = {
+    update: XOR<TreasuryAccountUpdateWithoutTransfersAsDestinationInput, TreasuryAccountUncheckedUpdateWithoutTransfersAsDestinationInput>
+    create: XOR<TreasuryAccountCreateWithoutTransfersAsDestinationInput, TreasuryAccountUncheckedCreateWithoutTransfersAsDestinationInput>
+    where?: TreasuryAccountWhereInput
+  }
+
+  export type TreasuryAccountUpdateToOneWithWhereWithoutTransfersAsDestinationInput = {
+    where?: TreasuryAccountWhereInput
+    data: XOR<TreasuryAccountUpdateWithoutTransfersAsDestinationInput, TreasuryAccountUncheckedUpdateWithoutTransfersAsDestinationInput>
+  }
+
+  export type TreasuryAccountUpdateWithoutTransfersAsDestinationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    ledgerAccount?: AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    location?: LocationUpdateOneWithoutTreasuryAccountsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUpdateManyWithoutSourceAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateWithoutTransfersAsDestinationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUncheckedUpdateManyWithoutSourceAccountNestedInput
+  }
+
+  export type CurrencyUpsertWithoutTransfersInput = {
+    update: XOR<CurrencyUpdateWithoutTransfersInput, CurrencyUncheckedUpdateWithoutTransfersInput>
+    create: XOR<CurrencyCreateWithoutTransfersInput, CurrencyUncheckedCreateWithoutTransfersInput>
+    where?: CurrencyWhereInput
+  }
+
+  export type CurrencyUpdateToOneWithWhereWithoutTransfersInput = {
+    where?: CurrencyWhereInput
+    data: XOR<CurrencyUpdateWithoutTransfersInput, CurrencyUncheckedUpdateWithoutTransfersInput>
+  }
+
+  export type CurrencyUpdateWithoutTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCurrencyTypeFieldUpdateOperationsInput | $Enums.CurrencyType
+    decimalPlaces?: IntFieldUpdateOperationsInput | number
+    isBase?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exchangeRatesBase?: ExchangeRateUpdateManyWithoutBaseCurrencyNestedInput
+    exchangeRatesQuote?: ExchangeRateUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutCurrencyNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutCurrencyNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
+    journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
+    transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
+  }
+
+  export type CurrencyUncheckedUpdateWithoutTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCurrencyTypeFieldUpdateOperationsInput | $Enums.CurrencyType
+    decimalPlaces?: IntFieldUpdateOperationsInput | number
+    isBase?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exchangeRatesBase?: ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+    exchangeRatesQuote?: ExchangeRateUncheckedUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutCurrencyNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
+  }
+
+  export type CurrencyUpsertWithoutTransfersAsDestinationCurrencyInput = {
+    update: XOR<CurrencyUpdateWithoutTransfersAsDestinationCurrencyInput, CurrencyUncheckedUpdateWithoutTransfersAsDestinationCurrencyInput>
+    create: XOR<CurrencyCreateWithoutTransfersAsDestinationCurrencyInput, CurrencyUncheckedCreateWithoutTransfersAsDestinationCurrencyInput>
+    where?: CurrencyWhereInput
+  }
+
+  export type CurrencyUpdateToOneWithWhereWithoutTransfersAsDestinationCurrencyInput = {
+    where?: CurrencyWhereInput
+    data: XOR<CurrencyUpdateWithoutTransfersAsDestinationCurrencyInput, CurrencyUncheckedUpdateWithoutTransfersAsDestinationCurrencyInput>
+  }
+
+  export type CurrencyUpdateWithoutTransfersAsDestinationCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCurrencyTypeFieldUpdateOperationsInput | $Enums.CurrencyType
+    decimalPlaces?: IntFieldUpdateOperationsInput | number
+    isBase?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exchangeRatesBase?: ExchangeRateUpdateManyWithoutBaseCurrencyNestedInput
+    exchangeRatesQuote?: ExchangeRateUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutCurrencyNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutCurrencyNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
+    journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
+    transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+  }
+
+  export type CurrencyUncheckedUpdateWithoutTransfersAsDestinationCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCurrencyTypeFieldUpdateOperationsInput | $Enums.CurrencyType
+    decimalPlaces?: IntFieldUpdateOperationsInput | number
+    isBase?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exchangeRatesBase?: ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+    exchangeRatesQuote?: ExchangeRateUncheckedUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutCurrencyNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+  }
+
+  export type UserUpsertWithoutTransfersSubmittedInput = {
+    update: XOR<UserUpdateWithoutTransfersSubmittedInput, UserUncheckedUpdateWithoutTransfersSubmittedInput>
+    create: XOR<UserCreateWithoutTransfersSubmittedInput, UserUncheckedCreateWithoutTransfersSubmittedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTransfersSubmittedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTransfersSubmittedInput, UserUncheckedUpdateWithoutTransfersSubmittedInput>
+  }
+
+  export type UserUpdateWithoutTransfersSubmittedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTransfersSubmittedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUpsertWithoutTransfersApprovedInput = {
+    update: XOR<UserUpdateWithoutTransfersApprovedInput, UserUncheckedUpdateWithoutTransfersApprovedInput>
+    create: XOR<UserCreateWithoutTransfersApprovedInput, UserUncheckedCreateWithoutTransfersApprovedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTransfersApprovedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTransfersApprovedInput, UserUncheckedUpdateWithoutTransfersApprovedInput>
+  }
+
+  export type UserUpdateWithoutTransfersApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTransfersApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUpsertWithoutTransfersProcessedInput = {
+    update: XOR<UserUpdateWithoutTransfersProcessedInput, UserUncheckedUpdateWithoutTransfersProcessedInput>
+    create: XOR<UserCreateWithoutTransfersProcessedInput, UserUncheckedCreateWithoutTransfersProcessedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTransfersProcessedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTransfersProcessedInput, UserUncheckedUpdateWithoutTransfersProcessedInput>
+  }
+
+  export type UserUpdateWithoutTransfersProcessedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTransfersProcessedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+  }
+
+  export type UserUpsertWithoutTransfersReversedInput = {
+    update: XOR<UserUpdateWithoutTransfersReversedInput, UserUncheckedUpdateWithoutTransfersReversedInput>
+    create: XOR<UserCreateWithoutTransfersReversedInput, UserUncheckedCreateWithoutTransfersReversedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTransfersReversedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTransfersReversedInput, UserUncheckedUpdateWithoutTransfersReversedInput>
+  }
+
+  export type UserUpdateWithoutTransfersReversedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTransfersReversedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+  }
+
+  export type ReversalReasonCodeUpsertWithoutTransfersInput = {
+    update: XOR<ReversalReasonCodeUpdateWithoutTransfersInput, ReversalReasonCodeUncheckedUpdateWithoutTransfersInput>
+    create: XOR<ReversalReasonCodeCreateWithoutTransfersInput, ReversalReasonCodeUncheckedCreateWithoutTransfersInput>
+    where?: ReversalReasonCodeWhereInput
+  }
+
+  export type ReversalReasonCodeUpdateToOneWithWhereWithoutTransfersInput = {
+    where?: ReversalReasonCodeWhereInput
+    data: XOR<ReversalReasonCodeUpdateWithoutTransfersInput, ReversalReasonCodeUncheckedUpdateWithoutTransfersInput>
+  }
+
+  export type ReversalReasonCodeUpdateWithoutTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutReversalReasonCodesNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutReversalReasonNestedInput
+    transactions?: TransactionUpdateManyWithoutReversalReasonNestedInput
+  }
+
+  export type ReversalReasonCodeUncheckedUpdateWithoutTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutReversalReasonNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutReversalReasonNestedInput
+  }
+
+  export type JournalEntryUpsertWithoutTransfersInput = {
+    update: XOR<JournalEntryUpdateWithoutTransfersInput, JournalEntryUncheckedUpdateWithoutTransfersInput>
+    create: XOR<JournalEntryCreateWithoutTransfersInput, JournalEntryUncheckedCreateWithoutTransfersInput>
+    where?: JournalEntryWhereInput
+  }
+
+  export type JournalEntryUpdateToOneWithWhereWithoutTransfersInput = {
+    where?: JournalEntryWhereInput
+    data: XOR<JournalEntryUpdateWithoutTransfersInput, JournalEntryUncheckedUpdateWithoutTransfersInput>
+  }
+
+  export type JournalEntryUpdateWithoutTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
+  }
+
+  export type JournalEntryUpsertWithoutReversalTransfersInput = {
+    update: XOR<JournalEntryUpdateWithoutReversalTransfersInput, JournalEntryUncheckedUpdateWithoutReversalTransfersInput>
+    create: XOR<JournalEntryCreateWithoutReversalTransfersInput, JournalEntryUncheckedCreateWithoutReversalTransfersInput>
+    where?: JournalEntryWhereInput
+  }
+
+  export type JournalEntryUpdateToOneWithWhereWithoutReversalTransfersInput = {
+    where?: JournalEntryWhereInput
+    data: XOR<JournalEntryUpdateWithoutReversalTransfersInput, JournalEntryUncheckedUpdateWithoutReversalTransfersInput>
+  }
+
+  export type JournalEntryUpdateWithoutReversalTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalEntriesNestedInput
+    period?: FinancialPeriodUpdateOneRequiredWithoutJournalEntriesNestedInput
+    transaction?: TransactionUpdateOneWithoutJournalEntriesNestedInput
+    adjustingEntry?: JournalEntryUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: JournalEntryUpdateManyWithoutAdjustingEntryNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutJournalEntriesNestedInput
+    reversedEntry?: JournalEntryUpdateOneWithoutReversingEntriesNestedInput
+    reversingEntries?: JournalEntryUpdateManyWithoutReversedEntryNestedInput
+    submittedBy?: UserUpdateOneWithoutJournalEntriesSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+  }
+
+  export type JournalEntryUncheckedUpdateWithoutReversalTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    periodId?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
+    status?: EnumJournalEntryStatusFieldUpdateOperationsInput | $Enums.JournalEntryStatus
+    source?: EnumJournalSourceFieldUpdateOperationsInput | $Enums.JournalSource
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
   }
 
   export type ExchangeRateCreateWithoutBaseCurrencyInput = {
@@ -116252,6 +122968,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountUncheckedCreateWithoutCurrencyInput = {
@@ -116272,6 +122990,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferUncheckedCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferUncheckedCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountCreateOrConnectWithoutCurrencyInput = {
@@ -116321,6 +123041,138 @@ export namespace Prisma {
 
   export type PaymentScheduleCreateManyCurrencyInputEnvelope = {
     data: PaymentScheduleCreateManyCurrencyInput | PaymentScheduleCreateManyCurrencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferCreateWithoutCurrencyInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutCurrencyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutCurrencyInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutCurrencyInput, TransferUncheckedCreateWithoutCurrencyInput>
+  }
+
+  export type TransferCreateManyCurrencyInputEnvelope = {
+    data: TransferCreateManyCurrencyInput | TransferCreateManyCurrencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferCreateWithoutDestinationCurrencyInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutDestinationCurrencyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutDestinationCurrencyInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutDestinationCurrencyInput, TransferUncheckedCreateWithoutDestinationCurrencyInput>
+  }
+
+  export type TransferCreateManyDestinationCurrencyInputEnvelope = {
+    data: TransferCreateManyDestinationCurrencyInput | TransferCreateManyDestinationCurrencyInput[]
     skipDuplicates?: boolean
   }
 
@@ -116483,6 +123335,38 @@ export namespace Prisma {
     data: XOR<PaymentScheduleUpdateManyMutationInput, PaymentScheduleUncheckedUpdateManyWithoutCurrencyInput>
   }
 
+  export type TransferUpsertWithWhereUniqueWithoutCurrencyInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutCurrencyInput, TransferUncheckedUpdateWithoutCurrencyInput>
+    create: XOR<TransferCreateWithoutCurrencyInput, TransferUncheckedCreateWithoutCurrencyInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutCurrencyInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutCurrencyInput, TransferUncheckedUpdateWithoutCurrencyInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutCurrencyInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutCurrencyInput>
+  }
+
+  export type TransferUpsertWithWhereUniqueWithoutDestinationCurrencyInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutDestinationCurrencyInput, TransferUncheckedUpdateWithoutDestinationCurrencyInput>
+    create: XOR<TransferCreateWithoutDestinationCurrencyInput, TransferUncheckedCreateWithoutDestinationCurrencyInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutDestinationCurrencyInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutDestinationCurrencyInput, TransferUncheckedUpdateWithoutDestinationCurrencyInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutDestinationCurrencyInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutDestinationCurrencyInput>
+  }
+
   export type CurrencyCreateWithoutExchangeRatesBaseInput = {
     id?: string
     code: string
@@ -116502,6 +123386,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutExchangeRatesBaseInput = {
@@ -116523,6 +123409,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutExchangeRatesBaseInput = {
@@ -116549,6 +123437,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutExchangeRatesQuoteInput = {
@@ -116570,6 +123460,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutExchangeRatesQuoteInput = {
@@ -116607,6 +123499,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutExchangeRatesBaseInput = {
@@ -116628,6 +123522,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUpsertWithoutExchangeRatesQuoteInput = {
@@ -116660,6 +123556,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutExchangeRatesQuoteInput = {
@@ -116681,6 +123579,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type OrganizationCreateWithoutMasterDataChangeRequestsInput = {
@@ -116723,6 +123623,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput = {
@@ -116765,6 +123666,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMasterDataChangeRequestsInput = {
@@ -116837,6 +123739,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsRequestedInput = {
@@ -116904,6 +123810,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsRequestedInput = {
@@ -116976,6 +123886,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsApprovedInput = {
@@ -117043,6 +123957,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsApprovedInput = {
@@ -117135,6 +124053,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput = {
@@ -117177,6 +124096,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsRequestedInput = {
@@ -117255,6 +124175,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsRequestedInput = {
@@ -117322,6 +124246,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsApprovedInput = {
@@ -117400,6 +124328,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsApprovedInput = {
@@ -117467,6 +124399,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput = {
@@ -117625,6 +124561,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReasonCodesInput = {
@@ -117667,6 +124604,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReasonCodesInput = {
@@ -117725,6 +124663,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReasonCodesInput = {
@@ -117767,6 +124706,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutProductsServicesInput = {
@@ -117809,6 +124749,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProductsServicesInput = {
@@ -117851,6 +124792,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProductsServicesInput = {
@@ -117877,6 +124819,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutProductsServicesInput = {
@@ -117898,6 +124842,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutProductsServicesInput = {
@@ -117956,6 +124902,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProductsServicesInput = {
@@ -117998,6 +124945,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CurrencyUpsertWithoutProductsServicesInput = {
@@ -118030,6 +124978,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutProductsServicesInput = {
@@ -118051,6 +125001,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type OrganizationCreateWithoutAccountsInput = {
@@ -118093,6 +125045,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountsInput = {
@@ -118135,6 +125088,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountsInput = {
@@ -118513,6 +125467,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountUncheckedCreateWithoutLedgerAccountInput = {
@@ -118533,6 +125489,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferUncheckedCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferUncheckedCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountCreateOrConnectWithoutLedgerAccountInput = {
@@ -118596,6 +125554,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountsInput = {
@@ -118638,6 +125597,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutChildrenInput = {
@@ -118855,6 +125815,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFinancialPeriodsInput = {
@@ -118897,6 +125858,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFinancialPeriodsInput = {
@@ -119004,6 +125966,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutPeriodInput = {
@@ -119034,6 +125998,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutPeriodInput = {
@@ -119097,6 +126063,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFinancialPeriodsInput = {
@@ -119139,6 +126106,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OpeningBalanceUpsertWithWhereUniqueWithoutPeriodInput = {
@@ -119229,6 +126197,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutOpeningBalancesInput = {
@@ -119271,6 +126240,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutOpeningBalancesInput = {
@@ -119397,6 +126367,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutOpeningBalancesInput = {
@@ -119418,6 +126390,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutOpeningBalancesInput = {
@@ -119476,6 +126450,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutOpeningBalancesInput = {
@@ -119518,6 +126493,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutOpeningBalancesInput = {
@@ -119662,6 +126638,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutOpeningBalancesInput = {
@@ -119683,6 +126661,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type OrganizationCreateWithoutAccountBalanceSnapshotsInput = {
@@ -119725,6 +126705,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountBalanceSnapshotsInput = {
@@ -119767,6 +126748,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountBalanceSnapshotsInput = {
@@ -119893,6 +126875,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutAccountBalanceSnapshotsInput = {
@@ -119914,6 +126898,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutAccountBalanceSnapshotsInput = {
@@ -119972,6 +126958,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountBalanceSnapshotsInput = {
@@ -120014,6 +127001,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutAccountBalanceSnapshotsInput = {
@@ -120158,6 +127146,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutAccountBalanceSnapshotsInput = {
@@ -120179,6 +127169,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type OrganizationCreateWithoutJournalEntriesInput = {
@@ -120221,6 +127213,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalEntriesInput = {
@@ -120263,6 +127256,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalEntriesInput = {
@@ -120420,6 +127414,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutAdjustedEntriesInput = {
@@ -120450,6 +127446,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutAdjustedEntriesInput = {
@@ -120485,6 +127483,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutAdjustingEntryInput = {
@@ -120515,6 +127515,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutAdjustingEntryInput = {
@@ -120538,6 +127540,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutReversalReasonCodesInput
     transactions?: TransactionCreateNestedManyWithoutReversalReasonInput
+    transfers?: TransferCreateNestedManyWithoutReversalReasonInput
   }
 
   export type ReversalReasonCodeUncheckedCreateWithoutJournalEntriesInput = {
@@ -120551,6 +127554,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     transactions?: TransactionUncheckedCreateNestedManyWithoutReversalReasonInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutReversalReasonInput
   }
 
   export type ReversalReasonCodeCreateOrConnectWithoutJournalEntriesInput = {
@@ -120586,6 +127590,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutReversingEntriesInput = {
@@ -120616,6 +127622,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutReversingEntriesInput = {
@@ -120651,6 +127659,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutReversedEntryInput = {
@@ -120681,6 +127691,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutReversedEntryInput = {
@@ -120758,6 +127770,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesSubmittedInput = {
@@ -120825,6 +127841,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesSubmittedInput = {
@@ -120897,6 +127917,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesApprovedInput = {
@@ -120964,6 +127988,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesApprovedInput = {
@@ -121036,6 +128064,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesPostedInput = {
@@ -121103,6 +128135,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesPostedInput = {
@@ -121175,6 +128211,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesReversedInput = {
@@ -121242,6 +128282,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesReversedInput = {
@@ -121299,6 +128343,138 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TransferCreateWithoutJournalEntryInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutJournalEntryInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutJournalEntryInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutJournalEntryInput, TransferUncheckedCreateWithoutJournalEntryInput>
+  }
+
+  export type TransferCreateManyJournalEntryInputEnvelope = {
+    data: TransferCreateManyJournalEntryInput | TransferCreateManyJournalEntryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferCreateWithoutReversalJournalEntryInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransfersInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutReversalJournalEntryInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutReversalJournalEntryInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutReversalJournalEntryInput, TransferUncheckedCreateWithoutReversalJournalEntryInput>
+  }
+
+  export type TransferCreateManyReversalJournalEntryInputEnvelope = {
+    data: TransferCreateManyReversalJournalEntryInput | TransferCreateManyReversalJournalEntryInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationUpsertWithoutJournalEntriesInput = {
     update: XOR<OrganizationUpdateWithoutJournalEntriesInput, OrganizationUncheckedUpdateWithoutJournalEntriesInput>
     create: XOR<OrganizationCreateWithoutJournalEntriesInput, OrganizationUncheckedCreateWithoutJournalEntriesInput>
@@ -121350,6 +128526,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalEntriesInput = {
@@ -121392,6 +128569,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type FinancialPeriodUpsertWithoutJournalEntriesInput = {
@@ -121567,6 +128745,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutAdjustedEntriesInput = {
@@ -121597,6 +128777,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUpsertWithWhereUniqueWithoutAdjustingEntryInput = {
@@ -121637,6 +128819,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutReversalReasonCodesNestedInput
     transactions?: TransactionUpdateManyWithoutReversalReasonNestedInput
+    transfers?: TransferUpdateManyWithoutReversalReasonNestedInput
   }
 
   export type ReversalReasonCodeUncheckedUpdateWithoutJournalEntriesInput = {
@@ -121650,6 +128833,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     transactions?: TransactionUncheckedUpdateManyWithoutReversalReasonNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutReversalReasonNestedInput
   }
 
   export type JournalEntryUpsertWithoutReversingEntriesInput = {
@@ -121691,6 +128875,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutReversingEntriesInput = {
@@ -121721,6 +128907,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUpsertWithWhereUniqueWithoutReversedEntryInput = {
@@ -121815,6 +129003,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesSubmittedInput = {
@@ -121882,6 +129074,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesApprovedInput = {
@@ -121960,6 +129156,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesApprovedInput = {
@@ -122027,6 +129227,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesPostedInput = {
@@ -122105,6 +129309,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesPostedInput = {
@@ -122172,6 +129380,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesReversedInput = {
@@ -122250,6 +129462,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesReversedInput = {
@@ -122317,6 +129533,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutEntryInput = {
@@ -122333,6 +129553,38 @@ export namespace Prisma {
   export type JournalLineUpdateManyWithWhereWithoutEntryInput = {
     where: JournalLineScalarWhereInput
     data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyWithoutEntryInput>
+  }
+
+  export type TransferUpsertWithWhereUniqueWithoutJournalEntryInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutJournalEntryInput, TransferUncheckedUpdateWithoutJournalEntryInput>
+    create: XOR<TransferCreateWithoutJournalEntryInput, TransferUncheckedCreateWithoutJournalEntryInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutJournalEntryInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutJournalEntryInput, TransferUncheckedUpdateWithoutJournalEntryInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutJournalEntryInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutJournalEntryInput>
+  }
+
+  export type TransferUpsertWithWhereUniqueWithoutReversalJournalEntryInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutReversalJournalEntryInput, TransferUncheckedUpdateWithoutReversalJournalEntryInput>
+    create: XOR<TransferCreateWithoutReversalJournalEntryInput, TransferUncheckedCreateWithoutReversalJournalEntryInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutReversalJournalEntryInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutReversalJournalEntryInput, TransferUncheckedUpdateWithoutReversalJournalEntryInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutReversalJournalEntryInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutReversalJournalEntryInput>
   }
 
   export type OrganizationCreateWithoutJournalLinesInput = {
@@ -122375,6 +129627,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalLinesInput = {
@@ -122417,6 +129670,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalLinesInput = {
@@ -122452,6 +129706,8 @@ export namespace Prisma {
     approvedBy?: UserCreateNestedOneWithoutJournalEntriesApprovedInput
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutLinesInput = {
@@ -122482,6 +129738,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutLinesInput = {
@@ -122565,6 +129823,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutJournalLinesInput = {
@@ -122586,6 +129846,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutJournalLinesInput = {
@@ -122798,6 +130060,8 @@ export namespace Prisma {
     fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
     transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountUncheckedCreateWithoutJournalLinesInput = {
@@ -122818,6 +130082,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferUncheckedCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferUncheckedCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountCreateOrConnectWithoutJournalLinesInput = {
@@ -122876,6 +130142,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalLinesInput = {
@@ -122918,6 +130185,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithoutLinesInput = {
@@ -122959,6 +130227,8 @@ export namespace Prisma {
     approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutLinesInput = {
@@ -122989,6 +130259,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type AccountUpsertWithoutJournalLinesInput = {
@@ -123084,6 +130356,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutJournalLinesInput = {
@@ -123105,6 +130379,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type ProjectUpsertWithoutJournalLinesInput = {
@@ -123353,6 +130629,8 @@ export namespace Prisma {
     fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
     transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateWithoutJournalLinesInput = {
@@ -123373,6 +130651,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUncheckedUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type OrganizationCreateWithoutReversalReasonCodesInput = {
@@ -123415,6 +130695,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReversalReasonCodesInput = {
@@ -123457,6 +130738,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReversalReasonCodesInput = {
@@ -123492,6 +130774,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutReversalReasonInput = {
@@ -123522,6 +130806,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutReversalReasonInput = {
@@ -123618,6 +130904,72 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TransferCreateWithoutReversalReasonInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransfersInput
+    sourceAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsSourceInput
+    destinationAccount: TreasuryAccountCreateNestedOneWithoutTransfersAsDestinationInput
+    currency: CurrencyCreateNestedOneWithoutTransfersInput
+    destinationCurrency?: CurrencyCreateNestedOneWithoutTransfersAsDestinationCurrencyInput
+    submittedBy?: UserCreateNestedOneWithoutTransfersSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransfersApprovedInput
+    processedBy?: UserCreateNestedOneWithoutTransfersProcessedInput
+    reversedBy?: UserCreateNestedOneWithoutTransfersReversedInput
+    journalEntry?: JournalEntryCreateNestedOneWithoutTransfersInput
+    reversalJournalEntry?: JournalEntryCreateNestedOneWithoutReversalTransfersInput
+  }
+
+  export type TransferUncheckedCreateWithoutReversalReasonInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateOrConnectWithoutReversalReasonInput = {
+    where: TransferWhereUniqueInput
+    create: XOR<TransferCreateWithoutReversalReasonInput, TransferUncheckedCreateWithoutReversalReasonInput>
+  }
+
+  export type TransferCreateManyReversalReasonInputEnvelope = {
+    data: TransferCreateManyReversalReasonInput | TransferCreateManyReversalReasonInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationUpsertWithoutReversalReasonCodesInput = {
     update: XOR<OrganizationUpdateWithoutReversalReasonCodesInput, OrganizationUncheckedUpdateWithoutReversalReasonCodesInput>
     create: XOR<OrganizationCreateWithoutReversalReasonCodesInput, OrganizationUncheckedCreateWithoutReversalReasonCodesInput>
@@ -123669,6 +131021,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReversalReasonCodesInput = {
@@ -123711,6 +131064,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput = {
@@ -123743,6 +131097,22 @@ export namespace Prisma {
   export type TransactionUpdateManyWithWhereWithoutReversalReasonInput = {
     where: TransactionScalarWhereInput
     data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutReversalReasonInput>
+  }
+
+  export type TransferUpsertWithWhereUniqueWithoutReversalReasonInput = {
+    where: TransferWhereUniqueInput
+    update: XOR<TransferUpdateWithoutReversalReasonInput, TransferUncheckedUpdateWithoutReversalReasonInput>
+    create: XOR<TransferCreateWithoutReversalReasonInput, TransferUncheckedCreateWithoutReversalReasonInput>
+  }
+
+  export type TransferUpdateWithWhereUniqueWithoutReversalReasonInput = {
+    where: TransferWhereUniqueInput
+    data: XOR<TransferUpdateWithoutReversalReasonInput, TransferUncheckedUpdateWithoutReversalReasonInput>
+  }
+
+  export type TransferUpdateManyWithWhereWithoutReversalReasonInput = {
+    where: TransferScalarWhereInput
+    data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutReversalReasonInput>
   }
 
   export type OrganizationCreateWithoutTransactionsInput = {
@@ -123785,6 +131155,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTransactionsInput = {
@@ -123827,6 +131198,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTransactionsInput = {
@@ -123910,6 +131282,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutTransactionsInput = {
@@ -123931,6 +131305,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutCurrencyInput
+    transfersAsDestinationCurrency?: TransferUncheckedCreateNestedManyWithoutDestinationCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutTransactionsInput = {
@@ -124143,6 +131519,8 @@ export namespace Prisma {
     fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
     journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountUncheckedCreateWithoutTransactionsInput = {
@@ -124163,6 +131541,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transfersAsSource?: TransferUncheckedCreateNestedManyWithoutSourceAccountInput
+    transfersAsDestination?: TransferUncheckedCreateNestedManyWithoutDestinationAccountInput
   }
 
   export type TreasuryAccountCreateOrConnectWithoutTransactionsInput = {
@@ -124235,6 +131615,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsCreatedInput = {
@@ -124302,6 +131686,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsCreatedInput = {
@@ -124374,6 +131762,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsSubmittedInput = {
@@ -124441,6 +131833,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsSubmittedInput = {
@@ -124513,6 +131909,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsApprovedInput = {
@@ -124580,6 +131980,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsApprovedInput = {
@@ -124652,6 +132056,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsPostedInput = {
@@ -124719,6 +132127,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsPostedInput = {
@@ -124791,6 +132203,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsReversedInput = {
@@ -124858,6 +132274,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsReversedInput = {
@@ -124876,6 +132296,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutReversalReasonCodesInput
     journalEntries?: JournalEntryCreateNestedManyWithoutReversalReasonInput
+    transfers?: TransferCreateNestedManyWithoutReversalReasonInput
   }
 
   export type ReversalReasonCodeUncheckedCreateWithoutTransactionsInput = {
@@ -124889,6 +132310,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversalReasonInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutReversalReasonInput
   }
 
   export type ReversalReasonCodeCreateOrConnectWithoutTransactionsInput = {
@@ -125087,6 +132509,8 @@ export namespace Prisma {
     postedBy?: UserCreateNestedOneWithoutJournalEntriesPostedInput
     reversedBy?: UserCreateNestedOneWithoutJournalEntriesReversedInput
     lines?: JournalLineCreateNestedManyWithoutEntryInput
+    transfers?: TransferCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryUncheckedCreateWithoutTransactionInput = {
@@ -125117,6 +132541,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedCreateNestedManyWithoutAdjustingEntryInput
     reversingEntries?: JournalEntryUncheckedCreateNestedManyWithoutReversedEntryInput
     lines?: JournalLineUncheckedCreateNestedManyWithoutEntryInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutJournalEntryInput
+    reversalTransfers?: TransferUncheckedCreateNestedManyWithoutReversalJournalEntryInput
   }
 
   export type JournalEntryCreateOrConnectWithoutTransactionInput = {
@@ -125180,6 +132606,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTransactionsInput = {
@@ -125222,6 +132649,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutTransactionsInput = {
@@ -125317,6 +132745,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutTransactionsInput = {
@@ -125338,6 +132768,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutCurrencyNestedInput
+    transfersAsDestinationCurrency?: TransferUncheckedUpdateManyWithoutDestinationCurrencyNestedInput
   }
 
   export type ProjectUpsertWithoutTransactionsInput = {
@@ -125586,6 +133018,8 @@ export namespace Prisma {
     fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
     journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateWithoutTransactionsInput = {
@@ -125606,6 +133040,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUncheckedUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type UserUpsertWithoutTransactionsCreatedInput = {
@@ -125684,6 +133120,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsCreatedInput = {
@@ -125751,6 +133191,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsSubmittedInput = {
@@ -125829,6 +133273,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsSubmittedInput = {
@@ -125896,6 +133344,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsApprovedInput = {
@@ -125974,6 +133426,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsApprovedInput = {
@@ -126041,6 +133497,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsPostedInput = {
@@ -126119,6 +133579,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsPostedInput = {
@@ -126186,6 +133650,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsReversedInput = {
@@ -126264,6 +133732,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsReversedInput = {
@@ -126331,6 +133803,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type ReversalReasonCodeUpsertWithoutTransactionsInput = {
@@ -126355,6 +133831,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutReversalReasonCodesNestedInput
     journalEntries?: JournalEntryUpdateManyWithoutReversalReasonNestedInput
+    transfers?: TransferUpdateManyWithoutReversalReasonNestedInput
   }
 
   export type ReversalReasonCodeUncheckedUpdateWithoutTransactionsInput = {
@@ -126368,6 +133845,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     journalEntries?: JournalEntryUncheckedUpdateManyWithoutReversalReasonNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutReversalReasonNestedInput
   }
 
   export type TransactionUpsertWithoutAdjustedEntriesInput = {
@@ -126527,6 +134005,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetsInput = {
@@ -126569,6 +134048,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetsInput = {
@@ -126655,6 +134135,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetsInput = {
@@ -126697,6 +134178,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetLineUpsertWithWhereUniqueWithoutBudgetInput = {
@@ -126755,6 +134237,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetLinesInput = {
@@ -126797,6 +134280,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetLinesInput = {
@@ -126945,6 +134429,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetLinesInput = {
@@ -126987,6 +134472,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutLinesInput = {
@@ -127131,6 +134617,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -127173,6 +134660,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -127245,6 +134733,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutOrganizationMembershipsInput = {
@@ -127312,6 +134804,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutOrganizationMembershipsInput = {
@@ -127370,6 +134866,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -127412,6 +134909,7 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganizationMembershipsInput = {
@@ -127490,6 +134988,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganizationMembershipsInput = {
@@ -127557,6 +135059,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type SecurityEventCreateWithoutAuditLogInput = {
@@ -127846,6 +135352,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -127913,6 +135423,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -127996,6 +135510,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -128063,6 +135581,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserCreateWithoutNotificationPreferencesInput = {
@@ -128130,6 +135652,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationPreferencesInput = {
@@ -128197,6 +135723,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
     sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
     sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationPreferencesInput = {
@@ -128280,6 +135810,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationPreferencesInput = {
@@ -128347,6 +135881,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type OrganizationMembershipCreateManyUserInput = {
@@ -129004,6 +136542,118 @@ export namespace Prisma {
     reviewReason?: string | null
   }
 
+  export type TransferCreateManySubmittedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateManyApprovedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateManyProcessedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateManyReversedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrganizationMembershipUpdateWithoutUserInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -129474,6 +137124,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedByInput = {
@@ -129541,6 +137195,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCreatedByInput = {
@@ -129643,6 +137301,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedByInput = {
@@ -129710,6 +137372,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutUpdatedByInput = {
@@ -129875,6 +137541,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutSubmittedByInput = {
@@ -129905,6 +137573,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateManyWithoutSubmittedByInput = {
@@ -129962,6 +137632,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutApprovedByInput = {
@@ -129992,6 +137664,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateManyWithoutApprovedByInput = {
@@ -130049,6 +137723,8 @@ export namespace Prisma {
     approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutPostedByInput = {
@@ -130079,6 +137755,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateManyWithoutPostedByInput = {
@@ -130136,6 +137814,8 @@ export namespace Prisma {
     approvedBy?: UserUpdateOneWithoutJournalEntriesApprovedNestedInput
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutReversedByInput = {
@@ -130166,6 +137846,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateManyWithoutReversedByInput = {
@@ -131159,6 +138841,342 @@ export namespace Prisma {
     status?: EnumSODWaiverStatusFieldUpdateOperationsInput | $Enums.SODWaiverStatus
     reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     reviewReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TransferUpdateWithoutSubmittedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutSubmittedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutSubmittedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUpdateWithoutProcessedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutProcessedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutProcessedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUpdateWithoutReversedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutReversedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutReversedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RolePermissionCreateManyRoleInput = {
@@ -132335,6 +140353,34 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type TransferCreateManyOrganizationInput = {
+    id?: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrganizationMembershipUpdateWithoutOrganizationInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -132673,6 +140719,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     journalEntries?: JournalEntryUpdateManyWithoutReversalReasonNestedInput
     transactions?: TransactionUpdateManyWithoutReversalReasonNestedInput
+    transfers?: TransferUpdateManyWithoutReversalReasonNestedInput
   }
 
   export type ReversalReasonCodeUncheckedUpdateWithoutOrganizationInput = {
@@ -132686,6 +140733,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     journalEntries?: JournalEntryUncheckedUpdateManyWithoutReversalReasonNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutReversalReasonNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutReversalReasonNestedInput
   }
 
   export type ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationInput = {
@@ -132972,6 +141020,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutOrganizationInput = {
@@ -133002,6 +141052,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateManyWithoutOrganizationInput = {
@@ -133383,6 +141435,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateWithoutOrganizationInput = {
@@ -133403,6 +141457,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUncheckedUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateManyWithoutOrganizationInput = {
@@ -133463,6 +141519,90 @@ export namespace Prisma {
     nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -133717,6 +141857,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPrimaryLocationInput = {
@@ -133784,6 +141928,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutPrimaryLocationInput = {
@@ -134008,6 +142156,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateWithoutLocationInput = {
@@ -134028,6 +142178,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUncheckedUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateManyWithoutLocationInput = {
@@ -134263,6 +142415,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHomeDepartmentInput = {
@@ -134330,6 +142486,10 @@ export namespace Prisma {
     sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
     sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
     sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutHomeDepartmentInput = {
@@ -135280,6 +143440,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateWithoutFundingSourceInput = {
@@ -135300,6 +143462,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUncheckedUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateManyWithoutFundingSourceInput = {
@@ -135385,6 +143549,62 @@ export namespace Prisma {
     nextDueDate: Date | string
     endDate?: Date | string | null
     status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateManySourceAccountInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateManyDestinationAccountInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -135603,6 +143823,174 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransferUpdateWithoutSourceAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutSourceAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutSourceAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUpdateWithoutDestinationAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutDestinationAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutDestinationAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ExchangeRateCreateManyBaseCurrencyInput = {
     id?: string
     quoteCurrencyId: string
@@ -135748,6 +144136,62 @@ export namespace Prisma {
     nextDueDate: Date | string
     endDate?: Date | string | null
     status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateManyCurrencyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateManyDestinationCurrencyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -136125,6 +144569,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateWithoutCurrencyInput = {
@@ -136145,6 +144591,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUncheckedUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateManyWithoutCurrencyInput = {
@@ -136205,6 +144653,174 @@ export namespace Prisma {
     nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUpdateWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUpdateWithoutDestinationCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutDestinationCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutDestinationCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -136746,6 +145362,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateWithoutLedgerAccountInput = {
@@ -136766,6 +145384,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transfersAsSource?: TransferUncheckedUpdateManyWithoutSourceAccountNestedInput
+    transfersAsDestination?: TransferUncheckedUpdateManyWithoutDestinationAccountNestedInput
   }
 
   export type TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountInput = {
@@ -136944,6 +145564,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutPeriodInput = {
@@ -136974,6 +145596,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateManyWithoutPeriodInput = {
@@ -137077,6 +145701,62 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type TransferCreateManyJournalEntryInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferCreateManyReversalJournalEntryInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    reversalReasonId?: string | null
+    journalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type JournalEntryUpdateWithoutAdjustingEntryInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
@@ -137105,6 +145785,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutAdjustingEntryInput = {
@@ -137135,6 +145817,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateManyWithoutAdjustingEntryInput = {
@@ -137192,6 +145876,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutReversedEntryInput = {
@@ -137222,6 +145908,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateManyWithoutReversedEntryInput = {
@@ -137311,6 +145999,174 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransferUpdateWithoutJournalEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutJournalEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutJournalEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUpdateWithoutReversalJournalEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransfersNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutReversalJournalEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutReversalJournalEntryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type JournalEntryCreateManyReversalReasonInput = {
     id?: string
     organizationId: string
@@ -137373,6 +146229,34 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type TransferCreateManyReversalReasonInput = {
+    id?: string
+    organizationId: string
+    code: string
+    status?: $Enums.TransferStatus
+    sourceAccountId: string
+    destinationAccountId: string
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    destinationAmount?: Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: string | null
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    description?: string | null
+    reference?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    processedById?: string | null
+    processedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    journalEntryId?: string | null
+    reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type JournalEntryUpdateWithoutReversalReasonInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumJournalEntryTypeFieldUpdateOperationsInput | $Enums.JournalEntryType
@@ -137401,6 +146285,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutReversalReasonInput = {
@@ -137431,6 +146317,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateManyWithoutReversalReasonInput = {
@@ -137565,6 +146453,90 @@ export namespace Prisma {
     voidedById?: NullableStringFieldUpdateOperationsInput | string | null
     voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUpdateWithoutReversalReasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransfersNestedInput
+    sourceAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsSourceNestedInput
+    destinationAccount?: TreasuryAccountUpdateOneRequiredWithoutTransfersAsDestinationNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransfersNestedInput
+    destinationCurrency?: CurrencyUpdateOneWithoutTransfersAsDestinationCurrencyNestedInput
+    submittedBy?: UserUpdateOneWithoutTransfersSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransfersApprovedNestedInput
+    processedBy?: UserUpdateOneWithoutTransfersProcessedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransfersReversedNestedInput
+    journalEntry?: JournalEntryUpdateOneWithoutTransfersNestedInput
+    reversalJournalEntry?: JournalEntryUpdateOneWithoutReversalTransfersNestedInput
+  }
+
+  export type TransferUncheckedUpdateWithoutReversalReasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferUncheckedUpdateManyWithoutReversalReasonInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceAccountId?: StringFieldUpdateOperationsInput | string
+    destinationAccountId?: StringFieldUpdateOperationsInput | string
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    destinationAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    destinationCurrencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    processedById?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    journalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    reversalJournalEntryId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -137768,6 +146740,8 @@ export namespace Prisma {
     postedBy?: UserUpdateOneWithoutJournalEntriesPostedNestedInput
     reversedBy?: UserUpdateOneWithoutJournalEntriesReversedNestedInput
     lines?: JournalLineUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateWithoutTransactionInput = {
@@ -137798,6 +146772,8 @@ export namespace Prisma {
     adjustedEntries?: JournalEntryUncheckedUpdateManyWithoutAdjustingEntryNestedInput
     reversingEntries?: JournalEntryUncheckedUpdateManyWithoutReversedEntryNestedInput
     lines?: JournalLineUncheckedUpdateManyWithoutEntryNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutJournalEntryNestedInput
+    reversalTransfers?: TransferUncheckedUpdateManyWithoutReversalJournalEntryNestedInput
   }
 
   export type JournalEntryUncheckedUpdateManyWithoutTransactionInput = {

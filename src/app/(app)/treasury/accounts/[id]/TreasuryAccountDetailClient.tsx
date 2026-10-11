@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardBody, Badge, Button, Alert } from '@/components/ui';
 import { formatDate, shortId } from '@/lib/format';
 import Link from 'next/link';
@@ -67,25 +67,29 @@ export default function TreasuryAccountDetailClient({
   const hasEditPermission = useMemo(() => actor.roleCodes.includes('TREASURY_TRANSFERS.EDIT'), [actor.roleCodes]);
   const hasDeletePermission = useMemo(() => actor.roleCodes.includes('TREASURY_TRANSFERS.EDIT'), [actor.roleCodes]);
 
-  const fetchAccount = useCallback(async () => {
-    const { id } = await params;
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/v1/treasury-accounts/${id}`);
-      if (!res.ok) throw new Error('Failed to fetch treasury account');
-      const json = await res.json();
-      setAccount(json.data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setLoading(false);
-    }
-  }, [params]);
-
   useEffect(() => {
-    fetchAccount();
-  }, [fetchAccount]);
+    let mounted = true;
+    let cancelled = false;
+
+    params.then(async ({ id }) => {
+      if (cancelled) return;
+      
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`/api/v1/treasury-accounts/${id}`);
+        if (!res.ok) throw new Error('Failed to fetch treasury account');
+        const json = await res.json();
+        if (mounted) setAccount(json.data);
+      } catch (err) {
+        if (mounted) setError(err instanceof Error ? err.message : 'Unknown error');
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    });
+
+    return () => { mounted = false; cancelled = true; };
+  }, [params]);
 
   const handleDelete = async () => {
     const { id } = await params;

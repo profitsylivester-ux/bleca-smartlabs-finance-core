@@ -549,6 +549,35 @@ exports.Prisma.PaymentScheduleScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TransferScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  status: 'status',
+  sourceAccountId: 'sourceAccountId',
+  destinationAccountId: 'destinationAccountId',
+  amount: 'amount',
+  currencyCode: 'currencyCode',
+  destinationAmount: 'destinationAmount',
+  destinationCurrencyCode: 'destinationCurrencyCode',
+  fxRate: 'fxRate',
+  description: 'description',
+  reference: 'reference',
+  submittedById: 'submittedById',
+  submittedAt: 'submittedAt',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  processedById: 'processedById',
+  processedAt: 'processedAt',
+  reversedById: 'reversedById',
+  reversedAt: 'reversedAt',
+  reversalReasonId: 'reversalReasonId',
+  journalEntryId: 'journalEntryId',
+  reversalJournalEntryId: 'reversalJournalEntryId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CurrencyScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -1243,6 +1272,16 @@ exports.TreasuryAccountKind = exports.$Enums.TreasuryAccountKind = {
   OTHER: 'OTHER'
 };
 
+exports.TransferStatus = exports.$Enums.TransferStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  PROCESSED: 'PROCESSED',
+  FAILED: 'FAILED',
+  REVERSED: 'REVERSED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.CurrencyType = exports.$Enums.CurrencyType = {
   FIAT: 'FIAT',
   CRYPTO: 'CRYPTO',
@@ -1291,7 +1330,8 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   APPROVAL_DECISION_RECORD: 'APPROVAL_DECISION_RECORD',
   SOD_WAIVER: 'SOD_WAIVER',
   TREASURY_ACCOUNT: 'TREASURY_ACCOUNT',
-  PAYMENT_SCHEDULE: 'PAYMENT_SCHEDULE'
+  PAYMENT_SCHEDULE: 'PAYMENT_SCHEDULE',
+  TRANSFER: 'TRANSFER'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -1650,6 +1690,7 @@ exports.Prisma.ModelName = {
   FundingSource: 'FundingSource',
   TreasuryAccount: 'TreasuryAccount',
   PaymentSchedule: 'PaymentSchedule',
+  Transfer: 'Transfer',
   Currency: 'Currency',
   ExchangeRate: 'ExchangeRate',
   MasterDataChangeRequest: 'MasterDataChangeRequest',

@@ -556,6 +556,7 @@ enum AuditEntityType {
   SOD_WAIVER
   TREASURY_ACCOUNT
   PAYMENT_SCHEDULE
+  TRANSFER
 }
 
 enum AuditResult {
@@ -843,6 +844,10 @@ model User {
   sodWaiversAsUser            SODWaiver[] @relation("SODWaiverUser")
   sodWaiversRecordedBy        SODWaiver[] @relation("SODWaiverRecordedBy")
   sodWaiversReviewedBy        SODWaiver[] @relation("SODWaiverReviewedBy")
+  transfersSubmitted          Transfer[] @relation("TransferSubmittedBy")
+  transfersApproved           Transfer[] @relation("TransferApprovedBy")
+  transfersProcessed          Transfer[] @relation("TransferProcessedBy")
+  transfersReversed           Transfer[] @relation("TransferReversedBy")
 
   @@index([status, isActive])
   @@index([primaryLocationId])
@@ -1356,6 +1361,7 @@ model Organization {
   approvalRequests ApprovalRequest[]
   treasuryAccounts TreasuryAccount[]
   paymentSchedules PaymentSchedule[]
+  transfers Transfer[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -1510,6 +1516,8 @@ model TreasuryAccount {
   journalLines      JournalLine[]
   transactions      Transaction[]
   paymentSchedules  PaymentSchedule[]
+  transfersAsSource Transfer[] @relation("TransferSource")
+  transfersAsDestination Transfer[] @relation("TransferDestination")
 
   @@unique([organizationId, code])
   @@index([kind, isActive])
@@ -1543,6 +1551,65 @@ model PaymentSchedule {
   @@map("payment_schedules")
 }
 
+/// Transfers — PDF §10: single balanced JournalEntry with credit on source, debit on destination.
+/// Cross-currency produces FX difference entry. Never distorts P&L.
+model Transfer {
+  id                   String           @id @default(cuid())
+  organizationId       String           @map("organization_id")
+  organization         Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code                 String
+  status               TransferStatus   @default(DRAFT)
+  sourceAccountId      String           @map("source_account_id")
+  sourceAccount        TreasuryAccount  @relation("TransferSource", fields: [sourceAccountId], references: [id])
+  destinationAccountId String           @map("destination_account_id")
+  destinationAccount   TreasuryAccount  @relation("TransferDestination", fields: [destinationAccountId], references: [id])
+  amount               Decimal          @db.Decimal(20, 6)
+  currencyCode         String           @db.Char(3) @map("currency_code")
+  currency             Currency         @relation(fields: [currencyCode], references: [code])
+  destinationAmount    Decimal?         @db.Decimal(20, 6) @map("destination_amount")
+  destinationCurrencyCode String?       @db.Char(3) @map("destination_currency_code")
+  destinationCurrency  Currency?        @relation("TransferDestinationCurrency", fields: [destinationCurrencyCode], references: [code])
+  fxRate               Decimal?         @db.Decimal(20, 10) @map("fx_rate")
+  description          String?
+  reference            String?
+  submittedById        String?          @map("submitted_by_id")
+  submittedBy          User?            @relation("TransferSubmittedBy", fields: [submittedById], references: [id])
+  submittedAt          DateTime?        @map("submitted_at")
+  approvedById         String?          @map("approved_by_id")
+  approvedBy           User?            @relation("TransferApprovedBy", fields: [approvedById], references: [id])
+  approvedAt           DateTime?        @map("approved_at")
+  processedById        String?          @map("processed_by_id")
+  processedBy          User?            @relation("TransferProcessedBy", fields: [processedById], references: [id])
+  processedAt          DateTime?        @map("processed_at")
+  reversedById         String?          @map("reversed_by_id")
+  reversedBy           User?            @relation("TransferReversedBy", fields: [reversedById], references: [id])
+  reversedAt           DateTime?        @map("reversed_at")
+  reversalReasonId     String?          @map("reversal_reason_id")
+  reversalReason       ReversalReasonCode? @relation("TransferReversalReason", fields: [reversalReasonId], references: [id])
+  journalEntryId       String?          @map("journal_entry_id")
+  journalEntry         JournalEntry?    @relation("TransferJournalEntry", fields: [journalEntryId], references: [id])
+  reversalJournalEntryId String?        @map("reversal_journal_entry_id")
+  reversalJournalEntry JournalEntry?    @relation("TransferReversalJournalEntry", fields: [reversalJournalEntryId], references: [id])
+  createdAt            DateTime         @default(now()) @map("created_at")
+  updatedAt            DateTime         @updatedAt @map("updated_at")
+
+  @@unique([organizationId, code])
+  @@index([status])
+  @@index([sourceAccountId])
+  @@index([destinationAccountId])
+  @@map("transfers")
+}
+
+enum TransferStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  PROCESSED
+  FAILED
+  REVERSED
+  CANCELLED
+}
+
 model Currency {
   id             String       @id @default(cuid())
   code           String       @unique @db.Char(3)
@@ -1564,6 +1631,8 @@ model Currency {
   transactions           Transaction[]
   treasuryAccounts       TreasuryAccount[]
   paymentSchedules       PaymentSchedule[]
+  transfers              Transfer[]
+  transfersAsDestinationCurrency Transfer[] @relation("TransferDestinationCurrency")
 
   @@map("currencies")
 }
@@ -1824,6 +1893,8 @@ model JournalEntry {
   updatedAt          DateTime            @updatedAt @map("updated_at")
 
   lines              JournalLine[]
+  transfers          Transfer[] @relation("TransferJournalEntry")
+  reversalTransfers  Transfer[] @relation("TransferReversalJournalEntry")
 
   @@unique([organizationId, number])
   @@index([periodId, status])
@@ -1892,6 +1963,7 @@ model ReversalReasonCode {
 
   journalEntries JournalEntry[]
   transactions   Transaction[]
+  transfers      Transfer[] @relation("TransferReversalReason")
 
   @@unique([organizationId, code])
   @@index([category, isActive])
