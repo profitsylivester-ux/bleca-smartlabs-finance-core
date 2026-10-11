@@ -82,6 +82,31 @@ export type AccessReview = $Result.DefaultSelection<Prisma.$AccessReviewPayload>
  */
 export type AccessReviewItem = $Result.DefaultSelection<Prisma.$AccessReviewItemPayload>
 /**
+ * Model ApprovalPolicy
+ * Approval Workflow models (M6) -------------------------------------------------
+ */
+export type ApprovalPolicy = $Result.DefaultSelection<Prisma.$ApprovalPolicyPayload>
+/**
+ * Model ApprovalPolicyStep
+ * 
+ */
+export type ApprovalPolicyStep = $Result.DefaultSelection<Prisma.$ApprovalPolicyStepPayload>
+/**
+ * Model ApprovalRequest
+ * 
+ */
+export type ApprovalRequest = $Result.DefaultSelection<Prisma.$ApprovalRequestPayload>
+/**
+ * Model ApprovalStepInstance
+ * 
+ */
+export type ApprovalStepInstance = $Result.DefaultSelection<Prisma.$ApprovalStepInstancePayload>
+/**
+ * Model ApprovalDecisionRecord
+ * 
+ */
+export type ApprovalDecisionRecord = $Result.DefaultSelection<Prisma.$ApprovalDecisionRecordPayload>
+/**
  * Model Organization
  * 
  */
@@ -769,7 +794,17 @@ export const AuditAction: {
   JOURNAL_ENTRY_REVERSED: 'JOURNAL_ENTRY_REVERSED',
   JOURNAL_ENTRY_VOIDED: 'JOURNAL_ENTRY_VOIDED',
   JOURNAL_ENTRY_SUBMITTED: 'JOURNAL_ENTRY_SUBMITTED',
-  JOURNAL_ENTRY_APPROVED: 'JOURNAL_ENTRY_APPROVED'
+  JOURNAL_ENTRY_APPROVED: 'JOURNAL_ENTRY_APPROVED',
+  APPROVAL_POLICY_CREATED: 'APPROVAL_POLICY_CREATED',
+  APPROVAL_POLICY_UPDATED: 'APPROVAL_POLICY_UPDATED',
+  APPROVAL_POLICY_DELETED: 'APPROVAL_POLICY_DELETED',
+  APPROVAL_REQUEST_CREATED: 'APPROVAL_REQUEST_CREATED',
+  APPROVAL_REQUEST_SUBMITTED: 'APPROVAL_REQUEST_SUBMITTED',
+  APPROVAL_REQUEST_APPROVED: 'APPROVAL_REQUEST_APPROVED',
+  APPROVAL_REQUEST_REJECTED: 'APPROVAL_REQUEST_REJECTED',
+  APPROVAL_REQUEST_CANCELLED: 'APPROVAL_REQUEST_CANCELLED',
+  APPROVAL_STEP_DECIDED: 'APPROVAL_STEP_DECIDED',
+  APPROVAL_DECISION_RECORDED: 'APPROVAL_DECISION_RECORDED'
 };
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
@@ -804,7 +839,11 @@ export const AuditEntityType: {
   FINANCIAL_PERIOD: 'FINANCIAL_PERIOD',
   OPENING_BALANCE: 'OPENING_BALANCE',
   JOURNAL_ENTRY: 'JOURNAL_ENTRY',
-  ACCOUNT_BALANCE_SNAPSHOT: 'ACCOUNT_BALANCE_SNAPSHOT'
+  ACCOUNT_BALANCE_SNAPSHOT: 'ACCOUNT_BALANCE_SNAPSHOT',
+  APPROVAL_POLICY: 'APPROVAL_POLICY',
+  APPROVAL_REQUEST: 'APPROVAL_REQUEST',
+  APPROVAL_STEP_INSTANCE: 'APPROVAL_STEP_INSTANCE',
+  APPROVAL_DECISION_RECORD: 'APPROVAL_DECISION_RECORD'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -928,6 +967,119 @@ export const IdempotencyKeyStatus: {
 };
 
 export type IdempotencyKeyStatus = (typeof IdempotencyKeyStatus)[keyof typeof IdempotencyKeyStatus]
+
+
+export const ApprovalEntityType: {
+  TRANSACTION: 'TRANSACTION',
+  JOURNAL_ENTRY: 'JOURNAL_ENTRY',
+  INVOICE: 'INVOICE',
+  PAYMENT: 'PAYMENT',
+  RECEIPT: 'RECEIPT',
+  QUOTATION: 'QUOTATION',
+  CREDIT_NOTE: 'CREDIT_NOTE',
+  DEBIT_NOTE: 'DEBIT_NOTE',
+  REFUND: 'REFUND',
+  BUDGET: 'BUDGET',
+  BUDGET_REVISION: 'BUDGET_REVISION',
+  BUDGET_TRANSFER: 'BUDGET_TRANSFER',
+  COMMITMENT: 'COMMITMENT',
+  PERIOD_REOPEN: 'PERIOD_REOPEN',
+  FINANCIAL_CLOSE: 'FINANCIAL_CLOSE',
+  ADJUSTMENT: 'ADJUSTMENT',
+  REVERSAL: 'REVERSAL',
+  MASTER_DATA_CHANGE: 'MASTER_DATA_CHANGE',
+  SUPPLIER_BANK_DETAIL_CHANGE: 'SUPPLIER_BANK_DETAIL_CHANGE',
+  CUSTOMER_CREDIT_LIMIT: 'CUSTOMER_CREDIT_LIMIT',
+  DOCUMENT: 'DOCUMENT',
+  IMPORT_BATCH: 'IMPORT_BATCH',
+  RECONCILIATION: 'RECONCILIATION',
+  RECONCILIATION_ADJUSTMENT: 'RECONCILIATION_ADJUSTMENT',
+  TAX_FILING: 'TAX_FILING'
+};
+
+export type ApprovalEntityType = (typeof ApprovalEntityType)[keyof typeof ApprovalEntityType]
+
+
+export const ApprovalRequestStatus: {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED',
+  SUPERSEDED: 'SUPERSEDED'
+};
+
+export type ApprovalRequestStatus = (typeof ApprovalRequestStatus)[keyof typeof ApprovalRequestStatus]
+
+
+export const ApprovalStepType: {
+  APPROVAL: 'APPROVAL',
+  REVIEW: 'REVIEW',
+  NOTIFICATION: 'NOTIFICATION',
+  SIGN_OFF: 'SIGN_OFF'
+};
+
+export type ApprovalStepType = (typeof ApprovalStepType)[keyof typeof ApprovalStepType]
+
+
+export const ApprovalAssigneeType: {
+  ROLE: 'ROLE',
+  USER: 'USER',
+  USER_DELEGATED: 'USER_DELEGATED',
+  SPECIFIC_USER: 'SPECIFIC_USER'
+};
+
+export type ApprovalAssigneeType = (typeof ApprovalAssigneeType)[keyof typeof ApprovalAssigneeType]
+
+
+export const ApprovalOutcome: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+export type ApprovalOutcome = (typeof ApprovalOutcome)[keyof typeof ApprovalOutcome]
+
+
+export const ResolutionMode: {
+  ANY: 'ANY',
+  ALL: 'ALL',
+  QUORUM: 'QUORUM'
+};
+
+export type ResolutionMode = (typeof ResolutionMode)[keyof typeof ResolutionMode]
+
+
+export const ApprovalConditionOperator: {
+  ALWAYS: 'ALWAYS',
+  AMOUNT_GREATER_THAN: 'AMOUNT_GREATER_THAN',
+  AMOUNT_GREATER_OR_EQUAL: 'AMOUNT_GREATER_OR_EQUAL',
+  AMOUNT_LESS_THAN: 'AMOUNT_LESS_THAN',
+  AMOUNT_BETWEEN: 'AMOUNT_BETWEEN',
+  PERCENT_OF_BUDGET: 'PERCENT_OF_BUDGET',
+  OVER_BUDGET: 'OVER_BUDGET',
+  NEW_COUNTERPARTY: 'NEW_COUNTERPARTY',
+  SUPPLIER_BANK_DETAIL_CHANGED: 'SUPPLIER_BANK_DETAIL_CHANGED',
+  FUNDING_RESTRICTED: 'FUNDING_RESTRICTED',
+  CROSS_PROJECT: 'CROSS_PROJECT',
+  CURRENCY_NOT_BASE: 'CURRENCY_NOT_BASE',
+  MANUAL_FLAG: 'MANUAL_FLAG'
+};
+
+export type ApprovalConditionOperator = (typeof ApprovalConditionOperator)[keyof typeof ApprovalConditionOperator]
+
+
+export const ApprovalDecision: {
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  DEFERRED: 'DEFERRED',
+  RETURNED_FOR_CHANGES: 'RETURNED_FOR_CHANGES',
+  SKIPPED: 'SKIPPED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type ApprovalDecision = (typeof ApprovalDecision)[keyof typeof ApprovalDecision]
 
 }
 
@@ -1122,6 +1274,38 @@ export const NotificationSeverity: typeof $Enums.NotificationSeverity
 export type IdempotencyKeyStatus = $Enums.IdempotencyKeyStatus
 
 export const IdempotencyKeyStatus: typeof $Enums.IdempotencyKeyStatus
+
+export type ApprovalEntityType = $Enums.ApprovalEntityType
+
+export const ApprovalEntityType: typeof $Enums.ApprovalEntityType
+
+export type ApprovalRequestStatus = $Enums.ApprovalRequestStatus
+
+export const ApprovalRequestStatus: typeof $Enums.ApprovalRequestStatus
+
+export type ApprovalStepType = $Enums.ApprovalStepType
+
+export const ApprovalStepType: typeof $Enums.ApprovalStepType
+
+export type ApprovalAssigneeType = $Enums.ApprovalAssigneeType
+
+export const ApprovalAssigneeType: typeof $Enums.ApprovalAssigneeType
+
+export type ApprovalOutcome = $Enums.ApprovalOutcome
+
+export const ApprovalOutcome: typeof $Enums.ApprovalOutcome
+
+export type ResolutionMode = $Enums.ResolutionMode
+
+export const ResolutionMode: typeof $Enums.ResolutionMode
+
+export type ApprovalConditionOperator = $Enums.ApprovalConditionOperator
+
+export const ApprovalConditionOperator: typeof $Enums.ApprovalConditionOperator
+
+export type ApprovalDecision = $Enums.ApprovalDecision
+
+export const ApprovalDecision: typeof $Enums.ApprovalDecision
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1370,6 +1554,56 @@ export class PrismaClient<
     * ```
     */
   get accessReviewItem(): Prisma.AccessReviewItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.approvalPolicy`: Exposes CRUD operations for the **ApprovalPolicy** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ApprovalPolicies
+    * const approvalPolicies = await prisma.approvalPolicy.findMany()
+    * ```
+    */
+  get approvalPolicy(): Prisma.ApprovalPolicyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.approvalPolicyStep`: Exposes CRUD operations for the **ApprovalPolicyStep** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ApprovalPolicySteps
+    * const approvalPolicySteps = await prisma.approvalPolicyStep.findMany()
+    * ```
+    */
+  get approvalPolicyStep(): Prisma.ApprovalPolicyStepDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.approvalRequest`: Exposes CRUD operations for the **ApprovalRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ApprovalRequests
+    * const approvalRequests = await prisma.approvalRequest.findMany()
+    * ```
+    */
+  get approvalRequest(): Prisma.ApprovalRequestDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.approvalStepInstance`: Exposes CRUD operations for the **ApprovalStepInstance** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ApprovalStepInstances
+    * const approvalStepInstances = await prisma.approvalStepInstance.findMany()
+    * ```
+    */
+  get approvalStepInstance(): Prisma.ApprovalStepInstanceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.approvalDecisionRecord`: Exposes CRUD operations for the **ApprovalDecisionRecord** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ApprovalDecisionRecords
+    * const approvalDecisionRecords = await prisma.approvalDecisionRecord.findMany()
+    * ```
+    */
+  get approvalDecisionRecord(): Prisma.ApprovalDecisionRecordDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.organization`: Exposes CRUD operations for the **Organization** model.
@@ -2124,6 +2358,11 @@ export namespace Prisma {
     Delegation: 'Delegation',
     AccessReview: 'AccessReview',
     AccessReviewItem: 'AccessReviewItem',
+    ApprovalPolicy: 'ApprovalPolicy',
+    ApprovalPolicyStep: 'ApprovalPolicyStep',
+    ApprovalRequest: 'ApprovalRequest',
+    ApprovalStepInstance: 'ApprovalStepInstance',
+    ApprovalDecisionRecord: 'ApprovalDecisionRecord',
     Organization: 'Organization',
     Location: 'Location',
     Department: 'Department',
@@ -2172,7 +2411,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3135,6 +3374,376 @@ export namespace Prisma {
           count: {
             args: Prisma.AccessReviewItemCountArgs<ExtArgs>
             result: $Utils.Optional<AccessReviewItemCountAggregateOutputType> | number
+          }
+        }
+      }
+      ApprovalPolicy: {
+        payload: Prisma.$ApprovalPolicyPayload<ExtArgs>
+        fields: Prisma.ApprovalPolicyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ApprovalPolicyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ApprovalPolicyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload>
+          }
+          findFirst: {
+            args: Prisma.ApprovalPolicyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ApprovalPolicyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload>
+          }
+          findMany: {
+            args: Prisma.ApprovalPolicyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload>[]
+          }
+          create: {
+            args: Prisma.ApprovalPolicyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload>
+          }
+          createMany: {
+            args: Prisma.ApprovalPolicyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ApprovalPolicyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload>[]
+          }
+          delete: {
+            args: Prisma.ApprovalPolicyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload>
+          }
+          update: {
+            args: Prisma.ApprovalPolicyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload>
+          }
+          deleteMany: {
+            args: Prisma.ApprovalPolicyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ApprovalPolicyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ApprovalPolicyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload>[]
+          }
+          upsert: {
+            args: Prisma.ApprovalPolicyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyPayload>
+          }
+          aggregate: {
+            args: Prisma.ApprovalPolicyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApprovalPolicy>
+          }
+          groupBy: {
+            args: Prisma.ApprovalPolicyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ApprovalPolicyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ApprovalPolicyCountArgs<ExtArgs>
+            result: $Utils.Optional<ApprovalPolicyCountAggregateOutputType> | number
+          }
+        }
+      }
+      ApprovalPolicyStep: {
+        payload: Prisma.$ApprovalPolicyStepPayload<ExtArgs>
+        fields: Prisma.ApprovalPolicyStepFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ApprovalPolicyStepFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ApprovalPolicyStepFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload>
+          }
+          findFirst: {
+            args: Prisma.ApprovalPolicyStepFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ApprovalPolicyStepFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload>
+          }
+          findMany: {
+            args: Prisma.ApprovalPolicyStepFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload>[]
+          }
+          create: {
+            args: Prisma.ApprovalPolicyStepCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload>
+          }
+          createMany: {
+            args: Prisma.ApprovalPolicyStepCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ApprovalPolicyStepCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload>[]
+          }
+          delete: {
+            args: Prisma.ApprovalPolicyStepDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload>
+          }
+          update: {
+            args: Prisma.ApprovalPolicyStepUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload>
+          }
+          deleteMany: {
+            args: Prisma.ApprovalPolicyStepDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ApprovalPolicyStepUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ApprovalPolicyStepUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload>[]
+          }
+          upsert: {
+            args: Prisma.ApprovalPolicyStepUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalPolicyStepPayload>
+          }
+          aggregate: {
+            args: Prisma.ApprovalPolicyStepAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApprovalPolicyStep>
+          }
+          groupBy: {
+            args: Prisma.ApprovalPolicyStepGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ApprovalPolicyStepGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ApprovalPolicyStepCountArgs<ExtArgs>
+            result: $Utils.Optional<ApprovalPolicyStepCountAggregateOutputType> | number
+          }
+        }
+      }
+      ApprovalRequest: {
+        payload: Prisma.$ApprovalRequestPayload<ExtArgs>
+        fields: Prisma.ApprovalRequestFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ApprovalRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ApprovalRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload>
+          }
+          findFirst: {
+            args: Prisma.ApprovalRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ApprovalRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload>
+          }
+          findMany: {
+            args: Prisma.ApprovalRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload>[]
+          }
+          create: {
+            args: Prisma.ApprovalRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload>
+          }
+          createMany: {
+            args: Prisma.ApprovalRequestCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ApprovalRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload>[]
+          }
+          delete: {
+            args: Prisma.ApprovalRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload>
+          }
+          update: {
+            args: Prisma.ApprovalRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload>
+          }
+          deleteMany: {
+            args: Prisma.ApprovalRequestDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ApprovalRequestUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ApprovalRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload>[]
+          }
+          upsert: {
+            args: Prisma.ApprovalRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalRequestPayload>
+          }
+          aggregate: {
+            args: Prisma.ApprovalRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApprovalRequest>
+          }
+          groupBy: {
+            args: Prisma.ApprovalRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ApprovalRequestGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ApprovalRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<ApprovalRequestCountAggregateOutputType> | number
+          }
+        }
+      }
+      ApprovalStepInstance: {
+        payload: Prisma.$ApprovalStepInstancePayload<ExtArgs>
+        fields: Prisma.ApprovalStepInstanceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ApprovalStepInstanceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ApprovalStepInstanceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload>
+          }
+          findFirst: {
+            args: Prisma.ApprovalStepInstanceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ApprovalStepInstanceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload>
+          }
+          findMany: {
+            args: Prisma.ApprovalStepInstanceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload>[]
+          }
+          create: {
+            args: Prisma.ApprovalStepInstanceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload>
+          }
+          createMany: {
+            args: Prisma.ApprovalStepInstanceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ApprovalStepInstanceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload>[]
+          }
+          delete: {
+            args: Prisma.ApprovalStepInstanceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload>
+          }
+          update: {
+            args: Prisma.ApprovalStepInstanceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload>
+          }
+          deleteMany: {
+            args: Prisma.ApprovalStepInstanceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ApprovalStepInstanceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ApprovalStepInstanceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload>[]
+          }
+          upsert: {
+            args: Prisma.ApprovalStepInstanceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalStepInstancePayload>
+          }
+          aggregate: {
+            args: Prisma.ApprovalStepInstanceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApprovalStepInstance>
+          }
+          groupBy: {
+            args: Prisma.ApprovalStepInstanceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ApprovalStepInstanceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ApprovalStepInstanceCountArgs<ExtArgs>
+            result: $Utils.Optional<ApprovalStepInstanceCountAggregateOutputType> | number
+          }
+        }
+      }
+      ApprovalDecisionRecord: {
+        payload: Prisma.$ApprovalDecisionRecordPayload<ExtArgs>
+        fields: Prisma.ApprovalDecisionRecordFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ApprovalDecisionRecordFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ApprovalDecisionRecordFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload>
+          }
+          findFirst: {
+            args: Prisma.ApprovalDecisionRecordFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ApprovalDecisionRecordFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload>
+          }
+          findMany: {
+            args: Prisma.ApprovalDecisionRecordFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload>[]
+          }
+          create: {
+            args: Prisma.ApprovalDecisionRecordCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload>
+          }
+          createMany: {
+            args: Prisma.ApprovalDecisionRecordCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ApprovalDecisionRecordCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload>[]
+          }
+          delete: {
+            args: Prisma.ApprovalDecisionRecordDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload>
+          }
+          update: {
+            args: Prisma.ApprovalDecisionRecordUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload>
+          }
+          deleteMany: {
+            args: Prisma.ApprovalDecisionRecordDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ApprovalDecisionRecordUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ApprovalDecisionRecordUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload>[]
+          }
+          upsert: {
+            args: Prisma.ApprovalDecisionRecordUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovalDecisionRecordPayload>
+          }
+          aggregate: {
+            args: Prisma.ApprovalDecisionRecordAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApprovalDecisionRecord>
+          }
+          groupBy: {
+            args: Prisma.ApprovalDecisionRecordGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ApprovalDecisionRecordGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ApprovalDecisionRecordCountArgs<ExtArgs>
+            result: $Utils.Optional<ApprovalDecisionRecordCountAggregateOutputType> | number
           }
         }
       }
@@ -5467,6 +6076,11 @@ export namespace Prisma {
     delegation?: DelegationOmit
     accessReview?: AccessReviewOmit
     accessReviewItem?: AccessReviewItemOmit
+    approvalPolicy?: ApprovalPolicyOmit
+    approvalPolicyStep?: ApprovalPolicyStepOmit
+    approvalRequest?: ApprovalRequestOmit
+    approvalStepInstance?: ApprovalStepInstanceOmit
+    approvalDecisionRecord?: ApprovalDecisionRecordOmit
     organization?: OrganizationOmit
     location?: LocationOmit
     department?: DepartmentOmit
@@ -5600,6 +6214,12 @@ export namespace Prisma {
     transactionsApproved: number
     transactionsPosted: number
     transactionsReversed: number
+    approvalRequestsSubmitted: number
+    approvalRequestsDecided: number
+    approvalStepInstancesDecided: number
+    approvalDecisionRecords: number
+    approvalPolicyStepAssigneeUser: number
+    approvalStepInstanceAssigneeUser: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5626,6 +6246,12 @@ export namespace Prisma {
     transactionsApproved?: boolean | UserCountOutputTypeCountTransactionsApprovedArgs
     transactionsPosted?: boolean | UserCountOutputTypeCountTransactionsPostedArgs
     transactionsReversed?: boolean | UserCountOutputTypeCountTransactionsReversedArgs
+    approvalRequestsSubmitted?: boolean | UserCountOutputTypeCountApprovalRequestsSubmittedArgs
+    approvalRequestsDecided?: boolean | UserCountOutputTypeCountApprovalRequestsDecidedArgs
+    approvalStepInstancesDecided?: boolean | UserCountOutputTypeCountApprovalStepInstancesDecidedArgs
+    approvalDecisionRecords?: boolean | UserCountOutputTypeCountApprovalDecisionRecordsArgs
+    approvalPolicyStepAssigneeUser?: boolean | UserCountOutputTypeCountApprovalPolicyStepAssigneeUserArgs
+    approvalStepInstanceAssigneeUser?: boolean | UserCountOutputTypeCountApprovalStepInstanceAssigneeUserArgs
   }
 
   // Custom InputTypes
@@ -5800,6 +6426,48 @@ export namespace Prisma {
     where?: TransactionWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountApprovalRequestsSubmittedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalRequestWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountApprovalRequestsDecidedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalRequestWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountApprovalStepInstancesDecidedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalStepInstanceWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountApprovalDecisionRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalDecisionRecordWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountApprovalPolicyStepAssigneeUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalPolicyStepWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountApprovalStepInstanceAssigneeUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalStepInstanceWhereInput
+  }
+
 
   /**
    * Count Type RoleCountOutputType
@@ -5811,6 +6479,8 @@ export namespace Prisma {
     userRoles: number
     delegations: number
     accessReviewItems: number
+    approvalPolicySteps: number
+    approvalStepInstanceAssigneeRole: number
   }
 
   export type RoleCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5819,6 +6489,8 @@ export namespace Prisma {
     userRoles?: boolean | RoleCountOutputTypeCountUserRolesArgs
     delegations?: boolean | RoleCountOutputTypeCountDelegationsArgs
     accessReviewItems?: boolean | RoleCountOutputTypeCountAccessReviewItemsArgs
+    approvalPolicySteps?: boolean | RoleCountOutputTypeCountApprovalPolicyStepsArgs
+    approvalStepInstanceAssigneeRole?: boolean | RoleCountOutputTypeCountApprovalStepInstanceAssigneeRoleArgs
   }
 
   // Custom InputTypes
@@ -5865,6 +6537,20 @@ export namespace Prisma {
    */
   export type RoleCountOutputTypeCountAccessReviewItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AccessReviewItemWhereInput
+  }
+
+  /**
+   * RoleCountOutputType without action
+   */
+  export type RoleCountOutputTypeCountApprovalPolicyStepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalPolicyStepWhereInput
+  }
+
+  /**
+   * RoleCountOutputType without action
+   */
+  export type RoleCountOutputTypeCountApprovalStepInstanceAssigneeRoleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalStepInstanceWhereInput
   }
 
 
@@ -5940,6 +6626,117 @@ export namespace Prisma {
 
 
   /**
+   * Count Type ApprovalPolicyCountOutputType
+   */
+
+  export type ApprovalPolicyCountOutputType = {
+    steps: number
+    requests: number
+  }
+
+  export type ApprovalPolicyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    steps?: boolean | ApprovalPolicyCountOutputTypeCountStepsArgs
+    requests?: boolean | ApprovalPolicyCountOutputTypeCountRequestsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ApprovalPolicyCountOutputType without action
+   */
+  export type ApprovalPolicyCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyCountOutputType
+     */
+    select?: ApprovalPolicyCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalPolicyCountOutputType without action
+   */
+  export type ApprovalPolicyCountOutputTypeCountStepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalPolicyStepWhereInput
+  }
+
+  /**
+   * ApprovalPolicyCountOutputType without action
+   */
+  export type ApprovalPolicyCountOutputTypeCountRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalRequestWhereInput
+  }
+
+
+  /**
+   * Count Type ApprovalRequestCountOutputType
+   */
+
+  export type ApprovalRequestCountOutputType = {
+    stepInstances: number
+    decisionRecords: number
+  }
+
+  export type ApprovalRequestCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    stepInstances?: boolean | ApprovalRequestCountOutputTypeCountStepInstancesArgs
+    decisionRecords?: boolean | ApprovalRequestCountOutputTypeCountDecisionRecordsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ApprovalRequestCountOutputType without action
+   */
+  export type ApprovalRequestCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequestCountOutputType
+     */
+    select?: ApprovalRequestCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalRequestCountOutputType without action
+   */
+  export type ApprovalRequestCountOutputTypeCountStepInstancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalStepInstanceWhereInput
+  }
+
+  /**
+   * ApprovalRequestCountOutputType without action
+   */
+  export type ApprovalRequestCountOutputTypeCountDecisionRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalDecisionRecordWhereInput
+  }
+
+
+  /**
+   * Count Type ApprovalStepInstanceCountOutputType
+   */
+
+  export type ApprovalStepInstanceCountOutputType = {
+    decisions: number
+  }
+
+  export type ApprovalStepInstanceCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    decisions?: boolean | ApprovalStepInstanceCountOutputTypeCountDecisionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ApprovalStepInstanceCountOutputType without action
+   */
+  export type ApprovalStepInstanceCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstanceCountOutputType
+     */
+    select?: ApprovalStepInstanceCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalStepInstanceCountOutputType without action
+   */
+  export type ApprovalStepInstanceCountOutputTypeCountDecisionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalDecisionRecordWhereInput
+  }
+
+
+  /**
    * Count Type OrganizationCountOutputType
    */
 
@@ -5963,6 +6760,8 @@ export namespace Prisma {
     transactions: number
     budgets: number
     budgetLines: number
+    approvalPolicies: number
+    approvalRequests: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5985,6 +6784,8 @@ export namespace Prisma {
     transactions?: boolean | OrganizationCountOutputTypeCountTransactionsArgs
     budgets?: boolean | OrganizationCountOutputTypeCountBudgetsArgs
     budgetLines?: boolean | OrganizationCountOutputTypeCountBudgetLinesArgs
+    approvalPolicies?: boolean | OrganizationCountOutputTypeCountApprovalPoliciesArgs
+    approvalRequests?: boolean | OrganizationCountOutputTypeCountApprovalRequestsArgs
   }
 
   // Custom InputTypes
@@ -6129,6 +6930,20 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountBudgetLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BudgetLineWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountApprovalPoliciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalPolicyWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountApprovalRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalRequestWhereInput
   }
 
 
@@ -7258,6 +8073,12 @@ export namespace Prisma {
     transactionsApproved?: boolean | User$transactionsApprovedArgs<ExtArgs>
     transactionsPosted?: boolean | User$transactionsPostedArgs<ExtArgs>
     transactionsReversed?: boolean | User$transactionsReversedArgs<ExtArgs>
+    approvalRequestsSubmitted?: boolean | User$approvalRequestsSubmittedArgs<ExtArgs>
+    approvalRequestsDecided?: boolean | User$approvalRequestsDecidedArgs<ExtArgs>
+    approvalStepInstancesDecided?: boolean | User$approvalStepInstancesDecidedArgs<ExtArgs>
+    approvalDecisionRecords?: boolean | User$approvalDecisionRecordsArgs<ExtArgs>
+    approvalPolicyStepAssigneeUser?: boolean | User$approvalPolicyStepAssigneeUserArgs<ExtArgs>
+    approvalStepInstanceAssigneeUser?: boolean | User$approvalStepInstanceAssigneeUserArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -7406,6 +8227,12 @@ export namespace Prisma {
     transactionsApproved?: boolean | User$transactionsApprovedArgs<ExtArgs>
     transactionsPosted?: boolean | User$transactionsPostedArgs<ExtArgs>
     transactionsReversed?: boolean | User$transactionsReversedArgs<ExtArgs>
+    approvalRequestsSubmitted?: boolean | User$approvalRequestsSubmittedArgs<ExtArgs>
+    approvalRequestsDecided?: boolean | User$approvalRequestsDecidedArgs<ExtArgs>
+    approvalStepInstancesDecided?: boolean | User$approvalStepInstancesDecidedArgs<ExtArgs>
+    approvalDecisionRecords?: boolean | User$approvalDecisionRecordsArgs<ExtArgs>
+    approvalPolicyStepAssigneeUser?: boolean | User$approvalPolicyStepAssigneeUserArgs<ExtArgs>
+    approvalStepInstanceAssigneeUser?: boolean | User$approvalStepInstanceAssigneeUserArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7451,6 +8278,12 @@ export namespace Prisma {
       transactionsApproved: Prisma.$TransactionPayload<ExtArgs>[]
       transactionsPosted: Prisma.$TransactionPayload<ExtArgs>[]
       transactionsReversed: Prisma.$TransactionPayload<ExtArgs>[]
+      approvalRequestsSubmitted: Prisma.$ApprovalRequestPayload<ExtArgs>[]
+      approvalRequestsDecided: Prisma.$ApprovalRequestPayload<ExtArgs>[]
+      approvalStepInstancesDecided: Prisma.$ApprovalStepInstancePayload<ExtArgs>[]
+      approvalDecisionRecords: Prisma.$ApprovalDecisionRecordPayload<ExtArgs>[]
+      approvalPolicyStepAssigneeUser: Prisma.$ApprovalPolicyStepPayload<ExtArgs>[]
+      approvalStepInstanceAssigneeUser: Prisma.$ApprovalStepInstancePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7918,6 +8751,12 @@ export namespace Prisma {
     transactionsApproved<T extends User$transactionsApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactionsPosted<T extends User$transactionsPostedArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsPostedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactionsReversed<T extends User$transactionsReversedArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsReversedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvalRequestsSubmitted<T extends User$approvalRequestsSubmittedArgs<ExtArgs> = {}>(args?: Subset<T, User$approvalRequestsSubmittedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvalRequestsDecided<T extends User$approvalRequestsDecidedArgs<ExtArgs> = {}>(args?: Subset<T, User$approvalRequestsDecidedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvalStepInstancesDecided<T extends User$approvalStepInstancesDecidedArgs<ExtArgs> = {}>(args?: Subset<T, User$approvalStepInstancesDecidedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvalDecisionRecords<T extends User$approvalDecisionRecordsArgs<ExtArgs> = {}>(args?: Subset<T, User$approvalDecisionRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvalPolicyStepAssigneeUser<T extends User$approvalPolicyStepAssigneeUserArgs<ExtArgs> = {}>(args?: Subset<T, User$approvalPolicyStepAssigneeUserArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvalStepInstanceAssigneeUser<T extends User$approvalStepInstanceAssigneeUserArgs<ExtArgs> = {}>(args?: Subset<T, User$approvalStepInstanceAssigneeUserArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9001,6 +9840,150 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * User.approvalRequestsSubmitted
+   */
+  export type User$approvalRequestsSubmittedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    where?: ApprovalRequestWhereInput
+    orderBy?: ApprovalRequestOrderByWithRelationInput | ApprovalRequestOrderByWithRelationInput[]
+    cursor?: ApprovalRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalRequestScalarFieldEnum | ApprovalRequestScalarFieldEnum[]
+  }
+
+  /**
+   * User.approvalRequestsDecided
+   */
+  export type User$approvalRequestsDecidedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    where?: ApprovalRequestWhereInput
+    orderBy?: ApprovalRequestOrderByWithRelationInput | ApprovalRequestOrderByWithRelationInput[]
+    cursor?: ApprovalRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalRequestScalarFieldEnum | ApprovalRequestScalarFieldEnum[]
+  }
+
+  /**
+   * User.approvalStepInstancesDecided
+   */
+  export type User$approvalStepInstancesDecidedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    where?: ApprovalStepInstanceWhereInput
+    orderBy?: ApprovalStepInstanceOrderByWithRelationInput | ApprovalStepInstanceOrderByWithRelationInput[]
+    cursor?: ApprovalStepInstanceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalStepInstanceScalarFieldEnum | ApprovalStepInstanceScalarFieldEnum[]
+  }
+
+  /**
+   * User.approvalDecisionRecords
+   */
+  export type User$approvalDecisionRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    where?: ApprovalDecisionRecordWhereInput
+    orderBy?: ApprovalDecisionRecordOrderByWithRelationInput | ApprovalDecisionRecordOrderByWithRelationInput[]
+    cursor?: ApprovalDecisionRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalDecisionRecordScalarFieldEnum | ApprovalDecisionRecordScalarFieldEnum[]
+  }
+
+  /**
+   * User.approvalPolicyStepAssigneeUser
+   */
+  export type User$approvalPolicyStepAssigneeUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    where?: ApprovalPolicyStepWhereInput
+    orderBy?: ApprovalPolicyStepOrderByWithRelationInput | ApprovalPolicyStepOrderByWithRelationInput[]
+    cursor?: ApprovalPolicyStepWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalPolicyStepScalarFieldEnum | ApprovalPolicyStepScalarFieldEnum[]
+  }
+
+  /**
+   * User.approvalStepInstanceAssigneeUser
+   */
+  export type User$approvalStepInstanceAssigneeUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    where?: ApprovalStepInstanceWhereInput
+    orderBy?: ApprovalStepInstanceOrderByWithRelationInput | ApprovalStepInstanceOrderByWithRelationInput[]
+    cursor?: ApprovalStepInstanceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalStepInstanceScalarFieldEnum | ApprovalStepInstanceScalarFieldEnum[]
   }
 
   /**
@@ -14179,6 +15162,8 @@ export namespace Prisma {
     userRoles?: boolean | Role$userRolesArgs<ExtArgs>
     delegations?: boolean | Role$delegationsArgs<ExtArgs>
     accessReviewItems?: boolean | Role$accessReviewItemsArgs<ExtArgs>
+    approvalPolicySteps?: boolean | Role$approvalPolicyStepsArgs<ExtArgs>
+    approvalStepInstanceAssigneeRole?: boolean | Role$approvalStepInstanceAssigneeRoleArgs<ExtArgs>
     _count?: boolean | RoleCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["role"]>
 
@@ -14240,6 +15225,8 @@ export namespace Prisma {
     userRoles?: boolean | Role$userRolesArgs<ExtArgs>
     delegations?: boolean | Role$delegationsArgs<ExtArgs>
     accessReviewItems?: boolean | Role$accessReviewItemsArgs<ExtArgs>
+    approvalPolicySteps?: boolean | Role$approvalPolicyStepsArgs<ExtArgs>
+    approvalStepInstanceAssigneeRole?: boolean | Role$approvalStepInstanceAssigneeRoleArgs<ExtArgs>
     _count?: boolean | RoleCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RoleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -14253,6 +15240,8 @@ export namespace Prisma {
       userRoles: Prisma.$UserRolePayload<ExtArgs>[]
       delegations: Prisma.$DelegationPayload<ExtArgs>[]
       accessReviewItems: Prisma.$AccessReviewItemPayload<ExtArgs>[]
+      approvalPolicySteps: Prisma.$ApprovalPolicyStepPayload<ExtArgs>[]
+      approvalStepInstanceAssigneeRole: Prisma.$ApprovalStepInstancePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14679,6 +15668,8 @@ export namespace Prisma {
     userRoles<T extends Role$userRolesArgs<ExtArgs> = {}>(args?: Subset<T, Role$userRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     delegations<T extends Role$delegationsArgs<ExtArgs> = {}>(args?: Subset<T, Role$delegationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DelegationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accessReviewItems<T extends Role$accessReviewItemsArgs<ExtArgs> = {}>(args?: Subset<T, Role$accessReviewItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccessReviewItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvalPolicySteps<T extends Role$approvalPolicyStepsArgs<ExtArgs> = {}>(args?: Subset<T, Role$approvalPolicyStepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvalStepInstanceAssigneeRole<T extends Role$approvalStepInstanceAssigneeRoleArgs<ExtArgs> = {}>(args?: Subset<T, Role$approvalStepInstanceAssigneeRoleArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15227,6 +16218,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AccessReviewItemScalarFieldEnum | AccessReviewItemScalarFieldEnum[]
+  }
+
+  /**
+   * Role.approvalPolicySteps
+   */
+  export type Role$approvalPolicyStepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    where?: ApprovalPolicyStepWhereInput
+    orderBy?: ApprovalPolicyStepOrderByWithRelationInput | ApprovalPolicyStepOrderByWithRelationInput[]
+    cursor?: ApprovalPolicyStepWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalPolicyStepScalarFieldEnum | ApprovalPolicyStepScalarFieldEnum[]
+  }
+
+  /**
+   * Role.approvalStepInstanceAssigneeRole
+   */
+  export type Role$approvalStepInstanceAssigneeRoleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    where?: ApprovalStepInstanceWhereInput
+    orderBy?: ApprovalStepInstanceOrderByWithRelationInput | ApprovalStepInstanceOrderByWithRelationInput[]
+    cursor?: ApprovalStepInstanceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalStepInstanceScalarFieldEnum | ApprovalStepInstanceScalarFieldEnum[]
   }
 
   /**
@@ -23152,6 +24191,6305 @@ export namespace Prisma {
 
 
   /**
+   * Model ApprovalPolicy
+   */
+
+  export type AggregateApprovalPolicy = {
+    _count: ApprovalPolicyCountAggregateOutputType | null
+    _avg: ApprovalPolicyAvgAggregateOutputType | null
+    _sum: ApprovalPolicySumAggregateOutputType | null
+    _min: ApprovalPolicyMinAggregateOutputType | null
+    _max: ApprovalPolicyMaxAggregateOutputType | null
+  }
+
+  export type ApprovalPolicyAvgAggregateOutputType = {
+    priority: number | null
+  }
+
+  export type ApprovalPolicySumAggregateOutputType = {
+    priority: number | null
+  }
+
+  export type ApprovalPolicyMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    name: string | null
+    description: string | null
+    entityType: $Enums.ApprovalEntityType | null
+    isActive: boolean | null
+    priority: number | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedById: string | null
+    updatedAt: Date | null
+  }
+
+  export type ApprovalPolicyMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    name: string | null
+    description: string | null
+    entityType: $Enums.ApprovalEntityType | null
+    isActive: boolean | null
+    priority: number | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedById: string | null
+    updatedAt: Date | null
+  }
+
+  export type ApprovalPolicyCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    name: number
+    description: number
+    entityType: number
+    isActive: number
+    priority: number
+    createdById: number
+    createdAt: number
+    updatedById: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ApprovalPolicyAvgAggregateInputType = {
+    priority?: true
+  }
+
+  export type ApprovalPolicySumAggregateInputType = {
+    priority?: true
+  }
+
+  export type ApprovalPolicyMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    name?: true
+    description?: true
+    entityType?: true
+    isActive?: true
+    priority?: true
+    createdById?: true
+    createdAt?: true
+    updatedById?: true
+    updatedAt?: true
+  }
+
+  export type ApprovalPolicyMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    name?: true
+    description?: true
+    entityType?: true
+    isActive?: true
+    priority?: true
+    createdById?: true
+    createdAt?: true
+    updatedById?: true
+    updatedAt?: true
+  }
+
+  export type ApprovalPolicyCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    name?: true
+    description?: true
+    entityType?: true
+    isActive?: true
+    priority?: true
+    createdById?: true
+    createdAt?: true
+    updatedById?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ApprovalPolicyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovalPolicy to aggregate.
+     */
+    where?: ApprovalPolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalPolicies to fetch.
+     */
+    orderBy?: ApprovalPolicyOrderByWithRelationInput | ApprovalPolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApprovalPolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalPolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalPolicies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApprovalPolicies
+    **/
+    _count?: true | ApprovalPolicyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ApprovalPolicyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ApprovalPolicySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApprovalPolicyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApprovalPolicyMaxAggregateInputType
+  }
+
+  export type GetApprovalPolicyAggregateType<T extends ApprovalPolicyAggregateArgs> = {
+        [P in keyof T & keyof AggregateApprovalPolicy]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApprovalPolicy[P]>
+      : GetScalarType<T[P], AggregateApprovalPolicy[P]>
+  }
+
+
+
+
+  export type ApprovalPolicyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalPolicyWhereInput
+    orderBy?: ApprovalPolicyOrderByWithAggregationInput | ApprovalPolicyOrderByWithAggregationInput[]
+    by: ApprovalPolicyScalarFieldEnum[] | ApprovalPolicyScalarFieldEnum
+    having?: ApprovalPolicyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApprovalPolicyCountAggregateInputType | true
+    _avg?: ApprovalPolicyAvgAggregateInputType
+    _sum?: ApprovalPolicySumAggregateInputType
+    _min?: ApprovalPolicyMinAggregateInputType
+    _max?: ApprovalPolicyMaxAggregateInputType
+  }
+
+  export type ApprovalPolicyGroupByOutputType = {
+    id: string
+    organizationId: string
+    name: string
+    description: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive: boolean
+    priority: number
+    createdById: string | null
+    createdAt: Date
+    updatedById: string | null
+    updatedAt: Date
+    _count: ApprovalPolicyCountAggregateOutputType | null
+    _avg: ApprovalPolicyAvgAggregateOutputType | null
+    _sum: ApprovalPolicySumAggregateOutputType | null
+    _min: ApprovalPolicyMinAggregateOutputType | null
+    _max: ApprovalPolicyMaxAggregateOutputType | null
+  }
+
+  type GetApprovalPolicyGroupByPayload<T extends ApprovalPolicyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApprovalPolicyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApprovalPolicyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApprovalPolicyGroupByOutputType[P]>
+            : GetScalarType<T[P], ApprovalPolicyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApprovalPolicySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    name?: boolean
+    description?: boolean
+    entityType?: boolean
+    isActive?: boolean
+    priority?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedById?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    steps?: boolean | ApprovalPolicy$stepsArgs<ExtArgs>
+    requests?: boolean | ApprovalPolicy$requestsArgs<ExtArgs>
+    _count?: boolean | ApprovalPolicyCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalPolicy"]>
+
+  export type ApprovalPolicySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    name?: boolean
+    description?: boolean
+    entityType?: boolean
+    isActive?: boolean
+    priority?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedById?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalPolicy"]>
+
+  export type ApprovalPolicySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    name?: boolean
+    description?: boolean
+    entityType?: boolean
+    isActive?: boolean
+    priority?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedById?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalPolicy"]>
+
+  export type ApprovalPolicySelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    name?: boolean
+    description?: boolean
+    entityType?: boolean
+    isActive?: boolean
+    priority?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedById?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ApprovalPolicyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "name" | "description" | "entityType" | "isActive" | "priority" | "createdById" | "createdAt" | "updatedById" | "updatedAt", ExtArgs["result"]["approvalPolicy"]>
+  export type ApprovalPolicyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    steps?: boolean | ApprovalPolicy$stepsArgs<ExtArgs>
+    requests?: boolean | ApprovalPolicy$requestsArgs<ExtArgs>
+    _count?: boolean | ApprovalPolicyCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ApprovalPolicyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type ApprovalPolicyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+
+  export type $ApprovalPolicyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApprovalPolicy"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      steps: Prisma.$ApprovalPolicyStepPayload<ExtArgs>[]
+      requests: Prisma.$ApprovalRequestPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      name: string
+      description: string | null
+      entityType: $Enums.ApprovalEntityType
+      isActive: boolean
+      priority: number
+      createdById: string | null
+      createdAt: Date
+      updatedById: string | null
+      updatedAt: Date
+    }, ExtArgs["result"]["approvalPolicy"]>
+    composites: {}
+  }
+
+  type ApprovalPolicyGetPayload<S extends boolean | null | undefined | ApprovalPolicyDefaultArgs> = $Result.GetResult<Prisma.$ApprovalPolicyPayload, S>
+
+  type ApprovalPolicyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApprovalPolicyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApprovalPolicyCountAggregateInputType | true
+    }
+
+  export interface ApprovalPolicyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApprovalPolicy'], meta: { name: 'ApprovalPolicy' } }
+    /**
+     * Find zero or one ApprovalPolicy that matches the filter.
+     * @param {ApprovalPolicyFindUniqueArgs} args - Arguments to find a ApprovalPolicy
+     * @example
+     * // Get one ApprovalPolicy
+     * const approvalPolicy = await prisma.approvalPolicy.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApprovalPolicyFindUniqueArgs>(args: SelectSubset<T, ApprovalPolicyFindUniqueArgs<ExtArgs>>): Prisma__ApprovalPolicyClient<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ApprovalPolicy that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApprovalPolicyFindUniqueOrThrowArgs} args - Arguments to find a ApprovalPolicy
+     * @example
+     * // Get one ApprovalPolicy
+     * const approvalPolicy = await prisma.approvalPolicy.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApprovalPolicyFindUniqueOrThrowArgs>(args: SelectSubset<T, ApprovalPolicyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApprovalPolicyClient<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovalPolicy that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyFindFirstArgs} args - Arguments to find a ApprovalPolicy
+     * @example
+     * // Get one ApprovalPolicy
+     * const approvalPolicy = await prisma.approvalPolicy.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApprovalPolicyFindFirstArgs>(args?: SelectSubset<T, ApprovalPolicyFindFirstArgs<ExtArgs>>): Prisma__ApprovalPolicyClient<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovalPolicy that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyFindFirstOrThrowArgs} args - Arguments to find a ApprovalPolicy
+     * @example
+     * // Get one ApprovalPolicy
+     * const approvalPolicy = await prisma.approvalPolicy.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApprovalPolicyFindFirstOrThrowArgs>(args?: SelectSubset<T, ApprovalPolicyFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApprovalPolicyClient<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ApprovalPolicies that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApprovalPolicies
+     * const approvalPolicies = await prisma.approvalPolicy.findMany()
+     * 
+     * // Get first 10 ApprovalPolicies
+     * const approvalPolicies = await prisma.approvalPolicy.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const approvalPolicyWithIdOnly = await prisma.approvalPolicy.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApprovalPolicyFindManyArgs>(args?: SelectSubset<T, ApprovalPolicyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ApprovalPolicy.
+     * @param {ApprovalPolicyCreateArgs} args - Arguments to create a ApprovalPolicy.
+     * @example
+     * // Create one ApprovalPolicy
+     * const ApprovalPolicy = await prisma.approvalPolicy.create({
+     *   data: {
+     *     // ... data to create a ApprovalPolicy
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApprovalPolicyCreateArgs>(args: SelectSubset<T, ApprovalPolicyCreateArgs<ExtArgs>>): Prisma__ApprovalPolicyClient<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ApprovalPolicies.
+     * @param {ApprovalPolicyCreateManyArgs} args - Arguments to create many ApprovalPolicies.
+     * @example
+     * // Create many ApprovalPolicies
+     * const approvalPolicy = await prisma.approvalPolicy.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApprovalPolicyCreateManyArgs>(args?: SelectSubset<T, ApprovalPolicyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ApprovalPolicies and returns the data saved in the database.
+     * @param {ApprovalPolicyCreateManyAndReturnArgs} args - Arguments to create many ApprovalPolicies.
+     * @example
+     * // Create many ApprovalPolicies
+     * const approvalPolicy = await prisma.approvalPolicy.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ApprovalPolicies and only return the `id`
+     * const approvalPolicyWithIdOnly = await prisma.approvalPolicy.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ApprovalPolicyCreateManyAndReturnArgs>(args?: SelectSubset<T, ApprovalPolicyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ApprovalPolicy.
+     * @param {ApprovalPolicyDeleteArgs} args - Arguments to delete one ApprovalPolicy.
+     * @example
+     * // Delete one ApprovalPolicy
+     * const ApprovalPolicy = await prisma.approvalPolicy.delete({
+     *   where: {
+     *     // ... filter to delete one ApprovalPolicy
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApprovalPolicyDeleteArgs>(args: SelectSubset<T, ApprovalPolicyDeleteArgs<ExtArgs>>): Prisma__ApprovalPolicyClient<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ApprovalPolicy.
+     * @param {ApprovalPolicyUpdateArgs} args - Arguments to update one ApprovalPolicy.
+     * @example
+     * // Update one ApprovalPolicy
+     * const approvalPolicy = await prisma.approvalPolicy.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApprovalPolicyUpdateArgs>(args: SelectSubset<T, ApprovalPolicyUpdateArgs<ExtArgs>>): Prisma__ApprovalPolicyClient<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ApprovalPolicies.
+     * @param {ApprovalPolicyDeleteManyArgs} args - Arguments to filter ApprovalPolicies to delete.
+     * @example
+     * // Delete a few ApprovalPolicies
+     * const { count } = await prisma.approvalPolicy.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApprovalPolicyDeleteManyArgs>(args?: SelectSubset<T, ApprovalPolicyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovalPolicies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApprovalPolicies
+     * const approvalPolicy = await prisma.approvalPolicy.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApprovalPolicyUpdateManyArgs>(args: SelectSubset<T, ApprovalPolicyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovalPolicies and returns the data updated in the database.
+     * @param {ApprovalPolicyUpdateManyAndReturnArgs} args - Arguments to update many ApprovalPolicies.
+     * @example
+     * // Update many ApprovalPolicies
+     * const approvalPolicy = await prisma.approvalPolicy.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ApprovalPolicies and only return the `id`
+     * const approvalPolicyWithIdOnly = await prisma.approvalPolicy.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ApprovalPolicyUpdateManyAndReturnArgs>(args: SelectSubset<T, ApprovalPolicyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ApprovalPolicy.
+     * @param {ApprovalPolicyUpsertArgs} args - Arguments to update or create a ApprovalPolicy.
+     * @example
+     * // Update or create a ApprovalPolicy
+     * const approvalPolicy = await prisma.approvalPolicy.upsert({
+     *   create: {
+     *     // ... data to create a ApprovalPolicy
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApprovalPolicy we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApprovalPolicyUpsertArgs>(args: SelectSubset<T, ApprovalPolicyUpsertArgs<ExtArgs>>): Prisma__ApprovalPolicyClient<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ApprovalPolicies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyCountArgs} args - Arguments to filter ApprovalPolicies to count.
+     * @example
+     * // Count the number of ApprovalPolicies
+     * const count = await prisma.approvalPolicy.count({
+     *   where: {
+     *     // ... the filter for the ApprovalPolicies we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApprovalPolicyCountArgs>(
+      args?: Subset<T, ApprovalPolicyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApprovalPolicyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApprovalPolicy.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApprovalPolicyAggregateArgs>(args: Subset<T, ApprovalPolicyAggregateArgs>): Prisma.PrismaPromise<GetApprovalPolicyAggregateType<T>>
+
+    /**
+     * Group by ApprovalPolicy.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApprovalPolicyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApprovalPolicyGroupByArgs['orderBy'] }
+        : { orderBy?: ApprovalPolicyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApprovalPolicyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApprovalPolicyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApprovalPolicy model
+   */
+  readonly fields: ApprovalPolicyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApprovalPolicy.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApprovalPolicyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    steps<T extends ApprovalPolicy$stepsArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalPolicy$stepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    requests<T extends ApprovalPolicy$requestsArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalPolicy$requestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApprovalPolicy model
+   */
+  interface ApprovalPolicyFieldRefs {
+    readonly id: FieldRef<"ApprovalPolicy", 'String'>
+    readonly organizationId: FieldRef<"ApprovalPolicy", 'String'>
+    readonly name: FieldRef<"ApprovalPolicy", 'String'>
+    readonly description: FieldRef<"ApprovalPolicy", 'String'>
+    readonly entityType: FieldRef<"ApprovalPolicy", 'ApprovalEntityType'>
+    readonly isActive: FieldRef<"ApprovalPolicy", 'Boolean'>
+    readonly priority: FieldRef<"ApprovalPolicy", 'Int'>
+    readonly createdById: FieldRef<"ApprovalPolicy", 'String'>
+    readonly createdAt: FieldRef<"ApprovalPolicy", 'DateTime'>
+    readonly updatedById: FieldRef<"ApprovalPolicy", 'String'>
+    readonly updatedAt: FieldRef<"ApprovalPolicy", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApprovalPolicy findUnique
+   */
+  export type ApprovalPolicyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalPolicy to fetch.
+     */
+    where: ApprovalPolicyWhereUniqueInput
+  }
+
+  /**
+   * ApprovalPolicy findUniqueOrThrow
+   */
+  export type ApprovalPolicyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalPolicy to fetch.
+     */
+    where: ApprovalPolicyWhereUniqueInput
+  }
+
+  /**
+   * ApprovalPolicy findFirst
+   */
+  export type ApprovalPolicyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalPolicy to fetch.
+     */
+    where?: ApprovalPolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalPolicies to fetch.
+     */
+    orderBy?: ApprovalPolicyOrderByWithRelationInput | ApprovalPolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovalPolicies.
+     */
+    cursor?: ApprovalPolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalPolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalPolicies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovalPolicies.
+     */
+    distinct?: ApprovalPolicyScalarFieldEnum | ApprovalPolicyScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalPolicy findFirstOrThrow
+   */
+  export type ApprovalPolicyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalPolicy to fetch.
+     */
+    where?: ApprovalPolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalPolicies to fetch.
+     */
+    orderBy?: ApprovalPolicyOrderByWithRelationInput | ApprovalPolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovalPolicies.
+     */
+    cursor?: ApprovalPolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalPolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalPolicies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovalPolicies.
+     */
+    distinct?: ApprovalPolicyScalarFieldEnum | ApprovalPolicyScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalPolicy findMany
+   */
+  export type ApprovalPolicyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalPolicies to fetch.
+     */
+    where?: ApprovalPolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalPolicies to fetch.
+     */
+    orderBy?: ApprovalPolicyOrderByWithRelationInput | ApprovalPolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApprovalPolicies.
+     */
+    cursor?: ApprovalPolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalPolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalPolicies.
+     */
+    skip?: number
+    distinct?: ApprovalPolicyScalarFieldEnum | ApprovalPolicyScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalPolicy create
+   */
+  export type ApprovalPolicyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ApprovalPolicy.
+     */
+    data: XOR<ApprovalPolicyCreateInput, ApprovalPolicyUncheckedCreateInput>
+  }
+
+  /**
+   * ApprovalPolicy createMany
+   */
+  export type ApprovalPolicyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApprovalPolicies.
+     */
+    data: ApprovalPolicyCreateManyInput | ApprovalPolicyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApprovalPolicy createManyAndReturn
+   */
+  export type ApprovalPolicyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * The data used to create many ApprovalPolicies.
+     */
+    data: ApprovalPolicyCreateManyInput | ApprovalPolicyCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalPolicy update
+   */
+  export type ApprovalPolicyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ApprovalPolicy.
+     */
+    data: XOR<ApprovalPolicyUpdateInput, ApprovalPolicyUncheckedUpdateInput>
+    /**
+     * Choose, which ApprovalPolicy to update.
+     */
+    where: ApprovalPolicyWhereUniqueInput
+  }
+
+  /**
+   * ApprovalPolicy updateMany
+   */
+  export type ApprovalPolicyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApprovalPolicies.
+     */
+    data: XOR<ApprovalPolicyUpdateManyMutationInput, ApprovalPolicyUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovalPolicies to update
+     */
+    where?: ApprovalPolicyWhereInput
+    /**
+     * Limit how many ApprovalPolicies to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovalPolicy updateManyAndReturn
+   */
+  export type ApprovalPolicyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * The data used to update ApprovalPolicies.
+     */
+    data: XOR<ApprovalPolicyUpdateManyMutationInput, ApprovalPolicyUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovalPolicies to update
+     */
+    where?: ApprovalPolicyWhereInput
+    /**
+     * Limit how many ApprovalPolicies to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalPolicy upsert
+   */
+  export type ApprovalPolicyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ApprovalPolicy to update in case it exists.
+     */
+    where: ApprovalPolicyWhereUniqueInput
+    /**
+     * In case the ApprovalPolicy found by the `where` argument doesn't exist, create a new ApprovalPolicy with this data.
+     */
+    create: XOR<ApprovalPolicyCreateInput, ApprovalPolicyUncheckedCreateInput>
+    /**
+     * In case the ApprovalPolicy was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApprovalPolicyUpdateInput, ApprovalPolicyUncheckedUpdateInput>
+  }
+
+  /**
+   * ApprovalPolicy delete
+   */
+  export type ApprovalPolicyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+    /**
+     * Filter which ApprovalPolicy to delete.
+     */
+    where: ApprovalPolicyWhereUniqueInput
+  }
+
+  /**
+   * ApprovalPolicy deleteMany
+   */
+  export type ApprovalPolicyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovalPolicies to delete
+     */
+    where?: ApprovalPolicyWhereInput
+    /**
+     * Limit how many ApprovalPolicies to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovalPolicy.steps
+   */
+  export type ApprovalPolicy$stepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    where?: ApprovalPolicyStepWhereInput
+    orderBy?: ApprovalPolicyStepOrderByWithRelationInput | ApprovalPolicyStepOrderByWithRelationInput[]
+    cursor?: ApprovalPolicyStepWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalPolicyStepScalarFieldEnum | ApprovalPolicyStepScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalPolicy.requests
+   */
+  export type ApprovalPolicy$requestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    where?: ApprovalRequestWhereInput
+    orderBy?: ApprovalRequestOrderByWithRelationInput | ApprovalRequestOrderByWithRelationInput[]
+    cursor?: ApprovalRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalRequestScalarFieldEnum | ApprovalRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalPolicy without action
+   */
+  export type ApprovalPolicyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ApprovalPolicyStep
+   */
+
+  export type AggregateApprovalPolicyStep = {
+    _count: ApprovalPolicyStepCountAggregateOutputType | null
+    _avg: ApprovalPolicyStepAvgAggregateOutputType | null
+    _sum: ApprovalPolicyStepSumAggregateOutputType | null
+    _min: ApprovalPolicyStepMinAggregateOutputType | null
+    _max: ApprovalPolicyStepMaxAggregateOutputType | null
+  }
+
+  export type ApprovalPolicyStepAvgAggregateOutputType = {
+    stepOrder: number | null
+    quorum: number | null
+  }
+
+  export type ApprovalPolicyStepSumAggregateOutputType = {
+    stepOrder: number | null
+    quorum: number | null
+  }
+
+  export type ApprovalPolicyStepMinAggregateOutputType = {
+    id: string | null
+    policyId: string | null
+    stepOrder: number | null
+    name: string | null
+    type: $Enums.ApprovalStepType | null
+    assigneeType: $Enums.ApprovalAssigneeType | null
+    assigneeRoleId: string | null
+    assigneeUserId: string | null
+    resolutionMode: $Enums.ResolutionMode | null
+    quorum: number | null
+    conditionOperator: $Enums.ApprovalConditionOperator | null
+    isRequired: boolean | null
+    isFinalApprover: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ApprovalPolicyStepMaxAggregateOutputType = {
+    id: string | null
+    policyId: string | null
+    stepOrder: number | null
+    name: string | null
+    type: $Enums.ApprovalStepType | null
+    assigneeType: $Enums.ApprovalAssigneeType | null
+    assigneeRoleId: string | null
+    assigneeUserId: string | null
+    resolutionMode: $Enums.ResolutionMode | null
+    quorum: number | null
+    conditionOperator: $Enums.ApprovalConditionOperator | null
+    isRequired: boolean | null
+    isFinalApprover: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ApprovalPolicyStepCountAggregateOutputType = {
+    id: number
+    policyId: number
+    stepOrder: number
+    name: number
+    type: number
+    assigneeType: number
+    assigneeRoleId: number
+    assigneeUserId: number
+    resolutionMode: number
+    quorum: number
+    conditionOperator: number
+    conditionValue: number
+    isRequired: number
+    isFinalApprover: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ApprovalPolicyStepAvgAggregateInputType = {
+    stepOrder?: true
+    quorum?: true
+  }
+
+  export type ApprovalPolicyStepSumAggregateInputType = {
+    stepOrder?: true
+    quorum?: true
+  }
+
+  export type ApprovalPolicyStepMinAggregateInputType = {
+    id?: true
+    policyId?: true
+    stepOrder?: true
+    name?: true
+    type?: true
+    assigneeType?: true
+    assigneeRoleId?: true
+    assigneeUserId?: true
+    resolutionMode?: true
+    quorum?: true
+    conditionOperator?: true
+    isRequired?: true
+    isFinalApprover?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ApprovalPolicyStepMaxAggregateInputType = {
+    id?: true
+    policyId?: true
+    stepOrder?: true
+    name?: true
+    type?: true
+    assigneeType?: true
+    assigneeRoleId?: true
+    assigneeUserId?: true
+    resolutionMode?: true
+    quorum?: true
+    conditionOperator?: true
+    isRequired?: true
+    isFinalApprover?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ApprovalPolicyStepCountAggregateInputType = {
+    id?: true
+    policyId?: true
+    stepOrder?: true
+    name?: true
+    type?: true
+    assigneeType?: true
+    assigneeRoleId?: true
+    assigneeUserId?: true
+    resolutionMode?: true
+    quorum?: true
+    conditionOperator?: true
+    conditionValue?: true
+    isRequired?: true
+    isFinalApprover?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ApprovalPolicyStepAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovalPolicyStep to aggregate.
+     */
+    where?: ApprovalPolicyStepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalPolicySteps to fetch.
+     */
+    orderBy?: ApprovalPolicyStepOrderByWithRelationInput | ApprovalPolicyStepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApprovalPolicyStepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalPolicySteps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalPolicySteps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApprovalPolicySteps
+    **/
+    _count?: true | ApprovalPolicyStepCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ApprovalPolicyStepAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ApprovalPolicyStepSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApprovalPolicyStepMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApprovalPolicyStepMaxAggregateInputType
+  }
+
+  export type GetApprovalPolicyStepAggregateType<T extends ApprovalPolicyStepAggregateArgs> = {
+        [P in keyof T & keyof AggregateApprovalPolicyStep]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApprovalPolicyStep[P]>
+      : GetScalarType<T[P], AggregateApprovalPolicyStep[P]>
+  }
+
+
+
+
+  export type ApprovalPolicyStepGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalPolicyStepWhereInput
+    orderBy?: ApprovalPolicyStepOrderByWithAggregationInput | ApprovalPolicyStepOrderByWithAggregationInput[]
+    by: ApprovalPolicyStepScalarFieldEnum[] | ApprovalPolicyStepScalarFieldEnum
+    having?: ApprovalPolicyStepScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApprovalPolicyStepCountAggregateInputType | true
+    _avg?: ApprovalPolicyStepAvgAggregateInputType
+    _sum?: ApprovalPolicyStepSumAggregateInputType
+    _min?: ApprovalPolicyStepMinAggregateInputType
+    _max?: ApprovalPolicyStepMaxAggregateInputType
+  }
+
+  export type ApprovalPolicyStepGroupByOutputType = {
+    id: string
+    policyId: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId: string | null
+    assigneeUserId: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum: number | null
+    conditionOperator: $Enums.ApprovalConditionOperator | null
+    conditionValue: JsonValue | null
+    isRequired: boolean
+    isFinalApprover: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: ApprovalPolicyStepCountAggregateOutputType | null
+    _avg: ApprovalPolicyStepAvgAggregateOutputType | null
+    _sum: ApprovalPolicyStepSumAggregateOutputType | null
+    _min: ApprovalPolicyStepMinAggregateOutputType | null
+    _max: ApprovalPolicyStepMaxAggregateOutputType | null
+  }
+
+  type GetApprovalPolicyStepGroupByPayload<T extends ApprovalPolicyStepGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApprovalPolicyStepGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApprovalPolicyStepGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApprovalPolicyStepGroupByOutputType[P]>
+            : GetScalarType<T[P], ApprovalPolicyStepGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApprovalPolicyStepSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    policyId?: boolean
+    stepOrder?: boolean
+    name?: boolean
+    type?: boolean
+    assigneeType?: boolean
+    assigneeRoleId?: boolean
+    assigneeUserId?: boolean
+    resolutionMode?: boolean
+    quorum?: boolean
+    conditionOperator?: boolean
+    conditionValue?: boolean
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalPolicyStep$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalPolicyStep$assigneeUserArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalPolicyStep"]>
+
+  export type ApprovalPolicyStepSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    policyId?: boolean
+    stepOrder?: boolean
+    name?: boolean
+    type?: boolean
+    assigneeType?: boolean
+    assigneeRoleId?: boolean
+    assigneeUserId?: boolean
+    resolutionMode?: boolean
+    quorum?: boolean
+    conditionOperator?: boolean
+    conditionValue?: boolean
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalPolicyStep$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalPolicyStep$assigneeUserArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalPolicyStep"]>
+
+  export type ApprovalPolicyStepSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    policyId?: boolean
+    stepOrder?: boolean
+    name?: boolean
+    type?: boolean
+    assigneeType?: boolean
+    assigneeRoleId?: boolean
+    assigneeUserId?: boolean
+    resolutionMode?: boolean
+    quorum?: boolean
+    conditionOperator?: boolean
+    conditionValue?: boolean
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalPolicyStep$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalPolicyStep$assigneeUserArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalPolicyStep"]>
+
+  export type ApprovalPolicyStepSelectScalar = {
+    id?: boolean
+    policyId?: boolean
+    stepOrder?: boolean
+    name?: boolean
+    type?: boolean
+    assigneeType?: boolean
+    assigneeRoleId?: boolean
+    assigneeUserId?: boolean
+    resolutionMode?: boolean
+    quorum?: boolean
+    conditionOperator?: boolean
+    conditionValue?: boolean
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ApprovalPolicyStepOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "policyId" | "stepOrder" | "name" | "type" | "assigneeType" | "assigneeRoleId" | "assigneeUserId" | "resolutionMode" | "quorum" | "conditionOperator" | "conditionValue" | "isRequired" | "isFinalApprover" | "createdAt" | "updatedAt", ExtArgs["result"]["approvalPolicyStep"]>
+  export type ApprovalPolicyStepInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalPolicyStep$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalPolicyStep$assigneeUserArgs<ExtArgs>
+  }
+  export type ApprovalPolicyStepIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalPolicyStep$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalPolicyStep$assigneeUserArgs<ExtArgs>
+  }
+  export type ApprovalPolicyStepIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalPolicyStep$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalPolicyStep$assigneeUserArgs<ExtArgs>
+  }
+
+  export type $ApprovalPolicyStepPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApprovalPolicyStep"
+    objects: {
+      policy: Prisma.$ApprovalPolicyPayload<ExtArgs>
+      assigneeRole: Prisma.$RolePayload<ExtArgs> | null
+      assigneeUser: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      policyId: string
+      stepOrder: number
+      name: string
+      type: $Enums.ApprovalStepType
+      assigneeType: $Enums.ApprovalAssigneeType
+      assigneeRoleId: string | null
+      assigneeUserId: string | null
+      resolutionMode: $Enums.ResolutionMode
+      quorum: number | null
+      conditionOperator: $Enums.ApprovalConditionOperator | null
+      conditionValue: Prisma.JsonValue | null
+      isRequired: boolean
+      isFinalApprover: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["approvalPolicyStep"]>
+    composites: {}
+  }
+
+  type ApprovalPolicyStepGetPayload<S extends boolean | null | undefined | ApprovalPolicyStepDefaultArgs> = $Result.GetResult<Prisma.$ApprovalPolicyStepPayload, S>
+
+  type ApprovalPolicyStepCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApprovalPolicyStepFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApprovalPolicyStepCountAggregateInputType | true
+    }
+
+  export interface ApprovalPolicyStepDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApprovalPolicyStep'], meta: { name: 'ApprovalPolicyStep' } }
+    /**
+     * Find zero or one ApprovalPolicyStep that matches the filter.
+     * @param {ApprovalPolicyStepFindUniqueArgs} args - Arguments to find a ApprovalPolicyStep
+     * @example
+     * // Get one ApprovalPolicyStep
+     * const approvalPolicyStep = await prisma.approvalPolicyStep.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApprovalPolicyStepFindUniqueArgs>(args: SelectSubset<T, ApprovalPolicyStepFindUniqueArgs<ExtArgs>>): Prisma__ApprovalPolicyStepClient<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ApprovalPolicyStep that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApprovalPolicyStepFindUniqueOrThrowArgs} args - Arguments to find a ApprovalPolicyStep
+     * @example
+     * // Get one ApprovalPolicyStep
+     * const approvalPolicyStep = await prisma.approvalPolicyStep.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApprovalPolicyStepFindUniqueOrThrowArgs>(args: SelectSubset<T, ApprovalPolicyStepFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApprovalPolicyStepClient<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovalPolicyStep that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyStepFindFirstArgs} args - Arguments to find a ApprovalPolicyStep
+     * @example
+     * // Get one ApprovalPolicyStep
+     * const approvalPolicyStep = await prisma.approvalPolicyStep.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApprovalPolicyStepFindFirstArgs>(args?: SelectSubset<T, ApprovalPolicyStepFindFirstArgs<ExtArgs>>): Prisma__ApprovalPolicyStepClient<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovalPolicyStep that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyStepFindFirstOrThrowArgs} args - Arguments to find a ApprovalPolicyStep
+     * @example
+     * // Get one ApprovalPolicyStep
+     * const approvalPolicyStep = await prisma.approvalPolicyStep.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApprovalPolicyStepFindFirstOrThrowArgs>(args?: SelectSubset<T, ApprovalPolicyStepFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApprovalPolicyStepClient<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ApprovalPolicySteps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyStepFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApprovalPolicySteps
+     * const approvalPolicySteps = await prisma.approvalPolicyStep.findMany()
+     * 
+     * // Get first 10 ApprovalPolicySteps
+     * const approvalPolicySteps = await prisma.approvalPolicyStep.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const approvalPolicyStepWithIdOnly = await prisma.approvalPolicyStep.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApprovalPolicyStepFindManyArgs>(args?: SelectSubset<T, ApprovalPolicyStepFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ApprovalPolicyStep.
+     * @param {ApprovalPolicyStepCreateArgs} args - Arguments to create a ApprovalPolicyStep.
+     * @example
+     * // Create one ApprovalPolicyStep
+     * const ApprovalPolicyStep = await prisma.approvalPolicyStep.create({
+     *   data: {
+     *     // ... data to create a ApprovalPolicyStep
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApprovalPolicyStepCreateArgs>(args: SelectSubset<T, ApprovalPolicyStepCreateArgs<ExtArgs>>): Prisma__ApprovalPolicyStepClient<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ApprovalPolicySteps.
+     * @param {ApprovalPolicyStepCreateManyArgs} args - Arguments to create many ApprovalPolicySteps.
+     * @example
+     * // Create many ApprovalPolicySteps
+     * const approvalPolicyStep = await prisma.approvalPolicyStep.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApprovalPolicyStepCreateManyArgs>(args?: SelectSubset<T, ApprovalPolicyStepCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ApprovalPolicySteps and returns the data saved in the database.
+     * @param {ApprovalPolicyStepCreateManyAndReturnArgs} args - Arguments to create many ApprovalPolicySteps.
+     * @example
+     * // Create many ApprovalPolicySteps
+     * const approvalPolicyStep = await prisma.approvalPolicyStep.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ApprovalPolicySteps and only return the `id`
+     * const approvalPolicyStepWithIdOnly = await prisma.approvalPolicyStep.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ApprovalPolicyStepCreateManyAndReturnArgs>(args?: SelectSubset<T, ApprovalPolicyStepCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ApprovalPolicyStep.
+     * @param {ApprovalPolicyStepDeleteArgs} args - Arguments to delete one ApprovalPolicyStep.
+     * @example
+     * // Delete one ApprovalPolicyStep
+     * const ApprovalPolicyStep = await prisma.approvalPolicyStep.delete({
+     *   where: {
+     *     // ... filter to delete one ApprovalPolicyStep
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApprovalPolicyStepDeleteArgs>(args: SelectSubset<T, ApprovalPolicyStepDeleteArgs<ExtArgs>>): Prisma__ApprovalPolicyStepClient<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ApprovalPolicyStep.
+     * @param {ApprovalPolicyStepUpdateArgs} args - Arguments to update one ApprovalPolicyStep.
+     * @example
+     * // Update one ApprovalPolicyStep
+     * const approvalPolicyStep = await prisma.approvalPolicyStep.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApprovalPolicyStepUpdateArgs>(args: SelectSubset<T, ApprovalPolicyStepUpdateArgs<ExtArgs>>): Prisma__ApprovalPolicyStepClient<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ApprovalPolicySteps.
+     * @param {ApprovalPolicyStepDeleteManyArgs} args - Arguments to filter ApprovalPolicySteps to delete.
+     * @example
+     * // Delete a few ApprovalPolicySteps
+     * const { count } = await prisma.approvalPolicyStep.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApprovalPolicyStepDeleteManyArgs>(args?: SelectSubset<T, ApprovalPolicyStepDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovalPolicySteps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyStepUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApprovalPolicySteps
+     * const approvalPolicyStep = await prisma.approvalPolicyStep.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApprovalPolicyStepUpdateManyArgs>(args: SelectSubset<T, ApprovalPolicyStepUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovalPolicySteps and returns the data updated in the database.
+     * @param {ApprovalPolicyStepUpdateManyAndReturnArgs} args - Arguments to update many ApprovalPolicySteps.
+     * @example
+     * // Update many ApprovalPolicySteps
+     * const approvalPolicyStep = await prisma.approvalPolicyStep.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ApprovalPolicySteps and only return the `id`
+     * const approvalPolicyStepWithIdOnly = await prisma.approvalPolicyStep.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ApprovalPolicyStepUpdateManyAndReturnArgs>(args: SelectSubset<T, ApprovalPolicyStepUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ApprovalPolicyStep.
+     * @param {ApprovalPolicyStepUpsertArgs} args - Arguments to update or create a ApprovalPolicyStep.
+     * @example
+     * // Update or create a ApprovalPolicyStep
+     * const approvalPolicyStep = await prisma.approvalPolicyStep.upsert({
+     *   create: {
+     *     // ... data to create a ApprovalPolicyStep
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApprovalPolicyStep we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApprovalPolicyStepUpsertArgs>(args: SelectSubset<T, ApprovalPolicyStepUpsertArgs<ExtArgs>>): Prisma__ApprovalPolicyStepClient<$Result.GetResult<Prisma.$ApprovalPolicyStepPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ApprovalPolicySteps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyStepCountArgs} args - Arguments to filter ApprovalPolicySteps to count.
+     * @example
+     * // Count the number of ApprovalPolicySteps
+     * const count = await prisma.approvalPolicyStep.count({
+     *   where: {
+     *     // ... the filter for the ApprovalPolicySteps we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApprovalPolicyStepCountArgs>(
+      args?: Subset<T, ApprovalPolicyStepCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApprovalPolicyStepCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApprovalPolicyStep.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyStepAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApprovalPolicyStepAggregateArgs>(args: Subset<T, ApprovalPolicyStepAggregateArgs>): Prisma.PrismaPromise<GetApprovalPolicyStepAggregateType<T>>
+
+    /**
+     * Group by ApprovalPolicyStep.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalPolicyStepGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApprovalPolicyStepGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApprovalPolicyStepGroupByArgs['orderBy'] }
+        : { orderBy?: ApprovalPolicyStepGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApprovalPolicyStepGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApprovalPolicyStepGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApprovalPolicyStep model
+   */
+  readonly fields: ApprovalPolicyStepFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApprovalPolicyStep.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApprovalPolicyStepClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    policy<T extends ApprovalPolicyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalPolicyDefaultArgs<ExtArgs>>): Prisma__ApprovalPolicyClient<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    assigneeRole<T extends ApprovalPolicyStep$assigneeRoleArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalPolicyStep$assigneeRoleArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    assigneeUser<T extends ApprovalPolicyStep$assigneeUserArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalPolicyStep$assigneeUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApprovalPolicyStep model
+   */
+  interface ApprovalPolicyStepFieldRefs {
+    readonly id: FieldRef<"ApprovalPolicyStep", 'String'>
+    readonly policyId: FieldRef<"ApprovalPolicyStep", 'String'>
+    readonly stepOrder: FieldRef<"ApprovalPolicyStep", 'Int'>
+    readonly name: FieldRef<"ApprovalPolicyStep", 'String'>
+    readonly type: FieldRef<"ApprovalPolicyStep", 'ApprovalStepType'>
+    readonly assigneeType: FieldRef<"ApprovalPolicyStep", 'ApprovalAssigneeType'>
+    readonly assigneeRoleId: FieldRef<"ApprovalPolicyStep", 'String'>
+    readonly assigneeUserId: FieldRef<"ApprovalPolicyStep", 'String'>
+    readonly resolutionMode: FieldRef<"ApprovalPolicyStep", 'ResolutionMode'>
+    readonly quorum: FieldRef<"ApprovalPolicyStep", 'Int'>
+    readonly conditionOperator: FieldRef<"ApprovalPolicyStep", 'ApprovalConditionOperator'>
+    readonly conditionValue: FieldRef<"ApprovalPolicyStep", 'Json'>
+    readonly isRequired: FieldRef<"ApprovalPolicyStep", 'Boolean'>
+    readonly isFinalApprover: FieldRef<"ApprovalPolicyStep", 'Boolean'>
+    readonly createdAt: FieldRef<"ApprovalPolicyStep", 'DateTime'>
+    readonly updatedAt: FieldRef<"ApprovalPolicyStep", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApprovalPolicyStep findUnique
+   */
+  export type ApprovalPolicyStepFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalPolicyStep to fetch.
+     */
+    where: ApprovalPolicyStepWhereUniqueInput
+  }
+
+  /**
+   * ApprovalPolicyStep findUniqueOrThrow
+   */
+  export type ApprovalPolicyStepFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalPolicyStep to fetch.
+     */
+    where: ApprovalPolicyStepWhereUniqueInput
+  }
+
+  /**
+   * ApprovalPolicyStep findFirst
+   */
+  export type ApprovalPolicyStepFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalPolicyStep to fetch.
+     */
+    where?: ApprovalPolicyStepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalPolicySteps to fetch.
+     */
+    orderBy?: ApprovalPolicyStepOrderByWithRelationInput | ApprovalPolicyStepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovalPolicySteps.
+     */
+    cursor?: ApprovalPolicyStepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalPolicySteps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalPolicySteps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovalPolicySteps.
+     */
+    distinct?: ApprovalPolicyStepScalarFieldEnum | ApprovalPolicyStepScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalPolicyStep findFirstOrThrow
+   */
+  export type ApprovalPolicyStepFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalPolicyStep to fetch.
+     */
+    where?: ApprovalPolicyStepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalPolicySteps to fetch.
+     */
+    orderBy?: ApprovalPolicyStepOrderByWithRelationInput | ApprovalPolicyStepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovalPolicySteps.
+     */
+    cursor?: ApprovalPolicyStepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalPolicySteps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalPolicySteps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovalPolicySteps.
+     */
+    distinct?: ApprovalPolicyStepScalarFieldEnum | ApprovalPolicyStepScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalPolicyStep findMany
+   */
+  export type ApprovalPolicyStepFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalPolicySteps to fetch.
+     */
+    where?: ApprovalPolicyStepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalPolicySteps to fetch.
+     */
+    orderBy?: ApprovalPolicyStepOrderByWithRelationInput | ApprovalPolicyStepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApprovalPolicySteps.
+     */
+    cursor?: ApprovalPolicyStepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalPolicySteps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalPolicySteps.
+     */
+    skip?: number
+    distinct?: ApprovalPolicyStepScalarFieldEnum | ApprovalPolicyStepScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalPolicyStep create
+   */
+  export type ApprovalPolicyStepCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ApprovalPolicyStep.
+     */
+    data: XOR<ApprovalPolicyStepCreateInput, ApprovalPolicyStepUncheckedCreateInput>
+  }
+
+  /**
+   * ApprovalPolicyStep createMany
+   */
+  export type ApprovalPolicyStepCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApprovalPolicySteps.
+     */
+    data: ApprovalPolicyStepCreateManyInput | ApprovalPolicyStepCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApprovalPolicyStep createManyAndReturn
+   */
+  export type ApprovalPolicyStepCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * The data used to create many ApprovalPolicySteps.
+     */
+    data: ApprovalPolicyStepCreateManyInput | ApprovalPolicyStepCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalPolicyStep update
+   */
+  export type ApprovalPolicyStepUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ApprovalPolicyStep.
+     */
+    data: XOR<ApprovalPolicyStepUpdateInput, ApprovalPolicyStepUncheckedUpdateInput>
+    /**
+     * Choose, which ApprovalPolicyStep to update.
+     */
+    where: ApprovalPolicyStepWhereUniqueInput
+  }
+
+  /**
+   * ApprovalPolicyStep updateMany
+   */
+  export type ApprovalPolicyStepUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApprovalPolicySteps.
+     */
+    data: XOR<ApprovalPolicyStepUpdateManyMutationInput, ApprovalPolicyStepUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovalPolicySteps to update
+     */
+    where?: ApprovalPolicyStepWhereInput
+    /**
+     * Limit how many ApprovalPolicySteps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovalPolicyStep updateManyAndReturn
+   */
+  export type ApprovalPolicyStepUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * The data used to update ApprovalPolicySteps.
+     */
+    data: XOR<ApprovalPolicyStepUpdateManyMutationInput, ApprovalPolicyStepUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovalPolicySteps to update
+     */
+    where?: ApprovalPolicyStepWhereInput
+    /**
+     * Limit how many ApprovalPolicySteps to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalPolicyStep upsert
+   */
+  export type ApprovalPolicyStepUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ApprovalPolicyStep to update in case it exists.
+     */
+    where: ApprovalPolicyStepWhereUniqueInput
+    /**
+     * In case the ApprovalPolicyStep found by the `where` argument doesn't exist, create a new ApprovalPolicyStep with this data.
+     */
+    create: XOR<ApprovalPolicyStepCreateInput, ApprovalPolicyStepUncheckedCreateInput>
+    /**
+     * In case the ApprovalPolicyStep was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApprovalPolicyStepUpdateInput, ApprovalPolicyStepUncheckedUpdateInput>
+  }
+
+  /**
+   * ApprovalPolicyStep delete
+   */
+  export type ApprovalPolicyStepDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+    /**
+     * Filter which ApprovalPolicyStep to delete.
+     */
+    where: ApprovalPolicyStepWhereUniqueInput
+  }
+
+  /**
+   * ApprovalPolicyStep deleteMany
+   */
+  export type ApprovalPolicyStepDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovalPolicySteps to delete
+     */
+    where?: ApprovalPolicyStepWhereInput
+    /**
+     * Limit how many ApprovalPolicySteps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovalPolicyStep.assigneeRole
+   */
+  export type ApprovalPolicyStep$assigneeRoleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    where?: RoleWhereInput
+  }
+
+  /**
+   * ApprovalPolicyStep.assigneeUser
+   */
+  export type ApprovalPolicyStep$assigneeUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ApprovalPolicyStep without action
+   */
+  export type ApprovalPolicyStepDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicyStep
+     */
+    select?: ApprovalPolicyStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicyStep
+     */
+    omit?: ApprovalPolicyStepOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyStepInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ApprovalRequest
+   */
+
+  export type AggregateApprovalRequest = {
+    _count: ApprovalRequestCountAggregateOutputType | null
+    _avg: ApprovalRequestAvgAggregateOutputType | null
+    _sum: ApprovalRequestSumAggregateOutputType | null
+    _min: ApprovalRequestMinAggregateOutputType | null
+    _max: ApprovalRequestMaxAggregateOutputType | null
+  }
+
+  export type ApprovalRequestAvgAggregateOutputType = {
+    currentStepIndex: number | null
+  }
+
+  export type ApprovalRequestSumAggregateOutputType = {
+    currentStepIndex: number | null
+  }
+
+  export type ApprovalRequestMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    entityType: $Enums.ApprovalEntityType | null
+    entityId: string | null
+    policyId: string | null
+    status: $Enums.ApprovalRequestStatus | null
+    submittedById: string | null
+    submittedAt: Date | null
+    currentStepIndex: number | null
+    decidedAt: Date | null
+    decidedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ApprovalRequestMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    entityType: $Enums.ApprovalEntityType | null
+    entityId: string | null
+    policyId: string | null
+    status: $Enums.ApprovalRequestStatus | null
+    submittedById: string | null
+    submittedAt: Date | null
+    currentStepIndex: number | null
+    decidedAt: Date | null
+    decidedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ApprovalRequestCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    entityType: number
+    entityId: number
+    policyId: number
+    policySnapshot: number
+    status: number
+    submittedById: number
+    submittedAt: number
+    currentStepIndex: number
+    decidedAt: number
+    decidedById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ApprovalRequestAvgAggregateInputType = {
+    currentStepIndex?: true
+  }
+
+  export type ApprovalRequestSumAggregateInputType = {
+    currentStepIndex?: true
+  }
+
+  export type ApprovalRequestMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    entityType?: true
+    entityId?: true
+    policyId?: true
+    status?: true
+    submittedById?: true
+    submittedAt?: true
+    currentStepIndex?: true
+    decidedAt?: true
+    decidedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ApprovalRequestMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    entityType?: true
+    entityId?: true
+    policyId?: true
+    status?: true
+    submittedById?: true
+    submittedAt?: true
+    currentStepIndex?: true
+    decidedAt?: true
+    decidedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ApprovalRequestCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    entityType?: true
+    entityId?: true
+    policyId?: true
+    policySnapshot?: true
+    status?: true
+    submittedById?: true
+    submittedAt?: true
+    currentStepIndex?: true
+    decidedAt?: true
+    decidedById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ApprovalRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovalRequest to aggregate.
+     */
+    where?: ApprovalRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalRequests to fetch.
+     */
+    orderBy?: ApprovalRequestOrderByWithRelationInput | ApprovalRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApprovalRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApprovalRequests
+    **/
+    _count?: true | ApprovalRequestCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ApprovalRequestAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ApprovalRequestSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApprovalRequestMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApprovalRequestMaxAggregateInputType
+  }
+
+  export type GetApprovalRequestAggregateType<T extends ApprovalRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateApprovalRequest]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApprovalRequest[P]>
+      : GetScalarType<T[P], AggregateApprovalRequest[P]>
+  }
+
+
+
+
+  export type ApprovalRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalRequestWhereInput
+    orderBy?: ApprovalRequestOrderByWithAggregationInput | ApprovalRequestOrderByWithAggregationInput[]
+    by: ApprovalRequestScalarFieldEnum[] | ApprovalRequestScalarFieldEnum
+    having?: ApprovalRequestScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApprovalRequestCountAggregateInputType | true
+    _avg?: ApprovalRequestAvgAggregateInputType
+    _sum?: ApprovalRequestSumAggregateInputType
+    _min?: ApprovalRequestMinAggregateInputType
+    _max?: ApprovalRequestMaxAggregateInputType
+  }
+
+  export type ApprovalRequestGroupByOutputType = {
+    id: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonValue
+    status: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt: Date
+    currentStepIndex: number
+    decidedAt: Date | null
+    decidedById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ApprovalRequestCountAggregateOutputType | null
+    _avg: ApprovalRequestAvgAggregateOutputType | null
+    _sum: ApprovalRequestSumAggregateOutputType | null
+    _min: ApprovalRequestMinAggregateOutputType | null
+    _max: ApprovalRequestMaxAggregateOutputType | null
+  }
+
+  type GetApprovalRequestGroupByPayload<T extends ApprovalRequestGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApprovalRequestGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApprovalRequestGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApprovalRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], ApprovalRequestGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApprovalRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    policyId?: boolean
+    policySnapshot?: boolean
+    status?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    currentStepIndex?: boolean
+    decidedAt?: boolean
+    decidedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    submittedBy?: boolean | UserDefaultArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalRequest$decidedByArgs<ExtArgs>
+    stepInstances?: boolean | ApprovalRequest$stepInstancesArgs<ExtArgs>
+    decisionRecords?: boolean | ApprovalRequest$decisionRecordsArgs<ExtArgs>
+    _count?: boolean | ApprovalRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalRequest"]>
+
+  export type ApprovalRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    policyId?: boolean
+    policySnapshot?: boolean
+    status?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    currentStepIndex?: boolean
+    decidedAt?: boolean
+    decidedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    submittedBy?: boolean | UserDefaultArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalRequest$decidedByArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalRequest"]>
+
+  export type ApprovalRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    policyId?: boolean
+    policySnapshot?: boolean
+    status?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    currentStepIndex?: boolean
+    decidedAt?: boolean
+    decidedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    submittedBy?: boolean | UserDefaultArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalRequest$decidedByArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalRequest"]>
+
+  export type ApprovalRequestSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    policyId?: boolean
+    policySnapshot?: boolean
+    status?: boolean
+    submittedById?: boolean
+    submittedAt?: boolean
+    currentStepIndex?: boolean
+    decidedAt?: boolean
+    decidedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ApprovalRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "entityType" | "entityId" | "policyId" | "policySnapshot" | "status" | "submittedById" | "submittedAt" | "currentStepIndex" | "decidedAt" | "decidedById" | "createdAt" | "updatedAt", ExtArgs["result"]["approvalRequest"]>
+  export type ApprovalRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    submittedBy?: boolean | UserDefaultArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalRequest$decidedByArgs<ExtArgs>
+    stepInstances?: boolean | ApprovalRequest$stepInstancesArgs<ExtArgs>
+    decisionRecords?: boolean | ApprovalRequest$decisionRecordsArgs<ExtArgs>
+    _count?: boolean | ApprovalRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ApprovalRequestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    submittedBy?: boolean | UserDefaultArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalRequest$decidedByArgs<ExtArgs>
+  }
+  export type ApprovalRequestIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    policy?: boolean | ApprovalPolicyDefaultArgs<ExtArgs>
+    submittedBy?: boolean | UserDefaultArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalRequest$decidedByArgs<ExtArgs>
+  }
+
+  export type $ApprovalRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApprovalRequest"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      policy: Prisma.$ApprovalPolicyPayload<ExtArgs>
+      submittedBy: Prisma.$UserPayload<ExtArgs>
+      decidedBy: Prisma.$UserPayload<ExtArgs> | null
+      stepInstances: Prisma.$ApprovalStepInstancePayload<ExtArgs>[]
+      decisionRecords: Prisma.$ApprovalDecisionRecordPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      entityType: $Enums.ApprovalEntityType
+      entityId: string
+      policyId: string
+      policySnapshot: Prisma.JsonValue
+      status: $Enums.ApprovalRequestStatus
+      submittedById: string
+      submittedAt: Date
+      currentStepIndex: number
+      decidedAt: Date | null
+      decidedById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["approvalRequest"]>
+    composites: {}
+  }
+
+  type ApprovalRequestGetPayload<S extends boolean | null | undefined | ApprovalRequestDefaultArgs> = $Result.GetResult<Prisma.$ApprovalRequestPayload, S>
+
+  type ApprovalRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApprovalRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApprovalRequestCountAggregateInputType | true
+    }
+
+  export interface ApprovalRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApprovalRequest'], meta: { name: 'ApprovalRequest' } }
+    /**
+     * Find zero or one ApprovalRequest that matches the filter.
+     * @param {ApprovalRequestFindUniqueArgs} args - Arguments to find a ApprovalRequest
+     * @example
+     * // Get one ApprovalRequest
+     * const approvalRequest = await prisma.approvalRequest.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApprovalRequestFindUniqueArgs>(args: SelectSubset<T, ApprovalRequestFindUniqueArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ApprovalRequest that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApprovalRequestFindUniqueOrThrowArgs} args - Arguments to find a ApprovalRequest
+     * @example
+     * // Get one ApprovalRequest
+     * const approvalRequest = await prisma.approvalRequest.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApprovalRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, ApprovalRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovalRequest that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalRequestFindFirstArgs} args - Arguments to find a ApprovalRequest
+     * @example
+     * // Get one ApprovalRequest
+     * const approvalRequest = await prisma.approvalRequest.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApprovalRequestFindFirstArgs>(args?: SelectSubset<T, ApprovalRequestFindFirstArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovalRequest that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalRequestFindFirstOrThrowArgs} args - Arguments to find a ApprovalRequest
+     * @example
+     * // Get one ApprovalRequest
+     * const approvalRequest = await prisma.approvalRequest.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApprovalRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, ApprovalRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ApprovalRequests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalRequestFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApprovalRequests
+     * const approvalRequests = await prisma.approvalRequest.findMany()
+     * 
+     * // Get first 10 ApprovalRequests
+     * const approvalRequests = await prisma.approvalRequest.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const approvalRequestWithIdOnly = await prisma.approvalRequest.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApprovalRequestFindManyArgs>(args?: SelectSubset<T, ApprovalRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ApprovalRequest.
+     * @param {ApprovalRequestCreateArgs} args - Arguments to create a ApprovalRequest.
+     * @example
+     * // Create one ApprovalRequest
+     * const ApprovalRequest = await prisma.approvalRequest.create({
+     *   data: {
+     *     // ... data to create a ApprovalRequest
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApprovalRequestCreateArgs>(args: SelectSubset<T, ApprovalRequestCreateArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ApprovalRequests.
+     * @param {ApprovalRequestCreateManyArgs} args - Arguments to create many ApprovalRequests.
+     * @example
+     * // Create many ApprovalRequests
+     * const approvalRequest = await prisma.approvalRequest.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApprovalRequestCreateManyArgs>(args?: SelectSubset<T, ApprovalRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ApprovalRequests and returns the data saved in the database.
+     * @param {ApprovalRequestCreateManyAndReturnArgs} args - Arguments to create many ApprovalRequests.
+     * @example
+     * // Create many ApprovalRequests
+     * const approvalRequest = await prisma.approvalRequest.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ApprovalRequests and only return the `id`
+     * const approvalRequestWithIdOnly = await prisma.approvalRequest.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ApprovalRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, ApprovalRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ApprovalRequest.
+     * @param {ApprovalRequestDeleteArgs} args - Arguments to delete one ApprovalRequest.
+     * @example
+     * // Delete one ApprovalRequest
+     * const ApprovalRequest = await prisma.approvalRequest.delete({
+     *   where: {
+     *     // ... filter to delete one ApprovalRequest
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApprovalRequestDeleteArgs>(args: SelectSubset<T, ApprovalRequestDeleteArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ApprovalRequest.
+     * @param {ApprovalRequestUpdateArgs} args - Arguments to update one ApprovalRequest.
+     * @example
+     * // Update one ApprovalRequest
+     * const approvalRequest = await prisma.approvalRequest.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApprovalRequestUpdateArgs>(args: SelectSubset<T, ApprovalRequestUpdateArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ApprovalRequests.
+     * @param {ApprovalRequestDeleteManyArgs} args - Arguments to filter ApprovalRequests to delete.
+     * @example
+     * // Delete a few ApprovalRequests
+     * const { count } = await prisma.approvalRequest.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApprovalRequestDeleteManyArgs>(args?: SelectSubset<T, ApprovalRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovalRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalRequestUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApprovalRequests
+     * const approvalRequest = await prisma.approvalRequest.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApprovalRequestUpdateManyArgs>(args: SelectSubset<T, ApprovalRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovalRequests and returns the data updated in the database.
+     * @param {ApprovalRequestUpdateManyAndReturnArgs} args - Arguments to update many ApprovalRequests.
+     * @example
+     * // Update many ApprovalRequests
+     * const approvalRequest = await prisma.approvalRequest.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ApprovalRequests and only return the `id`
+     * const approvalRequestWithIdOnly = await prisma.approvalRequest.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ApprovalRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, ApprovalRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ApprovalRequest.
+     * @param {ApprovalRequestUpsertArgs} args - Arguments to update or create a ApprovalRequest.
+     * @example
+     * // Update or create a ApprovalRequest
+     * const approvalRequest = await prisma.approvalRequest.upsert({
+     *   create: {
+     *     // ... data to create a ApprovalRequest
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApprovalRequest we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApprovalRequestUpsertArgs>(args: SelectSubset<T, ApprovalRequestUpsertArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ApprovalRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalRequestCountArgs} args - Arguments to filter ApprovalRequests to count.
+     * @example
+     * // Count the number of ApprovalRequests
+     * const count = await prisma.approvalRequest.count({
+     *   where: {
+     *     // ... the filter for the ApprovalRequests we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApprovalRequestCountArgs>(
+      args?: Subset<T, ApprovalRequestCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApprovalRequestCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApprovalRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApprovalRequestAggregateArgs>(args: Subset<T, ApprovalRequestAggregateArgs>): Prisma.PrismaPromise<GetApprovalRequestAggregateType<T>>
+
+    /**
+     * Group by ApprovalRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalRequestGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApprovalRequestGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApprovalRequestGroupByArgs['orderBy'] }
+        : { orderBy?: ApprovalRequestGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApprovalRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApprovalRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApprovalRequest model
+   */
+  readonly fields: ApprovalRequestFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApprovalRequest.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApprovalRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    policy<T extends ApprovalPolicyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalPolicyDefaultArgs<ExtArgs>>): Prisma__ApprovalPolicyClient<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    submittedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    decidedBy<T extends ApprovalRequest$decidedByArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalRequest$decidedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    stepInstances<T extends ApprovalRequest$stepInstancesArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalRequest$stepInstancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    decisionRecords<T extends ApprovalRequest$decisionRecordsArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalRequest$decisionRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApprovalRequest model
+   */
+  interface ApprovalRequestFieldRefs {
+    readonly id: FieldRef<"ApprovalRequest", 'String'>
+    readonly organizationId: FieldRef<"ApprovalRequest", 'String'>
+    readonly entityType: FieldRef<"ApprovalRequest", 'ApprovalEntityType'>
+    readonly entityId: FieldRef<"ApprovalRequest", 'String'>
+    readonly policyId: FieldRef<"ApprovalRequest", 'String'>
+    readonly policySnapshot: FieldRef<"ApprovalRequest", 'Json'>
+    readonly status: FieldRef<"ApprovalRequest", 'ApprovalRequestStatus'>
+    readonly submittedById: FieldRef<"ApprovalRequest", 'String'>
+    readonly submittedAt: FieldRef<"ApprovalRequest", 'DateTime'>
+    readonly currentStepIndex: FieldRef<"ApprovalRequest", 'Int'>
+    readonly decidedAt: FieldRef<"ApprovalRequest", 'DateTime'>
+    readonly decidedById: FieldRef<"ApprovalRequest", 'String'>
+    readonly createdAt: FieldRef<"ApprovalRequest", 'DateTime'>
+    readonly updatedAt: FieldRef<"ApprovalRequest", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApprovalRequest findUnique
+   */
+  export type ApprovalRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalRequest to fetch.
+     */
+    where: ApprovalRequestWhereUniqueInput
+  }
+
+  /**
+   * ApprovalRequest findUniqueOrThrow
+   */
+  export type ApprovalRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalRequest to fetch.
+     */
+    where: ApprovalRequestWhereUniqueInput
+  }
+
+  /**
+   * ApprovalRequest findFirst
+   */
+  export type ApprovalRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalRequest to fetch.
+     */
+    where?: ApprovalRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalRequests to fetch.
+     */
+    orderBy?: ApprovalRequestOrderByWithRelationInput | ApprovalRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovalRequests.
+     */
+    cursor?: ApprovalRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovalRequests.
+     */
+    distinct?: ApprovalRequestScalarFieldEnum | ApprovalRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalRequest findFirstOrThrow
+   */
+  export type ApprovalRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalRequest to fetch.
+     */
+    where?: ApprovalRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalRequests to fetch.
+     */
+    orderBy?: ApprovalRequestOrderByWithRelationInput | ApprovalRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovalRequests.
+     */
+    cursor?: ApprovalRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovalRequests.
+     */
+    distinct?: ApprovalRequestScalarFieldEnum | ApprovalRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalRequest findMany
+   */
+  export type ApprovalRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalRequests to fetch.
+     */
+    where?: ApprovalRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalRequests to fetch.
+     */
+    orderBy?: ApprovalRequestOrderByWithRelationInput | ApprovalRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApprovalRequests.
+     */
+    cursor?: ApprovalRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalRequests.
+     */
+    skip?: number
+    distinct?: ApprovalRequestScalarFieldEnum | ApprovalRequestScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalRequest create
+   */
+  export type ApprovalRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ApprovalRequest.
+     */
+    data: XOR<ApprovalRequestCreateInput, ApprovalRequestUncheckedCreateInput>
+  }
+
+  /**
+   * ApprovalRequest createMany
+   */
+  export type ApprovalRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApprovalRequests.
+     */
+    data: ApprovalRequestCreateManyInput | ApprovalRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApprovalRequest createManyAndReturn
+   */
+  export type ApprovalRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * The data used to create many ApprovalRequests.
+     */
+    data: ApprovalRequestCreateManyInput | ApprovalRequestCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalRequest update
+   */
+  export type ApprovalRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ApprovalRequest.
+     */
+    data: XOR<ApprovalRequestUpdateInput, ApprovalRequestUncheckedUpdateInput>
+    /**
+     * Choose, which ApprovalRequest to update.
+     */
+    where: ApprovalRequestWhereUniqueInput
+  }
+
+  /**
+   * ApprovalRequest updateMany
+   */
+  export type ApprovalRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApprovalRequests.
+     */
+    data: XOR<ApprovalRequestUpdateManyMutationInput, ApprovalRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovalRequests to update
+     */
+    where?: ApprovalRequestWhereInput
+    /**
+     * Limit how many ApprovalRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovalRequest updateManyAndReturn
+   */
+  export type ApprovalRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * The data used to update ApprovalRequests.
+     */
+    data: XOR<ApprovalRequestUpdateManyMutationInput, ApprovalRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovalRequests to update
+     */
+    where?: ApprovalRequestWhereInput
+    /**
+     * Limit how many ApprovalRequests to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalRequest upsert
+   */
+  export type ApprovalRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ApprovalRequest to update in case it exists.
+     */
+    where: ApprovalRequestWhereUniqueInput
+    /**
+     * In case the ApprovalRequest found by the `where` argument doesn't exist, create a new ApprovalRequest with this data.
+     */
+    create: XOR<ApprovalRequestCreateInput, ApprovalRequestUncheckedCreateInput>
+    /**
+     * In case the ApprovalRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApprovalRequestUpdateInput, ApprovalRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * ApprovalRequest delete
+   */
+  export type ApprovalRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    /**
+     * Filter which ApprovalRequest to delete.
+     */
+    where: ApprovalRequestWhereUniqueInput
+  }
+
+  /**
+   * ApprovalRequest deleteMany
+   */
+  export type ApprovalRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovalRequests to delete
+     */
+    where?: ApprovalRequestWhereInput
+    /**
+     * Limit how many ApprovalRequests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovalRequest.decidedBy
+   */
+  export type ApprovalRequest$decidedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ApprovalRequest.stepInstances
+   */
+  export type ApprovalRequest$stepInstancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    where?: ApprovalStepInstanceWhereInput
+    orderBy?: ApprovalStepInstanceOrderByWithRelationInput | ApprovalStepInstanceOrderByWithRelationInput[]
+    cursor?: ApprovalStepInstanceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalStepInstanceScalarFieldEnum | ApprovalStepInstanceScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalRequest.decisionRecords
+   */
+  export type ApprovalRequest$decisionRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    where?: ApprovalDecisionRecordWhereInput
+    orderBy?: ApprovalDecisionRecordOrderByWithRelationInput | ApprovalDecisionRecordOrderByWithRelationInput[]
+    cursor?: ApprovalDecisionRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalDecisionRecordScalarFieldEnum | ApprovalDecisionRecordScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalRequest without action
+   */
+  export type ApprovalRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ApprovalStepInstance
+   */
+
+  export type AggregateApprovalStepInstance = {
+    _count: ApprovalStepInstanceCountAggregateOutputType | null
+    _avg: ApprovalStepInstanceAvgAggregateOutputType | null
+    _sum: ApprovalStepInstanceSumAggregateOutputType | null
+    _min: ApprovalStepInstanceMinAggregateOutputType | null
+    _max: ApprovalStepInstanceMaxAggregateOutputType | null
+  }
+
+  export type ApprovalStepInstanceAvgAggregateOutputType = {
+    stepOrder: number | null
+    quorum: number | null
+  }
+
+  export type ApprovalStepInstanceSumAggregateOutputType = {
+    stepOrder: number | null
+    quorum: number | null
+  }
+
+  export type ApprovalStepInstanceMinAggregateOutputType = {
+    id: string | null
+    requestId: string | null
+    stepOrder: number | null
+    stepName: string | null
+    stepType: $Enums.ApprovalStepType | null
+    assigneeType: $Enums.ApprovalAssigneeType | null
+    assigneeRoleId: string | null
+    assigneeUserId: string | null
+    resolutionMode: $Enums.ResolutionMode | null
+    quorum: number | null
+    status: $Enums.ApprovalRequestStatus | null
+    decidedAt: Date | null
+    decidedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ApprovalStepInstanceMaxAggregateOutputType = {
+    id: string | null
+    requestId: string | null
+    stepOrder: number | null
+    stepName: string | null
+    stepType: $Enums.ApprovalStepType | null
+    assigneeType: $Enums.ApprovalAssigneeType | null
+    assigneeRoleId: string | null
+    assigneeUserId: string | null
+    resolutionMode: $Enums.ResolutionMode | null
+    quorum: number | null
+    status: $Enums.ApprovalRequestStatus | null
+    decidedAt: Date | null
+    decidedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ApprovalStepInstanceCountAggregateOutputType = {
+    id: number
+    requestId: number
+    stepOrder: number
+    stepName: number
+    stepType: number
+    assigneeType: number
+    assigneeRoleId: number
+    assigneeUserId: number
+    resolutionMode: number
+    quorum: number
+    status: number
+    decidedAt: number
+    decidedById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ApprovalStepInstanceAvgAggregateInputType = {
+    stepOrder?: true
+    quorum?: true
+  }
+
+  export type ApprovalStepInstanceSumAggregateInputType = {
+    stepOrder?: true
+    quorum?: true
+  }
+
+  export type ApprovalStepInstanceMinAggregateInputType = {
+    id?: true
+    requestId?: true
+    stepOrder?: true
+    stepName?: true
+    stepType?: true
+    assigneeType?: true
+    assigneeRoleId?: true
+    assigneeUserId?: true
+    resolutionMode?: true
+    quorum?: true
+    status?: true
+    decidedAt?: true
+    decidedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ApprovalStepInstanceMaxAggregateInputType = {
+    id?: true
+    requestId?: true
+    stepOrder?: true
+    stepName?: true
+    stepType?: true
+    assigneeType?: true
+    assigneeRoleId?: true
+    assigneeUserId?: true
+    resolutionMode?: true
+    quorum?: true
+    status?: true
+    decidedAt?: true
+    decidedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ApprovalStepInstanceCountAggregateInputType = {
+    id?: true
+    requestId?: true
+    stepOrder?: true
+    stepName?: true
+    stepType?: true
+    assigneeType?: true
+    assigneeRoleId?: true
+    assigneeUserId?: true
+    resolutionMode?: true
+    quorum?: true
+    status?: true
+    decidedAt?: true
+    decidedById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ApprovalStepInstanceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovalStepInstance to aggregate.
+     */
+    where?: ApprovalStepInstanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalStepInstances to fetch.
+     */
+    orderBy?: ApprovalStepInstanceOrderByWithRelationInput | ApprovalStepInstanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApprovalStepInstanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalStepInstances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalStepInstances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApprovalStepInstances
+    **/
+    _count?: true | ApprovalStepInstanceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ApprovalStepInstanceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ApprovalStepInstanceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApprovalStepInstanceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApprovalStepInstanceMaxAggregateInputType
+  }
+
+  export type GetApprovalStepInstanceAggregateType<T extends ApprovalStepInstanceAggregateArgs> = {
+        [P in keyof T & keyof AggregateApprovalStepInstance]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApprovalStepInstance[P]>
+      : GetScalarType<T[P], AggregateApprovalStepInstance[P]>
+  }
+
+
+
+
+  export type ApprovalStepInstanceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalStepInstanceWhereInput
+    orderBy?: ApprovalStepInstanceOrderByWithAggregationInput | ApprovalStepInstanceOrderByWithAggregationInput[]
+    by: ApprovalStepInstanceScalarFieldEnum[] | ApprovalStepInstanceScalarFieldEnum
+    having?: ApprovalStepInstanceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApprovalStepInstanceCountAggregateInputType | true
+    _avg?: ApprovalStepInstanceAvgAggregateInputType
+    _sum?: ApprovalStepInstanceSumAggregateInputType
+    _min?: ApprovalStepInstanceMinAggregateInputType
+    _max?: ApprovalStepInstanceMaxAggregateInputType
+  }
+
+  export type ApprovalStepInstanceGroupByOutputType = {
+    id: string
+    requestId: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId: string | null
+    assigneeUserId: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum: number | null
+    status: $Enums.ApprovalRequestStatus
+    decidedAt: Date | null
+    decidedById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ApprovalStepInstanceCountAggregateOutputType | null
+    _avg: ApprovalStepInstanceAvgAggregateOutputType | null
+    _sum: ApprovalStepInstanceSumAggregateOutputType | null
+    _min: ApprovalStepInstanceMinAggregateOutputType | null
+    _max: ApprovalStepInstanceMaxAggregateOutputType | null
+  }
+
+  type GetApprovalStepInstanceGroupByPayload<T extends ApprovalStepInstanceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApprovalStepInstanceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApprovalStepInstanceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApprovalStepInstanceGroupByOutputType[P]>
+            : GetScalarType<T[P], ApprovalStepInstanceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApprovalStepInstanceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    requestId?: boolean
+    stepOrder?: boolean
+    stepName?: boolean
+    stepType?: boolean
+    assigneeType?: boolean
+    assigneeRoleId?: boolean
+    assigneeUserId?: boolean
+    resolutionMode?: boolean
+    quorum?: boolean
+    status?: boolean
+    decidedAt?: boolean
+    decidedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalStepInstance$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalStepInstance$assigneeUserArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalStepInstance$decidedByArgs<ExtArgs>
+    decisions?: boolean | ApprovalStepInstance$decisionsArgs<ExtArgs>
+    _count?: boolean | ApprovalStepInstanceCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalStepInstance"]>
+
+  export type ApprovalStepInstanceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    requestId?: boolean
+    stepOrder?: boolean
+    stepName?: boolean
+    stepType?: boolean
+    assigneeType?: boolean
+    assigneeRoleId?: boolean
+    assigneeUserId?: boolean
+    resolutionMode?: boolean
+    quorum?: boolean
+    status?: boolean
+    decidedAt?: boolean
+    decidedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalStepInstance$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalStepInstance$assigneeUserArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalStepInstance$decidedByArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalStepInstance"]>
+
+  export type ApprovalStepInstanceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    requestId?: boolean
+    stepOrder?: boolean
+    stepName?: boolean
+    stepType?: boolean
+    assigneeType?: boolean
+    assigneeRoleId?: boolean
+    assigneeUserId?: boolean
+    resolutionMode?: boolean
+    quorum?: boolean
+    status?: boolean
+    decidedAt?: boolean
+    decidedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalStepInstance$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalStepInstance$assigneeUserArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalStepInstance$decidedByArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalStepInstance"]>
+
+  export type ApprovalStepInstanceSelectScalar = {
+    id?: boolean
+    requestId?: boolean
+    stepOrder?: boolean
+    stepName?: boolean
+    stepType?: boolean
+    assigneeType?: boolean
+    assigneeRoleId?: boolean
+    assigneeUserId?: boolean
+    resolutionMode?: boolean
+    quorum?: boolean
+    status?: boolean
+    decidedAt?: boolean
+    decidedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ApprovalStepInstanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "requestId" | "stepOrder" | "stepName" | "stepType" | "assigneeType" | "assigneeRoleId" | "assigneeUserId" | "resolutionMode" | "quorum" | "status" | "decidedAt" | "decidedById" | "createdAt" | "updatedAt", ExtArgs["result"]["approvalStepInstance"]>
+  export type ApprovalStepInstanceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalStepInstance$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalStepInstance$assigneeUserArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalStepInstance$decidedByArgs<ExtArgs>
+    decisions?: boolean | ApprovalStepInstance$decisionsArgs<ExtArgs>
+    _count?: boolean | ApprovalStepInstanceCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ApprovalStepInstanceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalStepInstance$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalStepInstance$assigneeUserArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalStepInstance$decidedByArgs<ExtArgs>
+  }
+  export type ApprovalStepInstanceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    assigneeRole?: boolean | ApprovalStepInstance$assigneeRoleArgs<ExtArgs>
+    assigneeUser?: boolean | ApprovalStepInstance$assigneeUserArgs<ExtArgs>
+    decidedBy?: boolean | ApprovalStepInstance$decidedByArgs<ExtArgs>
+  }
+
+  export type $ApprovalStepInstancePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApprovalStepInstance"
+    objects: {
+      request: Prisma.$ApprovalRequestPayload<ExtArgs>
+      assigneeRole: Prisma.$RolePayload<ExtArgs> | null
+      assigneeUser: Prisma.$UserPayload<ExtArgs> | null
+      decidedBy: Prisma.$UserPayload<ExtArgs> | null
+      decisions: Prisma.$ApprovalDecisionRecordPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      requestId: string
+      stepOrder: number
+      stepName: string
+      stepType: $Enums.ApprovalStepType
+      assigneeType: $Enums.ApprovalAssigneeType
+      assigneeRoleId: string | null
+      assigneeUserId: string | null
+      resolutionMode: $Enums.ResolutionMode
+      quorum: number | null
+      status: $Enums.ApprovalRequestStatus
+      decidedAt: Date | null
+      decidedById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["approvalStepInstance"]>
+    composites: {}
+  }
+
+  type ApprovalStepInstanceGetPayload<S extends boolean | null | undefined | ApprovalStepInstanceDefaultArgs> = $Result.GetResult<Prisma.$ApprovalStepInstancePayload, S>
+
+  type ApprovalStepInstanceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApprovalStepInstanceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApprovalStepInstanceCountAggregateInputType | true
+    }
+
+  export interface ApprovalStepInstanceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApprovalStepInstance'], meta: { name: 'ApprovalStepInstance' } }
+    /**
+     * Find zero or one ApprovalStepInstance that matches the filter.
+     * @param {ApprovalStepInstanceFindUniqueArgs} args - Arguments to find a ApprovalStepInstance
+     * @example
+     * // Get one ApprovalStepInstance
+     * const approvalStepInstance = await prisma.approvalStepInstance.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApprovalStepInstanceFindUniqueArgs>(args: SelectSubset<T, ApprovalStepInstanceFindUniqueArgs<ExtArgs>>): Prisma__ApprovalStepInstanceClient<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ApprovalStepInstance that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApprovalStepInstanceFindUniqueOrThrowArgs} args - Arguments to find a ApprovalStepInstance
+     * @example
+     * // Get one ApprovalStepInstance
+     * const approvalStepInstance = await prisma.approvalStepInstance.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApprovalStepInstanceFindUniqueOrThrowArgs>(args: SelectSubset<T, ApprovalStepInstanceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApprovalStepInstanceClient<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovalStepInstance that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalStepInstanceFindFirstArgs} args - Arguments to find a ApprovalStepInstance
+     * @example
+     * // Get one ApprovalStepInstance
+     * const approvalStepInstance = await prisma.approvalStepInstance.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApprovalStepInstanceFindFirstArgs>(args?: SelectSubset<T, ApprovalStepInstanceFindFirstArgs<ExtArgs>>): Prisma__ApprovalStepInstanceClient<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovalStepInstance that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalStepInstanceFindFirstOrThrowArgs} args - Arguments to find a ApprovalStepInstance
+     * @example
+     * // Get one ApprovalStepInstance
+     * const approvalStepInstance = await prisma.approvalStepInstance.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApprovalStepInstanceFindFirstOrThrowArgs>(args?: SelectSubset<T, ApprovalStepInstanceFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApprovalStepInstanceClient<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ApprovalStepInstances that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalStepInstanceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApprovalStepInstances
+     * const approvalStepInstances = await prisma.approvalStepInstance.findMany()
+     * 
+     * // Get first 10 ApprovalStepInstances
+     * const approvalStepInstances = await prisma.approvalStepInstance.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const approvalStepInstanceWithIdOnly = await prisma.approvalStepInstance.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApprovalStepInstanceFindManyArgs>(args?: SelectSubset<T, ApprovalStepInstanceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ApprovalStepInstance.
+     * @param {ApprovalStepInstanceCreateArgs} args - Arguments to create a ApprovalStepInstance.
+     * @example
+     * // Create one ApprovalStepInstance
+     * const ApprovalStepInstance = await prisma.approvalStepInstance.create({
+     *   data: {
+     *     // ... data to create a ApprovalStepInstance
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApprovalStepInstanceCreateArgs>(args: SelectSubset<T, ApprovalStepInstanceCreateArgs<ExtArgs>>): Prisma__ApprovalStepInstanceClient<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ApprovalStepInstances.
+     * @param {ApprovalStepInstanceCreateManyArgs} args - Arguments to create many ApprovalStepInstances.
+     * @example
+     * // Create many ApprovalStepInstances
+     * const approvalStepInstance = await prisma.approvalStepInstance.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApprovalStepInstanceCreateManyArgs>(args?: SelectSubset<T, ApprovalStepInstanceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ApprovalStepInstances and returns the data saved in the database.
+     * @param {ApprovalStepInstanceCreateManyAndReturnArgs} args - Arguments to create many ApprovalStepInstances.
+     * @example
+     * // Create many ApprovalStepInstances
+     * const approvalStepInstance = await prisma.approvalStepInstance.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ApprovalStepInstances and only return the `id`
+     * const approvalStepInstanceWithIdOnly = await prisma.approvalStepInstance.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ApprovalStepInstanceCreateManyAndReturnArgs>(args?: SelectSubset<T, ApprovalStepInstanceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ApprovalStepInstance.
+     * @param {ApprovalStepInstanceDeleteArgs} args - Arguments to delete one ApprovalStepInstance.
+     * @example
+     * // Delete one ApprovalStepInstance
+     * const ApprovalStepInstance = await prisma.approvalStepInstance.delete({
+     *   where: {
+     *     // ... filter to delete one ApprovalStepInstance
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApprovalStepInstanceDeleteArgs>(args: SelectSubset<T, ApprovalStepInstanceDeleteArgs<ExtArgs>>): Prisma__ApprovalStepInstanceClient<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ApprovalStepInstance.
+     * @param {ApprovalStepInstanceUpdateArgs} args - Arguments to update one ApprovalStepInstance.
+     * @example
+     * // Update one ApprovalStepInstance
+     * const approvalStepInstance = await prisma.approvalStepInstance.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApprovalStepInstanceUpdateArgs>(args: SelectSubset<T, ApprovalStepInstanceUpdateArgs<ExtArgs>>): Prisma__ApprovalStepInstanceClient<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ApprovalStepInstances.
+     * @param {ApprovalStepInstanceDeleteManyArgs} args - Arguments to filter ApprovalStepInstances to delete.
+     * @example
+     * // Delete a few ApprovalStepInstances
+     * const { count } = await prisma.approvalStepInstance.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApprovalStepInstanceDeleteManyArgs>(args?: SelectSubset<T, ApprovalStepInstanceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovalStepInstances.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalStepInstanceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApprovalStepInstances
+     * const approvalStepInstance = await prisma.approvalStepInstance.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApprovalStepInstanceUpdateManyArgs>(args: SelectSubset<T, ApprovalStepInstanceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovalStepInstances and returns the data updated in the database.
+     * @param {ApprovalStepInstanceUpdateManyAndReturnArgs} args - Arguments to update many ApprovalStepInstances.
+     * @example
+     * // Update many ApprovalStepInstances
+     * const approvalStepInstance = await prisma.approvalStepInstance.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ApprovalStepInstances and only return the `id`
+     * const approvalStepInstanceWithIdOnly = await prisma.approvalStepInstance.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ApprovalStepInstanceUpdateManyAndReturnArgs>(args: SelectSubset<T, ApprovalStepInstanceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ApprovalStepInstance.
+     * @param {ApprovalStepInstanceUpsertArgs} args - Arguments to update or create a ApprovalStepInstance.
+     * @example
+     * // Update or create a ApprovalStepInstance
+     * const approvalStepInstance = await prisma.approvalStepInstance.upsert({
+     *   create: {
+     *     // ... data to create a ApprovalStepInstance
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApprovalStepInstance we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApprovalStepInstanceUpsertArgs>(args: SelectSubset<T, ApprovalStepInstanceUpsertArgs<ExtArgs>>): Prisma__ApprovalStepInstanceClient<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ApprovalStepInstances.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalStepInstanceCountArgs} args - Arguments to filter ApprovalStepInstances to count.
+     * @example
+     * // Count the number of ApprovalStepInstances
+     * const count = await prisma.approvalStepInstance.count({
+     *   where: {
+     *     // ... the filter for the ApprovalStepInstances we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApprovalStepInstanceCountArgs>(
+      args?: Subset<T, ApprovalStepInstanceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApprovalStepInstanceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApprovalStepInstance.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalStepInstanceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApprovalStepInstanceAggregateArgs>(args: Subset<T, ApprovalStepInstanceAggregateArgs>): Prisma.PrismaPromise<GetApprovalStepInstanceAggregateType<T>>
+
+    /**
+     * Group by ApprovalStepInstance.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalStepInstanceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApprovalStepInstanceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApprovalStepInstanceGroupByArgs['orderBy'] }
+        : { orderBy?: ApprovalStepInstanceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApprovalStepInstanceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApprovalStepInstanceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApprovalStepInstance model
+   */
+  readonly fields: ApprovalStepInstanceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApprovalStepInstance.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApprovalStepInstanceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    request<T extends ApprovalRequestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalRequestDefaultArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    assigneeRole<T extends ApprovalStepInstance$assigneeRoleArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalStepInstance$assigneeRoleArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    assigneeUser<T extends ApprovalStepInstance$assigneeUserArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalStepInstance$assigneeUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    decidedBy<T extends ApprovalStepInstance$decidedByArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalStepInstance$decidedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    decisions<T extends ApprovalStepInstance$decisionsArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalStepInstance$decisionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApprovalStepInstance model
+   */
+  interface ApprovalStepInstanceFieldRefs {
+    readonly id: FieldRef<"ApprovalStepInstance", 'String'>
+    readonly requestId: FieldRef<"ApprovalStepInstance", 'String'>
+    readonly stepOrder: FieldRef<"ApprovalStepInstance", 'Int'>
+    readonly stepName: FieldRef<"ApprovalStepInstance", 'String'>
+    readonly stepType: FieldRef<"ApprovalStepInstance", 'ApprovalStepType'>
+    readonly assigneeType: FieldRef<"ApprovalStepInstance", 'ApprovalAssigneeType'>
+    readonly assigneeRoleId: FieldRef<"ApprovalStepInstance", 'String'>
+    readonly assigneeUserId: FieldRef<"ApprovalStepInstance", 'String'>
+    readonly resolutionMode: FieldRef<"ApprovalStepInstance", 'ResolutionMode'>
+    readonly quorum: FieldRef<"ApprovalStepInstance", 'Int'>
+    readonly status: FieldRef<"ApprovalStepInstance", 'ApprovalRequestStatus'>
+    readonly decidedAt: FieldRef<"ApprovalStepInstance", 'DateTime'>
+    readonly decidedById: FieldRef<"ApprovalStepInstance", 'String'>
+    readonly createdAt: FieldRef<"ApprovalStepInstance", 'DateTime'>
+    readonly updatedAt: FieldRef<"ApprovalStepInstance", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApprovalStepInstance findUnique
+   */
+  export type ApprovalStepInstanceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalStepInstance to fetch.
+     */
+    where: ApprovalStepInstanceWhereUniqueInput
+  }
+
+  /**
+   * ApprovalStepInstance findUniqueOrThrow
+   */
+  export type ApprovalStepInstanceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalStepInstance to fetch.
+     */
+    where: ApprovalStepInstanceWhereUniqueInput
+  }
+
+  /**
+   * ApprovalStepInstance findFirst
+   */
+  export type ApprovalStepInstanceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalStepInstance to fetch.
+     */
+    where?: ApprovalStepInstanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalStepInstances to fetch.
+     */
+    orderBy?: ApprovalStepInstanceOrderByWithRelationInput | ApprovalStepInstanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovalStepInstances.
+     */
+    cursor?: ApprovalStepInstanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalStepInstances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalStepInstances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovalStepInstances.
+     */
+    distinct?: ApprovalStepInstanceScalarFieldEnum | ApprovalStepInstanceScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalStepInstance findFirstOrThrow
+   */
+  export type ApprovalStepInstanceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalStepInstance to fetch.
+     */
+    where?: ApprovalStepInstanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalStepInstances to fetch.
+     */
+    orderBy?: ApprovalStepInstanceOrderByWithRelationInput | ApprovalStepInstanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovalStepInstances.
+     */
+    cursor?: ApprovalStepInstanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalStepInstances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalStepInstances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovalStepInstances.
+     */
+    distinct?: ApprovalStepInstanceScalarFieldEnum | ApprovalStepInstanceScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalStepInstance findMany
+   */
+  export type ApprovalStepInstanceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalStepInstances to fetch.
+     */
+    where?: ApprovalStepInstanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalStepInstances to fetch.
+     */
+    orderBy?: ApprovalStepInstanceOrderByWithRelationInput | ApprovalStepInstanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApprovalStepInstances.
+     */
+    cursor?: ApprovalStepInstanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalStepInstances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalStepInstances.
+     */
+    skip?: number
+    distinct?: ApprovalStepInstanceScalarFieldEnum | ApprovalStepInstanceScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalStepInstance create
+   */
+  export type ApprovalStepInstanceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ApprovalStepInstance.
+     */
+    data: XOR<ApprovalStepInstanceCreateInput, ApprovalStepInstanceUncheckedCreateInput>
+  }
+
+  /**
+   * ApprovalStepInstance createMany
+   */
+  export type ApprovalStepInstanceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApprovalStepInstances.
+     */
+    data: ApprovalStepInstanceCreateManyInput | ApprovalStepInstanceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApprovalStepInstance createManyAndReturn
+   */
+  export type ApprovalStepInstanceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * The data used to create many ApprovalStepInstances.
+     */
+    data: ApprovalStepInstanceCreateManyInput | ApprovalStepInstanceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalStepInstance update
+   */
+  export type ApprovalStepInstanceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ApprovalStepInstance.
+     */
+    data: XOR<ApprovalStepInstanceUpdateInput, ApprovalStepInstanceUncheckedUpdateInput>
+    /**
+     * Choose, which ApprovalStepInstance to update.
+     */
+    where: ApprovalStepInstanceWhereUniqueInput
+  }
+
+  /**
+   * ApprovalStepInstance updateMany
+   */
+  export type ApprovalStepInstanceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApprovalStepInstances.
+     */
+    data: XOR<ApprovalStepInstanceUpdateManyMutationInput, ApprovalStepInstanceUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovalStepInstances to update
+     */
+    where?: ApprovalStepInstanceWhereInput
+    /**
+     * Limit how many ApprovalStepInstances to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovalStepInstance updateManyAndReturn
+   */
+  export type ApprovalStepInstanceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * The data used to update ApprovalStepInstances.
+     */
+    data: XOR<ApprovalStepInstanceUpdateManyMutationInput, ApprovalStepInstanceUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovalStepInstances to update
+     */
+    where?: ApprovalStepInstanceWhereInput
+    /**
+     * Limit how many ApprovalStepInstances to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalStepInstance upsert
+   */
+  export type ApprovalStepInstanceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ApprovalStepInstance to update in case it exists.
+     */
+    where: ApprovalStepInstanceWhereUniqueInput
+    /**
+     * In case the ApprovalStepInstance found by the `where` argument doesn't exist, create a new ApprovalStepInstance with this data.
+     */
+    create: XOR<ApprovalStepInstanceCreateInput, ApprovalStepInstanceUncheckedCreateInput>
+    /**
+     * In case the ApprovalStepInstance was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApprovalStepInstanceUpdateInput, ApprovalStepInstanceUncheckedUpdateInput>
+  }
+
+  /**
+   * ApprovalStepInstance delete
+   */
+  export type ApprovalStepInstanceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+    /**
+     * Filter which ApprovalStepInstance to delete.
+     */
+    where: ApprovalStepInstanceWhereUniqueInput
+  }
+
+  /**
+   * ApprovalStepInstance deleteMany
+   */
+  export type ApprovalStepInstanceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovalStepInstances to delete
+     */
+    where?: ApprovalStepInstanceWhereInput
+    /**
+     * Limit how many ApprovalStepInstances to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovalStepInstance.assigneeRole
+   */
+  export type ApprovalStepInstance$assigneeRoleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    where?: RoleWhereInput
+  }
+
+  /**
+   * ApprovalStepInstance.assigneeUser
+   */
+  export type ApprovalStepInstance$assigneeUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ApprovalStepInstance.decidedBy
+   */
+  export type ApprovalStepInstance$decidedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ApprovalStepInstance.decisions
+   */
+  export type ApprovalStepInstance$decisionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    where?: ApprovalDecisionRecordWhereInput
+    orderBy?: ApprovalDecisionRecordOrderByWithRelationInput | ApprovalDecisionRecordOrderByWithRelationInput[]
+    cursor?: ApprovalDecisionRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalDecisionRecordScalarFieldEnum | ApprovalDecisionRecordScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalStepInstance without action
+   */
+  export type ApprovalStepInstanceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalStepInstance
+     */
+    select?: ApprovalStepInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalStepInstance
+     */
+    omit?: ApprovalStepInstanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalStepInstanceInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ApprovalDecisionRecord
+   */
+
+  export type AggregateApprovalDecisionRecord = {
+    _count: ApprovalDecisionRecordCountAggregateOutputType | null
+    _min: ApprovalDecisionRecordMinAggregateOutputType | null
+    _max: ApprovalDecisionRecordMaxAggregateOutputType | null
+  }
+
+  export type ApprovalDecisionRecordMinAggregateOutputType = {
+    id: string | null
+    requestId: string | null
+    stepInstanceId: string | null
+    actorId: string | null
+    decision: $Enums.ApprovalDecision | null
+    reason: string | null
+    sodViolation: boolean | null
+    sodWaiverId: string | null
+    delegationId: string | null
+    createdAt: Date | null
+  }
+
+  export type ApprovalDecisionRecordMaxAggregateOutputType = {
+    id: string | null
+    requestId: string | null
+    stepInstanceId: string | null
+    actorId: string | null
+    decision: $Enums.ApprovalDecision | null
+    reason: string | null
+    sodViolation: boolean | null
+    sodWaiverId: string | null
+    delegationId: string | null
+    createdAt: Date | null
+  }
+
+  export type ApprovalDecisionRecordCountAggregateOutputType = {
+    id: number
+    requestId: number
+    stepInstanceId: number
+    actorId: number
+    decision: number
+    reason: number
+    sodViolation: number
+    sodWaiverId: number
+    delegationId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ApprovalDecisionRecordMinAggregateInputType = {
+    id?: true
+    requestId?: true
+    stepInstanceId?: true
+    actorId?: true
+    decision?: true
+    reason?: true
+    sodViolation?: true
+    sodWaiverId?: true
+    delegationId?: true
+    createdAt?: true
+  }
+
+  export type ApprovalDecisionRecordMaxAggregateInputType = {
+    id?: true
+    requestId?: true
+    stepInstanceId?: true
+    actorId?: true
+    decision?: true
+    reason?: true
+    sodViolation?: true
+    sodWaiverId?: true
+    delegationId?: true
+    createdAt?: true
+  }
+
+  export type ApprovalDecisionRecordCountAggregateInputType = {
+    id?: true
+    requestId?: true
+    stepInstanceId?: true
+    actorId?: true
+    decision?: true
+    reason?: true
+    sodViolation?: true
+    sodWaiverId?: true
+    delegationId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ApprovalDecisionRecordAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovalDecisionRecord to aggregate.
+     */
+    where?: ApprovalDecisionRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalDecisionRecords to fetch.
+     */
+    orderBy?: ApprovalDecisionRecordOrderByWithRelationInput | ApprovalDecisionRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApprovalDecisionRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalDecisionRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalDecisionRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApprovalDecisionRecords
+    **/
+    _count?: true | ApprovalDecisionRecordCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApprovalDecisionRecordMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApprovalDecisionRecordMaxAggregateInputType
+  }
+
+  export type GetApprovalDecisionRecordAggregateType<T extends ApprovalDecisionRecordAggregateArgs> = {
+        [P in keyof T & keyof AggregateApprovalDecisionRecord]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApprovalDecisionRecord[P]>
+      : GetScalarType<T[P], AggregateApprovalDecisionRecord[P]>
+  }
+
+
+
+
+  export type ApprovalDecisionRecordGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovalDecisionRecordWhereInput
+    orderBy?: ApprovalDecisionRecordOrderByWithAggregationInput | ApprovalDecisionRecordOrderByWithAggregationInput[]
+    by: ApprovalDecisionRecordScalarFieldEnum[] | ApprovalDecisionRecordScalarFieldEnum
+    having?: ApprovalDecisionRecordScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApprovalDecisionRecordCountAggregateInputType | true
+    _min?: ApprovalDecisionRecordMinAggregateInputType
+    _max?: ApprovalDecisionRecordMaxAggregateInputType
+  }
+
+  export type ApprovalDecisionRecordGroupByOutputType = {
+    id: string
+    requestId: string
+    stepInstanceId: string
+    actorId: string
+    decision: $Enums.ApprovalDecision
+    reason: string | null
+    sodViolation: boolean
+    sodWaiverId: string | null
+    delegationId: string | null
+    createdAt: Date
+    _count: ApprovalDecisionRecordCountAggregateOutputType | null
+    _min: ApprovalDecisionRecordMinAggregateOutputType | null
+    _max: ApprovalDecisionRecordMaxAggregateOutputType | null
+  }
+
+  type GetApprovalDecisionRecordGroupByPayload<T extends ApprovalDecisionRecordGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApprovalDecisionRecordGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApprovalDecisionRecordGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApprovalDecisionRecordGroupByOutputType[P]>
+            : GetScalarType<T[P], ApprovalDecisionRecordGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApprovalDecisionRecordSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    requestId?: boolean
+    stepInstanceId?: boolean
+    actorId?: boolean
+    decision?: boolean
+    reason?: boolean
+    sodViolation?: boolean
+    sodWaiverId?: boolean
+    delegationId?: boolean
+    createdAt?: boolean
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    stepInstance?: boolean | ApprovalStepInstanceDefaultArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalDecisionRecord"]>
+
+  export type ApprovalDecisionRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    requestId?: boolean
+    stepInstanceId?: boolean
+    actorId?: boolean
+    decision?: boolean
+    reason?: boolean
+    sodViolation?: boolean
+    sodWaiverId?: boolean
+    delegationId?: boolean
+    createdAt?: boolean
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    stepInstance?: boolean | ApprovalStepInstanceDefaultArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalDecisionRecord"]>
+
+  export type ApprovalDecisionRecordSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    requestId?: boolean
+    stepInstanceId?: boolean
+    actorId?: boolean
+    decision?: boolean
+    reason?: boolean
+    sodViolation?: boolean
+    sodWaiverId?: boolean
+    delegationId?: boolean
+    createdAt?: boolean
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    stepInstance?: boolean | ApprovalStepInstanceDefaultArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["approvalDecisionRecord"]>
+
+  export type ApprovalDecisionRecordSelectScalar = {
+    id?: boolean
+    requestId?: boolean
+    stepInstanceId?: boolean
+    actorId?: boolean
+    decision?: boolean
+    reason?: boolean
+    sodViolation?: boolean
+    sodWaiverId?: boolean
+    delegationId?: boolean
+    createdAt?: boolean
+  }
+
+  export type ApprovalDecisionRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "requestId" | "stepInstanceId" | "actorId" | "decision" | "reason" | "sodViolation" | "sodWaiverId" | "delegationId" | "createdAt", ExtArgs["result"]["approvalDecisionRecord"]>
+  export type ApprovalDecisionRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    stepInstance?: boolean | ApprovalStepInstanceDefaultArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ApprovalDecisionRecordIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    stepInstance?: boolean | ApprovalStepInstanceDefaultArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ApprovalDecisionRecordIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | ApprovalRequestDefaultArgs<ExtArgs>
+    stepInstance?: boolean | ApprovalStepInstanceDefaultArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ApprovalDecisionRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApprovalDecisionRecord"
+    objects: {
+      request: Prisma.$ApprovalRequestPayload<ExtArgs>
+      stepInstance: Prisma.$ApprovalStepInstancePayload<ExtArgs>
+      actor: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      requestId: string
+      stepInstanceId: string
+      actorId: string
+      decision: $Enums.ApprovalDecision
+      reason: string | null
+      sodViolation: boolean
+      sodWaiverId: string | null
+      delegationId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["approvalDecisionRecord"]>
+    composites: {}
+  }
+
+  type ApprovalDecisionRecordGetPayload<S extends boolean | null | undefined | ApprovalDecisionRecordDefaultArgs> = $Result.GetResult<Prisma.$ApprovalDecisionRecordPayload, S>
+
+  type ApprovalDecisionRecordCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApprovalDecisionRecordFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApprovalDecisionRecordCountAggregateInputType | true
+    }
+
+  export interface ApprovalDecisionRecordDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApprovalDecisionRecord'], meta: { name: 'ApprovalDecisionRecord' } }
+    /**
+     * Find zero or one ApprovalDecisionRecord that matches the filter.
+     * @param {ApprovalDecisionRecordFindUniqueArgs} args - Arguments to find a ApprovalDecisionRecord
+     * @example
+     * // Get one ApprovalDecisionRecord
+     * const approvalDecisionRecord = await prisma.approvalDecisionRecord.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApprovalDecisionRecordFindUniqueArgs>(args: SelectSubset<T, ApprovalDecisionRecordFindUniqueArgs<ExtArgs>>): Prisma__ApprovalDecisionRecordClient<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ApprovalDecisionRecord that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApprovalDecisionRecordFindUniqueOrThrowArgs} args - Arguments to find a ApprovalDecisionRecord
+     * @example
+     * // Get one ApprovalDecisionRecord
+     * const approvalDecisionRecord = await prisma.approvalDecisionRecord.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApprovalDecisionRecordFindUniqueOrThrowArgs>(args: SelectSubset<T, ApprovalDecisionRecordFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApprovalDecisionRecordClient<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovalDecisionRecord that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalDecisionRecordFindFirstArgs} args - Arguments to find a ApprovalDecisionRecord
+     * @example
+     * // Get one ApprovalDecisionRecord
+     * const approvalDecisionRecord = await prisma.approvalDecisionRecord.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApprovalDecisionRecordFindFirstArgs>(args?: SelectSubset<T, ApprovalDecisionRecordFindFirstArgs<ExtArgs>>): Prisma__ApprovalDecisionRecordClient<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovalDecisionRecord that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalDecisionRecordFindFirstOrThrowArgs} args - Arguments to find a ApprovalDecisionRecord
+     * @example
+     * // Get one ApprovalDecisionRecord
+     * const approvalDecisionRecord = await prisma.approvalDecisionRecord.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApprovalDecisionRecordFindFirstOrThrowArgs>(args?: SelectSubset<T, ApprovalDecisionRecordFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApprovalDecisionRecordClient<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ApprovalDecisionRecords that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalDecisionRecordFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApprovalDecisionRecords
+     * const approvalDecisionRecords = await prisma.approvalDecisionRecord.findMany()
+     * 
+     * // Get first 10 ApprovalDecisionRecords
+     * const approvalDecisionRecords = await prisma.approvalDecisionRecord.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const approvalDecisionRecordWithIdOnly = await prisma.approvalDecisionRecord.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApprovalDecisionRecordFindManyArgs>(args?: SelectSubset<T, ApprovalDecisionRecordFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ApprovalDecisionRecord.
+     * @param {ApprovalDecisionRecordCreateArgs} args - Arguments to create a ApprovalDecisionRecord.
+     * @example
+     * // Create one ApprovalDecisionRecord
+     * const ApprovalDecisionRecord = await prisma.approvalDecisionRecord.create({
+     *   data: {
+     *     // ... data to create a ApprovalDecisionRecord
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApprovalDecisionRecordCreateArgs>(args: SelectSubset<T, ApprovalDecisionRecordCreateArgs<ExtArgs>>): Prisma__ApprovalDecisionRecordClient<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ApprovalDecisionRecords.
+     * @param {ApprovalDecisionRecordCreateManyArgs} args - Arguments to create many ApprovalDecisionRecords.
+     * @example
+     * // Create many ApprovalDecisionRecords
+     * const approvalDecisionRecord = await prisma.approvalDecisionRecord.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApprovalDecisionRecordCreateManyArgs>(args?: SelectSubset<T, ApprovalDecisionRecordCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ApprovalDecisionRecords and returns the data saved in the database.
+     * @param {ApprovalDecisionRecordCreateManyAndReturnArgs} args - Arguments to create many ApprovalDecisionRecords.
+     * @example
+     * // Create many ApprovalDecisionRecords
+     * const approvalDecisionRecord = await prisma.approvalDecisionRecord.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ApprovalDecisionRecords and only return the `id`
+     * const approvalDecisionRecordWithIdOnly = await prisma.approvalDecisionRecord.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ApprovalDecisionRecordCreateManyAndReturnArgs>(args?: SelectSubset<T, ApprovalDecisionRecordCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ApprovalDecisionRecord.
+     * @param {ApprovalDecisionRecordDeleteArgs} args - Arguments to delete one ApprovalDecisionRecord.
+     * @example
+     * // Delete one ApprovalDecisionRecord
+     * const ApprovalDecisionRecord = await prisma.approvalDecisionRecord.delete({
+     *   where: {
+     *     // ... filter to delete one ApprovalDecisionRecord
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApprovalDecisionRecordDeleteArgs>(args: SelectSubset<T, ApprovalDecisionRecordDeleteArgs<ExtArgs>>): Prisma__ApprovalDecisionRecordClient<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ApprovalDecisionRecord.
+     * @param {ApprovalDecisionRecordUpdateArgs} args - Arguments to update one ApprovalDecisionRecord.
+     * @example
+     * // Update one ApprovalDecisionRecord
+     * const approvalDecisionRecord = await prisma.approvalDecisionRecord.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApprovalDecisionRecordUpdateArgs>(args: SelectSubset<T, ApprovalDecisionRecordUpdateArgs<ExtArgs>>): Prisma__ApprovalDecisionRecordClient<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ApprovalDecisionRecords.
+     * @param {ApprovalDecisionRecordDeleteManyArgs} args - Arguments to filter ApprovalDecisionRecords to delete.
+     * @example
+     * // Delete a few ApprovalDecisionRecords
+     * const { count } = await prisma.approvalDecisionRecord.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApprovalDecisionRecordDeleteManyArgs>(args?: SelectSubset<T, ApprovalDecisionRecordDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovalDecisionRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalDecisionRecordUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApprovalDecisionRecords
+     * const approvalDecisionRecord = await prisma.approvalDecisionRecord.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApprovalDecisionRecordUpdateManyArgs>(args: SelectSubset<T, ApprovalDecisionRecordUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovalDecisionRecords and returns the data updated in the database.
+     * @param {ApprovalDecisionRecordUpdateManyAndReturnArgs} args - Arguments to update many ApprovalDecisionRecords.
+     * @example
+     * // Update many ApprovalDecisionRecords
+     * const approvalDecisionRecord = await prisma.approvalDecisionRecord.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ApprovalDecisionRecords and only return the `id`
+     * const approvalDecisionRecordWithIdOnly = await prisma.approvalDecisionRecord.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ApprovalDecisionRecordUpdateManyAndReturnArgs>(args: SelectSubset<T, ApprovalDecisionRecordUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ApprovalDecisionRecord.
+     * @param {ApprovalDecisionRecordUpsertArgs} args - Arguments to update or create a ApprovalDecisionRecord.
+     * @example
+     * // Update or create a ApprovalDecisionRecord
+     * const approvalDecisionRecord = await prisma.approvalDecisionRecord.upsert({
+     *   create: {
+     *     // ... data to create a ApprovalDecisionRecord
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApprovalDecisionRecord we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApprovalDecisionRecordUpsertArgs>(args: SelectSubset<T, ApprovalDecisionRecordUpsertArgs<ExtArgs>>): Prisma__ApprovalDecisionRecordClient<$Result.GetResult<Prisma.$ApprovalDecisionRecordPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ApprovalDecisionRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalDecisionRecordCountArgs} args - Arguments to filter ApprovalDecisionRecords to count.
+     * @example
+     * // Count the number of ApprovalDecisionRecords
+     * const count = await prisma.approvalDecisionRecord.count({
+     *   where: {
+     *     // ... the filter for the ApprovalDecisionRecords we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApprovalDecisionRecordCountArgs>(
+      args?: Subset<T, ApprovalDecisionRecordCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApprovalDecisionRecordCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApprovalDecisionRecord.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalDecisionRecordAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApprovalDecisionRecordAggregateArgs>(args: Subset<T, ApprovalDecisionRecordAggregateArgs>): Prisma.PrismaPromise<GetApprovalDecisionRecordAggregateType<T>>
+
+    /**
+     * Group by ApprovalDecisionRecord.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovalDecisionRecordGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApprovalDecisionRecordGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApprovalDecisionRecordGroupByArgs['orderBy'] }
+        : { orderBy?: ApprovalDecisionRecordGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApprovalDecisionRecordGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApprovalDecisionRecordGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApprovalDecisionRecord model
+   */
+  readonly fields: ApprovalDecisionRecordFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApprovalDecisionRecord.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApprovalDecisionRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    request<T extends ApprovalRequestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalRequestDefaultArgs<ExtArgs>>): Prisma__ApprovalRequestClient<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    stepInstance<T extends ApprovalStepInstanceDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApprovalStepInstanceDefaultArgs<ExtArgs>>): Prisma__ApprovalStepInstanceClient<$Result.GetResult<Prisma.$ApprovalStepInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    actor<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApprovalDecisionRecord model
+   */
+  interface ApprovalDecisionRecordFieldRefs {
+    readonly id: FieldRef<"ApprovalDecisionRecord", 'String'>
+    readonly requestId: FieldRef<"ApprovalDecisionRecord", 'String'>
+    readonly stepInstanceId: FieldRef<"ApprovalDecisionRecord", 'String'>
+    readonly actorId: FieldRef<"ApprovalDecisionRecord", 'String'>
+    readonly decision: FieldRef<"ApprovalDecisionRecord", 'ApprovalDecision'>
+    readonly reason: FieldRef<"ApprovalDecisionRecord", 'String'>
+    readonly sodViolation: FieldRef<"ApprovalDecisionRecord", 'Boolean'>
+    readonly sodWaiverId: FieldRef<"ApprovalDecisionRecord", 'String'>
+    readonly delegationId: FieldRef<"ApprovalDecisionRecord", 'String'>
+    readonly createdAt: FieldRef<"ApprovalDecisionRecord", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApprovalDecisionRecord findUnique
+   */
+  export type ApprovalDecisionRecordFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalDecisionRecord to fetch.
+     */
+    where: ApprovalDecisionRecordWhereUniqueInput
+  }
+
+  /**
+   * ApprovalDecisionRecord findUniqueOrThrow
+   */
+  export type ApprovalDecisionRecordFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalDecisionRecord to fetch.
+     */
+    where: ApprovalDecisionRecordWhereUniqueInput
+  }
+
+  /**
+   * ApprovalDecisionRecord findFirst
+   */
+  export type ApprovalDecisionRecordFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalDecisionRecord to fetch.
+     */
+    where?: ApprovalDecisionRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalDecisionRecords to fetch.
+     */
+    orderBy?: ApprovalDecisionRecordOrderByWithRelationInput | ApprovalDecisionRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovalDecisionRecords.
+     */
+    cursor?: ApprovalDecisionRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalDecisionRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalDecisionRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovalDecisionRecords.
+     */
+    distinct?: ApprovalDecisionRecordScalarFieldEnum | ApprovalDecisionRecordScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalDecisionRecord findFirstOrThrow
+   */
+  export type ApprovalDecisionRecordFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalDecisionRecord to fetch.
+     */
+    where?: ApprovalDecisionRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalDecisionRecords to fetch.
+     */
+    orderBy?: ApprovalDecisionRecordOrderByWithRelationInput | ApprovalDecisionRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovalDecisionRecords.
+     */
+    cursor?: ApprovalDecisionRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalDecisionRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalDecisionRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovalDecisionRecords.
+     */
+    distinct?: ApprovalDecisionRecordScalarFieldEnum | ApprovalDecisionRecordScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalDecisionRecord findMany
+   */
+  export type ApprovalDecisionRecordFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    /**
+     * Filter, which ApprovalDecisionRecords to fetch.
+     */
+    where?: ApprovalDecisionRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovalDecisionRecords to fetch.
+     */
+    orderBy?: ApprovalDecisionRecordOrderByWithRelationInput | ApprovalDecisionRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApprovalDecisionRecords.
+     */
+    cursor?: ApprovalDecisionRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovalDecisionRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovalDecisionRecords.
+     */
+    skip?: number
+    distinct?: ApprovalDecisionRecordScalarFieldEnum | ApprovalDecisionRecordScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovalDecisionRecord create
+   */
+  export type ApprovalDecisionRecordCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ApprovalDecisionRecord.
+     */
+    data: XOR<ApprovalDecisionRecordCreateInput, ApprovalDecisionRecordUncheckedCreateInput>
+  }
+
+  /**
+   * ApprovalDecisionRecord createMany
+   */
+  export type ApprovalDecisionRecordCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApprovalDecisionRecords.
+     */
+    data: ApprovalDecisionRecordCreateManyInput | ApprovalDecisionRecordCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApprovalDecisionRecord createManyAndReturn
+   */
+  export type ApprovalDecisionRecordCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * The data used to create many ApprovalDecisionRecords.
+     */
+    data: ApprovalDecisionRecordCreateManyInput | ApprovalDecisionRecordCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalDecisionRecord update
+   */
+  export type ApprovalDecisionRecordUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ApprovalDecisionRecord.
+     */
+    data: XOR<ApprovalDecisionRecordUpdateInput, ApprovalDecisionRecordUncheckedUpdateInput>
+    /**
+     * Choose, which ApprovalDecisionRecord to update.
+     */
+    where: ApprovalDecisionRecordWhereUniqueInput
+  }
+
+  /**
+   * ApprovalDecisionRecord updateMany
+   */
+  export type ApprovalDecisionRecordUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApprovalDecisionRecords.
+     */
+    data: XOR<ApprovalDecisionRecordUpdateManyMutationInput, ApprovalDecisionRecordUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovalDecisionRecords to update
+     */
+    where?: ApprovalDecisionRecordWhereInput
+    /**
+     * Limit how many ApprovalDecisionRecords to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovalDecisionRecord updateManyAndReturn
+   */
+  export type ApprovalDecisionRecordUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * The data used to update ApprovalDecisionRecords.
+     */
+    data: XOR<ApprovalDecisionRecordUpdateManyMutationInput, ApprovalDecisionRecordUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovalDecisionRecords to update
+     */
+    where?: ApprovalDecisionRecordWhereInput
+    /**
+     * Limit how many ApprovalDecisionRecords to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ApprovalDecisionRecord upsert
+   */
+  export type ApprovalDecisionRecordUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ApprovalDecisionRecord to update in case it exists.
+     */
+    where: ApprovalDecisionRecordWhereUniqueInput
+    /**
+     * In case the ApprovalDecisionRecord found by the `where` argument doesn't exist, create a new ApprovalDecisionRecord with this data.
+     */
+    create: XOR<ApprovalDecisionRecordCreateInput, ApprovalDecisionRecordUncheckedCreateInput>
+    /**
+     * In case the ApprovalDecisionRecord was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApprovalDecisionRecordUpdateInput, ApprovalDecisionRecordUncheckedUpdateInput>
+  }
+
+  /**
+   * ApprovalDecisionRecord delete
+   */
+  export type ApprovalDecisionRecordDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+    /**
+     * Filter which ApprovalDecisionRecord to delete.
+     */
+    where: ApprovalDecisionRecordWhereUniqueInput
+  }
+
+  /**
+   * ApprovalDecisionRecord deleteMany
+   */
+  export type ApprovalDecisionRecordDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovalDecisionRecords to delete
+     */
+    where?: ApprovalDecisionRecordWhereInput
+    /**
+     * Limit how many ApprovalDecisionRecords to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovalDecisionRecord without action
+   */
+  export type ApprovalDecisionRecordDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalDecisionRecord
+     */
+    select?: ApprovalDecisionRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalDecisionRecord
+     */
+    omit?: ApprovalDecisionRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalDecisionRecordInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Organization
    */
 
@@ -23460,6 +30798,8 @@ export namespace Prisma {
     transactions?: boolean | Organization$transactionsArgs<ExtArgs>
     budgets?: boolean | Organization$budgetsArgs<ExtArgs>
     budgetLines?: boolean | Organization$budgetLinesArgs<ExtArgs>
+    approvalPolicies?: boolean | Organization$approvalPoliciesArgs<ExtArgs>
+    approvalRequests?: boolean | Organization$approvalRequestsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -23544,6 +30884,8 @@ export namespace Prisma {
     transactions?: boolean | Organization$transactionsArgs<ExtArgs>
     budgets?: boolean | Organization$budgetsArgs<ExtArgs>
     budgetLines?: boolean | Organization$budgetLinesArgs<ExtArgs>
+    approvalPolicies?: boolean | Organization$approvalPoliciesArgs<ExtArgs>
+    approvalRequests?: boolean | Organization$approvalRequestsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -23571,6 +30913,8 @@ export namespace Prisma {
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
       budgets: Prisma.$BudgetPayload<ExtArgs>[]
       budgetLines: Prisma.$BudgetLinePayload<ExtArgs>[]
+      approvalPolicies: Prisma.$ApprovalPolicyPayload<ExtArgs>[]
+      approvalRequests: Prisma.$ApprovalRequestPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -24009,6 +31353,8 @@ export namespace Prisma {
     transactions<T extends Organization$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     budgets<T extends Organization$budgetsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$budgetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BudgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     budgetLines<T extends Organization$budgetLinesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$budgetLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BudgetLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvalPolicies<T extends Organization$approvalPoliciesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$approvalPoliciesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvalRequests<T extends Organization$approvalRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$approvalRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -24896,6 +32242,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: BudgetLineScalarFieldEnum | BudgetLineScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.approvalPolicies
+   */
+  export type Organization$approvalPoliciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalPolicy
+     */
+    select?: ApprovalPolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalPolicy
+     */
+    omit?: ApprovalPolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalPolicyInclude<ExtArgs> | null
+    where?: ApprovalPolicyWhereInput
+    orderBy?: ApprovalPolicyOrderByWithRelationInput | ApprovalPolicyOrderByWithRelationInput[]
+    cursor?: ApprovalPolicyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalPolicyScalarFieldEnum | ApprovalPolicyScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.approvalRequests
+   */
+  export type Organization$approvalRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovalRequest
+     */
+    select?: ApprovalRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovalRequest
+     */
+    omit?: ApprovalRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApprovalRequestInclude<ExtArgs> | null
+    where?: ApprovalRequestWhereInput
+    orderBy?: ApprovalRequestOrderByWithRelationInput | ApprovalRequestOrderByWithRelationInput[]
+    cursor?: ApprovalRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApprovalRequestScalarFieldEnum | ApprovalRequestScalarFieldEnum[]
   }
 
   /**
@@ -61264,6 +68658,102 @@ export namespace Prisma {
   export type AccessReviewItemScalarFieldEnum = (typeof AccessReviewItemScalarFieldEnum)[keyof typeof AccessReviewItemScalarFieldEnum]
 
 
+  export const ApprovalPolicyScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    name: 'name',
+    description: 'description',
+    entityType: 'entityType',
+    isActive: 'isActive',
+    priority: 'priority',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedById: 'updatedById',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ApprovalPolicyScalarFieldEnum = (typeof ApprovalPolicyScalarFieldEnum)[keyof typeof ApprovalPolicyScalarFieldEnum]
+
+
+  export const ApprovalPolicyStepScalarFieldEnum: {
+    id: 'id',
+    policyId: 'policyId',
+    stepOrder: 'stepOrder',
+    name: 'name',
+    type: 'type',
+    assigneeType: 'assigneeType',
+    assigneeRoleId: 'assigneeRoleId',
+    assigneeUserId: 'assigneeUserId',
+    resolutionMode: 'resolutionMode',
+    quorum: 'quorum',
+    conditionOperator: 'conditionOperator',
+    conditionValue: 'conditionValue',
+    isRequired: 'isRequired',
+    isFinalApprover: 'isFinalApprover',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ApprovalPolicyStepScalarFieldEnum = (typeof ApprovalPolicyStepScalarFieldEnum)[keyof typeof ApprovalPolicyStepScalarFieldEnum]
+
+
+  export const ApprovalRequestScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    entityType: 'entityType',
+    entityId: 'entityId',
+    policyId: 'policyId',
+    policySnapshot: 'policySnapshot',
+    status: 'status',
+    submittedById: 'submittedById',
+    submittedAt: 'submittedAt',
+    currentStepIndex: 'currentStepIndex',
+    decidedAt: 'decidedAt',
+    decidedById: 'decidedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ApprovalRequestScalarFieldEnum = (typeof ApprovalRequestScalarFieldEnum)[keyof typeof ApprovalRequestScalarFieldEnum]
+
+
+  export const ApprovalStepInstanceScalarFieldEnum: {
+    id: 'id',
+    requestId: 'requestId',
+    stepOrder: 'stepOrder',
+    stepName: 'stepName',
+    stepType: 'stepType',
+    assigneeType: 'assigneeType',
+    assigneeRoleId: 'assigneeRoleId',
+    assigneeUserId: 'assigneeUserId',
+    resolutionMode: 'resolutionMode',
+    quorum: 'quorum',
+    status: 'status',
+    decidedAt: 'decidedAt',
+    decidedById: 'decidedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ApprovalStepInstanceScalarFieldEnum = (typeof ApprovalStepInstanceScalarFieldEnum)[keyof typeof ApprovalStepInstanceScalarFieldEnum]
+
+
+  export const ApprovalDecisionRecordScalarFieldEnum: {
+    id: 'id',
+    requestId: 'requestId',
+    stepInstanceId: 'stepInstanceId',
+    actorId: 'actorId',
+    decision: 'decision',
+    reason: 'reason',
+    sodViolation: 'sodViolation',
+    sodWaiverId: 'sodWaiverId',
+    delegationId: 'delegationId',
+    createdAt: 'createdAt'
+  };
+
+  export type ApprovalDecisionRecordScalarFieldEnum = (typeof ApprovalDecisionRecordScalarFieldEnum)[keyof typeof ApprovalDecisionRecordScalarFieldEnum]
+
+
   export const OrganizationScalarFieldEnum: {
     id: 'id',
     code: 'code',
@@ -62130,6 +69620,104 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ApprovalEntityType'
+   */
+  export type EnumApprovalEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalEntityType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalEntityType[]'
+   */
+  export type ListEnumApprovalEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalEntityType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalStepType'
+   */
+  export type EnumApprovalStepTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalStepType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalStepType[]'
+   */
+  export type ListEnumApprovalStepTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalStepType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalAssigneeType'
+   */
+  export type EnumApprovalAssigneeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalAssigneeType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalAssigneeType[]'
+   */
+  export type ListEnumApprovalAssigneeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalAssigneeType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ResolutionMode'
+   */
+  export type EnumResolutionModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResolutionMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'ResolutionMode[]'
+   */
+  export type ListEnumResolutionModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResolutionMode[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalConditionOperator'
+   */
+  export type EnumApprovalConditionOperatorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalConditionOperator'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalConditionOperator[]'
+   */
+  export type ListEnumApprovalConditionOperatorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalConditionOperator[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalRequestStatus'
+   */
+  export type EnumApprovalRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalRequestStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalRequestStatus[]'
+   */
+  export type ListEnumApprovalRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalRequestStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalDecision'
+   */
+  export type EnumApprovalDecisionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalDecision'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalDecision[]'
+   */
+  export type ListEnumApprovalDecisionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalDecision[]'>
+    
+
+
+  /**
    * Reference to a field of type 'OrganizationType'
    */
   export type EnumOrganizationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganizationType'>
@@ -62714,6 +70302,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionListRelationFilter
     transactionsPosted?: TransactionListRelationFilter
     transactionsReversed?: TransactionListRelationFilter
+    approvalRequestsSubmitted?: ApprovalRequestListRelationFilter
+    approvalRequestsDecided?: ApprovalRequestListRelationFilter
+    approvalStepInstancesDecided?: ApprovalStepInstanceListRelationFilter
+    approvalDecisionRecords?: ApprovalDecisionRecordListRelationFilter
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepListRelationFilter
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -62777,6 +70371,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionOrderByRelationAggregateInput
     transactionsPosted?: TransactionOrderByRelationAggregateInput
     transactionsReversed?: TransactionOrderByRelationAggregateInput
+    approvalRequestsSubmitted?: ApprovalRequestOrderByRelationAggregateInput
+    approvalRequestsDecided?: ApprovalRequestOrderByRelationAggregateInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceOrderByRelationAggregateInput
+    approvalDecisionRecords?: ApprovalDecisionRecordOrderByRelationAggregateInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepOrderByRelationAggregateInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -62843,6 +70443,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionListRelationFilter
     transactionsPosted?: TransactionListRelationFilter
     transactionsReversed?: TransactionListRelationFilter
+    approvalRequestsSubmitted?: ApprovalRequestListRelationFilter
+    approvalRequestsDecided?: ApprovalRequestListRelationFilter
+    approvalStepInstancesDecided?: ApprovalStepInstanceListRelationFilter
+    approvalDecisionRecords?: ApprovalDecisionRecordListRelationFilter
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepListRelationFilter
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceListRelationFilter
   }, "id" | "emailNormalized" | "passwordResetToken">
 
   export type UserOrderByWithAggregationInput = {
@@ -63384,6 +70990,8 @@ export namespace Prisma {
     userRoles?: UserRoleListRelationFilter
     delegations?: DelegationListRelationFilter
     accessReviewItems?: AccessReviewItemListRelationFilter
+    approvalPolicySteps?: ApprovalPolicyStepListRelationFilter
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceListRelationFilter
   }
 
   export type RoleOrderByWithRelationInput = {
@@ -63406,6 +71014,8 @@ export namespace Prisma {
     userRoles?: UserRoleOrderByRelationAggregateInput
     delegations?: DelegationOrderByRelationAggregateInput
     accessReviewItems?: AccessReviewItemOrderByRelationAggregateInput
+    approvalPolicySteps?: ApprovalPolicyStepOrderByRelationAggregateInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceOrderByRelationAggregateInput
   }
 
   export type RoleWhereUniqueInput = Prisma.AtLeast<{
@@ -63431,6 +71041,8 @@ export namespace Prisma {
     userRoles?: UserRoleListRelationFilter
     delegations?: DelegationListRelationFilter
     accessReviewItems?: AccessReviewItemListRelationFilter
+    approvalPolicySteps?: ApprovalPolicyStepListRelationFilter
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceListRelationFilter
   }, "id" | "code">
 
   export type RoleOrderByWithAggregationInput = {
@@ -64017,6 +71629,541 @@ export namespace Prisma {
     actionedAt?: DateTimeNullableWithAggregatesFilter<"AccessReviewItem"> | Date | string | null
   }
 
+  export type ApprovalPolicyWhereInput = {
+    AND?: ApprovalPolicyWhereInput | ApprovalPolicyWhereInput[]
+    OR?: ApprovalPolicyWhereInput[]
+    NOT?: ApprovalPolicyWhereInput | ApprovalPolicyWhereInput[]
+    id?: StringFilter<"ApprovalPolicy"> | string
+    organizationId?: StringFilter<"ApprovalPolicy"> | string
+    name?: StringFilter<"ApprovalPolicy"> | string
+    description?: StringNullableFilter<"ApprovalPolicy"> | string | null
+    entityType?: EnumApprovalEntityTypeFilter<"ApprovalPolicy"> | $Enums.ApprovalEntityType
+    isActive?: BoolFilter<"ApprovalPolicy"> | boolean
+    priority?: IntFilter<"ApprovalPolicy"> | number
+    createdById?: StringNullableFilter<"ApprovalPolicy"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalPolicy"> | Date | string
+    updatedById?: StringNullableFilter<"ApprovalPolicy"> | string | null
+    updatedAt?: DateTimeFilter<"ApprovalPolicy"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    steps?: ApprovalPolicyStepListRelationFilter
+    requests?: ApprovalRequestListRelationFilter
+  }
+
+  export type ApprovalPolicyOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    entityType?: SortOrder
+    isActive?: SortOrder
+    priority?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedById?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    steps?: ApprovalPolicyStepOrderByRelationAggregateInput
+    requests?: ApprovalRequestOrderByRelationAggregateInput
+  }
+
+  export type ApprovalPolicyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ApprovalPolicyWhereInput | ApprovalPolicyWhereInput[]
+    OR?: ApprovalPolicyWhereInput[]
+    NOT?: ApprovalPolicyWhereInput | ApprovalPolicyWhereInput[]
+    organizationId?: StringFilter<"ApprovalPolicy"> | string
+    name?: StringFilter<"ApprovalPolicy"> | string
+    description?: StringNullableFilter<"ApprovalPolicy"> | string | null
+    entityType?: EnumApprovalEntityTypeFilter<"ApprovalPolicy"> | $Enums.ApprovalEntityType
+    isActive?: BoolFilter<"ApprovalPolicy"> | boolean
+    priority?: IntFilter<"ApprovalPolicy"> | number
+    createdById?: StringNullableFilter<"ApprovalPolicy"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalPolicy"> | Date | string
+    updatedById?: StringNullableFilter<"ApprovalPolicy"> | string | null
+    updatedAt?: DateTimeFilter<"ApprovalPolicy"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    steps?: ApprovalPolicyStepListRelationFilter
+    requests?: ApprovalRequestListRelationFilter
+  }, "id">
+
+  export type ApprovalPolicyOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    entityType?: SortOrder
+    isActive?: SortOrder
+    priority?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedById?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    _count?: ApprovalPolicyCountOrderByAggregateInput
+    _avg?: ApprovalPolicyAvgOrderByAggregateInput
+    _max?: ApprovalPolicyMaxOrderByAggregateInput
+    _min?: ApprovalPolicyMinOrderByAggregateInput
+    _sum?: ApprovalPolicySumOrderByAggregateInput
+  }
+
+  export type ApprovalPolicyScalarWhereWithAggregatesInput = {
+    AND?: ApprovalPolicyScalarWhereWithAggregatesInput | ApprovalPolicyScalarWhereWithAggregatesInput[]
+    OR?: ApprovalPolicyScalarWhereWithAggregatesInput[]
+    NOT?: ApprovalPolicyScalarWhereWithAggregatesInput | ApprovalPolicyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApprovalPolicy"> | string
+    organizationId?: StringWithAggregatesFilter<"ApprovalPolicy"> | string
+    name?: StringWithAggregatesFilter<"ApprovalPolicy"> | string
+    description?: StringNullableWithAggregatesFilter<"ApprovalPolicy"> | string | null
+    entityType?: EnumApprovalEntityTypeWithAggregatesFilter<"ApprovalPolicy"> | $Enums.ApprovalEntityType
+    isActive?: BoolWithAggregatesFilter<"ApprovalPolicy"> | boolean
+    priority?: IntWithAggregatesFilter<"ApprovalPolicy"> | number
+    createdById?: StringNullableWithAggregatesFilter<"ApprovalPolicy"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ApprovalPolicy"> | Date | string
+    updatedById?: StringNullableWithAggregatesFilter<"ApprovalPolicy"> | string | null
+    updatedAt?: DateTimeWithAggregatesFilter<"ApprovalPolicy"> | Date | string
+  }
+
+  export type ApprovalPolicyStepWhereInput = {
+    AND?: ApprovalPolicyStepWhereInput | ApprovalPolicyStepWhereInput[]
+    OR?: ApprovalPolicyStepWhereInput[]
+    NOT?: ApprovalPolicyStepWhereInput | ApprovalPolicyStepWhereInput[]
+    id?: StringFilter<"ApprovalPolicyStep"> | string
+    policyId?: StringFilter<"ApprovalPolicyStep"> | string
+    stepOrder?: IntFilter<"ApprovalPolicyStep"> | number
+    name?: StringFilter<"ApprovalPolicyStep"> | string
+    type?: EnumApprovalStepTypeFilter<"ApprovalPolicyStep"> | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFilter<"ApprovalPolicyStep"> | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: StringNullableFilter<"ApprovalPolicyStep"> | string | null
+    assigneeUserId?: StringNullableFilter<"ApprovalPolicyStep"> | string | null
+    resolutionMode?: EnumResolutionModeFilter<"ApprovalPolicyStep"> | $Enums.ResolutionMode
+    quorum?: IntNullableFilter<"ApprovalPolicyStep"> | number | null
+    conditionOperator?: EnumApprovalConditionOperatorNullableFilter<"ApprovalPolicyStep"> | $Enums.ApprovalConditionOperator | null
+    conditionValue?: JsonNullableFilter<"ApprovalPolicyStep">
+    isRequired?: BoolFilter<"ApprovalPolicyStep"> | boolean
+    isFinalApprover?: BoolFilter<"ApprovalPolicyStep"> | boolean
+    createdAt?: DateTimeFilter<"ApprovalPolicyStep"> | Date | string
+    updatedAt?: DateTimeFilter<"ApprovalPolicyStep"> | Date | string
+    policy?: XOR<ApprovalPolicyScalarRelationFilter, ApprovalPolicyWhereInput>
+    assigneeRole?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
+    assigneeUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type ApprovalPolicyStepOrderByWithRelationInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    stepOrder?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    assigneeType?: SortOrder
+    assigneeRoleId?: SortOrderInput | SortOrder
+    assigneeUserId?: SortOrderInput | SortOrder
+    resolutionMode?: SortOrder
+    quorum?: SortOrderInput | SortOrder
+    conditionOperator?: SortOrderInput | SortOrder
+    conditionValue?: SortOrderInput | SortOrder
+    isRequired?: SortOrder
+    isFinalApprover?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    policy?: ApprovalPolicyOrderByWithRelationInput
+    assigneeRole?: RoleOrderByWithRelationInput
+    assigneeUser?: UserOrderByWithRelationInput
+  }
+
+  export type ApprovalPolicyStepWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    policyId_stepOrder?: ApprovalPolicyStepPolicyIdStepOrderCompoundUniqueInput
+    AND?: ApprovalPolicyStepWhereInput | ApprovalPolicyStepWhereInput[]
+    OR?: ApprovalPolicyStepWhereInput[]
+    NOT?: ApprovalPolicyStepWhereInput | ApprovalPolicyStepWhereInput[]
+    policyId?: StringFilter<"ApprovalPolicyStep"> | string
+    stepOrder?: IntFilter<"ApprovalPolicyStep"> | number
+    name?: StringFilter<"ApprovalPolicyStep"> | string
+    type?: EnumApprovalStepTypeFilter<"ApprovalPolicyStep"> | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFilter<"ApprovalPolicyStep"> | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: StringNullableFilter<"ApprovalPolicyStep"> | string | null
+    assigneeUserId?: StringNullableFilter<"ApprovalPolicyStep"> | string | null
+    resolutionMode?: EnumResolutionModeFilter<"ApprovalPolicyStep"> | $Enums.ResolutionMode
+    quorum?: IntNullableFilter<"ApprovalPolicyStep"> | number | null
+    conditionOperator?: EnumApprovalConditionOperatorNullableFilter<"ApprovalPolicyStep"> | $Enums.ApprovalConditionOperator | null
+    conditionValue?: JsonNullableFilter<"ApprovalPolicyStep">
+    isRequired?: BoolFilter<"ApprovalPolicyStep"> | boolean
+    isFinalApprover?: BoolFilter<"ApprovalPolicyStep"> | boolean
+    createdAt?: DateTimeFilter<"ApprovalPolicyStep"> | Date | string
+    updatedAt?: DateTimeFilter<"ApprovalPolicyStep"> | Date | string
+    policy?: XOR<ApprovalPolicyScalarRelationFilter, ApprovalPolicyWhereInput>
+    assigneeRole?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
+    assigneeUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "policyId_stepOrder">
+
+  export type ApprovalPolicyStepOrderByWithAggregationInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    stepOrder?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    assigneeType?: SortOrder
+    assigneeRoleId?: SortOrderInput | SortOrder
+    assigneeUserId?: SortOrderInput | SortOrder
+    resolutionMode?: SortOrder
+    quorum?: SortOrderInput | SortOrder
+    conditionOperator?: SortOrderInput | SortOrder
+    conditionValue?: SortOrderInput | SortOrder
+    isRequired?: SortOrder
+    isFinalApprover?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ApprovalPolicyStepCountOrderByAggregateInput
+    _avg?: ApprovalPolicyStepAvgOrderByAggregateInput
+    _max?: ApprovalPolicyStepMaxOrderByAggregateInput
+    _min?: ApprovalPolicyStepMinOrderByAggregateInput
+    _sum?: ApprovalPolicyStepSumOrderByAggregateInput
+  }
+
+  export type ApprovalPolicyStepScalarWhereWithAggregatesInput = {
+    AND?: ApprovalPolicyStepScalarWhereWithAggregatesInput | ApprovalPolicyStepScalarWhereWithAggregatesInput[]
+    OR?: ApprovalPolicyStepScalarWhereWithAggregatesInput[]
+    NOT?: ApprovalPolicyStepScalarWhereWithAggregatesInput | ApprovalPolicyStepScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApprovalPolicyStep"> | string
+    policyId?: StringWithAggregatesFilter<"ApprovalPolicyStep"> | string
+    stepOrder?: IntWithAggregatesFilter<"ApprovalPolicyStep"> | number
+    name?: StringWithAggregatesFilter<"ApprovalPolicyStep"> | string
+    type?: EnumApprovalStepTypeWithAggregatesFilter<"ApprovalPolicyStep"> | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeWithAggregatesFilter<"ApprovalPolicyStep"> | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: StringNullableWithAggregatesFilter<"ApprovalPolicyStep"> | string | null
+    assigneeUserId?: StringNullableWithAggregatesFilter<"ApprovalPolicyStep"> | string | null
+    resolutionMode?: EnumResolutionModeWithAggregatesFilter<"ApprovalPolicyStep"> | $Enums.ResolutionMode
+    quorum?: IntNullableWithAggregatesFilter<"ApprovalPolicyStep"> | number | null
+    conditionOperator?: EnumApprovalConditionOperatorNullableWithAggregatesFilter<"ApprovalPolicyStep"> | $Enums.ApprovalConditionOperator | null
+    conditionValue?: JsonNullableWithAggregatesFilter<"ApprovalPolicyStep">
+    isRequired?: BoolWithAggregatesFilter<"ApprovalPolicyStep"> | boolean
+    isFinalApprover?: BoolWithAggregatesFilter<"ApprovalPolicyStep"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ApprovalPolicyStep"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ApprovalPolicyStep"> | Date | string
+  }
+
+  export type ApprovalRequestWhereInput = {
+    AND?: ApprovalRequestWhereInput | ApprovalRequestWhereInput[]
+    OR?: ApprovalRequestWhereInput[]
+    NOT?: ApprovalRequestWhereInput | ApprovalRequestWhereInput[]
+    id?: StringFilter<"ApprovalRequest"> | string
+    organizationId?: StringFilter<"ApprovalRequest"> | string
+    entityType?: EnumApprovalEntityTypeFilter<"ApprovalRequest"> | $Enums.ApprovalEntityType
+    entityId?: StringFilter<"ApprovalRequest"> | string
+    policyId?: StringFilter<"ApprovalRequest"> | string
+    policySnapshot?: JsonFilter<"ApprovalRequest">
+    status?: EnumApprovalRequestStatusFilter<"ApprovalRequest"> | $Enums.ApprovalRequestStatus
+    submittedById?: StringFilter<"ApprovalRequest"> | string
+    submittedAt?: DateTimeFilter<"ApprovalRequest"> | Date | string
+    currentStepIndex?: IntFilter<"ApprovalRequest"> | number
+    decidedAt?: DateTimeNullableFilter<"ApprovalRequest"> | Date | string | null
+    decidedById?: StringNullableFilter<"ApprovalRequest"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"ApprovalRequest"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    policy?: XOR<ApprovalPolicyScalarRelationFilter, ApprovalPolicyWhereInput>
+    submittedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    decidedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    stepInstances?: ApprovalStepInstanceListRelationFilter
+    decisionRecords?: ApprovalDecisionRecordListRelationFilter
+  }
+
+  export type ApprovalRequestOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    policyId?: SortOrder
+    policySnapshot?: SortOrder
+    status?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    currentStepIndex?: SortOrder
+    decidedAt?: SortOrderInput | SortOrder
+    decidedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    policy?: ApprovalPolicyOrderByWithRelationInput
+    submittedBy?: UserOrderByWithRelationInput
+    decidedBy?: UserOrderByWithRelationInput
+    stepInstances?: ApprovalStepInstanceOrderByRelationAggregateInput
+    decisionRecords?: ApprovalDecisionRecordOrderByRelationAggregateInput
+  }
+
+  export type ApprovalRequestWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ApprovalRequestWhereInput | ApprovalRequestWhereInput[]
+    OR?: ApprovalRequestWhereInput[]
+    NOT?: ApprovalRequestWhereInput | ApprovalRequestWhereInput[]
+    organizationId?: StringFilter<"ApprovalRequest"> | string
+    entityType?: EnumApprovalEntityTypeFilter<"ApprovalRequest"> | $Enums.ApprovalEntityType
+    entityId?: StringFilter<"ApprovalRequest"> | string
+    policyId?: StringFilter<"ApprovalRequest"> | string
+    policySnapshot?: JsonFilter<"ApprovalRequest">
+    status?: EnumApprovalRequestStatusFilter<"ApprovalRequest"> | $Enums.ApprovalRequestStatus
+    submittedById?: StringFilter<"ApprovalRequest"> | string
+    submittedAt?: DateTimeFilter<"ApprovalRequest"> | Date | string
+    currentStepIndex?: IntFilter<"ApprovalRequest"> | number
+    decidedAt?: DateTimeNullableFilter<"ApprovalRequest"> | Date | string | null
+    decidedById?: StringNullableFilter<"ApprovalRequest"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"ApprovalRequest"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    policy?: XOR<ApprovalPolicyScalarRelationFilter, ApprovalPolicyWhereInput>
+    submittedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    decidedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    stepInstances?: ApprovalStepInstanceListRelationFilter
+    decisionRecords?: ApprovalDecisionRecordListRelationFilter
+  }, "id">
+
+  export type ApprovalRequestOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    policyId?: SortOrder
+    policySnapshot?: SortOrder
+    status?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    currentStepIndex?: SortOrder
+    decidedAt?: SortOrderInput | SortOrder
+    decidedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ApprovalRequestCountOrderByAggregateInput
+    _avg?: ApprovalRequestAvgOrderByAggregateInput
+    _max?: ApprovalRequestMaxOrderByAggregateInput
+    _min?: ApprovalRequestMinOrderByAggregateInput
+    _sum?: ApprovalRequestSumOrderByAggregateInput
+  }
+
+  export type ApprovalRequestScalarWhereWithAggregatesInput = {
+    AND?: ApprovalRequestScalarWhereWithAggregatesInput | ApprovalRequestScalarWhereWithAggregatesInput[]
+    OR?: ApprovalRequestScalarWhereWithAggregatesInput[]
+    NOT?: ApprovalRequestScalarWhereWithAggregatesInput | ApprovalRequestScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApprovalRequest"> | string
+    organizationId?: StringWithAggregatesFilter<"ApprovalRequest"> | string
+    entityType?: EnumApprovalEntityTypeWithAggregatesFilter<"ApprovalRequest"> | $Enums.ApprovalEntityType
+    entityId?: StringWithAggregatesFilter<"ApprovalRequest"> | string
+    policyId?: StringWithAggregatesFilter<"ApprovalRequest"> | string
+    policySnapshot?: JsonWithAggregatesFilter<"ApprovalRequest">
+    status?: EnumApprovalRequestStatusWithAggregatesFilter<"ApprovalRequest"> | $Enums.ApprovalRequestStatus
+    submittedById?: StringWithAggregatesFilter<"ApprovalRequest"> | string
+    submittedAt?: DateTimeWithAggregatesFilter<"ApprovalRequest"> | Date | string
+    currentStepIndex?: IntWithAggregatesFilter<"ApprovalRequest"> | number
+    decidedAt?: DateTimeNullableWithAggregatesFilter<"ApprovalRequest"> | Date | string | null
+    decidedById?: StringNullableWithAggregatesFilter<"ApprovalRequest"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ApprovalRequest"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ApprovalRequest"> | Date | string
+  }
+
+  export type ApprovalStepInstanceWhereInput = {
+    AND?: ApprovalStepInstanceWhereInput | ApprovalStepInstanceWhereInput[]
+    OR?: ApprovalStepInstanceWhereInput[]
+    NOT?: ApprovalStepInstanceWhereInput | ApprovalStepInstanceWhereInput[]
+    id?: StringFilter<"ApprovalStepInstance"> | string
+    requestId?: StringFilter<"ApprovalStepInstance"> | string
+    stepOrder?: IntFilter<"ApprovalStepInstance"> | number
+    stepName?: StringFilter<"ApprovalStepInstance"> | string
+    stepType?: EnumApprovalStepTypeFilter<"ApprovalStepInstance"> | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFilter<"ApprovalStepInstance"> | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: StringNullableFilter<"ApprovalStepInstance"> | string | null
+    assigneeUserId?: StringNullableFilter<"ApprovalStepInstance"> | string | null
+    resolutionMode?: EnumResolutionModeFilter<"ApprovalStepInstance"> | $Enums.ResolutionMode
+    quorum?: IntNullableFilter<"ApprovalStepInstance"> | number | null
+    status?: EnumApprovalRequestStatusFilter<"ApprovalStepInstance"> | $Enums.ApprovalRequestStatus
+    decidedAt?: DateTimeNullableFilter<"ApprovalStepInstance"> | Date | string | null
+    decidedById?: StringNullableFilter<"ApprovalStepInstance"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalStepInstance"> | Date | string
+    updatedAt?: DateTimeFilter<"ApprovalStepInstance"> | Date | string
+    request?: XOR<ApprovalRequestScalarRelationFilter, ApprovalRequestWhereInput>
+    assigneeRole?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
+    assigneeUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    decidedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    decisions?: ApprovalDecisionRecordListRelationFilter
+  }
+
+  export type ApprovalStepInstanceOrderByWithRelationInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    stepOrder?: SortOrder
+    stepName?: SortOrder
+    stepType?: SortOrder
+    assigneeType?: SortOrder
+    assigneeRoleId?: SortOrderInput | SortOrder
+    assigneeUserId?: SortOrderInput | SortOrder
+    resolutionMode?: SortOrder
+    quorum?: SortOrderInput | SortOrder
+    status?: SortOrder
+    decidedAt?: SortOrderInput | SortOrder
+    decidedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    request?: ApprovalRequestOrderByWithRelationInput
+    assigneeRole?: RoleOrderByWithRelationInput
+    assigneeUser?: UserOrderByWithRelationInput
+    decidedBy?: UserOrderByWithRelationInput
+    decisions?: ApprovalDecisionRecordOrderByRelationAggregateInput
+  }
+
+  export type ApprovalStepInstanceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    requestId_stepOrder?: ApprovalStepInstanceRequestIdStepOrderCompoundUniqueInput
+    AND?: ApprovalStepInstanceWhereInput | ApprovalStepInstanceWhereInput[]
+    OR?: ApprovalStepInstanceWhereInput[]
+    NOT?: ApprovalStepInstanceWhereInput | ApprovalStepInstanceWhereInput[]
+    requestId?: StringFilter<"ApprovalStepInstance"> | string
+    stepOrder?: IntFilter<"ApprovalStepInstance"> | number
+    stepName?: StringFilter<"ApprovalStepInstance"> | string
+    stepType?: EnumApprovalStepTypeFilter<"ApprovalStepInstance"> | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFilter<"ApprovalStepInstance"> | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: StringNullableFilter<"ApprovalStepInstance"> | string | null
+    assigneeUserId?: StringNullableFilter<"ApprovalStepInstance"> | string | null
+    resolutionMode?: EnumResolutionModeFilter<"ApprovalStepInstance"> | $Enums.ResolutionMode
+    quorum?: IntNullableFilter<"ApprovalStepInstance"> | number | null
+    status?: EnumApprovalRequestStatusFilter<"ApprovalStepInstance"> | $Enums.ApprovalRequestStatus
+    decidedAt?: DateTimeNullableFilter<"ApprovalStepInstance"> | Date | string | null
+    decidedById?: StringNullableFilter<"ApprovalStepInstance"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalStepInstance"> | Date | string
+    updatedAt?: DateTimeFilter<"ApprovalStepInstance"> | Date | string
+    request?: XOR<ApprovalRequestScalarRelationFilter, ApprovalRequestWhereInput>
+    assigneeRole?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
+    assigneeUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    decidedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    decisions?: ApprovalDecisionRecordListRelationFilter
+  }, "id" | "requestId_stepOrder">
+
+  export type ApprovalStepInstanceOrderByWithAggregationInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    stepOrder?: SortOrder
+    stepName?: SortOrder
+    stepType?: SortOrder
+    assigneeType?: SortOrder
+    assigneeRoleId?: SortOrderInput | SortOrder
+    assigneeUserId?: SortOrderInput | SortOrder
+    resolutionMode?: SortOrder
+    quorum?: SortOrderInput | SortOrder
+    status?: SortOrder
+    decidedAt?: SortOrderInput | SortOrder
+    decidedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ApprovalStepInstanceCountOrderByAggregateInput
+    _avg?: ApprovalStepInstanceAvgOrderByAggregateInput
+    _max?: ApprovalStepInstanceMaxOrderByAggregateInput
+    _min?: ApprovalStepInstanceMinOrderByAggregateInput
+    _sum?: ApprovalStepInstanceSumOrderByAggregateInput
+  }
+
+  export type ApprovalStepInstanceScalarWhereWithAggregatesInput = {
+    AND?: ApprovalStepInstanceScalarWhereWithAggregatesInput | ApprovalStepInstanceScalarWhereWithAggregatesInput[]
+    OR?: ApprovalStepInstanceScalarWhereWithAggregatesInput[]
+    NOT?: ApprovalStepInstanceScalarWhereWithAggregatesInput | ApprovalStepInstanceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApprovalStepInstance"> | string
+    requestId?: StringWithAggregatesFilter<"ApprovalStepInstance"> | string
+    stepOrder?: IntWithAggregatesFilter<"ApprovalStepInstance"> | number
+    stepName?: StringWithAggregatesFilter<"ApprovalStepInstance"> | string
+    stepType?: EnumApprovalStepTypeWithAggregatesFilter<"ApprovalStepInstance"> | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeWithAggregatesFilter<"ApprovalStepInstance"> | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: StringNullableWithAggregatesFilter<"ApprovalStepInstance"> | string | null
+    assigneeUserId?: StringNullableWithAggregatesFilter<"ApprovalStepInstance"> | string | null
+    resolutionMode?: EnumResolutionModeWithAggregatesFilter<"ApprovalStepInstance"> | $Enums.ResolutionMode
+    quorum?: IntNullableWithAggregatesFilter<"ApprovalStepInstance"> | number | null
+    status?: EnumApprovalRequestStatusWithAggregatesFilter<"ApprovalStepInstance"> | $Enums.ApprovalRequestStatus
+    decidedAt?: DateTimeNullableWithAggregatesFilter<"ApprovalStepInstance"> | Date | string | null
+    decidedById?: StringNullableWithAggregatesFilter<"ApprovalStepInstance"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ApprovalStepInstance"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ApprovalStepInstance"> | Date | string
+  }
+
+  export type ApprovalDecisionRecordWhereInput = {
+    AND?: ApprovalDecisionRecordWhereInput | ApprovalDecisionRecordWhereInput[]
+    OR?: ApprovalDecisionRecordWhereInput[]
+    NOT?: ApprovalDecisionRecordWhereInput | ApprovalDecisionRecordWhereInput[]
+    id?: StringFilter<"ApprovalDecisionRecord"> | string
+    requestId?: StringFilter<"ApprovalDecisionRecord"> | string
+    stepInstanceId?: StringFilter<"ApprovalDecisionRecord"> | string
+    actorId?: StringFilter<"ApprovalDecisionRecord"> | string
+    decision?: EnumApprovalDecisionFilter<"ApprovalDecisionRecord"> | $Enums.ApprovalDecision
+    reason?: StringNullableFilter<"ApprovalDecisionRecord"> | string | null
+    sodViolation?: BoolFilter<"ApprovalDecisionRecord"> | boolean
+    sodWaiverId?: StringNullableFilter<"ApprovalDecisionRecord"> | string | null
+    delegationId?: StringNullableFilter<"ApprovalDecisionRecord"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalDecisionRecord"> | Date | string
+    request?: XOR<ApprovalRequestScalarRelationFilter, ApprovalRequestWhereInput>
+    stepInstance?: XOR<ApprovalStepInstanceScalarRelationFilter, ApprovalStepInstanceWhereInput>
+    actor?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ApprovalDecisionRecordOrderByWithRelationInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    stepInstanceId?: SortOrder
+    actorId?: SortOrder
+    decision?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    sodViolation?: SortOrder
+    sodWaiverId?: SortOrderInput | SortOrder
+    delegationId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    request?: ApprovalRequestOrderByWithRelationInput
+    stepInstance?: ApprovalStepInstanceOrderByWithRelationInput
+    actor?: UserOrderByWithRelationInput
+  }
+
+  export type ApprovalDecisionRecordWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ApprovalDecisionRecordWhereInput | ApprovalDecisionRecordWhereInput[]
+    OR?: ApprovalDecisionRecordWhereInput[]
+    NOT?: ApprovalDecisionRecordWhereInput | ApprovalDecisionRecordWhereInput[]
+    requestId?: StringFilter<"ApprovalDecisionRecord"> | string
+    stepInstanceId?: StringFilter<"ApprovalDecisionRecord"> | string
+    actorId?: StringFilter<"ApprovalDecisionRecord"> | string
+    decision?: EnumApprovalDecisionFilter<"ApprovalDecisionRecord"> | $Enums.ApprovalDecision
+    reason?: StringNullableFilter<"ApprovalDecisionRecord"> | string | null
+    sodViolation?: BoolFilter<"ApprovalDecisionRecord"> | boolean
+    sodWaiverId?: StringNullableFilter<"ApprovalDecisionRecord"> | string | null
+    delegationId?: StringNullableFilter<"ApprovalDecisionRecord"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalDecisionRecord"> | Date | string
+    request?: XOR<ApprovalRequestScalarRelationFilter, ApprovalRequestWhereInput>
+    stepInstance?: XOR<ApprovalStepInstanceScalarRelationFilter, ApprovalStepInstanceWhereInput>
+    actor?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type ApprovalDecisionRecordOrderByWithAggregationInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    stepInstanceId?: SortOrder
+    actorId?: SortOrder
+    decision?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    sodViolation?: SortOrder
+    sodWaiverId?: SortOrderInput | SortOrder
+    delegationId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ApprovalDecisionRecordCountOrderByAggregateInput
+    _max?: ApprovalDecisionRecordMaxOrderByAggregateInput
+    _min?: ApprovalDecisionRecordMinOrderByAggregateInput
+  }
+
+  export type ApprovalDecisionRecordScalarWhereWithAggregatesInput = {
+    AND?: ApprovalDecisionRecordScalarWhereWithAggregatesInput | ApprovalDecisionRecordScalarWhereWithAggregatesInput[]
+    OR?: ApprovalDecisionRecordScalarWhereWithAggregatesInput[]
+    NOT?: ApprovalDecisionRecordScalarWhereWithAggregatesInput | ApprovalDecisionRecordScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApprovalDecisionRecord"> | string
+    requestId?: StringWithAggregatesFilter<"ApprovalDecisionRecord"> | string
+    stepInstanceId?: StringWithAggregatesFilter<"ApprovalDecisionRecord"> | string
+    actorId?: StringWithAggregatesFilter<"ApprovalDecisionRecord"> | string
+    decision?: EnumApprovalDecisionWithAggregatesFilter<"ApprovalDecisionRecord"> | $Enums.ApprovalDecision
+    reason?: StringNullableWithAggregatesFilter<"ApprovalDecisionRecord"> | string | null
+    sodViolation?: BoolWithAggregatesFilter<"ApprovalDecisionRecord"> | boolean
+    sodWaiverId?: StringNullableWithAggregatesFilter<"ApprovalDecisionRecord"> | string | null
+    delegationId?: StringNullableWithAggregatesFilter<"ApprovalDecisionRecord"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ApprovalDecisionRecord"> | Date | string
+  }
+
   export type OrganizationWhereInput = {
     AND?: OrganizationWhereInput | OrganizationWhereInput[]
     OR?: OrganizationWhereInput[]
@@ -64057,6 +72204,8 @@ export namespace Prisma {
     transactions?: TransactionListRelationFilter
     budgets?: BudgetListRelationFilter
     budgetLines?: BudgetLineListRelationFilter
+    approvalPolicies?: ApprovalPolicyListRelationFilter
+    approvalRequests?: ApprovalRequestListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -64096,6 +72245,8 @@ export namespace Prisma {
     transactions?: TransactionOrderByRelationAggregateInput
     budgets?: BudgetOrderByRelationAggregateInput
     budgetLines?: BudgetLineOrderByRelationAggregateInput
+    approvalPolicies?: ApprovalPolicyOrderByRelationAggregateInput
+    approvalRequests?: ApprovalRequestOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -64138,6 +72289,8 @@ export namespace Prisma {
     transactions?: TransactionListRelationFilter
     budgets?: BudgetListRelationFilter
     budgetLines?: BudgetLineListRelationFilter
+    approvalPolicies?: ApprovalPolicyListRelationFilter
+    approvalRequests?: ApprovalRequestListRelationFilter
   }, "id" | "code">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -67268,6 +75421,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -67327,6 +75486,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUpdateInput = {
@@ -67386,6 +75551,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -67445,6 +75616,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -68093,6 +76270,8 @@ export namespace Prisma {
     userRoles?: UserRoleCreateNestedManyWithoutRoleInput
     delegations?: DelegationCreateNestedManyWithoutRoleInput
     accessReviewItems?: AccessReviewItemCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleUncheckedCreateInput = {
@@ -68115,6 +76294,8 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutRoleInput
     delegations?: DelegationUncheckedCreateNestedManyWithoutRoleInput
     accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleUpdateInput = {
@@ -68137,6 +76318,8 @@ export namespace Prisma {
     userRoles?: UserRoleUpdateManyWithoutRoleNestedInput
     delegations?: DelegationUpdateManyWithoutRoleNestedInput
     accessReviewItems?: AccessReviewItemUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type RoleUncheckedUpdateInput = {
@@ -68159,6 +76342,8 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedUpdateManyWithoutRoleNestedInput
     delegations?: DelegationUncheckedUpdateManyWithoutRoleNestedInput
     accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type RoleCreateManyInput = {
@@ -68786,6 +76971,578 @@ export namespace Prisma {
     actionedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type ApprovalPolicyCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive?: boolean
+    priority?: number
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutApprovalPoliciesInput
+    steps?: ApprovalPolicyStepCreateNestedManyWithoutPolicyInput
+    requests?: ApprovalRequestCreateNestedManyWithoutPolicyInput
+  }
+
+  export type ApprovalPolicyUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    name: string
+    description?: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive?: boolean
+    priority?: number
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    steps?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutPolicyInput
+    requests?: ApprovalRequestUncheckedCreateNestedManyWithoutPolicyInput
+  }
+
+  export type ApprovalPolicyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutApprovalPoliciesNestedInput
+    steps?: ApprovalPolicyStepUpdateManyWithoutPolicyNestedInput
+    requests?: ApprovalRequestUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type ApprovalPolicyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    steps?: ApprovalPolicyStepUncheckedUpdateManyWithoutPolicyNestedInput
+    requests?: ApprovalRequestUncheckedUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type ApprovalPolicyCreateManyInput = {
+    id?: string
+    organizationId: string
+    name: string
+    description?: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive?: boolean
+    priority?: number
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalPolicyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalPolicyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalPolicyStepCreateInput = {
+    id?: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    policy: ApprovalPolicyCreateNestedOneWithoutStepsInput
+    assigneeRole?: RoleCreateNestedOneWithoutApprovalPolicyStepsInput
+    assigneeUser?: UserCreateNestedOneWithoutApprovalPolicyStepAssigneeUserInput
+  }
+
+  export type ApprovalPolicyStepUncheckedCreateInput = {
+    id?: string
+    policyId: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalPolicyStepUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    policy?: ApprovalPolicyUpdateOneRequiredWithoutStepsNestedInput
+    assigneeRole?: RoleUpdateOneWithoutApprovalPolicyStepsNestedInput
+    assigneeUser?: UserUpdateOneWithoutApprovalPolicyStepAssigneeUserNestedInput
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalPolicyStepCreateManyInput = {
+    id?: string
+    policyId: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalPolicyStepUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalRequestCreateInput = {
+    id?: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutApprovalRequestsInput
+    policy: ApprovalPolicyCreateNestedOneWithoutRequestsInput
+    submittedBy: UserCreateNestedOneWithoutApprovalRequestsSubmittedInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
+    stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutApprovalRequestsNestedInput
+    policy?: ApprovalPolicyUpdateOneRequiredWithoutRequestsNestedInput
+    submittedBy?: UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
+    stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestCreateManyInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalRequestUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalRequestUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalStepInstanceCreateInput = {
+    id?: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    request: ApprovalRequestCreateNestedOneWithoutStepInstancesInput
+    assigneeRole?: RoleCreateNestedOneWithoutApprovalStepInstanceAssigneeRoleInput
+    assigneeUser?: UserCreateNestedOneWithoutApprovalStepInstanceAssigneeUserInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalStepInstancesDecidedInput
+    decisions?: ApprovalDecisionRecordCreateNestedManyWithoutStepInstanceInput
+  }
+
+  export type ApprovalStepInstanceUncheckedCreateInput = {
+    id?: string
+    requestId: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    decisions?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutStepInstanceInput
+  }
+
+  export type ApprovalStepInstanceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    request?: ApprovalRequestUpdateOneRequiredWithoutStepInstancesNestedInput
+    assigneeRole?: RoleUpdateOneWithoutApprovalStepInstanceAssigneeRoleNestedInput
+    assigneeUser?: UserUpdateOneWithoutApprovalStepInstanceAssigneeUserNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalStepInstancesDecidedNestedInput
+    decisions?: ApprovalDecisionRecordUpdateManyWithoutStepInstanceNestedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    decisions?: ApprovalDecisionRecordUncheckedUpdateManyWithoutStepInstanceNestedInput
+  }
+
+  export type ApprovalStepInstanceCreateManyInput = {
+    id?: string
+    requestId: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalStepInstanceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalDecisionRecordCreateInput = {
+    id?: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+    request: ApprovalRequestCreateNestedOneWithoutDecisionRecordsInput
+    stepInstance: ApprovalStepInstanceCreateNestedOneWithoutDecisionsInput
+    actor: UserCreateNestedOneWithoutApprovalDecisionRecordsInput
+  }
+
+  export type ApprovalDecisionRecordUncheckedCreateInput = {
+    id?: string
+    requestId: string
+    stepInstanceId: string
+    actorId: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovalDecisionRecordUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    request?: ApprovalRequestUpdateOneRequiredWithoutDecisionRecordsNestedInput
+    stepInstance?: ApprovalStepInstanceUpdateOneRequiredWithoutDecisionsNestedInput
+    actor?: UserUpdateOneRequiredWithoutApprovalDecisionRecordsNestedInput
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepInstanceId?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalDecisionRecordCreateManyInput = {
+    id?: string
+    requestId: string
+    stepInstanceId: string
+    actorId: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovalDecisionRecordUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepInstanceId?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrganizationCreateInput = {
     id?: string
     code: string
@@ -68823,6 +77580,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -68862,6 +77621,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -68901,6 +77662,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -68940,6 +77703,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -72476,6 +81241,30 @@ export namespace Prisma {
     none?: TransactionWhereInput
   }
 
+  export type ApprovalRequestListRelationFilter = {
+    every?: ApprovalRequestWhereInput
+    some?: ApprovalRequestWhereInput
+    none?: ApprovalRequestWhereInput
+  }
+
+  export type ApprovalStepInstanceListRelationFilter = {
+    every?: ApprovalStepInstanceWhereInput
+    some?: ApprovalStepInstanceWhereInput
+    none?: ApprovalStepInstanceWhereInput
+  }
+
+  export type ApprovalDecisionRecordListRelationFilter = {
+    every?: ApprovalDecisionRecordWhereInput
+    some?: ApprovalDecisionRecordWhereInput
+    none?: ApprovalDecisionRecordWhereInput
+  }
+
+  export type ApprovalPolicyStepListRelationFilter = {
+    every?: ApprovalPolicyStepWhereInput
+    some?: ApprovalPolicyStepWhereInput
+    none?: ApprovalPolicyStepWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -72530,6 +81319,22 @@ export namespace Prisma {
   }
 
   export type TransactionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ApprovalRequestOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ApprovalStepInstanceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ApprovalDecisionRecordOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ApprovalPolicyStepOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -73628,6 +82433,506 @@ export namespace Prisma {
     actionedAt?: SortOrder
   }
 
+  export type EnumApprovalEntityTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalEntityType | EnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalEntityType[] | ListEnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalEntityType[] | ListEnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalEntityTypeFilter<$PrismaModel> | $Enums.ApprovalEntityType
+  }
+
+  export type OrganizationScalarRelationFilter = {
+    is?: OrganizationWhereInput
+    isNot?: OrganizationWhereInput
+  }
+
+  export type ApprovalPolicyCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    entityType?: SortOrder
+    isActive?: SortOrder
+    priority?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedById?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalPolicyAvgOrderByAggregateInput = {
+    priority?: SortOrder
+  }
+
+  export type ApprovalPolicyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    entityType?: SortOrder
+    isActive?: SortOrder
+    priority?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedById?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalPolicyMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    entityType?: SortOrder
+    isActive?: SortOrder
+    priority?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedById?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalPolicySumOrderByAggregateInput = {
+    priority?: SortOrder
+  }
+
+  export type EnumApprovalEntityTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalEntityType | EnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalEntityType[] | ListEnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalEntityType[] | ListEnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalEntityTypeWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalEntityType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalEntityTypeFilter<$PrismaModel>
+    _max?: NestedEnumApprovalEntityTypeFilter<$PrismaModel>
+  }
+
+  export type EnumApprovalStepTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStepType | EnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStepType[] | ListEnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStepType[] | ListEnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStepTypeFilter<$PrismaModel> | $Enums.ApprovalStepType
+  }
+
+  export type EnumApprovalAssigneeTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalAssigneeType | EnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalAssigneeType[] | ListEnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalAssigneeType[] | ListEnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalAssigneeTypeFilter<$PrismaModel> | $Enums.ApprovalAssigneeType
+  }
+
+  export type EnumResolutionModeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResolutionMode | EnumResolutionModeFieldRefInput<$PrismaModel>
+    in?: $Enums.ResolutionMode[] | ListEnumResolutionModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResolutionMode[] | ListEnumResolutionModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumResolutionModeFilter<$PrismaModel> | $Enums.ResolutionMode
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type EnumApprovalConditionOperatorNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalConditionOperator | EnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ApprovalConditionOperator[] | ListEnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ApprovalConditionOperator[] | ListEnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumApprovalConditionOperatorNullableFilter<$PrismaModel> | $Enums.ApprovalConditionOperator | null
+  }
+
+  export type ApprovalPolicyScalarRelationFilter = {
+    is?: ApprovalPolicyWhereInput
+    isNot?: ApprovalPolicyWhereInput
+  }
+
+  export type ApprovalPolicyStepPolicyIdStepOrderCompoundUniqueInput = {
+    policyId: string
+    stepOrder: number
+  }
+
+  export type ApprovalPolicyStepCountOrderByAggregateInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    stepOrder?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    assigneeType?: SortOrder
+    assigneeRoleId?: SortOrder
+    assigneeUserId?: SortOrder
+    resolutionMode?: SortOrder
+    quorum?: SortOrder
+    conditionOperator?: SortOrder
+    conditionValue?: SortOrder
+    isRequired?: SortOrder
+    isFinalApprover?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalPolicyStepAvgOrderByAggregateInput = {
+    stepOrder?: SortOrder
+    quorum?: SortOrder
+  }
+
+  export type ApprovalPolicyStepMaxOrderByAggregateInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    stepOrder?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    assigneeType?: SortOrder
+    assigneeRoleId?: SortOrder
+    assigneeUserId?: SortOrder
+    resolutionMode?: SortOrder
+    quorum?: SortOrder
+    conditionOperator?: SortOrder
+    isRequired?: SortOrder
+    isFinalApprover?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalPolicyStepMinOrderByAggregateInput = {
+    id?: SortOrder
+    policyId?: SortOrder
+    stepOrder?: SortOrder
+    name?: SortOrder
+    type?: SortOrder
+    assigneeType?: SortOrder
+    assigneeRoleId?: SortOrder
+    assigneeUserId?: SortOrder
+    resolutionMode?: SortOrder
+    quorum?: SortOrder
+    conditionOperator?: SortOrder
+    isRequired?: SortOrder
+    isFinalApprover?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalPolicyStepSumOrderByAggregateInput = {
+    stepOrder?: SortOrder
+    quorum?: SortOrder
+  }
+
+  export type EnumApprovalStepTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStepType | EnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStepType[] | ListEnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStepType[] | ListEnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStepTypeWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalStepType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalStepTypeFilter<$PrismaModel>
+    _max?: NestedEnumApprovalStepTypeFilter<$PrismaModel>
+  }
+
+  export type EnumApprovalAssigneeTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalAssigneeType | EnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalAssigneeType[] | ListEnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalAssigneeType[] | ListEnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalAssigneeTypeWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalAssigneeType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalAssigneeTypeFilter<$PrismaModel>
+    _max?: NestedEnumApprovalAssigneeTypeFilter<$PrismaModel>
+  }
+
+  export type EnumResolutionModeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResolutionMode | EnumResolutionModeFieldRefInput<$PrismaModel>
+    in?: $Enums.ResolutionMode[] | ListEnumResolutionModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResolutionMode[] | ListEnumResolutionModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumResolutionModeWithAggregatesFilter<$PrismaModel> | $Enums.ResolutionMode
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumResolutionModeFilter<$PrismaModel>
+    _max?: NestedEnumResolutionModeFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type EnumApprovalConditionOperatorNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalConditionOperator | EnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ApprovalConditionOperator[] | ListEnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ApprovalConditionOperator[] | ListEnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumApprovalConditionOperatorNullableWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalConditionOperator | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumApprovalConditionOperatorNullableFilter<$PrismaModel>
+    _max?: NestedEnumApprovalConditionOperatorNullableFilter<$PrismaModel>
+  }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type EnumApprovalRequestStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalRequestStatus | EnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalRequestStatus[] | ListEnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalRequestStatus[] | ListEnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalRequestStatusFilter<$PrismaModel> | $Enums.ApprovalRequestStatus
+  }
+
+  export type ApprovalRequestCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    policyId?: SortOrder
+    policySnapshot?: SortOrder
+    status?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    currentStepIndex?: SortOrder
+    decidedAt?: SortOrder
+    decidedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalRequestAvgOrderByAggregateInput = {
+    currentStepIndex?: SortOrder
+  }
+
+  export type ApprovalRequestMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    policyId?: SortOrder
+    status?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    currentStepIndex?: SortOrder
+    decidedAt?: SortOrder
+    decidedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalRequestMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    policyId?: SortOrder
+    status?: SortOrder
+    submittedById?: SortOrder
+    submittedAt?: SortOrder
+    currentStepIndex?: SortOrder
+    decidedAt?: SortOrder
+    decidedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalRequestSumOrderByAggregateInput = {
+    currentStepIndex?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type EnumApprovalRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalRequestStatus | EnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalRequestStatus[] | ListEnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalRequestStatus[] | ListEnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalRequestStatusWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalRequestStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalRequestStatusFilter<$PrismaModel>
+    _max?: NestedEnumApprovalRequestStatusFilter<$PrismaModel>
+  }
+
+  export type ApprovalRequestScalarRelationFilter = {
+    is?: ApprovalRequestWhereInput
+    isNot?: ApprovalRequestWhereInput
+  }
+
+  export type ApprovalStepInstanceRequestIdStepOrderCompoundUniqueInput = {
+    requestId: string
+    stepOrder: number
+  }
+
+  export type ApprovalStepInstanceCountOrderByAggregateInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    stepOrder?: SortOrder
+    stepName?: SortOrder
+    stepType?: SortOrder
+    assigneeType?: SortOrder
+    assigneeRoleId?: SortOrder
+    assigneeUserId?: SortOrder
+    resolutionMode?: SortOrder
+    quorum?: SortOrder
+    status?: SortOrder
+    decidedAt?: SortOrder
+    decidedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalStepInstanceAvgOrderByAggregateInput = {
+    stepOrder?: SortOrder
+    quorum?: SortOrder
+  }
+
+  export type ApprovalStepInstanceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    stepOrder?: SortOrder
+    stepName?: SortOrder
+    stepType?: SortOrder
+    assigneeType?: SortOrder
+    assigneeRoleId?: SortOrder
+    assigneeUserId?: SortOrder
+    resolutionMode?: SortOrder
+    quorum?: SortOrder
+    status?: SortOrder
+    decidedAt?: SortOrder
+    decidedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalStepInstanceMinOrderByAggregateInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    stepOrder?: SortOrder
+    stepName?: SortOrder
+    stepType?: SortOrder
+    assigneeType?: SortOrder
+    assigneeRoleId?: SortOrder
+    assigneeUserId?: SortOrder
+    resolutionMode?: SortOrder
+    quorum?: SortOrder
+    status?: SortOrder
+    decidedAt?: SortOrder
+    decidedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApprovalStepInstanceSumOrderByAggregateInput = {
+    stepOrder?: SortOrder
+    quorum?: SortOrder
+  }
+
+  export type EnumApprovalDecisionFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalDecision | EnumApprovalDecisionFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalDecision[] | ListEnumApprovalDecisionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalDecision[] | ListEnumApprovalDecisionFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalDecisionFilter<$PrismaModel> | $Enums.ApprovalDecision
+  }
+
+  export type ApprovalStepInstanceScalarRelationFilter = {
+    is?: ApprovalStepInstanceWhereInput
+    isNot?: ApprovalStepInstanceWhereInput
+  }
+
+  export type ApprovalDecisionRecordCountOrderByAggregateInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    stepInstanceId?: SortOrder
+    actorId?: SortOrder
+    decision?: SortOrder
+    reason?: SortOrder
+    sodViolation?: SortOrder
+    sodWaiverId?: SortOrder
+    delegationId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ApprovalDecisionRecordMaxOrderByAggregateInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    stepInstanceId?: SortOrder
+    actorId?: SortOrder
+    decision?: SortOrder
+    reason?: SortOrder
+    sodViolation?: SortOrder
+    sodWaiverId?: SortOrder
+    delegationId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ApprovalDecisionRecordMinOrderByAggregateInput = {
+    id?: SortOrder
+    requestId?: SortOrder
+    stepInstanceId?: SortOrder
+    actorId?: SortOrder
+    decision?: SortOrder
+    reason?: SortOrder
+    sodViolation?: SortOrder
+    sodWaiverId?: SortOrder
+    delegationId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumApprovalDecisionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalDecision | EnumApprovalDecisionFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalDecision[] | ListEnumApprovalDecisionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalDecision[] | ListEnumApprovalDecisionFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalDecisionWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalDecision
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalDecisionFilter<$PrismaModel>
+    _max?: NestedEnumApprovalDecisionFilter<$PrismaModel>
+  }
+
   export type EnumOrganizationTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.OrganizationType | EnumOrganizationTypeFieldRefInput<$PrismaModel>
     in?: $Enums.OrganizationType[] | ListEnumOrganizationTypeFieldRefInput<$PrismaModel>
@@ -73732,6 +83037,12 @@ export namespace Prisma {
     none?: BudgetLineWhereInput
   }
 
+  export type ApprovalPolicyListRelationFilter = {
+    every?: ApprovalPolicyWhereInput
+    some?: ApprovalPolicyWhereInput
+    none?: ApprovalPolicyWhereInput
+  }
+
   export type LocationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -73789,6 +83100,10 @@ export namespace Prisma {
   }
 
   export type BudgetLineOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ApprovalPolicyOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -73883,11 +83198,6 @@ export namespace Prisma {
     in?: $Enums.LocationType[] | ListEnumLocationTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.LocationType[] | ListEnumLocationTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumLocationTypeFilter<$PrismaModel> | $Enums.LocationType
-  }
-
-  export type OrganizationScalarRelationFilter = {
-    is?: OrganizationWhereInput
-    isNot?: OrganizationWhereInput
   }
 
   export type LocationOrganizationIdCodeCompoundUniqueInput = {
@@ -74341,29 +83651,6 @@ export namespace Prisma {
     notIn?: $Enums.AuditEntityType[] | ListEnumAuditEntityTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumAuditEntityTypeFilter<$PrismaModel> | $Enums.AuditEntityType
   }
-  export type JsonFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type EnumMasterDataChangeStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.MasterDataChangeStatus | EnumMasterDataChangeStatusFieldRefInput<$PrismaModel>
@@ -74439,32 +83726,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
     _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
-  }
-  export type JsonWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedJsonFilter<$PrismaModel>
-    _max?: NestedJsonFilter<$PrismaModel>
   }
 
   export type EnumMasterDataChangeStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -76065,17 +85326,6 @@ export namespace Prisma {
     not?: NestedEnumIdempotencyKeyStatusFilter<$PrismaModel> | $Enums.IdempotencyKeyStatus
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type IdempotencyKeyKeyScopeCompoundUniqueInput = {
     key: string
     scope: string
@@ -76137,22 +85387,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumIdempotencyKeyStatusFilter<$PrismaModel>
     _max?: NestedEnumIdempotencyKeyStatusFilter<$PrismaModel>
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumNotificationCategoryFilter<$PrismaModel = never> = {
@@ -76514,6 +85748,48 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type ApprovalRequestCreateNestedManyWithoutSubmittedByInput = {
+    create?: XOR<ApprovalRequestCreateWithoutSubmittedByInput, ApprovalRequestUncheckedCreateWithoutSubmittedByInput> | ApprovalRequestCreateWithoutSubmittedByInput[] | ApprovalRequestUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutSubmittedByInput | ApprovalRequestCreateOrConnectWithoutSubmittedByInput[]
+    createMany?: ApprovalRequestCreateManySubmittedByInputEnvelope
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+  }
+
+  export type ApprovalRequestCreateNestedManyWithoutDecidedByInput = {
+    create?: XOR<ApprovalRequestCreateWithoutDecidedByInput, ApprovalRequestUncheckedCreateWithoutDecidedByInput> | ApprovalRequestCreateWithoutDecidedByInput[] | ApprovalRequestUncheckedCreateWithoutDecidedByInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutDecidedByInput | ApprovalRequestCreateOrConnectWithoutDecidedByInput[]
+    createMany?: ApprovalRequestCreateManyDecidedByInputEnvelope
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+  }
+
+  export type ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutDecidedByInput, ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput> | ApprovalStepInstanceCreateWithoutDecidedByInput[] | ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutDecidedByInput | ApprovalStepInstanceCreateOrConnectWithoutDecidedByInput[]
+    createMany?: ApprovalStepInstanceCreateManyDecidedByInputEnvelope
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+  }
+
+  export type ApprovalDecisionRecordCreateNestedManyWithoutActorInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutActorInput, ApprovalDecisionRecordUncheckedCreateWithoutActorInput> | ApprovalDecisionRecordCreateWithoutActorInput[] | ApprovalDecisionRecordUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutActorInput | ApprovalDecisionRecordCreateOrConnectWithoutActorInput[]
+    createMany?: ApprovalDecisionRecordCreateManyActorInputEnvelope
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+  }
+
+  export type ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutAssigneeUserInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput> | ApprovalPolicyStepCreateWithoutAssigneeUserInput[] | ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutAssigneeUserInput | ApprovalPolicyStepCreateOrConnectWithoutAssigneeUserInput[]
+    createMany?: ApprovalPolicyStepCreateManyAssigneeUserInputEnvelope
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+  }
+
+  export type ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutAssigneeUserInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput> | ApprovalStepInstanceCreateWithoutAssigneeUserInput[] | ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput | ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput[]
+    createMany?: ApprovalStepInstanceCreateManyAssigneeUserInputEnvelope
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -76673,6 +85949,48 @@ export namespace Prisma {
     connectOrCreate?: TransactionCreateOrConnectWithoutReversedByInput | TransactionCreateOrConnectWithoutReversedByInput[]
     createMany?: TransactionCreateManyReversedByInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput = {
+    create?: XOR<ApprovalRequestCreateWithoutSubmittedByInput, ApprovalRequestUncheckedCreateWithoutSubmittedByInput> | ApprovalRequestCreateWithoutSubmittedByInput[] | ApprovalRequestUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutSubmittedByInput | ApprovalRequestCreateOrConnectWithoutSubmittedByInput[]
+    createMany?: ApprovalRequestCreateManySubmittedByInputEnvelope
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+  }
+
+  export type ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput = {
+    create?: XOR<ApprovalRequestCreateWithoutDecidedByInput, ApprovalRequestUncheckedCreateWithoutDecidedByInput> | ApprovalRequestCreateWithoutDecidedByInput[] | ApprovalRequestUncheckedCreateWithoutDecidedByInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutDecidedByInput | ApprovalRequestCreateOrConnectWithoutDecidedByInput[]
+    createMany?: ApprovalRequestCreateManyDecidedByInputEnvelope
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+  }
+
+  export type ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutDecidedByInput, ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput> | ApprovalStepInstanceCreateWithoutDecidedByInput[] | ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutDecidedByInput | ApprovalStepInstanceCreateOrConnectWithoutDecidedByInput[]
+    createMany?: ApprovalStepInstanceCreateManyDecidedByInputEnvelope
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+  }
+
+  export type ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutActorInput, ApprovalDecisionRecordUncheckedCreateWithoutActorInput> | ApprovalDecisionRecordCreateWithoutActorInput[] | ApprovalDecisionRecordUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutActorInput | ApprovalDecisionRecordCreateOrConnectWithoutActorInput[]
+    createMany?: ApprovalDecisionRecordCreateManyActorInputEnvelope
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+  }
+
+  export type ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutAssigneeUserInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput> | ApprovalPolicyStepCreateWithoutAssigneeUserInput[] | ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutAssigneeUserInput | ApprovalPolicyStepCreateOrConnectWithoutAssigneeUserInput[]
+    createMany?: ApprovalPolicyStepCreateManyAssigneeUserInputEnvelope
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+  }
+
+  export type ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutAssigneeUserInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput> | ApprovalStepInstanceCreateWithoutAssigneeUserInput[] | ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput | ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput[]
+    createMany?: ApprovalStepInstanceCreateManyAssigneeUserInputEnvelope
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -77078,6 +86396,90 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type ApprovalRequestUpdateManyWithoutSubmittedByNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutSubmittedByInput, ApprovalRequestUncheckedCreateWithoutSubmittedByInput> | ApprovalRequestCreateWithoutSubmittedByInput[] | ApprovalRequestUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutSubmittedByInput | ApprovalRequestCreateOrConnectWithoutSubmittedByInput[]
+    upsert?: ApprovalRequestUpsertWithWhereUniqueWithoutSubmittedByInput | ApprovalRequestUpsertWithWhereUniqueWithoutSubmittedByInput[]
+    createMany?: ApprovalRequestCreateManySubmittedByInputEnvelope
+    set?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    disconnect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    delete?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    update?: ApprovalRequestUpdateWithWhereUniqueWithoutSubmittedByInput | ApprovalRequestUpdateWithWhereUniqueWithoutSubmittedByInput[]
+    updateMany?: ApprovalRequestUpdateManyWithWhereWithoutSubmittedByInput | ApprovalRequestUpdateManyWithWhereWithoutSubmittedByInput[]
+    deleteMany?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
+  }
+
+  export type ApprovalRequestUpdateManyWithoutDecidedByNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutDecidedByInput, ApprovalRequestUncheckedCreateWithoutDecidedByInput> | ApprovalRequestCreateWithoutDecidedByInput[] | ApprovalRequestUncheckedCreateWithoutDecidedByInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutDecidedByInput | ApprovalRequestCreateOrConnectWithoutDecidedByInput[]
+    upsert?: ApprovalRequestUpsertWithWhereUniqueWithoutDecidedByInput | ApprovalRequestUpsertWithWhereUniqueWithoutDecidedByInput[]
+    createMany?: ApprovalRequestCreateManyDecidedByInputEnvelope
+    set?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    disconnect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    delete?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    update?: ApprovalRequestUpdateWithWhereUniqueWithoutDecidedByInput | ApprovalRequestUpdateWithWhereUniqueWithoutDecidedByInput[]
+    updateMany?: ApprovalRequestUpdateManyWithWhereWithoutDecidedByInput | ApprovalRequestUpdateManyWithWhereWithoutDecidedByInput[]
+    deleteMany?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
+  }
+
+  export type ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutDecidedByInput, ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput> | ApprovalStepInstanceCreateWithoutDecidedByInput[] | ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutDecidedByInput | ApprovalStepInstanceCreateOrConnectWithoutDecidedByInput[]
+    upsert?: ApprovalStepInstanceUpsertWithWhereUniqueWithoutDecidedByInput | ApprovalStepInstanceUpsertWithWhereUniqueWithoutDecidedByInput[]
+    createMany?: ApprovalStepInstanceCreateManyDecidedByInputEnvelope
+    set?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    disconnect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    delete?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    update?: ApprovalStepInstanceUpdateWithWhereUniqueWithoutDecidedByInput | ApprovalStepInstanceUpdateWithWhereUniqueWithoutDecidedByInput[]
+    updateMany?: ApprovalStepInstanceUpdateManyWithWhereWithoutDecidedByInput | ApprovalStepInstanceUpdateManyWithWhereWithoutDecidedByInput[]
+    deleteMany?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
+  }
+
+  export type ApprovalDecisionRecordUpdateManyWithoutActorNestedInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutActorInput, ApprovalDecisionRecordUncheckedCreateWithoutActorInput> | ApprovalDecisionRecordCreateWithoutActorInput[] | ApprovalDecisionRecordUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutActorInput | ApprovalDecisionRecordCreateOrConnectWithoutActorInput[]
+    upsert?: ApprovalDecisionRecordUpsertWithWhereUniqueWithoutActorInput | ApprovalDecisionRecordUpsertWithWhereUniqueWithoutActorInput[]
+    createMany?: ApprovalDecisionRecordCreateManyActorInputEnvelope
+    set?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    disconnect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    delete?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    update?: ApprovalDecisionRecordUpdateWithWhereUniqueWithoutActorInput | ApprovalDecisionRecordUpdateWithWhereUniqueWithoutActorInput[]
+    updateMany?: ApprovalDecisionRecordUpdateManyWithWhereWithoutActorInput | ApprovalDecisionRecordUpdateManyWithWhereWithoutActorInput[]
+    deleteMany?: ApprovalDecisionRecordScalarWhereInput | ApprovalDecisionRecordScalarWhereInput[]
+  }
+
+  export type ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutAssigneeUserInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput> | ApprovalPolicyStepCreateWithoutAssigneeUserInput[] | ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutAssigneeUserInput | ApprovalPolicyStepCreateOrConnectWithoutAssigneeUserInput[]
+    upsert?: ApprovalPolicyStepUpsertWithWhereUniqueWithoutAssigneeUserInput | ApprovalPolicyStepUpsertWithWhereUniqueWithoutAssigneeUserInput[]
+    createMany?: ApprovalPolicyStepCreateManyAssigneeUserInputEnvelope
+    set?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    disconnect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    delete?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    update?: ApprovalPolicyStepUpdateWithWhereUniqueWithoutAssigneeUserInput | ApprovalPolicyStepUpdateWithWhereUniqueWithoutAssigneeUserInput[]
+    updateMany?: ApprovalPolicyStepUpdateManyWithWhereWithoutAssigneeUserInput | ApprovalPolicyStepUpdateManyWithWhereWithoutAssigneeUserInput[]
+    deleteMany?: ApprovalPolicyStepScalarWhereInput | ApprovalPolicyStepScalarWhereInput[]
+  }
+
+  export type ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutAssigneeUserInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput> | ApprovalStepInstanceCreateWithoutAssigneeUserInput[] | ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput | ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput[]
+    upsert?: ApprovalStepInstanceUpsertWithWhereUniqueWithoutAssigneeUserInput | ApprovalStepInstanceUpsertWithWhereUniqueWithoutAssigneeUserInput[]
+    createMany?: ApprovalStepInstanceCreateManyAssigneeUserInputEnvelope
+    set?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    disconnect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    delete?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    update?: ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeUserInput | ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeUserInput[]
+    updateMany?: ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeUserInput | ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeUserInput[]
+    deleteMany?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -77400,6 +86802,90 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutSubmittedByInput, ApprovalRequestUncheckedCreateWithoutSubmittedByInput> | ApprovalRequestCreateWithoutSubmittedByInput[] | ApprovalRequestUncheckedCreateWithoutSubmittedByInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutSubmittedByInput | ApprovalRequestCreateOrConnectWithoutSubmittedByInput[]
+    upsert?: ApprovalRequestUpsertWithWhereUniqueWithoutSubmittedByInput | ApprovalRequestUpsertWithWhereUniqueWithoutSubmittedByInput[]
+    createMany?: ApprovalRequestCreateManySubmittedByInputEnvelope
+    set?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    disconnect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    delete?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    update?: ApprovalRequestUpdateWithWhereUniqueWithoutSubmittedByInput | ApprovalRequestUpdateWithWhereUniqueWithoutSubmittedByInput[]
+    updateMany?: ApprovalRequestUpdateManyWithWhereWithoutSubmittedByInput | ApprovalRequestUpdateManyWithWhereWithoutSubmittedByInput[]
+    deleteMany?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
+  }
+
+  export type ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutDecidedByInput, ApprovalRequestUncheckedCreateWithoutDecidedByInput> | ApprovalRequestCreateWithoutDecidedByInput[] | ApprovalRequestUncheckedCreateWithoutDecidedByInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutDecidedByInput | ApprovalRequestCreateOrConnectWithoutDecidedByInput[]
+    upsert?: ApprovalRequestUpsertWithWhereUniqueWithoutDecidedByInput | ApprovalRequestUpsertWithWhereUniqueWithoutDecidedByInput[]
+    createMany?: ApprovalRequestCreateManyDecidedByInputEnvelope
+    set?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    disconnect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    delete?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    update?: ApprovalRequestUpdateWithWhereUniqueWithoutDecidedByInput | ApprovalRequestUpdateWithWhereUniqueWithoutDecidedByInput[]
+    updateMany?: ApprovalRequestUpdateManyWithWhereWithoutDecidedByInput | ApprovalRequestUpdateManyWithWhereWithoutDecidedByInput[]
+    deleteMany?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutDecidedByInput, ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput> | ApprovalStepInstanceCreateWithoutDecidedByInput[] | ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutDecidedByInput | ApprovalStepInstanceCreateOrConnectWithoutDecidedByInput[]
+    upsert?: ApprovalStepInstanceUpsertWithWhereUniqueWithoutDecidedByInput | ApprovalStepInstanceUpsertWithWhereUniqueWithoutDecidedByInput[]
+    createMany?: ApprovalStepInstanceCreateManyDecidedByInputEnvelope
+    set?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    disconnect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    delete?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    update?: ApprovalStepInstanceUpdateWithWhereUniqueWithoutDecidedByInput | ApprovalStepInstanceUpdateWithWhereUniqueWithoutDecidedByInput[]
+    updateMany?: ApprovalStepInstanceUpdateManyWithWhereWithoutDecidedByInput | ApprovalStepInstanceUpdateManyWithWhereWithoutDecidedByInput[]
+    deleteMany?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutActorInput, ApprovalDecisionRecordUncheckedCreateWithoutActorInput> | ApprovalDecisionRecordCreateWithoutActorInput[] | ApprovalDecisionRecordUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutActorInput | ApprovalDecisionRecordCreateOrConnectWithoutActorInput[]
+    upsert?: ApprovalDecisionRecordUpsertWithWhereUniqueWithoutActorInput | ApprovalDecisionRecordUpsertWithWhereUniqueWithoutActorInput[]
+    createMany?: ApprovalDecisionRecordCreateManyActorInputEnvelope
+    set?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    disconnect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    delete?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    update?: ApprovalDecisionRecordUpdateWithWhereUniqueWithoutActorInput | ApprovalDecisionRecordUpdateWithWhereUniqueWithoutActorInput[]
+    updateMany?: ApprovalDecisionRecordUpdateManyWithWhereWithoutActorInput | ApprovalDecisionRecordUpdateManyWithWhereWithoutActorInput[]
+    deleteMany?: ApprovalDecisionRecordScalarWhereInput | ApprovalDecisionRecordScalarWhereInput[]
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutAssigneeUserInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput> | ApprovalPolicyStepCreateWithoutAssigneeUserInput[] | ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutAssigneeUserInput | ApprovalPolicyStepCreateOrConnectWithoutAssigneeUserInput[]
+    upsert?: ApprovalPolicyStepUpsertWithWhereUniqueWithoutAssigneeUserInput | ApprovalPolicyStepUpsertWithWhereUniqueWithoutAssigneeUserInput[]
+    createMany?: ApprovalPolicyStepCreateManyAssigneeUserInputEnvelope
+    set?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    disconnect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    delete?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    update?: ApprovalPolicyStepUpdateWithWhereUniqueWithoutAssigneeUserInput | ApprovalPolicyStepUpdateWithWhereUniqueWithoutAssigneeUserInput[]
+    updateMany?: ApprovalPolicyStepUpdateManyWithWhereWithoutAssigneeUserInput | ApprovalPolicyStepUpdateManyWithWhereWithoutAssigneeUserInput[]
+    deleteMany?: ApprovalPolicyStepScalarWhereInput | ApprovalPolicyStepScalarWhereInput[]
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutAssigneeUserInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput> | ApprovalStepInstanceCreateWithoutAssigneeUserInput[] | ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput | ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput[]
+    upsert?: ApprovalStepInstanceUpsertWithWhereUniqueWithoutAssigneeUserInput | ApprovalStepInstanceUpsertWithWhereUniqueWithoutAssigneeUserInput[]
+    createMany?: ApprovalStepInstanceCreateManyAssigneeUserInputEnvelope
+    set?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    disconnect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    delete?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    update?: ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeUserInput | ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeUserInput[]
+    updateMany?: ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeUserInput | ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeUserInput[]
+    deleteMany?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutMfaDevicesInput = {
     create?: XOR<UserCreateWithoutMfaDevicesInput, UserUncheckedCreateWithoutMfaDevicesInput>
     connectOrCreate?: UserCreateOrConnectWithoutMfaDevicesInput
@@ -77504,6 +86990,20 @@ export namespace Prisma {
     connect?: AccessReviewItemWhereUniqueInput | AccessReviewItemWhereUniqueInput[]
   }
 
+  export type ApprovalPolicyStepCreateNestedManyWithoutAssigneeRoleInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutAssigneeRoleInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput> | ApprovalPolicyStepCreateWithoutAssigneeRoleInput[] | ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutAssigneeRoleInput | ApprovalPolicyStepCreateOrConnectWithoutAssigneeRoleInput[]
+    createMany?: ApprovalPolicyStepCreateManyAssigneeRoleInputEnvelope
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+  }
+
+  export type ApprovalStepInstanceCreateNestedManyWithoutAssigneeRoleInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutAssigneeRoleInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput> | ApprovalStepInstanceCreateWithoutAssigneeRoleInput[] | ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutAssigneeRoleInput | ApprovalStepInstanceCreateOrConnectWithoutAssigneeRoleInput[]
+    createMany?: ApprovalStepInstanceCreateManyAssigneeRoleInputEnvelope
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+  }
+
   export type RolePermissionUncheckedCreateNestedManyWithoutRoleInput = {
     create?: XOR<RolePermissionCreateWithoutRoleInput, RolePermissionUncheckedCreateWithoutRoleInput> | RolePermissionCreateWithoutRoleInput[] | RolePermissionUncheckedCreateWithoutRoleInput[]
     connectOrCreate?: RolePermissionCreateOrConnectWithoutRoleInput | RolePermissionCreateOrConnectWithoutRoleInput[]
@@ -77537,6 +87037,20 @@ export namespace Prisma {
     connectOrCreate?: AccessReviewItemCreateOrConnectWithoutRoleInput | AccessReviewItemCreateOrConnectWithoutRoleInput[]
     createMany?: AccessReviewItemCreateManyRoleInputEnvelope
     connect?: AccessReviewItemWhereUniqueInput | AccessReviewItemWhereUniqueInput[]
+  }
+
+  export type ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeRoleInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutAssigneeRoleInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput> | ApprovalPolicyStepCreateWithoutAssigneeRoleInput[] | ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutAssigneeRoleInput | ApprovalPolicyStepCreateOrConnectWithoutAssigneeRoleInput[]
+    createMany?: ApprovalPolicyStepCreateManyAssigneeRoleInputEnvelope
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+  }
+
+  export type ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeRoleInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutAssigneeRoleInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput> | ApprovalStepInstanceCreateWithoutAssigneeRoleInput[] | ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutAssigneeRoleInput | ApprovalStepInstanceCreateOrConnectWithoutAssigneeRoleInput[]
+    createMany?: ApprovalStepInstanceCreateManyAssigneeRoleInputEnvelope
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
   }
 
   export type EnumRoleTypeFieldUpdateOperationsInput = {
@@ -77621,6 +87135,34 @@ export namespace Prisma {
     deleteMany?: AccessReviewItemScalarWhereInput | AccessReviewItemScalarWhereInput[]
   }
 
+  export type ApprovalPolicyStepUpdateManyWithoutAssigneeRoleNestedInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutAssigneeRoleInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput> | ApprovalPolicyStepCreateWithoutAssigneeRoleInput[] | ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutAssigneeRoleInput | ApprovalPolicyStepCreateOrConnectWithoutAssigneeRoleInput[]
+    upsert?: ApprovalPolicyStepUpsertWithWhereUniqueWithoutAssigneeRoleInput | ApprovalPolicyStepUpsertWithWhereUniqueWithoutAssigneeRoleInput[]
+    createMany?: ApprovalPolicyStepCreateManyAssigneeRoleInputEnvelope
+    set?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    disconnect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    delete?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    update?: ApprovalPolicyStepUpdateWithWhereUniqueWithoutAssigneeRoleInput | ApprovalPolicyStepUpdateWithWhereUniqueWithoutAssigneeRoleInput[]
+    updateMany?: ApprovalPolicyStepUpdateManyWithWhereWithoutAssigneeRoleInput | ApprovalPolicyStepUpdateManyWithWhereWithoutAssigneeRoleInput[]
+    deleteMany?: ApprovalPolicyStepScalarWhereInput | ApprovalPolicyStepScalarWhereInput[]
+  }
+
+  export type ApprovalStepInstanceUpdateManyWithoutAssigneeRoleNestedInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutAssigneeRoleInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput> | ApprovalStepInstanceCreateWithoutAssigneeRoleInput[] | ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutAssigneeRoleInput | ApprovalStepInstanceCreateOrConnectWithoutAssigneeRoleInput[]
+    upsert?: ApprovalStepInstanceUpsertWithWhereUniqueWithoutAssigneeRoleInput | ApprovalStepInstanceUpsertWithWhereUniqueWithoutAssigneeRoleInput[]
+    createMany?: ApprovalStepInstanceCreateManyAssigneeRoleInputEnvelope
+    set?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    disconnect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    delete?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    update?: ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeRoleInput | ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeRoleInput[]
+    updateMany?: ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeRoleInput | ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeRoleInput[]
+    deleteMany?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
+  }
+
   export type RolePermissionUncheckedUpdateManyWithoutRoleNestedInput = {
     create?: XOR<RolePermissionCreateWithoutRoleInput, RolePermissionUncheckedCreateWithoutRoleInput> | RolePermissionCreateWithoutRoleInput[] | RolePermissionUncheckedCreateWithoutRoleInput[]
     connectOrCreate?: RolePermissionCreateOrConnectWithoutRoleInput | RolePermissionCreateOrConnectWithoutRoleInput[]
@@ -77689,6 +87231,34 @@ export namespace Prisma {
     update?: AccessReviewItemUpdateWithWhereUniqueWithoutRoleInput | AccessReviewItemUpdateWithWhereUniqueWithoutRoleInput[]
     updateMany?: AccessReviewItemUpdateManyWithWhereWithoutRoleInput | AccessReviewItemUpdateManyWithWhereWithoutRoleInput[]
     deleteMany?: AccessReviewItemScalarWhereInput | AccessReviewItemScalarWhereInput[]
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeRoleNestedInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutAssigneeRoleInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput> | ApprovalPolicyStepCreateWithoutAssigneeRoleInput[] | ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutAssigneeRoleInput | ApprovalPolicyStepCreateOrConnectWithoutAssigneeRoleInput[]
+    upsert?: ApprovalPolicyStepUpsertWithWhereUniqueWithoutAssigneeRoleInput | ApprovalPolicyStepUpsertWithWhereUniqueWithoutAssigneeRoleInput[]
+    createMany?: ApprovalPolicyStepCreateManyAssigneeRoleInputEnvelope
+    set?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    disconnect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    delete?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    update?: ApprovalPolicyStepUpdateWithWhereUniqueWithoutAssigneeRoleInput | ApprovalPolicyStepUpdateWithWhereUniqueWithoutAssigneeRoleInput[]
+    updateMany?: ApprovalPolicyStepUpdateManyWithWhereWithoutAssigneeRoleInput | ApprovalPolicyStepUpdateManyWithWhereWithoutAssigneeRoleInput[]
+    deleteMany?: ApprovalPolicyStepScalarWhereInput | ApprovalPolicyStepScalarWhereInput[]
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeRoleNestedInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutAssigneeRoleInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput> | ApprovalStepInstanceCreateWithoutAssigneeRoleInput[] | ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutAssigneeRoleInput | ApprovalStepInstanceCreateOrConnectWithoutAssigneeRoleInput[]
+    upsert?: ApprovalStepInstanceUpsertWithWhereUniqueWithoutAssigneeRoleInput | ApprovalStepInstanceUpsertWithWhereUniqueWithoutAssigneeRoleInput[]
+    createMany?: ApprovalStepInstanceCreateManyAssigneeRoleInputEnvelope
+    set?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    disconnect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    delete?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    update?: ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeRoleInput | ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeRoleInput[]
+    updateMany?: ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeRoleInput | ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeRoleInput[]
+    deleteMany?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
   }
 
   export type RolePermissionCreateNestedManyWithoutPermissionInput = {
@@ -78009,6 +87579,474 @@ export namespace Prisma {
     update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutAccessReviewItemsInput, RoleUpdateWithoutAccessReviewItemsInput>, RoleUncheckedUpdateWithoutAccessReviewItemsInput>
   }
 
+  export type OrganizationCreateNestedOneWithoutApprovalPoliciesInput = {
+    create?: XOR<OrganizationCreateWithoutApprovalPoliciesInput, OrganizationUncheckedCreateWithoutApprovalPoliciesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutApprovalPoliciesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type ApprovalPolicyStepCreateNestedManyWithoutPolicyInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutPolicyInput, ApprovalPolicyStepUncheckedCreateWithoutPolicyInput> | ApprovalPolicyStepCreateWithoutPolicyInput[] | ApprovalPolicyStepUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutPolicyInput | ApprovalPolicyStepCreateOrConnectWithoutPolicyInput[]
+    createMany?: ApprovalPolicyStepCreateManyPolicyInputEnvelope
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+  }
+
+  export type ApprovalRequestCreateNestedManyWithoutPolicyInput = {
+    create?: XOR<ApprovalRequestCreateWithoutPolicyInput, ApprovalRequestUncheckedCreateWithoutPolicyInput> | ApprovalRequestCreateWithoutPolicyInput[] | ApprovalRequestUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutPolicyInput | ApprovalRequestCreateOrConnectWithoutPolicyInput[]
+    createMany?: ApprovalRequestCreateManyPolicyInputEnvelope
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+  }
+
+  export type ApprovalPolicyStepUncheckedCreateNestedManyWithoutPolicyInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutPolicyInput, ApprovalPolicyStepUncheckedCreateWithoutPolicyInput> | ApprovalPolicyStepCreateWithoutPolicyInput[] | ApprovalPolicyStepUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutPolicyInput | ApprovalPolicyStepCreateOrConnectWithoutPolicyInput[]
+    createMany?: ApprovalPolicyStepCreateManyPolicyInputEnvelope
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+  }
+
+  export type ApprovalRequestUncheckedCreateNestedManyWithoutPolicyInput = {
+    create?: XOR<ApprovalRequestCreateWithoutPolicyInput, ApprovalRequestUncheckedCreateWithoutPolicyInput> | ApprovalRequestCreateWithoutPolicyInput[] | ApprovalRequestUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutPolicyInput | ApprovalRequestCreateOrConnectWithoutPolicyInput[]
+    createMany?: ApprovalRequestCreateManyPolicyInputEnvelope
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+  }
+
+  export type EnumApprovalEntityTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ApprovalEntityType
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutApprovalPoliciesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutApprovalPoliciesInput, OrganizationUncheckedCreateWithoutApprovalPoliciesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutApprovalPoliciesInput
+    upsert?: OrganizationUpsertWithoutApprovalPoliciesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutApprovalPoliciesInput, OrganizationUpdateWithoutApprovalPoliciesInput>, OrganizationUncheckedUpdateWithoutApprovalPoliciesInput>
+  }
+
+  export type ApprovalPolicyStepUpdateManyWithoutPolicyNestedInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutPolicyInput, ApprovalPolicyStepUncheckedCreateWithoutPolicyInput> | ApprovalPolicyStepCreateWithoutPolicyInput[] | ApprovalPolicyStepUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutPolicyInput | ApprovalPolicyStepCreateOrConnectWithoutPolicyInput[]
+    upsert?: ApprovalPolicyStepUpsertWithWhereUniqueWithoutPolicyInput | ApprovalPolicyStepUpsertWithWhereUniqueWithoutPolicyInput[]
+    createMany?: ApprovalPolicyStepCreateManyPolicyInputEnvelope
+    set?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    disconnect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    delete?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    update?: ApprovalPolicyStepUpdateWithWhereUniqueWithoutPolicyInput | ApprovalPolicyStepUpdateWithWhereUniqueWithoutPolicyInput[]
+    updateMany?: ApprovalPolicyStepUpdateManyWithWhereWithoutPolicyInput | ApprovalPolicyStepUpdateManyWithWhereWithoutPolicyInput[]
+    deleteMany?: ApprovalPolicyStepScalarWhereInput | ApprovalPolicyStepScalarWhereInput[]
+  }
+
+  export type ApprovalRequestUpdateManyWithoutPolicyNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutPolicyInput, ApprovalRequestUncheckedCreateWithoutPolicyInput> | ApprovalRequestCreateWithoutPolicyInput[] | ApprovalRequestUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutPolicyInput | ApprovalRequestCreateOrConnectWithoutPolicyInput[]
+    upsert?: ApprovalRequestUpsertWithWhereUniqueWithoutPolicyInput | ApprovalRequestUpsertWithWhereUniqueWithoutPolicyInput[]
+    createMany?: ApprovalRequestCreateManyPolicyInputEnvelope
+    set?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    disconnect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    delete?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    update?: ApprovalRequestUpdateWithWhereUniqueWithoutPolicyInput | ApprovalRequestUpdateWithWhereUniqueWithoutPolicyInput[]
+    updateMany?: ApprovalRequestUpdateManyWithWhereWithoutPolicyInput | ApprovalRequestUpdateManyWithWhereWithoutPolicyInput[]
+    deleteMany?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateManyWithoutPolicyNestedInput = {
+    create?: XOR<ApprovalPolicyStepCreateWithoutPolicyInput, ApprovalPolicyStepUncheckedCreateWithoutPolicyInput> | ApprovalPolicyStepCreateWithoutPolicyInput[] | ApprovalPolicyStepUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: ApprovalPolicyStepCreateOrConnectWithoutPolicyInput | ApprovalPolicyStepCreateOrConnectWithoutPolicyInput[]
+    upsert?: ApprovalPolicyStepUpsertWithWhereUniqueWithoutPolicyInput | ApprovalPolicyStepUpsertWithWhereUniqueWithoutPolicyInput[]
+    createMany?: ApprovalPolicyStepCreateManyPolicyInputEnvelope
+    set?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    disconnect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    delete?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    connect?: ApprovalPolicyStepWhereUniqueInput | ApprovalPolicyStepWhereUniqueInput[]
+    update?: ApprovalPolicyStepUpdateWithWhereUniqueWithoutPolicyInput | ApprovalPolicyStepUpdateWithWhereUniqueWithoutPolicyInput[]
+    updateMany?: ApprovalPolicyStepUpdateManyWithWhereWithoutPolicyInput | ApprovalPolicyStepUpdateManyWithWhereWithoutPolicyInput[]
+    deleteMany?: ApprovalPolicyStepScalarWhereInput | ApprovalPolicyStepScalarWhereInput[]
+  }
+
+  export type ApprovalRequestUncheckedUpdateManyWithoutPolicyNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutPolicyInput, ApprovalRequestUncheckedCreateWithoutPolicyInput> | ApprovalRequestCreateWithoutPolicyInput[] | ApprovalRequestUncheckedCreateWithoutPolicyInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutPolicyInput | ApprovalRequestCreateOrConnectWithoutPolicyInput[]
+    upsert?: ApprovalRequestUpsertWithWhereUniqueWithoutPolicyInput | ApprovalRequestUpsertWithWhereUniqueWithoutPolicyInput[]
+    createMany?: ApprovalRequestCreateManyPolicyInputEnvelope
+    set?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    disconnect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    delete?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    update?: ApprovalRequestUpdateWithWhereUniqueWithoutPolicyInput | ApprovalRequestUpdateWithWhereUniqueWithoutPolicyInput[]
+    updateMany?: ApprovalRequestUpdateManyWithWhereWithoutPolicyInput | ApprovalRequestUpdateManyWithWhereWithoutPolicyInput[]
+    deleteMany?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
+  }
+
+  export type ApprovalPolicyCreateNestedOneWithoutStepsInput = {
+    create?: XOR<ApprovalPolicyCreateWithoutStepsInput, ApprovalPolicyUncheckedCreateWithoutStepsInput>
+    connectOrCreate?: ApprovalPolicyCreateOrConnectWithoutStepsInput
+    connect?: ApprovalPolicyWhereUniqueInput
+  }
+
+  export type RoleCreateNestedOneWithoutApprovalPolicyStepsInput = {
+    create?: XOR<RoleCreateWithoutApprovalPolicyStepsInput, RoleUncheckedCreateWithoutApprovalPolicyStepsInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutApprovalPolicyStepsInput
+    connect?: RoleWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutApprovalPolicyStepAssigneeUserInput = {
+    create?: XOR<UserCreateWithoutApprovalPolicyStepAssigneeUserInput, UserUncheckedCreateWithoutApprovalPolicyStepAssigneeUserInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalPolicyStepAssigneeUserInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumApprovalStepTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ApprovalStepType
+  }
+
+  export type EnumApprovalAssigneeTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ApprovalAssigneeType
+  }
+
+  export type EnumResolutionModeFieldUpdateOperationsInput = {
+    set?: $Enums.ResolutionMode
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput = {
+    set?: $Enums.ApprovalConditionOperator | null
+  }
+
+  export type ApprovalPolicyUpdateOneRequiredWithoutStepsNestedInput = {
+    create?: XOR<ApprovalPolicyCreateWithoutStepsInput, ApprovalPolicyUncheckedCreateWithoutStepsInput>
+    connectOrCreate?: ApprovalPolicyCreateOrConnectWithoutStepsInput
+    upsert?: ApprovalPolicyUpsertWithoutStepsInput
+    connect?: ApprovalPolicyWhereUniqueInput
+    update?: XOR<XOR<ApprovalPolicyUpdateToOneWithWhereWithoutStepsInput, ApprovalPolicyUpdateWithoutStepsInput>, ApprovalPolicyUncheckedUpdateWithoutStepsInput>
+  }
+
+  export type RoleUpdateOneWithoutApprovalPolicyStepsNestedInput = {
+    create?: XOR<RoleCreateWithoutApprovalPolicyStepsInput, RoleUncheckedCreateWithoutApprovalPolicyStepsInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutApprovalPolicyStepsInput
+    upsert?: RoleUpsertWithoutApprovalPolicyStepsInput
+    disconnect?: RoleWhereInput | boolean
+    delete?: RoleWhereInput | boolean
+    connect?: RoleWhereUniqueInput
+    update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutApprovalPolicyStepsInput, RoleUpdateWithoutApprovalPolicyStepsInput>, RoleUncheckedUpdateWithoutApprovalPolicyStepsInput>
+  }
+
+  export type UserUpdateOneWithoutApprovalPolicyStepAssigneeUserNestedInput = {
+    create?: XOR<UserCreateWithoutApprovalPolicyStepAssigneeUserInput, UserUncheckedCreateWithoutApprovalPolicyStepAssigneeUserInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalPolicyStepAssigneeUserInput
+    upsert?: UserUpsertWithoutApprovalPolicyStepAssigneeUserInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovalPolicyStepAssigneeUserInput, UserUpdateWithoutApprovalPolicyStepAssigneeUserInput>, UserUncheckedUpdateWithoutApprovalPolicyStepAssigneeUserInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutApprovalRequestsInput = {
+    create?: XOR<OrganizationCreateWithoutApprovalRequestsInput, OrganizationUncheckedCreateWithoutApprovalRequestsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutApprovalRequestsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type ApprovalPolicyCreateNestedOneWithoutRequestsInput = {
+    create?: XOR<ApprovalPolicyCreateWithoutRequestsInput, ApprovalPolicyUncheckedCreateWithoutRequestsInput>
+    connectOrCreate?: ApprovalPolicyCreateOrConnectWithoutRequestsInput
+    connect?: ApprovalPolicyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutApprovalRequestsSubmittedInput = {
+    create?: XOR<UserCreateWithoutApprovalRequestsSubmittedInput, UserUncheckedCreateWithoutApprovalRequestsSubmittedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalRequestsSubmittedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutApprovalRequestsDecidedInput = {
+    create?: XOR<UserCreateWithoutApprovalRequestsDecidedInput, UserUncheckedCreateWithoutApprovalRequestsDecidedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalRequestsDecidedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ApprovalStepInstanceCreateNestedManyWithoutRequestInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutRequestInput, ApprovalStepInstanceUncheckedCreateWithoutRequestInput> | ApprovalStepInstanceCreateWithoutRequestInput[] | ApprovalStepInstanceUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutRequestInput | ApprovalStepInstanceCreateOrConnectWithoutRequestInput[]
+    createMany?: ApprovalStepInstanceCreateManyRequestInputEnvelope
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+  }
+
+  export type ApprovalDecisionRecordCreateNestedManyWithoutRequestInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutRequestInput, ApprovalDecisionRecordUncheckedCreateWithoutRequestInput> | ApprovalDecisionRecordCreateWithoutRequestInput[] | ApprovalDecisionRecordUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutRequestInput | ApprovalDecisionRecordCreateOrConnectWithoutRequestInput[]
+    createMany?: ApprovalDecisionRecordCreateManyRequestInputEnvelope
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+  }
+
+  export type ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutRequestInput, ApprovalStepInstanceUncheckedCreateWithoutRequestInput> | ApprovalStepInstanceCreateWithoutRequestInput[] | ApprovalStepInstanceUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutRequestInput | ApprovalStepInstanceCreateOrConnectWithoutRequestInput[]
+    createMany?: ApprovalStepInstanceCreateManyRequestInputEnvelope
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+  }
+
+  export type ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutRequestInput, ApprovalDecisionRecordUncheckedCreateWithoutRequestInput> | ApprovalDecisionRecordCreateWithoutRequestInput[] | ApprovalDecisionRecordUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutRequestInput | ApprovalDecisionRecordCreateOrConnectWithoutRequestInput[]
+    createMany?: ApprovalDecisionRecordCreateManyRequestInputEnvelope
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+  }
+
+  export type EnumApprovalRequestStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ApprovalRequestStatus
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutApprovalRequestsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutApprovalRequestsInput, OrganizationUncheckedCreateWithoutApprovalRequestsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutApprovalRequestsInput
+    upsert?: OrganizationUpsertWithoutApprovalRequestsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutApprovalRequestsInput, OrganizationUpdateWithoutApprovalRequestsInput>, OrganizationUncheckedUpdateWithoutApprovalRequestsInput>
+  }
+
+  export type ApprovalPolicyUpdateOneRequiredWithoutRequestsNestedInput = {
+    create?: XOR<ApprovalPolicyCreateWithoutRequestsInput, ApprovalPolicyUncheckedCreateWithoutRequestsInput>
+    connectOrCreate?: ApprovalPolicyCreateOrConnectWithoutRequestsInput
+    upsert?: ApprovalPolicyUpsertWithoutRequestsInput
+    connect?: ApprovalPolicyWhereUniqueInput
+    update?: XOR<XOR<ApprovalPolicyUpdateToOneWithWhereWithoutRequestsInput, ApprovalPolicyUpdateWithoutRequestsInput>, ApprovalPolicyUncheckedUpdateWithoutRequestsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput = {
+    create?: XOR<UserCreateWithoutApprovalRequestsSubmittedInput, UserUncheckedCreateWithoutApprovalRequestsSubmittedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalRequestsSubmittedInput
+    upsert?: UserUpsertWithoutApprovalRequestsSubmittedInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovalRequestsSubmittedInput, UserUpdateWithoutApprovalRequestsSubmittedInput>, UserUncheckedUpdateWithoutApprovalRequestsSubmittedInput>
+  }
+
+  export type UserUpdateOneWithoutApprovalRequestsDecidedNestedInput = {
+    create?: XOR<UserCreateWithoutApprovalRequestsDecidedInput, UserUncheckedCreateWithoutApprovalRequestsDecidedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalRequestsDecidedInput
+    upsert?: UserUpsertWithoutApprovalRequestsDecidedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovalRequestsDecidedInput, UserUpdateWithoutApprovalRequestsDecidedInput>, UserUncheckedUpdateWithoutApprovalRequestsDecidedInput>
+  }
+
+  export type ApprovalStepInstanceUpdateManyWithoutRequestNestedInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutRequestInput, ApprovalStepInstanceUncheckedCreateWithoutRequestInput> | ApprovalStepInstanceCreateWithoutRequestInput[] | ApprovalStepInstanceUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutRequestInput | ApprovalStepInstanceCreateOrConnectWithoutRequestInput[]
+    upsert?: ApprovalStepInstanceUpsertWithWhereUniqueWithoutRequestInput | ApprovalStepInstanceUpsertWithWhereUniqueWithoutRequestInput[]
+    createMany?: ApprovalStepInstanceCreateManyRequestInputEnvelope
+    set?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    disconnect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    delete?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    update?: ApprovalStepInstanceUpdateWithWhereUniqueWithoutRequestInput | ApprovalStepInstanceUpdateWithWhereUniqueWithoutRequestInput[]
+    updateMany?: ApprovalStepInstanceUpdateManyWithWhereWithoutRequestInput | ApprovalStepInstanceUpdateManyWithWhereWithoutRequestInput[]
+    deleteMany?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
+  }
+
+  export type ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutRequestInput, ApprovalDecisionRecordUncheckedCreateWithoutRequestInput> | ApprovalDecisionRecordCreateWithoutRequestInput[] | ApprovalDecisionRecordUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutRequestInput | ApprovalDecisionRecordCreateOrConnectWithoutRequestInput[]
+    upsert?: ApprovalDecisionRecordUpsertWithWhereUniqueWithoutRequestInput | ApprovalDecisionRecordUpsertWithWhereUniqueWithoutRequestInput[]
+    createMany?: ApprovalDecisionRecordCreateManyRequestInputEnvelope
+    set?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    disconnect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    delete?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    update?: ApprovalDecisionRecordUpdateWithWhereUniqueWithoutRequestInput | ApprovalDecisionRecordUpdateWithWhereUniqueWithoutRequestInput[]
+    updateMany?: ApprovalDecisionRecordUpdateManyWithWhereWithoutRequestInput | ApprovalDecisionRecordUpdateManyWithWhereWithoutRequestInput[]
+    deleteMany?: ApprovalDecisionRecordScalarWhereInput | ApprovalDecisionRecordScalarWhereInput[]
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutRequestInput, ApprovalStepInstanceUncheckedCreateWithoutRequestInput> | ApprovalStepInstanceCreateWithoutRequestInput[] | ApprovalStepInstanceUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutRequestInput | ApprovalStepInstanceCreateOrConnectWithoutRequestInput[]
+    upsert?: ApprovalStepInstanceUpsertWithWhereUniqueWithoutRequestInput | ApprovalStepInstanceUpsertWithWhereUniqueWithoutRequestInput[]
+    createMany?: ApprovalStepInstanceCreateManyRequestInputEnvelope
+    set?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    disconnect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    delete?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    connect?: ApprovalStepInstanceWhereUniqueInput | ApprovalStepInstanceWhereUniqueInput[]
+    update?: ApprovalStepInstanceUpdateWithWhereUniqueWithoutRequestInput | ApprovalStepInstanceUpdateWithWhereUniqueWithoutRequestInput[]
+    updateMany?: ApprovalStepInstanceUpdateManyWithWhereWithoutRequestInput | ApprovalStepInstanceUpdateManyWithWhereWithoutRequestInput[]
+    deleteMany?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutRequestInput, ApprovalDecisionRecordUncheckedCreateWithoutRequestInput> | ApprovalDecisionRecordCreateWithoutRequestInput[] | ApprovalDecisionRecordUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutRequestInput | ApprovalDecisionRecordCreateOrConnectWithoutRequestInput[]
+    upsert?: ApprovalDecisionRecordUpsertWithWhereUniqueWithoutRequestInput | ApprovalDecisionRecordUpsertWithWhereUniqueWithoutRequestInput[]
+    createMany?: ApprovalDecisionRecordCreateManyRequestInputEnvelope
+    set?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    disconnect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    delete?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    update?: ApprovalDecisionRecordUpdateWithWhereUniqueWithoutRequestInput | ApprovalDecisionRecordUpdateWithWhereUniqueWithoutRequestInput[]
+    updateMany?: ApprovalDecisionRecordUpdateManyWithWhereWithoutRequestInput | ApprovalDecisionRecordUpdateManyWithWhereWithoutRequestInput[]
+    deleteMany?: ApprovalDecisionRecordScalarWhereInput | ApprovalDecisionRecordScalarWhereInput[]
+  }
+
+  export type ApprovalRequestCreateNestedOneWithoutStepInstancesInput = {
+    create?: XOR<ApprovalRequestCreateWithoutStepInstancesInput, ApprovalRequestUncheckedCreateWithoutStepInstancesInput>
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutStepInstancesInput
+    connect?: ApprovalRequestWhereUniqueInput
+  }
+
+  export type RoleCreateNestedOneWithoutApprovalStepInstanceAssigneeRoleInput = {
+    create?: XOR<RoleCreateWithoutApprovalStepInstanceAssigneeRoleInput, RoleUncheckedCreateWithoutApprovalStepInstanceAssigneeRoleInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutApprovalStepInstanceAssigneeRoleInput
+    connect?: RoleWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutApprovalStepInstanceAssigneeUserInput = {
+    create?: XOR<UserCreateWithoutApprovalStepInstanceAssigneeUserInput, UserUncheckedCreateWithoutApprovalStepInstanceAssigneeUserInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalStepInstanceAssigneeUserInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutApprovalStepInstancesDecidedInput = {
+    create?: XOR<UserCreateWithoutApprovalStepInstancesDecidedInput, UserUncheckedCreateWithoutApprovalStepInstancesDecidedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalStepInstancesDecidedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ApprovalDecisionRecordCreateNestedManyWithoutStepInstanceInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutStepInstanceInput, ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput> | ApprovalDecisionRecordCreateWithoutStepInstanceInput[] | ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutStepInstanceInput | ApprovalDecisionRecordCreateOrConnectWithoutStepInstanceInput[]
+    createMany?: ApprovalDecisionRecordCreateManyStepInstanceInputEnvelope
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+  }
+
+  export type ApprovalDecisionRecordUncheckedCreateNestedManyWithoutStepInstanceInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutStepInstanceInput, ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput> | ApprovalDecisionRecordCreateWithoutStepInstanceInput[] | ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutStepInstanceInput | ApprovalDecisionRecordCreateOrConnectWithoutStepInstanceInput[]
+    createMany?: ApprovalDecisionRecordCreateManyStepInstanceInputEnvelope
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+  }
+
+  export type ApprovalRequestUpdateOneRequiredWithoutStepInstancesNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutStepInstancesInput, ApprovalRequestUncheckedCreateWithoutStepInstancesInput>
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutStepInstancesInput
+    upsert?: ApprovalRequestUpsertWithoutStepInstancesInput
+    connect?: ApprovalRequestWhereUniqueInput
+    update?: XOR<XOR<ApprovalRequestUpdateToOneWithWhereWithoutStepInstancesInput, ApprovalRequestUpdateWithoutStepInstancesInput>, ApprovalRequestUncheckedUpdateWithoutStepInstancesInput>
+  }
+
+  export type RoleUpdateOneWithoutApprovalStepInstanceAssigneeRoleNestedInput = {
+    create?: XOR<RoleCreateWithoutApprovalStepInstanceAssigneeRoleInput, RoleUncheckedCreateWithoutApprovalStepInstanceAssigneeRoleInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutApprovalStepInstanceAssigneeRoleInput
+    upsert?: RoleUpsertWithoutApprovalStepInstanceAssigneeRoleInput
+    disconnect?: RoleWhereInput | boolean
+    delete?: RoleWhereInput | boolean
+    connect?: RoleWhereUniqueInput
+    update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutApprovalStepInstanceAssigneeRoleInput, RoleUpdateWithoutApprovalStepInstanceAssigneeRoleInput>, RoleUncheckedUpdateWithoutApprovalStepInstanceAssigneeRoleInput>
+  }
+
+  export type UserUpdateOneWithoutApprovalStepInstanceAssigneeUserNestedInput = {
+    create?: XOR<UserCreateWithoutApprovalStepInstanceAssigneeUserInput, UserUncheckedCreateWithoutApprovalStepInstanceAssigneeUserInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalStepInstanceAssigneeUserInput
+    upsert?: UserUpsertWithoutApprovalStepInstanceAssigneeUserInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovalStepInstanceAssigneeUserInput, UserUpdateWithoutApprovalStepInstanceAssigneeUserInput>, UserUncheckedUpdateWithoutApprovalStepInstanceAssigneeUserInput>
+  }
+
+  export type UserUpdateOneWithoutApprovalStepInstancesDecidedNestedInput = {
+    create?: XOR<UserCreateWithoutApprovalStepInstancesDecidedInput, UserUncheckedCreateWithoutApprovalStepInstancesDecidedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalStepInstancesDecidedInput
+    upsert?: UserUpsertWithoutApprovalStepInstancesDecidedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovalStepInstancesDecidedInput, UserUpdateWithoutApprovalStepInstancesDecidedInput>, UserUncheckedUpdateWithoutApprovalStepInstancesDecidedInput>
+  }
+
+  export type ApprovalDecisionRecordUpdateManyWithoutStepInstanceNestedInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutStepInstanceInput, ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput> | ApprovalDecisionRecordCreateWithoutStepInstanceInput[] | ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutStepInstanceInput | ApprovalDecisionRecordCreateOrConnectWithoutStepInstanceInput[]
+    upsert?: ApprovalDecisionRecordUpsertWithWhereUniqueWithoutStepInstanceInput | ApprovalDecisionRecordUpsertWithWhereUniqueWithoutStepInstanceInput[]
+    createMany?: ApprovalDecisionRecordCreateManyStepInstanceInputEnvelope
+    set?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    disconnect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    delete?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    update?: ApprovalDecisionRecordUpdateWithWhereUniqueWithoutStepInstanceInput | ApprovalDecisionRecordUpdateWithWhereUniqueWithoutStepInstanceInput[]
+    updateMany?: ApprovalDecisionRecordUpdateManyWithWhereWithoutStepInstanceInput | ApprovalDecisionRecordUpdateManyWithWhereWithoutStepInstanceInput[]
+    deleteMany?: ApprovalDecisionRecordScalarWhereInput | ApprovalDecisionRecordScalarWhereInput[]
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateManyWithoutStepInstanceNestedInput = {
+    create?: XOR<ApprovalDecisionRecordCreateWithoutStepInstanceInput, ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput> | ApprovalDecisionRecordCreateWithoutStepInstanceInput[] | ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput[]
+    connectOrCreate?: ApprovalDecisionRecordCreateOrConnectWithoutStepInstanceInput | ApprovalDecisionRecordCreateOrConnectWithoutStepInstanceInput[]
+    upsert?: ApprovalDecisionRecordUpsertWithWhereUniqueWithoutStepInstanceInput | ApprovalDecisionRecordUpsertWithWhereUniqueWithoutStepInstanceInput[]
+    createMany?: ApprovalDecisionRecordCreateManyStepInstanceInputEnvelope
+    set?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    disconnect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    delete?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    connect?: ApprovalDecisionRecordWhereUniqueInput | ApprovalDecisionRecordWhereUniqueInput[]
+    update?: ApprovalDecisionRecordUpdateWithWhereUniqueWithoutStepInstanceInput | ApprovalDecisionRecordUpdateWithWhereUniqueWithoutStepInstanceInput[]
+    updateMany?: ApprovalDecisionRecordUpdateManyWithWhereWithoutStepInstanceInput | ApprovalDecisionRecordUpdateManyWithWhereWithoutStepInstanceInput[]
+    deleteMany?: ApprovalDecisionRecordScalarWhereInput | ApprovalDecisionRecordScalarWhereInput[]
+  }
+
+  export type ApprovalRequestCreateNestedOneWithoutDecisionRecordsInput = {
+    create?: XOR<ApprovalRequestCreateWithoutDecisionRecordsInput, ApprovalRequestUncheckedCreateWithoutDecisionRecordsInput>
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutDecisionRecordsInput
+    connect?: ApprovalRequestWhereUniqueInput
+  }
+
+  export type ApprovalStepInstanceCreateNestedOneWithoutDecisionsInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutDecisionsInput, ApprovalStepInstanceUncheckedCreateWithoutDecisionsInput>
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutDecisionsInput
+    connect?: ApprovalStepInstanceWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutApprovalDecisionRecordsInput = {
+    create?: XOR<UserCreateWithoutApprovalDecisionRecordsInput, UserUncheckedCreateWithoutApprovalDecisionRecordsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalDecisionRecordsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumApprovalDecisionFieldUpdateOperationsInput = {
+    set?: $Enums.ApprovalDecision
+  }
+
+  export type ApprovalRequestUpdateOneRequiredWithoutDecisionRecordsNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutDecisionRecordsInput, ApprovalRequestUncheckedCreateWithoutDecisionRecordsInput>
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutDecisionRecordsInput
+    upsert?: ApprovalRequestUpsertWithoutDecisionRecordsInput
+    connect?: ApprovalRequestWhereUniqueInput
+    update?: XOR<XOR<ApprovalRequestUpdateToOneWithWhereWithoutDecisionRecordsInput, ApprovalRequestUpdateWithoutDecisionRecordsInput>, ApprovalRequestUncheckedUpdateWithoutDecisionRecordsInput>
+  }
+
+  export type ApprovalStepInstanceUpdateOneRequiredWithoutDecisionsNestedInput = {
+    create?: XOR<ApprovalStepInstanceCreateWithoutDecisionsInput, ApprovalStepInstanceUncheckedCreateWithoutDecisionsInput>
+    connectOrCreate?: ApprovalStepInstanceCreateOrConnectWithoutDecisionsInput
+    upsert?: ApprovalStepInstanceUpsertWithoutDecisionsInput
+    connect?: ApprovalStepInstanceWhereUniqueInput
+    update?: XOR<XOR<ApprovalStepInstanceUpdateToOneWithWhereWithoutDecisionsInput, ApprovalStepInstanceUpdateWithoutDecisionsInput>, ApprovalStepInstanceUncheckedUpdateWithoutDecisionsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutApprovalDecisionRecordsNestedInput = {
+    create?: XOR<UserCreateWithoutApprovalDecisionRecordsInput, UserUncheckedCreateWithoutApprovalDecisionRecordsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovalDecisionRecordsInput
+    upsert?: UserUpsertWithoutApprovalDecisionRecordsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovalDecisionRecordsInput, UserUpdateWithoutApprovalDecisionRecordsInput>, UserUncheckedUpdateWithoutApprovalDecisionRecordsInput>
+  }
+
   export type OrganizationMembershipCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -78142,6 +88180,20 @@ export namespace Prisma {
     connect?: BudgetLineWhereUniqueInput | BudgetLineWhereUniqueInput[]
   }
 
+  export type ApprovalPolicyCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ApprovalPolicyCreateWithoutOrganizationInput, ApprovalPolicyUncheckedCreateWithoutOrganizationInput> | ApprovalPolicyCreateWithoutOrganizationInput[] | ApprovalPolicyUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ApprovalPolicyCreateOrConnectWithoutOrganizationInput | ApprovalPolicyCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ApprovalPolicyCreateManyOrganizationInputEnvelope
+    connect?: ApprovalPolicyWhereUniqueInput | ApprovalPolicyWhereUniqueInput[]
+  }
+
+  export type ApprovalRequestCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ApprovalRequestCreateWithoutOrganizationInput, ApprovalRequestUncheckedCreateWithoutOrganizationInput> | ApprovalRequestCreateWithoutOrganizationInput[] | ApprovalRequestUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutOrganizationInput | ApprovalRequestCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ApprovalRequestCreateManyOrganizationInputEnvelope
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -78273,6 +88325,20 @@ export namespace Prisma {
     connectOrCreate?: BudgetLineCreateOrConnectWithoutOrganizationInput | BudgetLineCreateOrConnectWithoutOrganizationInput[]
     createMany?: BudgetLineCreateManyOrganizationInputEnvelope
     connect?: BudgetLineWhereUniqueInput | BudgetLineWhereUniqueInput[]
+  }
+
+  export type ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ApprovalPolicyCreateWithoutOrganizationInput, ApprovalPolicyUncheckedCreateWithoutOrganizationInput> | ApprovalPolicyCreateWithoutOrganizationInput[] | ApprovalPolicyUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ApprovalPolicyCreateOrConnectWithoutOrganizationInput | ApprovalPolicyCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ApprovalPolicyCreateManyOrganizationInputEnvelope
+    connect?: ApprovalPolicyWhereUniqueInput | ApprovalPolicyWhereUniqueInput[]
+  }
+
+  export type ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ApprovalRequestCreateWithoutOrganizationInput, ApprovalRequestUncheckedCreateWithoutOrganizationInput> | ApprovalRequestCreateWithoutOrganizationInput[] | ApprovalRequestUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutOrganizationInput | ApprovalRequestCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ApprovalRequestCreateManyOrganizationInputEnvelope
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
   }
 
   export type EnumOrganizationTypeFieldUpdateOperationsInput = {
@@ -78549,6 +88615,34 @@ export namespace Prisma {
     deleteMany?: BudgetLineScalarWhereInput | BudgetLineScalarWhereInput[]
   }
 
+  export type ApprovalPolicyUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ApprovalPolicyCreateWithoutOrganizationInput, ApprovalPolicyUncheckedCreateWithoutOrganizationInput> | ApprovalPolicyCreateWithoutOrganizationInput[] | ApprovalPolicyUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ApprovalPolicyCreateOrConnectWithoutOrganizationInput | ApprovalPolicyCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ApprovalPolicyUpsertWithWhereUniqueWithoutOrganizationInput | ApprovalPolicyUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ApprovalPolicyCreateManyOrganizationInputEnvelope
+    set?: ApprovalPolicyWhereUniqueInput | ApprovalPolicyWhereUniqueInput[]
+    disconnect?: ApprovalPolicyWhereUniqueInput | ApprovalPolicyWhereUniqueInput[]
+    delete?: ApprovalPolicyWhereUniqueInput | ApprovalPolicyWhereUniqueInput[]
+    connect?: ApprovalPolicyWhereUniqueInput | ApprovalPolicyWhereUniqueInput[]
+    update?: ApprovalPolicyUpdateWithWhereUniqueWithoutOrganizationInput | ApprovalPolicyUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ApprovalPolicyUpdateManyWithWhereWithoutOrganizationInput | ApprovalPolicyUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ApprovalPolicyScalarWhereInput | ApprovalPolicyScalarWhereInput[]
+  }
+
+  export type ApprovalRequestUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutOrganizationInput, ApprovalRequestUncheckedCreateWithoutOrganizationInput> | ApprovalRequestCreateWithoutOrganizationInput[] | ApprovalRequestUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutOrganizationInput | ApprovalRequestCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ApprovalRequestUpsertWithWhereUniqueWithoutOrganizationInput | ApprovalRequestUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ApprovalRequestCreateManyOrganizationInputEnvelope
+    set?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    disconnect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    delete?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    update?: ApprovalRequestUpdateWithWhereUniqueWithoutOrganizationInput | ApprovalRequestUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ApprovalRequestUpdateManyWithWhereWithoutOrganizationInput | ApprovalRequestUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -78813,6 +88907,34 @@ export namespace Prisma {
     update?: BudgetLineUpdateWithWhereUniqueWithoutOrganizationInput | BudgetLineUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: BudgetLineUpdateManyWithWhereWithoutOrganizationInput | BudgetLineUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: BudgetLineScalarWhereInput | BudgetLineScalarWhereInput[]
+  }
+
+  export type ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ApprovalPolicyCreateWithoutOrganizationInput, ApprovalPolicyUncheckedCreateWithoutOrganizationInput> | ApprovalPolicyCreateWithoutOrganizationInput[] | ApprovalPolicyUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ApprovalPolicyCreateOrConnectWithoutOrganizationInput | ApprovalPolicyCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ApprovalPolicyUpsertWithWhereUniqueWithoutOrganizationInput | ApprovalPolicyUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ApprovalPolicyCreateManyOrganizationInputEnvelope
+    set?: ApprovalPolicyWhereUniqueInput | ApprovalPolicyWhereUniqueInput[]
+    disconnect?: ApprovalPolicyWhereUniqueInput | ApprovalPolicyWhereUniqueInput[]
+    delete?: ApprovalPolicyWhereUniqueInput | ApprovalPolicyWhereUniqueInput[]
+    connect?: ApprovalPolicyWhereUniqueInput | ApprovalPolicyWhereUniqueInput[]
+    update?: ApprovalPolicyUpdateWithWhereUniqueWithoutOrganizationInput | ApprovalPolicyUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ApprovalPolicyUpdateManyWithWhereWithoutOrganizationInput | ApprovalPolicyUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ApprovalPolicyScalarWhereInput | ApprovalPolicyScalarWhereInput[]
+  }
+
+  export type ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ApprovalRequestCreateWithoutOrganizationInput, ApprovalRequestUncheckedCreateWithoutOrganizationInput> | ApprovalRequestCreateWithoutOrganizationInput[] | ApprovalRequestUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ApprovalRequestCreateOrConnectWithoutOrganizationInput | ApprovalRequestCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ApprovalRequestUpsertWithWhereUniqueWithoutOrganizationInput | ApprovalRequestUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ApprovalRequestCreateManyOrganizationInputEnvelope
+    set?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    disconnect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    delete?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+    update?: ApprovalRequestUpdateWithWhereUniqueWithoutOrganizationInput | ApprovalRequestUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ApprovalRequestUpdateManyWithWhereWithoutOrganizationInput | ApprovalRequestUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutLocationsInput = {
@@ -81736,14 +91858,6 @@ export namespace Prisma {
     set?: $Enums.IdempotencyKeyStatus
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type UserCreateNestedOneWithoutNotificationsInput = {
     create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
@@ -82216,6 +92330,175 @@ export namespace Prisma {
     _max?: NestedEnumAccessReviewStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumApprovalEntityTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalEntityType | EnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalEntityType[] | ListEnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalEntityType[] | ListEnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalEntityTypeFilter<$PrismaModel> | $Enums.ApprovalEntityType
+  }
+
+  export type NestedEnumApprovalEntityTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalEntityType | EnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalEntityType[] | ListEnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalEntityType[] | ListEnumApprovalEntityTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalEntityTypeWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalEntityType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalEntityTypeFilter<$PrismaModel>
+    _max?: NestedEnumApprovalEntityTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumApprovalStepTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStepType | EnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStepType[] | ListEnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStepType[] | ListEnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStepTypeFilter<$PrismaModel> | $Enums.ApprovalStepType
+  }
+
+  export type NestedEnumApprovalAssigneeTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalAssigneeType | EnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalAssigneeType[] | ListEnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalAssigneeType[] | ListEnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalAssigneeTypeFilter<$PrismaModel> | $Enums.ApprovalAssigneeType
+  }
+
+  export type NestedEnumResolutionModeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResolutionMode | EnumResolutionModeFieldRefInput<$PrismaModel>
+    in?: $Enums.ResolutionMode[] | ListEnumResolutionModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResolutionMode[] | ListEnumResolutionModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumResolutionModeFilter<$PrismaModel> | $Enums.ResolutionMode
+  }
+
+  export type NestedEnumApprovalConditionOperatorNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalConditionOperator | EnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ApprovalConditionOperator[] | ListEnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ApprovalConditionOperator[] | ListEnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumApprovalConditionOperatorNullableFilter<$PrismaModel> | $Enums.ApprovalConditionOperator | null
+  }
+
+  export type NestedEnumApprovalStepTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStepType | EnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStepType[] | ListEnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStepType[] | ListEnumApprovalStepTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStepTypeWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalStepType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalStepTypeFilter<$PrismaModel>
+    _max?: NestedEnumApprovalStepTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumApprovalAssigneeTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalAssigneeType | EnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalAssigneeType[] | ListEnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalAssigneeType[] | ListEnumApprovalAssigneeTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalAssigneeTypeWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalAssigneeType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalAssigneeTypeFilter<$PrismaModel>
+    _max?: NestedEnumApprovalAssigneeTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumResolutionModeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ResolutionMode | EnumResolutionModeFieldRefInput<$PrismaModel>
+    in?: $Enums.ResolutionMode[] | ListEnumResolutionModeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ResolutionMode[] | ListEnumResolutionModeFieldRefInput<$PrismaModel>
+    not?: NestedEnumResolutionModeWithAggregatesFilter<$PrismaModel> | $Enums.ResolutionMode
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumResolutionModeFilter<$PrismaModel>
+    _max?: NestedEnumResolutionModeFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumApprovalConditionOperatorNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalConditionOperator | EnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ApprovalConditionOperator[] | ListEnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ApprovalConditionOperator[] | ListEnumApprovalConditionOperatorFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumApprovalConditionOperatorNullableWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalConditionOperator | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumApprovalConditionOperatorNullableFilter<$PrismaModel>
+    _max?: NestedEnumApprovalConditionOperatorNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumApprovalRequestStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalRequestStatus | EnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalRequestStatus[] | ListEnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalRequestStatus[] | ListEnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalRequestStatusFilter<$PrismaModel> | $Enums.ApprovalRequestStatus
+  }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumApprovalRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalRequestStatus | EnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalRequestStatus[] | ListEnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalRequestStatus[] | ListEnumApprovalRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalRequestStatusWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalRequestStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalRequestStatusFilter<$PrismaModel>
+    _max?: NestedEnumApprovalRequestStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumApprovalDecisionFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalDecision | EnumApprovalDecisionFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalDecision[] | ListEnumApprovalDecisionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalDecision[] | ListEnumApprovalDecisionFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalDecisionFilter<$PrismaModel> | $Enums.ApprovalDecision
+  }
+
+  export type NestedEnumApprovalDecisionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalDecision | EnumApprovalDecisionFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalDecision[] | ListEnumApprovalDecisionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalDecision[] | ListEnumApprovalDecisionFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalDecisionWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalDecision
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalDecisionFilter<$PrismaModel>
+    _max?: NestedEnumApprovalDecisionFilter<$PrismaModel>
+  }
+
   export type NestedEnumOrganizationTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.OrganizationType | EnumOrganizationTypeFieldRefInput<$PrismaModel>
     in?: $Enums.OrganizationType[] | ListEnumOrganizationTypeFieldRefInput<$PrismaModel>
@@ -82384,29 +92667,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
     _max?: NestedEnumAuditEntityTypeFilter<$PrismaModel>
-  }
-  export type NestedJsonFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumMasterDataChangeStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -82796,17 +93056,6 @@ export namespace Prisma {
     _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedEnumSecurityEventTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.SecurityEventType | EnumSecurityEventTypeFieldRefInput<$PrismaModel>
     in?: $Enums.SecurityEventType[] | ListEnumSecurityEventTypeFieldRefInput<$PrismaModel>
@@ -82873,22 +93122,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumIdempotencyKeyStatusFilter<$PrismaModel>
     _max?: NestedEnumIdempotencyKeyStatusFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumNotificationCategoryFilter<$PrismaModel = never> = {
@@ -83097,6 +93330,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedUsersInput = {
@@ -83155,6 +93394,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedUsersInput = {
@@ -83218,6 +93463,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedUsersInput = {
@@ -83276,6 +93527,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedUsersInput = {
@@ -83709,6 +93966,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedByInput = {
@@ -83767,6 +94030,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedByInput = {
@@ -83835,6 +94104,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedByInput = {
@@ -83893,6 +94168,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedByInput = {
@@ -84683,6 +94964,270 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ApprovalRequestCreateWithoutSubmittedByInput = {
+    id?: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutApprovalRequestsInput
+    policy: ApprovalPolicyCreateNestedOneWithoutRequestsInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
+    stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestUncheckedCreateWithoutSubmittedByInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestCreateOrConnectWithoutSubmittedByInput = {
+    where: ApprovalRequestWhereUniqueInput
+    create: XOR<ApprovalRequestCreateWithoutSubmittedByInput, ApprovalRequestUncheckedCreateWithoutSubmittedByInput>
+  }
+
+  export type ApprovalRequestCreateManySubmittedByInputEnvelope = {
+    data: ApprovalRequestCreateManySubmittedByInput | ApprovalRequestCreateManySubmittedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApprovalRequestCreateWithoutDecidedByInput = {
+    id?: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutApprovalRequestsInput
+    policy: ApprovalPolicyCreateNestedOneWithoutRequestsInput
+    submittedBy: UserCreateNestedOneWithoutApprovalRequestsSubmittedInput
+    stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestUncheckedCreateWithoutDecidedByInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestCreateOrConnectWithoutDecidedByInput = {
+    where: ApprovalRequestWhereUniqueInput
+    create: XOR<ApprovalRequestCreateWithoutDecidedByInput, ApprovalRequestUncheckedCreateWithoutDecidedByInput>
+  }
+
+  export type ApprovalRequestCreateManyDecidedByInputEnvelope = {
+    data: ApprovalRequestCreateManyDecidedByInput | ApprovalRequestCreateManyDecidedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApprovalStepInstanceCreateWithoutDecidedByInput = {
+    id?: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    request: ApprovalRequestCreateNestedOneWithoutStepInstancesInput
+    assigneeRole?: RoleCreateNestedOneWithoutApprovalStepInstanceAssigneeRoleInput
+    assigneeUser?: UserCreateNestedOneWithoutApprovalStepInstanceAssigneeUserInput
+    decisions?: ApprovalDecisionRecordCreateNestedManyWithoutStepInstanceInput
+  }
+
+  export type ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput = {
+    id?: string
+    requestId: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    decisions?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutStepInstanceInput
+  }
+
+  export type ApprovalStepInstanceCreateOrConnectWithoutDecidedByInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    create: XOR<ApprovalStepInstanceCreateWithoutDecidedByInput, ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput>
+  }
+
+  export type ApprovalStepInstanceCreateManyDecidedByInputEnvelope = {
+    data: ApprovalStepInstanceCreateManyDecidedByInput | ApprovalStepInstanceCreateManyDecidedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApprovalDecisionRecordCreateWithoutActorInput = {
+    id?: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+    request: ApprovalRequestCreateNestedOneWithoutDecisionRecordsInput
+    stepInstance: ApprovalStepInstanceCreateNestedOneWithoutDecisionsInput
+  }
+
+  export type ApprovalDecisionRecordUncheckedCreateWithoutActorInput = {
+    id?: string
+    requestId: string
+    stepInstanceId: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovalDecisionRecordCreateOrConnectWithoutActorInput = {
+    where: ApprovalDecisionRecordWhereUniqueInput
+    create: XOR<ApprovalDecisionRecordCreateWithoutActorInput, ApprovalDecisionRecordUncheckedCreateWithoutActorInput>
+  }
+
+  export type ApprovalDecisionRecordCreateManyActorInputEnvelope = {
+    data: ApprovalDecisionRecordCreateManyActorInput | ApprovalDecisionRecordCreateManyActorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApprovalPolicyStepCreateWithoutAssigneeUserInput = {
+    id?: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    policy: ApprovalPolicyCreateNestedOneWithoutStepsInput
+    assigneeRole?: RoleCreateNestedOneWithoutApprovalPolicyStepsInput
+  }
+
+  export type ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput = {
+    id?: string
+    policyId: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalPolicyStepCreateOrConnectWithoutAssigneeUserInput = {
+    where: ApprovalPolicyStepWhereUniqueInput
+    create: XOR<ApprovalPolicyStepCreateWithoutAssigneeUserInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput>
+  }
+
+  export type ApprovalPolicyStepCreateManyAssigneeUserInputEnvelope = {
+    data: ApprovalPolicyStepCreateManyAssigneeUserInput | ApprovalPolicyStepCreateManyAssigneeUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApprovalStepInstanceCreateWithoutAssigneeUserInput = {
+    id?: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    request: ApprovalRequestCreateNestedOneWithoutStepInstancesInput
+    assigneeRole?: RoleCreateNestedOneWithoutApprovalStepInstanceAssigneeRoleInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalStepInstancesDecidedInput
+    decisions?: ApprovalDecisionRecordCreateNestedManyWithoutStepInstanceInput
+  }
+
+  export type ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput = {
+    id?: string
+    requestId: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    decisions?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutStepInstanceInput
+  }
+
+  export type ApprovalStepInstanceCreateOrConnectWithoutAssigneeUserInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    create: XOR<ApprovalStepInstanceCreateWithoutAssigneeUserInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput>
+  }
+
+  export type ApprovalStepInstanceCreateManyAssigneeUserInputEnvelope = {
+    data: ApprovalStepInstanceCreateManyAssigneeUserInput | ApprovalStepInstanceCreateManyAssigneeUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type LocationUpsertWithoutUsersInput = {
     update: XOR<LocationUpdateWithoutUsersInput, LocationUncheckedUpdateWithoutUsersInput>
     create: XOR<LocationCreateWithoutUsersInput, LocationUncheckedCreateWithoutUsersInput>
@@ -84844,6 +95389,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedUsersInput = {
@@ -84902,6 +95453,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUpsertWithoutUpdatedUsersInput = {
@@ -84971,6 +95528,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedUsersInput = {
@@ -85029,6 +95592,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutUserInput = {
@@ -85683,6 +96252,181 @@ export namespace Prisma {
     data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutReversedByInput>
   }
 
+  export type ApprovalRequestUpsertWithWhereUniqueWithoutSubmittedByInput = {
+    where: ApprovalRequestWhereUniqueInput
+    update: XOR<ApprovalRequestUpdateWithoutSubmittedByInput, ApprovalRequestUncheckedUpdateWithoutSubmittedByInput>
+    create: XOR<ApprovalRequestCreateWithoutSubmittedByInput, ApprovalRequestUncheckedCreateWithoutSubmittedByInput>
+  }
+
+  export type ApprovalRequestUpdateWithWhereUniqueWithoutSubmittedByInput = {
+    where: ApprovalRequestWhereUniqueInput
+    data: XOR<ApprovalRequestUpdateWithoutSubmittedByInput, ApprovalRequestUncheckedUpdateWithoutSubmittedByInput>
+  }
+
+  export type ApprovalRequestUpdateManyWithWhereWithoutSubmittedByInput = {
+    where: ApprovalRequestScalarWhereInput
+    data: XOR<ApprovalRequestUpdateManyMutationInput, ApprovalRequestUncheckedUpdateManyWithoutSubmittedByInput>
+  }
+
+  export type ApprovalRequestScalarWhereInput = {
+    AND?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
+    OR?: ApprovalRequestScalarWhereInput[]
+    NOT?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
+    id?: StringFilter<"ApprovalRequest"> | string
+    organizationId?: StringFilter<"ApprovalRequest"> | string
+    entityType?: EnumApprovalEntityTypeFilter<"ApprovalRequest"> | $Enums.ApprovalEntityType
+    entityId?: StringFilter<"ApprovalRequest"> | string
+    policyId?: StringFilter<"ApprovalRequest"> | string
+    policySnapshot?: JsonFilter<"ApprovalRequest">
+    status?: EnumApprovalRequestStatusFilter<"ApprovalRequest"> | $Enums.ApprovalRequestStatus
+    submittedById?: StringFilter<"ApprovalRequest"> | string
+    submittedAt?: DateTimeFilter<"ApprovalRequest"> | Date | string
+    currentStepIndex?: IntFilter<"ApprovalRequest"> | number
+    decidedAt?: DateTimeNullableFilter<"ApprovalRequest"> | Date | string | null
+    decidedById?: StringNullableFilter<"ApprovalRequest"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"ApprovalRequest"> | Date | string
+  }
+
+  export type ApprovalRequestUpsertWithWhereUniqueWithoutDecidedByInput = {
+    where: ApprovalRequestWhereUniqueInput
+    update: XOR<ApprovalRequestUpdateWithoutDecidedByInput, ApprovalRequestUncheckedUpdateWithoutDecidedByInput>
+    create: XOR<ApprovalRequestCreateWithoutDecidedByInput, ApprovalRequestUncheckedCreateWithoutDecidedByInput>
+  }
+
+  export type ApprovalRequestUpdateWithWhereUniqueWithoutDecidedByInput = {
+    where: ApprovalRequestWhereUniqueInput
+    data: XOR<ApprovalRequestUpdateWithoutDecidedByInput, ApprovalRequestUncheckedUpdateWithoutDecidedByInput>
+  }
+
+  export type ApprovalRequestUpdateManyWithWhereWithoutDecidedByInput = {
+    where: ApprovalRequestScalarWhereInput
+    data: XOR<ApprovalRequestUpdateManyMutationInput, ApprovalRequestUncheckedUpdateManyWithoutDecidedByInput>
+  }
+
+  export type ApprovalStepInstanceUpsertWithWhereUniqueWithoutDecidedByInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    update: XOR<ApprovalStepInstanceUpdateWithoutDecidedByInput, ApprovalStepInstanceUncheckedUpdateWithoutDecidedByInput>
+    create: XOR<ApprovalStepInstanceCreateWithoutDecidedByInput, ApprovalStepInstanceUncheckedCreateWithoutDecidedByInput>
+  }
+
+  export type ApprovalStepInstanceUpdateWithWhereUniqueWithoutDecidedByInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    data: XOR<ApprovalStepInstanceUpdateWithoutDecidedByInput, ApprovalStepInstanceUncheckedUpdateWithoutDecidedByInput>
+  }
+
+  export type ApprovalStepInstanceUpdateManyWithWhereWithoutDecidedByInput = {
+    where: ApprovalStepInstanceScalarWhereInput
+    data: XOR<ApprovalStepInstanceUpdateManyMutationInput, ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByInput>
+  }
+
+  export type ApprovalStepInstanceScalarWhereInput = {
+    AND?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
+    OR?: ApprovalStepInstanceScalarWhereInput[]
+    NOT?: ApprovalStepInstanceScalarWhereInput | ApprovalStepInstanceScalarWhereInput[]
+    id?: StringFilter<"ApprovalStepInstance"> | string
+    requestId?: StringFilter<"ApprovalStepInstance"> | string
+    stepOrder?: IntFilter<"ApprovalStepInstance"> | number
+    stepName?: StringFilter<"ApprovalStepInstance"> | string
+    stepType?: EnumApprovalStepTypeFilter<"ApprovalStepInstance"> | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFilter<"ApprovalStepInstance"> | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: StringNullableFilter<"ApprovalStepInstance"> | string | null
+    assigneeUserId?: StringNullableFilter<"ApprovalStepInstance"> | string | null
+    resolutionMode?: EnumResolutionModeFilter<"ApprovalStepInstance"> | $Enums.ResolutionMode
+    quorum?: IntNullableFilter<"ApprovalStepInstance"> | number | null
+    status?: EnumApprovalRequestStatusFilter<"ApprovalStepInstance"> | $Enums.ApprovalRequestStatus
+    decidedAt?: DateTimeNullableFilter<"ApprovalStepInstance"> | Date | string | null
+    decidedById?: StringNullableFilter<"ApprovalStepInstance"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalStepInstance"> | Date | string
+    updatedAt?: DateTimeFilter<"ApprovalStepInstance"> | Date | string
+  }
+
+  export type ApprovalDecisionRecordUpsertWithWhereUniqueWithoutActorInput = {
+    where: ApprovalDecisionRecordWhereUniqueInput
+    update: XOR<ApprovalDecisionRecordUpdateWithoutActorInput, ApprovalDecisionRecordUncheckedUpdateWithoutActorInput>
+    create: XOR<ApprovalDecisionRecordCreateWithoutActorInput, ApprovalDecisionRecordUncheckedCreateWithoutActorInput>
+  }
+
+  export type ApprovalDecisionRecordUpdateWithWhereUniqueWithoutActorInput = {
+    where: ApprovalDecisionRecordWhereUniqueInput
+    data: XOR<ApprovalDecisionRecordUpdateWithoutActorInput, ApprovalDecisionRecordUncheckedUpdateWithoutActorInput>
+  }
+
+  export type ApprovalDecisionRecordUpdateManyWithWhereWithoutActorInput = {
+    where: ApprovalDecisionRecordScalarWhereInput
+    data: XOR<ApprovalDecisionRecordUpdateManyMutationInput, ApprovalDecisionRecordUncheckedUpdateManyWithoutActorInput>
+  }
+
+  export type ApprovalDecisionRecordScalarWhereInput = {
+    AND?: ApprovalDecisionRecordScalarWhereInput | ApprovalDecisionRecordScalarWhereInput[]
+    OR?: ApprovalDecisionRecordScalarWhereInput[]
+    NOT?: ApprovalDecisionRecordScalarWhereInput | ApprovalDecisionRecordScalarWhereInput[]
+    id?: StringFilter<"ApprovalDecisionRecord"> | string
+    requestId?: StringFilter<"ApprovalDecisionRecord"> | string
+    stepInstanceId?: StringFilter<"ApprovalDecisionRecord"> | string
+    actorId?: StringFilter<"ApprovalDecisionRecord"> | string
+    decision?: EnumApprovalDecisionFilter<"ApprovalDecisionRecord"> | $Enums.ApprovalDecision
+    reason?: StringNullableFilter<"ApprovalDecisionRecord"> | string | null
+    sodViolation?: BoolFilter<"ApprovalDecisionRecord"> | boolean
+    sodWaiverId?: StringNullableFilter<"ApprovalDecisionRecord"> | string | null
+    delegationId?: StringNullableFilter<"ApprovalDecisionRecord"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalDecisionRecord"> | Date | string
+  }
+
+  export type ApprovalPolicyStepUpsertWithWhereUniqueWithoutAssigneeUserInput = {
+    where: ApprovalPolicyStepWhereUniqueInput
+    update: XOR<ApprovalPolicyStepUpdateWithoutAssigneeUserInput, ApprovalPolicyStepUncheckedUpdateWithoutAssigneeUserInput>
+    create: XOR<ApprovalPolicyStepCreateWithoutAssigneeUserInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeUserInput>
+  }
+
+  export type ApprovalPolicyStepUpdateWithWhereUniqueWithoutAssigneeUserInput = {
+    where: ApprovalPolicyStepWhereUniqueInput
+    data: XOR<ApprovalPolicyStepUpdateWithoutAssigneeUserInput, ApprovalPolicyStepUncheckedUpdateWithoutAssigneeUserInput>
+  }
+
+  export type ApprovalPolicyStepUpdateManyWithWhereWithoutAssigneeUserInput = {
+    where: ApprovalPolicyStepScalarWhereInput
+    data: XOR<ApprovalPolicyStepUpdateManyMutationInput, ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserInput>
+  }
+
+  export type ApprovalPolicyStepScalarWhereInput = {
+    AND?: ApprovalPolicyStepScalarWhereInput | ApprovalPolicyStepScalarWhereInput[]
+    OR?: ApprovalPolicyStepScalarWhereInput[]
+    NOT?: ApprovalPolicyStepScalarWhereInput | ApprovalPolicyStepScalarWhereInput[]
+    id?: StringFilter<"ApprovalPolicyStep"> | string
+    policyId?: StringFilter<"ApprovalPolicyStep"> | string
+    stepOrder?: IntFilter<"ApprovalPolicyStep"> | number
+    name?: StringFilter<"ApprovalPolicyStep"> | string
+    type?: EnumApprovalStepTypeFilter<"ApprovalPolicyStep"> | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFilter<"ApprovalPolicyStep"> | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: StringNullableFilter<"ApprovalPolicyStep"> | string | null
+    assigneeUserId?: StringNullableFilter<"ApprovalPolicyStep"> | string | null
+    resolutionMode?: EnumResolutionModeFilter<"ApprovalPolicyStep"> | $Enums.ResolutionMode
+    quorum?: IntNullableFilter<"ApprovalPolicyStep"> | number | null
+    conditionOperator?: EnumApprovalConditionOperatorNullableFilter<"ApprovalPolicyStep"> | $Enums.ApprovalConditionOperator | null
+    conditionValue?: JsonNullableFilter<"ApprovalPolicyStep">
+    isRequired?: BoolFilter<"ApprovalPolicyStep"> | boolean
+    isFinalApprover?: BoolFilter<"ApprovalPolicyStep"> | boolean
+    createdAt?: DateTimeFilter<"ApprovalPolicyStep"> | Date | string
+    updatedAt?: DateTimeFilter<"ApprovalPolicyStep"> | Date | string
+  }
+
+  export type ApprovalStepInstanceUpsertWithWhereUniqueWithoutAssigneeUserInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    update: XOR<ApprovalStepInstanceUpdateWithoutAssigneeUserInput, ApprovalStepInstanceUncheckedUpdateWithoutAssigneeUserInput>
+    create: XOR<ApprovalStepInstanceCreateWithoutAssigneeUserInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeUserInput>
+  }
+
+  export type ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeUserInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    data: XOR<ApprovalStepInstanceUpdateWithoutAssigneeUserInput, ApprovalStepInstanceUncheckedUpdateWithoutAssigneeUserInput>
+  }
+
+  export type ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeUserInput = {
+    where: ApprovalStepInstanceScalarWhereInput
+    data: XOR<ApprovalStepInstanceUpdateManyMutationInput, ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserInput>
+  }
+
   export type UserCreateWithoutMfaDevicesInput = {
     id?: string
     email: string
@@ -85739,6 +96483,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutMfaDevicesInput = {
@@ -85797,6 +96547,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutMfaDevicesInput = {
@@ -85871,6 +96627,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMfaDevicesInput = {
@@ -85929,6 +96691,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -85987,6 +96755,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -86045,6 +96819,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -86119,6 +96899,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -86177,6 +96963,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserCreateWithoutLoginHistoryInput = {
@@ -86235,6 +97027,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutLoginHistoryInput = {
@@ -86293,6 +97091,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutLoginHistoryInput = {
@@ -86367,6 +97171,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLoginHistoryInput = {
@@ -86425,6 +97235,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type RolePermissionCreateWithoutRoleInput = {
@@ -86585,6 +97401,98 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ApprovalPolicyStepCreateWithoutAssigneeRoleInput = {
+    id?: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    policy: ApprovalPolicyCreateNestedOneWithoutStepsInput
+    assigneeUser?: UserCreateNestedOneWithoutApprovalPolicyStepAssigneeUserInput
+  }
+
+  export type ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput = {
+    id?: string
+    policyId: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeUserId?: string | null
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalPolicyStepCreateOrConnectWithoutAssigneeRoleInput = {
+    where: ApprovalPolicyStepWhereUniqueInput
+    create: XOR<ApprovalPolicyStepCreateWithoutAssigneeRoleInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput>
+  }
+
+  export type ApprovalPolicyStepCreateManyAssigneeRoleInputEnvelope = {
+    data: ApprovalPolicyStepCreateManyAssigneeRoleInput | ApprovalPolicyStepCreateManyAssigneeRoleInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApprovalStepInstanceCreateWithoutAssigneeRoleInput = {
+    id?: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    request: ApprovalRequestCreateNestedOneWithoutStepInstancesInput
+    assigneeUser?: UserCreateNestedOneWithoutApprovalStepInstanceAssigneeUserInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalStepInstancesDecidedInput
+    decisions?: ApprovalDecisionRecordCreateNestedManyWithoutStepInstanceInput
+  }
+
+  export type ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput = {
+    id?: string
+    requestId: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeUserId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    decisions?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutStepInstanceInput
+  }
+
+  export type ApprovalStepInstanceCreateOrConnectWithoutAssigneeRoleInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    create: XOR<ApprovalStepInstanceCreateWithoutAssigneeRoleInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput>
+  }
+
+  export type ApprovalStepInstanceCreateManyAssigneeRoleInputEnvelope = {
+    data: ApprovalStepInstanceCreateManyAssigneeRoleInput | ApprovalStepInstanceCreateManyAssigneeRoleInput[]
+    skipDuplicates?: boolean
+  }
+
   export type RolePermissionUpsertWithWhereUniqueWithoutRoleInput = {
     where: RolePermissionWhereUniqueInput
     update: XOR<RolePermissionUpdateWithoutRoleInput, RolePermissionUncheckedUpdateWithoutRoleInput>
@@ -86688,6 +97596,38 @@ export namespace Prisma {
     data: XOR<AccessReviewItemUpdateManyMutationInput, AccessReviewItemUncheckedUpdateManyWithoutRoleInput>
   }
 
+  export type ApprovalPolicyStepUpsertWithWhereUniqueWithoutAssigneeRoleInput = {
+    where: ApprovalPolicyStepWhereUniqueInput
+    update: XOR<ApprovalPolicyStepUpdateWithoutAssigneeRoleInput, ApprovalPolicyStepUncheckedUpdateWithoutAssigneeRoleInput>
+    create: XOR<ApprovalPolicyStepCreateWithoutAssigneeRoleInput, ApprovalPolicyStepUncheckedCreateWithoutAssigneeRoleInput>
+  }
+
+  export type ApprovalPolicyStepUpdateWithWhereUniqueWithoutAssigneeRoleInput = {
+    where: ApprovalPolicyStepWhereUniqueInput
+    data: XOR<ApprovalPolicyStepUpdateWithoutAssigneeRoleInput, ApprovalPolicyStepUncheckedUpdateWithoutAssigneeRoleInput>
+  }
+
+  export type ApprovalPolicyStepUpdateManyWithWhereWithoutAssigneeRoleInput = {
+    where: ApprovalPolicyStepScalarWhereInput
+    data: XOR<ApprovalPolicyStepUpdateManyMutationInput, ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeRoleInput>
+  }
+
+  export type ApprovalStepInstanceUpsertWithWhereUniqueWithoutAssigneeRoleInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    update: XOR<ApprovalStepInstanceUpdateWithoutAssigneeRoleInput, ApprovalStepInstanceUncheckedUpdateWithoutAssigneeRoleInput>
+    create: XOR<ApprovalStepInstanceCreateWithoutAssigneeRoleInput, ApprovalStepInstanceUncheckedCreateWithoutAssigneeRoleInput>
+  }
+
+  export type ApprovalStepInstanceUpdateWithWhereUniqueWithoutAssigneeRoleInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    data: XOR<ApprovalStepInstanceUpdateWithoutAssigneeRoleInput, ApprovalStepInstanceUncheckedUpdateWithoutAssigneeRoleInput>
+  }
+
+  export type ApprovalStepInstanceUpdateManyWithWhereWithoutAssigneeRoleInput = {
+    where: ApprovalStepInstanceScalarWhereInput
+    data: XOR<ApprovalStepInstanceUpdateManyMutationInput, ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeRoleInput>
+  }
+
   export type RolePermissionCreateWithoutPermissionInput = {
     conditions?: NullableJsonNullValueInput | InputJsonValue
     role: RoleCreateNestedOneWithoutRolePermissionsInput
@@ -86789,6 +97729,8 @@ export namespace Prisma {
     userRoles?: UserRoleCreateNestedManyWithoutRoleInput
     delegations?: DelegationCreateNestedManyWithoutRoleInput
     accessReviewItems?: AccessReviewItemCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleUncheckedCreateWithoutRolePermissionsInput = {
@@ -86810,6 +97752,8 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutRoleInput
     delegations?: DelegationUncheckedCreateNestedManyWithoutRoleInput
     accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleCreateOrConnectWithoutRolePermissionsInput = {
@@ -86872,6 +97816,8 @@ export namespace Prisma {
     userRoles?: UserRoleUpdateManyWithoutRoleNestedInput
     delegations?: DelegationUpdateManyWithoutRoleNestedInput
     accessReviewItems?: AccessReviewItemUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type RoleUncheckedUpdateWithoutRolePermissionsInput = {
@@ -86893,6 +97839,8 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedUpdateManyWithoutRoleNestedInput
     delegations?: DelegationUncheckedUpdateManyWithoutRoleNestedInput
     accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type PermissionUpsertWithoutRolesInput = {
@@ -86982,6 +97930,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -87040,6 +97994,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -87066,6 +98026,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantCreateNestedManyWithoutRoleInput
     delegations?: DelegationCreateNestedManyWithoutRoleInput
     accessReviewItems?: AccessReviewItemCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleUncheckedCreateWithoutUserRolesInput = {
@@ -87087,6 +98049,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantUncheckedCreateNestedManyWithoutRoleInput
     delegations?: DelegationUncheckedCreateNestedManyWithoutRoleInput
     accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleCreateOrConnectWithoutUserRolesInput = {
@@ -87161,6 +98125,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -87219,6 +98189,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type RoleUpsertWithoutUserRolesInput = {
@@ -87251,6 +98227,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantUpdateManyWithoutRoleNestedInput
     delegations?: DelegationUpdateManyWithoutRoleNestedInput
     accessReviewItems?: AccessReviewItemUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type RoleUncheckedUpdateWithoutUserRolesInput = {
@@ -87272,6 +98250,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantUncheckedUpdateManyWithoutRoleNestedInput
     delegations?: DelegationUncheckedUpdateManyWithoutRoleNestedInput
     accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type RoleCreateWithoutScopeGrantsInput = {
@@ -87293,6 +98273,8 @@ export namespace Prisma {
     userRoles?: UserRoleCreateNestedManyWithoutRoleInput
     delegations?: DelegationCreateNestedManyWithoutRoleInput
     accessReviewItems?: AccessReviewItemCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleUncheckedCreateWithoutScopeGrantsInput = {
@@ -87314,6 +98296,8 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutRoleInput
     delegations?: DelegationUncheckedCreateNestedManyWithoutRoleInput
     accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleCreateOrConnectWithoutScopeGrantsInput = {
@@ -87376,6 +98360,8 @@ export namespace Prisma {
     userRoles?: UserRoleUpdateManyWithoutRoleNestedInput
     delegations?: DelegationUpdateManyWithoutRoleNestedInput
     accessReviewItems?: AccessReviewItemUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type RoleUncheckedUpdateWithoutScopeGrantsInput = {
@@ -87397,6 +98383,8 @@ export namespace Prisma {
     userRoles?: UserRoleUncheckedUpdateManyWithoutRoleNestedInput
     delegations?: DelegationUncheckedUpdateManyWithoutRoleNestedInput
     accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type PermissionUpsertWithoutScopeGrantsInput = {
@@ -87486,6 +98474,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsGrantedInput = {
@@ -87544,6 +98538,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsGrantedInput = {
@@ -87607,6 +98607,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsReceivedInput = {
@@ -87665,6 +98671,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsReceivedInput = {
@@ -87691,6 +98703,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantCreateNestedManyWithoutRoleInput
     userRoles?: UserRoleCreateNestedManyWithoutRoleInput
     accessReviewItems?: AccessReviewItemCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleUncheckedCreateWithoutDelegationsInput = {
@@ -87712,6 +98726,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantUncheckedCreateNestedManyWithoutRoleInput
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutRoleInput
     accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleCreateOrConnectWithoutDelegationsInput = {
@@ -87786,6 +98802,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsGrantedInput = {
@@ -87844,6 +98866,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUpsertWithoutDelegationsReceivedInput = {
@@ -87913,6 +98941,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsReceivedInput = {
@@ -87971,6 +99005,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type RoleUpsertWithoutDelegationsInput = {
@@ -88003,6 +99043,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantUpdateManyWithoutRoleNestedInput
     userRoles?: UserRoleUpdateManyWithoutRoleNestedInput
     accessReviewItems?: AccessReviewItemUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type RoleUncheckedUpdateWithoutDelegationsInput = {
@@ -88024,6 +99066,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantUncheckedUpdateManyWithoutRoleNestedInput
     userRoles?: UserRoleUncheckedUpdateManyWithoutRoleNestedInput
     accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type AccessReviewItemCreateWithoutReviewInput = {
@@ -88165,6 +99209,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutAccessReviewItemsInput = {
@@ -88223,6 +99273,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutAccessReviewItemsInput = {
@@ -88249,6 +99305,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantCreateNestedManyWithoutRoleInput
     userRoles?: UserRoleCreateNestedManyWithoutRoleInput
     delegations?: DelegationCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleUncheckedCreateWithoutAccessReviewItemsInput = {
@@ -88270,6 +99328,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantUncheckedCreateNestedManyWithoutRoleInput
     userRoles?: UserRoleUncheckedCreateNestedManyWithoutRoleInput
     delegations?: DelegationUncheckedCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeRoleInput
   }
 
   export type RoleCreateOrConnectWithoutAccessReviewItemsInput = {
@@ -88383,6 +99443,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccessReviewItemsInput = {
@@ -88441,6 +99507,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type RoleUpsertWithoutAccessReviewItemsInput = {
@@ -88473,6 +99545,8 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantUpdateManyWithoutRoleNestedInput
     userRoles?: UserRoleUpdateManyWithoutRoleNestedInput
     delegations?: DelegationUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUpdateManyWithoutAssigneeRoleNestedInput
   }
 
   export type RoleUncheckedUpdateWithoutAccessReviewItemsInput = {
@@ -88494,6 +99568,2910 @@ export namespace Prisma {
     scopeGrants?: RoleScopeGrantUncheckedUpdateManyWithoutRoleNestedInput
     userRoles?: UserRoleUncheckedUpdateManyWithoutRoleNestedInput
     delegations?: DelegationUncheckedUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeRoleNestedInput
+  }
+
+  export type OrganizationCreateWithoutApprovalPoliciesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutApprovalPoliciesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutApprovalPoliciesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutApprovalPoliciesInput, OrganizationUncheckedCreateWithoutApprovalPoliciesInput>
+  }
+
+  export type ApprovalPolicyStepCreateWithoutPolicyInput = {
+    id?: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigneeRole?: RoleCreateNestedOneWithoutApprovalPolicyStepsInput
+    assigneeUser?: UserCreateNestedOneWithoutApprovalPolicyStepAssigneeUserInput
+  }
+
+  export type ApprovalPolicyStepUncheckedCreateWithoutPolicyInput = {
+    id?: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalPolicyStepCreateOrConnectWithoutPolicyInput = {
+    where: ApprovalPolicyStepWhereUniqueInput
+    create: XOR<ApprovalPolicyStepCreateWithoutPolicyInput, ApprovalPolicyStepUncheckedCreateWithoutPolicyInput>
+  }
+
+  export type ApprovalPolicyStepCreateManyPolicyInputEnvelope = {
+    data: ApprovalPolicyStepCreateManyPolicyInput | ApprovalPolicyStepCreateManyPolicyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApprovalRequestCreateWithoutPolicyInput = {
+    id?: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutApprovalRequestsInput
+    submittedBy: UserCreateNestedOneWithoutApprovalRequestsSubmittedInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
+    stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestUncheckedCreateWithoutPolicyInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestCreateOrConnectWithoutPolicyInput = {
+    where: ApprovalRequestWhereUniqueInput
+    create: XOR<ApprovalRequestCreateWithoutPolicyInput, ApprovalRequestUncheckedCreateWithoutPolicyInput>
+  }
+
+  export type ApprovalRequestCreateManyPolicyInputEnvelope = {
+    data: ApprovalRequestCreateManyPolicyInput | ApprovalRequestCreateManyPolicyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganizationUpsertWithoutApprovalPoliciesInput = {
+    update: XOR<OrganizationUpdateWithoutApprovalPoliciesInput, OrganizationUncheckedUpdateWithoutApprovalPoliciesInput>
+    create: XOR<OrganizationCreateWithoutApprovalPoliciesInput, OrganizationUncheckedCreateWithoutApprovalPoliciesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutApprovalPoliciesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutApprovalPoliciesInput, OrganizationUncheckedUpdateWithoutApprovalPoliciesInput>
+  }
+
+  export type OrganizationUpdateWithoutApprovalPoliciesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutApprovalPoliciesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type ApprovalPolicyStepUpsertWithWhereUniqueWithoutPolicyInput = {
+    where: ApprovalPolicyStepWhereUniqueInput
+    update: XOR<ApprovalPolicyStepUpdateWithoutPolicyInput, ApprovalPolicyStepUncheckedUpdateWithoutPolicyInput>
+    create: XOR<ApprovalPolicyStepCreateWithoutPolicyInput, ApprovalPolicyStepUncheckedCreateWithoutPolicyInput>
+  }
+
+  export type ApprovalPolicyStepUpdateWithWhereUniqueWithoutPolicyInput = {
+    where: ApprovalPolicyStepWhereUniqueInput
+    data: XOR<ApprovalPolicyStepUpdateWithoutPolicyInput, ApprovalPolicyStepUncheckedUpdateWithoutPolicyInput>
+  }
+
+  export type ApprovalPolicyStepUpdateManyWithWhereWithoutPolicyInput = {
+    where: ApprovalPolicyStepScalarWhereInput
+    data: XOR<ApprovalPolicyStepUpdateManyMutationInput, ApprovalPolicyStepUncheckedUpdateManyWithoutPolicyInput>
+  }
+
+  export type ApprovalRequestUpsertWithWhereUniqueWithoutPolicyInput = {
+    where: ApprovalRequestWhereUniqueInput
+    update: XOR<ApprovalRequestUpdateWithoutPolicyInput, ApprovalRequestUncheckedUpdateWithoutPolicyInput>
+    create: XOR<ApprovalRequestCreateWithoutPolicyInput, ApprovalRequestUncheckedCreateWithoutPolicyInput>
+  }
+
+  export type ApprovalRequestUpdateWithWhereUniqueWithoutPolicyInput = {
+    where: ApprovalRequestWhereUniqueInput
+    data: XOR<ApprovalRequestUpdateWithoutPolicyInput, ApprovalRequestUncheckedUpdateWithoutPolicyInput>
+  }
+
+  export type ApprovalRequestUpdateManyWithWhereWithoutPolicyInput = {
+    where: ApprovalRequestScalarWhereInput
+    data: XOR<ApprovalRequestUpdateManyMutationInput, ApprovalRequestUncheckedUpdateManyWithoutPolicyInput>
+  }
+
+  export type ApprovalPolicyCreateWithoutStepsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive?: boolean
+    priority?: number
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutApprovalPoliciesInput
+    requests?: ApprovalRequestCreateNestedManyWithoutPolicyInput
+  }
+
+  export type ApprovalPolicyUncheckedCreateWithoutStepsInput = {
+    id?: string
+    organizationId: string
+    name: string
+    description?: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive?: boolean
+    priority?: number
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    requests?: ApprovalRequestUncheckedCreateNestedManyWithoutPolicyInput
+  }
+
+  export type ApprovalPolicyCreateOrConnectWithoutStepsInput = {
+    where: ApprovalPolicyWhereUniqueInput
+    create: XOR<ApprovalPolicyCreateWithoutStepsInput, ApprovalPolicyUncheckedCreateWithoutStepsInput>
+  }
+
+  export type RoleCreateWithoutApprovalPolicyStepsInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type?: $Enums.RoleType
+    isSystem?: boolean
+    isActive?: boolean
+    isFinalApprover?: boolean
+    canBypassApproval?: boolean
+    maxApprovalAmount?: Decimal | DecimalJsLike | number | string | null
+    approvalCurrency?: string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rolePermissions?: RolePermissionCreateNestedManyWithoutRoleInput
+    scopeGrants?: RoleScopeGrantCreateNestedManyWithoutRoleInput
+    userRoles?: UserRoleCreateNestedManyWithoutRoleInput
+    delegations?: DelegationCreateNestedManyWithoutRoleInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeRoleInput
+  }
+
+  export type RoleUncheckedCreateWithoutApprovalPolicyStepsInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type?: $Enums.RoleType
+    isSystem?: boolean
+    isActive?: boolean
+    isFinalApprover?: boolean
+    canBypassApproval?: boolean
+    maxApprovalAmount?: Decimal | DecimalJsLike | number | string | null
+    approvalCurrency?: string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rolePermissions?: RolePermissionUncheckedCreateNestedManyWithoutRoleInput
+    scopeGrants?: RoleScopeGrantUncheckedCreateNestedManyWithoutRoleInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutRoleInput
+    delegations?: DelegationUncheckedCreateNestedManyWithoutRoleInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutRoleInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeRoleInput
+  }
+
+  export type RoleCreateOrConnectWithoutApprovalPolicyStepsInput = {
+    where: RoleWhereUniqueInput
+    create: XOR<RoleCreateWithoutApprovalPolicyStepsInput, RoleUncheckedCreateWithoutApprovalPolicyStepsInput>
+  }
+
+  export type UserCreateWithoutApprovalPolicyStepAssigneeUserInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserUncheckedCreateWithoutApprovalPolicyStepAssigneeUserInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserCreateOrConnectWithoutApprovalPolicyStepAssigneeUserInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutApprovalPolicyStepAssigneeUserInput, UserUncheckedCreateWithoutApprovalPolicyStepAssigneeUserInput>
+  }
+
+  export type ApprovalPolicyUpsertWithoutStepsInput = {
+    update: XOR<ApprovalPolicyUpdateWithoutStepsInput, ApprovalPolicyUncheckedUpdateWithoutStepsInput>
+    create: XOR<ApprovalPolicyCreateWithoutStepsInput, ApprovalPolicyUncheckedCreateWithoutStepsInput>
+    where?: ApprovalPolicyWhereInput
+  }
+
+  export type ApprovalPolicyUpdateToOneWithWhereWithoutStepsInput = {
+    where?: ApprovalPolicyWhereInput
+    data: XOR<ApprovalPolicyUpdateWithoutStepsInput, ApprovalPolicyUncheckedUpdateWithoutStepsInput>
+  }
+
+  export type ApprovalPolicyUpdateWithoutStepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutApprovalPoliciesNestedInput
+    requests?: ApprovalRequestUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type ApprovalPolicyUncheckedUpdateWithoutStepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    requests?: ApprovalRequestUncheckedUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type RoleUpsertWithoutApprovalPolicyStepsInput = {
+    update: XOR<RoleUpdateWithoutApprovalPolicyStepsInput, RoleUncheckedUpdateWithoutApprovalPolicyStepsInput>
+    create: XOR<RoleCreateWithoutApprovalPolicyStepsInput, RoleUncheckedCreateWithoutApprovalPolicyStepsInput>
+    where?: RoleWhereInput
+  }
+
+  export type RoleUpdateToOneWithWhereWithoutApprovalPolicyStepsInput = {
+    where?: RoleWhereInput
+    data: XOR<RoleUpdateWithoutApprovalPolicyStepsInput, RoleUncheckedUpdateWithoutApprovalPolicyStepsInput>
+  }
+
+  export type RoleUpdateWithoutApprovalPolicyStepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    canBypassApproval?: BoolFieldUpdateOperationsInput | boolean
+    maxApprovalAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvalCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rolePermissions?: RolePermissionUpdateManyWithoutRoleNestedInput
+    scopeGrants?: RoleScopeGrantUpdateManyWithoutRoleNestedInput
+    userRoles?: UserRoleUpdateManyWithoutRoleNestedInput
+    delegations?: DelegationUpdateManyWithoutRoleNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUpdateManyWithoutAssigneeRoleNestedInput
+  }
+
+  export type RoleUncheckedUpdateWithoutApprovalPolicyStepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    canBypassApproval?: BoolFieldUpdateOperationsInput | boolean
+    maxApprovalAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvalCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rolePermissions?: RolePermissionUncheckedUpdateManyWithoutRoleNestedInput
+    scopeGrants?: RoleScopeGrantUncheckedUpdateManyWithoutRoleNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutRoleNestedInput
+    delegations?: DelegationUncheckedUpdateManyWithoutRoleNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutRoleNestedInput
+    approvalStepInstanceAssigneeRole?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeRoleNestedInput
+  }
+
+  export type UserUpsertWithoutApprovalPolicyStepAssigneeUserInput = {
+    update: XOR<UserUpdateWithoutApprovalPolicyStepAssigneeUserInput, UserUncheckedUpdateWithoutApprovalPolicyStepAssigneeUserInput>
+    create: XOR<UserCreateWithoutApprovalPolicyStepAssigneeUserInput, UserUncheckedCreateWithoutApprovalPolicyStepAssigneeUserInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutApprovalPolicyStepAssigneeUserInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutApprovalPolicyStepAssigneeUserInput, UserUncheckedUpdateWithoutApprovalPolicyStepAssigneeUserInput>
+  }
+
+  export type UserUpdateWithoutApprovalPolicyStepAssigneeUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutApprovalPolicyStepAssigneeUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type OrganizationCreateWithoutApprovalRequestsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutApprovalRequestsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutApprovalRequestsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutApprovalRequestsInput, OrganizationUncheckedCreateWithoutApprovalRequestsInput>
+  }
+
+  export type ApprovalPolicyCreateWithoutRequestsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive?: boolean
+    priority?: number
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutApprovalPoliciesInput
+    steps?: ApprovalPolicyStepCreateNestedManyWithoutPolicyInput
+  }
+
+  export type ApprovalPolicyUncheckedCreateWithoutRequestsInput = {
+    id?: string
+    organizationId: string
+    name: string
+    description?: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive?: boolean
+    priority?: number
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    steps?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutPolicyInput
+  }
+
+  export type ApprovalPolicyCreateOrConnectWithoutRequestsInput = {
+    where: ApprovalPolicyWhereUniqueInput
+    create: XOR<ApprovalPolicyCreateWithoutRequestsInput, ApprovalPolicyUncheckedCreateWithoutRequestsInput>
+  }
+
+  export type UserCreateWithoutApprovalRequestsSubmittedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserUncheckedCreateWithoutApprovalRequestsSubmittedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserCreateOrConnectWithoutApprovalRequestsSubmittedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutApprovalRequestsSubmittedInput, UserUncheckedCreateWithoutApprovalRequestsSubmittedInput>
+  }
+
+  export type UserCreateWithoutApprovalRequestsDecidedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserUncheckedCreateWithoutApprovalRequestsDecidedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserCreateOrConnectWithoutApprovalRequestsDecidedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutApprovalRequestsDecidedInput, UserUncheckedCreateWithoutApprovalRequestsDecidedInput>
+  }
+
+  export type ApprovalStepInstanceCreateWithoutRequestInput = {
+    id?: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assigneeRole?: RoleCreateNestedOneWithoutApprovalStepInstanceAssigneeRoleInput
+    assigneeUser?: UserCreateNestedOneWithoutApprovalStepInstanceAssigneeUserInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalStepInstancesDecidedInput
+    decisions?: ApprovalDecisionRecordCreateNestedManyWithoutStepInstanceInput
+  }
+
+  export type ApprovalStepInstanceUncheckedCreateWithoutRequestInput = {
+    id?: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    decisions?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutStepInstanceInput
+  }
+
+  export type ApprovalStepInstanceCreateOrConnectWithoutRequestInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    create: XOR<ApprovalStepInstanceCreateWithoutRequestInput, ApprovalStepInstanceUncheckedCreateWithoutRequestInput>
+  }
+
+  export type ApprovalStepInstanceCreateManyRequestInputEnvelope = {
+    data: ApprovalStepInstanceCreateManyRequestInput | ApprovalStepInstanceCreateManyRequestInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApprovalDecisionRecordCreateWithoutRequestInput = {
+    id?: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+    stepInstance: ApprovalStepInstanceCreateNestedOneWithoutDecisionsInput
+    actor: UserCreateNestedOneWithoutApprovalDecisionRecordsInput
+  }
+
+  export type ApprovalDecisionRecordUncheckedCreateWithoutRequestInput = {
+    id?: string
+    stepInstanceId: string
+    actorId: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovalDecisionRecordCreateOrConnectWithoutRequestInput = {
+    where: ApprovalDecisionRecordWhereUniqueInput
+    create: XOR<ApprovalDecisionRecordCreateWithoutRequestInput, ApprovalDecisionRecordUncheckedCreateWithoutRequestInput>
+  }
+
+  export type ApprovalDecisionRecordCreateManyRequestInputEnvelope = {
+    data: ApprovalDecisionRecordCreateManyRequestInput | ApprovalDecisionRecordCreateManyRequestInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganizationUpsertWithoutApprovalRequestsInput = {
+    update: XOR<OrganizationUpdateWithoutApprovalRequestsInput, OrganizationUncheckedUpdateWithoutApprovalRequestsInput>
+    create: XOR<OrganizationCreateWithoutApprovalRequestsInput, OrganizationUncheckedCreateWithoutApprovalRequestsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutApprovalRequestsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutApprovalRequestsInput, OrganizationUncheckedUpdateWithoutApprovalRequestsInput>
+  }
+
+  export type OrganizationUpdateWithoutApprovalRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutApprovalRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type ApprovalPolicyUpsertWithoutRequestsInput = {
+    update: XOR<ApprovalPolicyUpdateWithoutRequestsInput, ApprovalPolicyUncheckedUpdateWithoutRequestsInput>
+    create: XOR<ApprovalPolicyCreateWithoutRequestsInput, ApprovalPolicyUncheckedCreateWithoutRequestsInput>
+    where?: ApprovalPolicyWhereInput
+  }
+
+  export type ApprovalPolicyUpdateToOneWithWhereWithoutRequestsInput = {
+    where?: ApprovalPolicyWhereInput
+    data: XOR<ApprovalPolicyUpdateWithoutRequestsInput, ApprovalPolicyUncheckedUpdateWithoutRequestsInput>
+  }
+
+  export type ApprovalPolicyUpdateWithoutRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutApprovalPoliciesNestedInput
+    steps?: ApprovalPolicyStepUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type ApprovalPolicyUncheckedUpdateWithoutRequestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    steps?: ApprovalPolicyStepUncheckedUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type UserUpsertWithoutApprovalRequestsSubmittedInput = {
+    update: XOR<UserUpdateWithoutApprovalRequestsSubmittedInput, UserUncheckedUpdateWithoutApprovalRequestsSubmittedInput>
+    create: XOR<UserCreateWithoutApprovalRequestsSubmittedInput, UserUncheckedCreateWithoutApprovalRequestsSubmittedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutApprovalRequestsSubmittedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutApprovalRequestsSubmittedInput, UserUncheckedUpdateWithoutApprovalRequestsSubmittedInput>
+  }
+
+  export type UserUpdateWithoutApprovalRequestsSubmittedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutApprovalRequestsSubmittedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type UserUpsertWithoutApprovalRequestsDecidedInput = {
+    update: XOR<UserUpdateWithoutApprovalRequestsDecidedInput, UserUncheckedUpdateWithoutApprovalRequestsDecidedInput>
+    create: XOR<UserCreateWithoutApprovalRequestsDecidedInput, UserUncheckedCreateWithoutApprovalRequestsDecidedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutApprovalRequestsDecidedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutApprovalRequestsDecidedInput, UserUncheckedUpdateWithoutApprovalRequestsDecidedInput>
+  }
+
+  export type UserUpdateWithoutApprovalRequestsDecidedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutApprovalRequestsDecidedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type ApprovalStepInstanceUpsertWithWhereUniqueWithoutRequestInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    update: XOR<ApprovalStepInstanceUpdateWithoutRequestInput, ApprovalStepInstanceUncheckedUpdateWithoutRequestInput>
+    create: XOR<ApprovalStepInstanceCreateWithoutRequestInput, ApprovalStepInstanceUncheckedCreateWithoutRequestInput>
+  }
+
+  export type ApprovalStepInstanceUpdateWithWhereUniqueWithoutRequestInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    data: XOR<ApprovalStepInstanceUpdateWithoutRequestInput, ApprovalStepInstanceUncheckedUpdateWithoutRequestInput>
+  }
+
+  export type ApprovalStepInstanceUpdateManyWithWhereWithoutRequestInput = {
+    where: ApprovalStepInstanceScalarWhereInput
+    data: XOR<ApprovalStepInstanceUpdateManyMutationInput, ApprovalStepInstanceUncheckedUpdateManyWithoutRequestInput>
+  }
+
+  export type ApprovalDecisionRecordUpsertWithWhereUniqueWithoutRequestInput = {
+    where: ApprovalDecisionRecordWhereUniqueInput
+    update: XOR<ApprovalDecisionRecordUpdateWithoutRequestInput, ApprovalDecisionRecordUncheckedUpdateWithoutRequestInput>
+    create: XOR<ApprovalDecisionRecordCreateWithoutRequestInput, ApprovalDecisionRecordUncheckedCreateWithoutRequestInput>
+  }
+
+  export type ApprovalDecisionRecordUpdateWithWhereUniqueWithoutRequestInput = {
+    where: ApprovalDecisionRecordWhereUniqueInput
+    data: XOR<ApprovalDecisionRecordUpdateWithoutRequestInput, ApprovalDecisionRecordUncheckedUpdateWithoutRequestInput>
+  }
+
+  export type ApprovalDecisionRecordUpdateManyWithWhereWithoutRequestInput = {
+    where: ApprovalDecisionRecordScalarWhereInput
+    data: XOR<ApprovalDecisionRecordUpdateManyMutationInput, ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestInput>
+  }
+
+  export type ApprovalRequestCreateWithoutStepInstancesInput = {
+    id?: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutApprovalRequestsInput
+    policy: ApprovalPolicyCreateNestedOneWithoutRequestsInput
+    submittedBy: UserCreateNestedOneWithoutApprovalRequestsSubmittedInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
+    decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestUncheckedCreateWithoutStepInstancesInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestCreateOrConnectWithoutStepInstancesInput = {
+    where: ApprovalRequestWhereUniqueInput
+    create: XOR<ApprovalRequestCreateWithoutStepInstancesInput, ApprovalRequestUncheckedCreateWithoutStepInstancesInput>
+  }
+
+  export type RoleCreateWithoutApprovalStepInstanceAssigneeRoleInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type?: $Enums.RoleType
+    isSystem?: boolean
+    isActive?: boolean
+    isFinalApprover?: boolean
+    canBypassApproval?: boolean
+    maxApprovalAmount?: Decimal | DecimalJsLike | number | string | null
+    approvalCurrency?: string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rolePermissions?: RolePermissionCreateNestedManyWithoutRoleInput
+    scopeGrants?: RoleScopeGrantCreateNestedManyWithoutRoleInput
+    userRoles?: UserRoleCreateNestedManyWithoutRoleInput
+    delegations?: DelegationCreateNestedManyWithoutRoleInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeRoleInput
+  }
+
+  export type RoleUncheckedCreateWithoutApprovalStepInstanceAssigneeRoleInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type?: $Enums.RoleType
+    isSystem?: boolean
+    isActive?: boolean
+    isFinalApprover?: boolean
+    canBypassApproval?: boolean
+    maxApprovalAmount?: Decimal | DecimalJsLike | number | string | null
+    approvalCurrency?: string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rolePermissions?: RolePermissionUncheckedCreateNestedManyWithoutRoleInput
+    scopeGrants?: RoleScopeGrantUncheckedCreateNestedManyWithoutRoleInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutRoleInput
+    delegations?: DelegationUncheckedCreateNestedManyWithoutRoleInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutRoleInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeRoleInput
+  }
+
+  export type RoleCreateOrConnectWithoutApprovalStepInstanceAssigneeRoleInput = {
+    where: RoleWhereUniqueInput
+    create: XOR<RoleCreateWithoutApprovalStepInstanceAssigneeRoleInput, RoleUncheckedCreateWithoutApprovalStepInstanceAssigneeRoleInput>
+  }
+
+  export type UserCreateWithoutApprovalStepInstanceAssigneeUserInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserUncheckedCreateWithoutApprovalStepInstanceAssigneeUserInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserCreateOrConnectWithoutApprovalStepInstanceAssigneeUserInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutApprovalStepInstanceAssigneeUserInput, UserUncheckedCreateWithoutApprovalStepInstanceAssigneeUserInput>
+  }
+
+  export type UserCreateWithoutApprovalStepInstancesDecidedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserUncheckedCreateWithoutApprovalStepInstancesDecidedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserCreateOrConnectWithoutApprovalStepInstancesDecidedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutApprovalStepInstancesDecidedInput, UserUncheckedCreateWithoutApprovalStepInstancesDecidedInput>
+  }
+
+  export type ApprovalDecisionRecordCreateWithoutStepInstanceInput = {
+    id?: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+    request: ApprovalRequestCreateNestedOneWithoutDecisionRecordsInput
+    actor: UserCreateNestedOneWithoutApprovalDecisionRecordsInput
+  }
+
+  export type ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput = {
+    id?: string
+    requestId: string
+    actorId: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovalDecisionRecordCreateOrConnectWithoutStepInstanceInput = {
+    where: ApprovalDecisionRecordWhereUniqueInput
+    create: XOR<ApprovalDecisionRecordCreateWithoutStepInstanceInput, ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput>
+  }
+
+  export type ApprovalDecisionRecordCreateManyStepInstanceInputEnvelope = {
+    data: ApprovalDecisionRecordCreateManyStepInstanceInput | ApprovalDecisionRecordCreateManyStepInstanceInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApprovalRequestUpsertWithoutStepInstancesInput = {
+    update: XOR<ApprovalRequestUpdateWithoutStepInstancesInput, ApprovalRequestUncheckedUpdateWithoutStepInstancesInput>
+    create: XOR<ApprovalRequestCreateWithoutStepInstancesInput, ApprovalRequestUncheckedCreateWithoutStepInstancesInput>
+    where?: ApprovalRequestWhereInput
+  }
+
+  export type ApprovalRequestUpdateToOneWithWhereWithoutStepInstancesInput = {
+    where?: ApprovalRequestWhereInput
+    data: XOR<ApprovalRequestUpdateWithoutStepInstancesInput, ApprovalRequestUncheckedUpdateWithoutStepInstancesInput>
+  }
+
+  export type ApprovalRequestUpdateWithoutStepInstancesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutApprovalRequestsNestedInput
+    policy?: ApprovalPolicyUpdateOneRequiredWithoutRequestsNestedInput
+    submittedBy?: UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
+    decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateWithoutStepInstancesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type RoleUpsertWithoutApprovalStepInstanceAssigneeRoleInput = {
+    update: XOR<RoleUpdateWithoutApprovalStepInstanceAssigneeRoleInput, RoleUncheckedUpdateWithoutApprovalStepInstanceAssigneeRoleInput>
+    create: XOR<RoleCreateWithoutApprovalStepInstanceAssigneeRoleInput, RoleUncheckedCreateWithoutApprovalStepInstanceAssigneeRoleInput>
+    where?: RoleWhereInput
+  }
+
+  export type RoleUpdateToOneWithWhereWithoutApprovalStepInstanceAssigneeRoleInput = {
+    where?: RoleWhereInput
+    data: XOR<RoleUpdateWithoutApprovalStepInstanceAssigneeRoleInput, RoleUncheckedUpdateWithoutApprovalStepInstanceAssigneeRoleInput>
+  }
+
+  export type RoleUpdateWithoutApprovalStepInstanceAssigneeRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    canBypassApproval?: BoolFieldUpdateOperationsInput | boolean
+    maxApprovalAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvalCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rolePermissions?: RolePermissionUpdateManyWithoutRoleNestedInput
+    scopeGrants?: RoleScopeGrantUpdateManyWithoutRoleNestedInput
+    userRoles?: UserRoleUpdateManyWithoutRoleNestedInput
+    delegations?: DelegationUpdateManyWithoutRoleNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUpdateManyWithoutAssigneeRoleNestedInput
+  }
+
+  export type RoleUncheckedUpdateWithoutApprovalStepInstanceAssigneeRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumRoleTypeFieldUpdateOperationsInput | $Enums.RoleType
+    isSystem?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    canBypassApproval?: BoolFieldUpdateOperationsInput | boolean
+    maxApprovalAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvalCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rolePermissions?: RolePermissionUncheckedUpdateManyWithoutRoleNestedInput
+    scopeGrants?: RoleScopeGrantUncheckedUpdateManyWithoutRoleNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutRoleNestedInput
+    delegations?: DelegationUncheckedUpdateManyWithoutRoleNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutRoleNestedInput
+    approvalPolicySteps?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeRoleNestedInput
+  }
+
+  export type UserUpsertWithoutApprovalStepInstanceAssigneeUserInput = {
+    update: XOR<UserUpdateWithoutApprovalStepInstanceAssigneeUserInput, UserUncheckedUpdateWithoutApprovalStepInstanceAssigneeUserInput>
+    create: XOR<UserCreateWithoutApprovalStepInstanceAssigneeUserInput, UserUncheckedCreateWithoutApprovalStepInstanceAssigneeUserInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutApprovalStepInstanceAssigneeUserInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutApprovalStepInstanceAssigneeUserInput, UserUncheckedUpdateWithoutApprovalStepInstanceAssigneeUserInput>
+  }
+
+  export type UserUpdateWithoutApprovalStepInstanceAssigneeUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutApprovalStepInstanceAssigneeUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type UserUpsertWithoutApprovalStepInstancesDecidedInput = {
+    update: XOR<UserUpdateWithoutApprovalStepInstancesDecidedInput, UserUncheckedUpdateWithoutApprovalStepInstancesDecidedInput>
+    create: XOR<UserCreateWithoutApprovalStepInstancesDecidedInput, UserUncheckedCreateWithoutApprovalStepInstancesDecidedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutApprovalStepInstancesDecidedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutApprovalStepInstancesDecidedInput, UserUncheckedUpdateWithoutApprovalStepInstancesDecidedInput>
+  }
+
+  export type UserUpdateWithoutApprovalStepInstancesDecidedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutApprovalStepInstancesDecidedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type ApprovalDecisionRecordUpsertWithWhereUniqueWithoutStepInstanceInput = {
+    where: ApprovalDecisionRecordWhereUniqueInput
+    update: XOR<ApprovalDecisionRecordUpdateWithoutStepInstanceInput, ApprovalDecisionRecordUncheckedUpdateWithoutStepInstanceInput>
+    create: XOR<ApprovalDecisionRecordCreateWithoutStepInstanceInput, ApprovalDecisionRecordUncheckedCreateWithoutStepInstanceInput>
+  }
+
+  export type ApprovalDecisionRecordUpdateWithWhereUniqueWithoutStepInstanceInput = {
+    where: ApprovalDecisionRecordWhereUniqueInput
+    data: XOR<ApprovalDecisionRecordUpdateWithoutStepInstanceInput, ApprovalDecisionRecordUncheckedUpdateWithoutStepInstanceInput>
+  }
+
+  export type ApprovalDecisionRecordUpdateManyWithWhereWithoutStepInstanceInput = {
+    where: ApprovalDecisionRecordScalarWhereInput
+    data: XOR<ApprovalDecisionRecordUpdateManyMutationInput, ApprovalDecisionRecordUncheckedUpdateManyWithoutStepInstanceInput>
+  }
+
+  export type ApprovalRequestCreateWithoutDecisionRecordsInput = {
+    id?: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutApprovalRequestsInput
+    policy: ApprovalPolicyCreateNestedOneWithoutRequestsInput
+    submittedBy: UserCreateNestedOneWithoutApprovalRequestsSubmittedInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
+    stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestUncheckedCreateWithoutDecisionRecordsInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestCreateOrConnectWithoutDecisionRecordsInput = {
+    where: ApprovalRequestWhereUniqueInput
+    create: XOR<ApprovalRequestCreateWithoutDecisionRecordsInput, ApprovalRequestUncheckedCreateWithoutDecisionRecordsInput>
+  }
+
+  export type ApprovalStepInstanceCreateWithoutDecisionsInput = {
+    id?: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    request: ApprovalRequestCreateNestedOneWithoutStepInstancesInput
+    assigneeRole?: RoleCreateNestedOneWithoutApprovalStepInstanceAssigneeRoleInput
+    assigneeUser?: UserCreateNestedOneWithoutApprovalStepInstanceAssigneeUserInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalStepInstancesDecidedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedCreateWithoutDecisionsInput = {
+    id?: string
+    requestId: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalStepInstanceCreateOrConnectWithoutDecisionsInput = {
+    where: ApprovalStepInstanceWhereUniqueInput
+    create: XOR<ApprovalStepInstanceCreateWithoutDecisionsInput, ApprovalStepInstanceUncheckedCreateWithoutDecisionsInput>
+  }
+
+  export type UserCreateWithoutApprovalDecisionRecordsInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserUncheckedCreateWithoutApprovalDecisionRecordsInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+  }
+
+  export type UserCreateOrConnectWithoutApprovalDecisionRecordsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutApprovalDecisionRecordsInput, UserUncheckedCreateWithoutApprovalDecisionRecordsInput>
+  }
+
+  export type ApprovalRequestUpsertWithoutDecisionRecordsInput = {
+    update: XOR<ApprovalRequestUpdateWithoutDecisionRecordsInput, ApprovalRequestUncheckedUpdateWithoutDecisionRecordsInput>
+    create: XOR<ApprovalRequestCreateWithoutDecisionRecordsInput, ApprovalRequestUncheckedCreateWithoutDecisionRecordsInput>
+    where?: ApprovalRequestWhereInput
+  }
+
+  export type ApprovalRequestUpdateToOneWithWhereWithoutDecisionRecordsInput = {
+    where?: ApprovalRequestWhereInput
+    data: XOR<ApprovalRequestUpdateWithoutDecisionRecordsInput, ApprovalRequestUncheckedUpdateWithoutDecisionRecordsInput>
+  }
+
+  export type ApprovalRequestUpdateWithoutDecisionRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutApprovalRequestsNestedInput
+    policy?: ApprovalPolicyUpdateOneRequiredWithoutRequestsNestedInput
+    submittedBy?: UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
+    stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateWithoutDecisionRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalStepInstanceUpsertWithoutDecisionsInput = {
+    update: XOR<ApprovalStepInstanceUpdateWithoutDecisionsInput, ApprovalStepInstanceUncheckedUpdateWithoutDecisionsInput>
+    create: XOR<ApprovalStepInstanceCreateWithoutDecisionsInput, ApprovalStepInstanceUncheckedCreateWithoutDecisionsInput>
+    where?: ApprovalStepInstanceWhereInput
+  }
+
+  export type ApprovalStepInstanceUpdateToOneWithWhereWithoutDecisionsInput = {
+    where?: ApprovalStepInstanceWhereInput
+    data: XOR<ApprovalStepInstanceUpdateWithoutDecisionsInput, ApprovalStepInstanceUncheckedUpdateWithoutDecisionsInput>
+  }
+
+  export type ApprovalStepInstanceUpdateWithoutDecisionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    request?: ApprovalRequestUpdateOneRequiredWithoutStepInstancesNestedInput
+    assigneeRole?: RoleUpdateOneWithoutApprovalStepInstanceAssigneeRoleNestedInput
+    assigneeUser?: UserUpdateOneWithoutApprovalStepInstanceAssigneeUserNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalStepInstancesDecidedNestedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateWithoutDecisionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutApprovalDecisionRecordsInput = {
+    update: XOR<UserUpdateWithoutApprovalDecisionRecordsInput, UserUncheckedUpdateWithoutApprovalDecisionRecordsInput>
+    create: XOR<UserCreateWithoutApprovalDecisionRecordsInput, UserUncheckedCreateWithoutApprovalDecisionRecordsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutApprovalDecisionRecordsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutApprovalDecisionRecordsInput, UserUncheckedUpdateWithoutApprovalDecisionRecordsInput>
+  }
+
+  export type UserUpdateWithoutApprovalDecisionRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutApprovalDecisionRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type OrganizationMembershipCreateWithoutOrganizationInput = {
@@ -89322,6 +103300,92 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ApprovalPolicyCreateWithoutOrganizationInput = {
+    id?: string
+    name: string
+    description?: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive?: boolean
+    priority?: number
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    steps?: ApprovalPolicyStepCreateNestedManyWithoutPolicyInput
+    requests?: ApprovalRequestCreateNestedManyWithoutPolicyInput
+  }
+
+  export type ApprovalPolicyUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    name: string
+    description?: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive?: boolean
+    priority?: number
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    steps?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutPolicyInput
+    requests?: ApprovalRequestUncheckedCreateNestedManyWithoutPolicyInput
+  }
+
+  export type ApprovalPolicyCreateOrConnectWithoutOrganizationInput = {
+    where: ApprovalPolicyWhereUniqueInput
+    create: XOR<ApprovalPolicyCreateWithoutOrganizationInput, ApprovalPolicyUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ApprovalPolicyCreateManyOrganizationInputEnvelope = {
+    data: ApprovalPolicyCreateManyOrganizationInput | ApprovalPolicyCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApprovalRequestCreateWithoutOrganizationInput = {
+    id?: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    policy: ApprovalPolicyCreateNestedOneWithoutRequestsInput
+    submittedBy: UserCreateNestedOneWithoutApprovalRequestsSubmittedInput
+    decidedBy?: UserCreateNestedOneWithoutApprovalRequestsDecidedInput
+    stepInstances?: ApprovalStepInstanceCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutRequestInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type ApprovalRequestCreateOrConnectWithoutOrganizationInput = {
+    where: ApprovalRequestWhereUniqueInput
+    create: XOR<ApprovalRequestCreateWithoutOrganizationInput, ApprovalRequestUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ApprovalRequestCreateManyOrganizationInputEnvelope = {
+    data: ApprovalRequestCreateManyOrganizationInput | ApprovalRequestCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: OrganizationMembershipWhereUniqueInput
     update: XOR<OrganizationMembershipUpdateWithoutOrganizationInput, OrganizationMembershipUncheckedUpdateWithoutOrganizationInput>
@@ -89888,6 +103952,55 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"BudgetLine"> | Date | string
   }
 
+  export type ApprovalPolicyUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ApprovalPolicyWhereUniqueInput
+    update: XOR<ApprovalPolicyUpdateWithoutOrganizationInput, ApprovalPolicyUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ApprovalPolicyCreateWithoutOrganizationInput, ApprovalPolicyUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ApprovalPolicyUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ApprovalPolicyWhereUniqueInput
+    data: XOR<ApprovalPolicyUpdateWithoutOrganizationInput, ApprovalPolicyUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ApprovalPolicyUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ApprovalPolicyScalarWhereInput
+    data: XOR<ApprovalPolicyUpdateManyMutationInput, ApprovalPolicyUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ApprovalPolicyScalarWhereInput = {
+    AND?: ApprovalPolicyScalarWhereInput | ApprovalPolicyScalarWhereInput[]
+    OR?: ApprovalPolicyScalarWhereInput[]
+    NOT?: ApprovalPolicyScalarWhereInput | ApprovalPolicyScalarWhereInput[]
+    id?: StringFilter<"ApprovalPolicy"> | string
+    organizationId?: StringFilter<"ApprovalPolicy"> | string
+    name?: StringFilter<"ApprovalPolicy"> | string
+    description?: StringNullableFilter<"ApprovalPolicy"> | string | null
+    entityType?: EnumApprovalEntityTypeFilter<"ApprovalPolicy"> | $Enums.ApprovalEntityType
+    isActive?: BoolFilter<"ApprovalPolicy"> | boolean
+    priority?: IntFilter<"ApprovalPolicy"> | number
+    createdById?: StringNullableFilter<"ApprovalPolicy"> | string | null
+    createdAt?: DateTimeFilter<"ApprovalPolicy"> | Date | string
+    updatedById?: StringNullableFilter<"ApprovalPolicy"> | string | null
+    updatedAt?: DateTimeFilter<"ApprovalPolicy"> | Date | string
+  }
+
+  export type ApprovalRequestUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ApprovalRequestWhereUniqueInput
+    update: XOR<ApprovalRequestUpdateWithoutOrganizationInput, ApprovalRequestUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ApprovalRequestCreateWithoutOrganizationInput, ApprovalRequestUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ApprovalRequestUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ApprovalRequestWhereUniqueInput
+    data: XOR<ApprovalRequestUpdateWithoutOrganizationInput, ApprovalRequestUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ApprovalRequestUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ApprovalRequestScalarWhereInput
+    data: XOR<ApprovalRequestUpdateManyMutationInput, ApprovalRequestUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
   export type OrganizationCreateWithoutLocationsInput = {
     id?: string
     code: string
@@ -89924,6 +104037,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -89962,6 +104077,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -90124,6 +104241,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutPrimaryLocationInput = {
@@ -90182,6 +104305,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutPrimaryLocationInput = {
@@ -90371,6 +104500,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -90409,6 +104540,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type LocationUpsertWithoutChildrenInput = {
@@ -90564,6 +104697,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -90602,6 +104737,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -90740,6 +104877,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutHomeDepartmentInput = {
@@ -90798,6 +104941,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutHomeDepartmentInput = {
@@ -91023,6 +105172,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -91061,6 +105212,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutChildrenInput = {
@@ -91220,6 +105373,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCostCentresInput = {
@@ -91258,6 +105413,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCostCentresInput = {
@@ -91477,6 +105634,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCostCentresInput = {
@@ -91515,6 +105674,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutCostCentresInput = {
@@ -91626,6 +105787,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProjectsInput = {
@@ -91664,6 +105827,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProjectsInput = {
@@ -91848,6 +106013,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProjectsInput = {
@@ -91886,6 +106053,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutProjectInput = {
@@ -91956,6 +106125,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFundingSourcesInput = {
@@ -91994,6 +106165,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFundingSourcesInput = {
@@ -92178,6 +106351,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFundingSourcesInput = {
@@ -92216,6 +106391,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput = {
@@ -92901,6 +107078,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput = {
@@ -92939,6 +107118,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMasterDataChangeRequestsInput = {
@@ -93002,6 +107183,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsRequestedInput = {
@@ -93060,6 +107247,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsRequestedInput = {
@@ -93123,6 +107316,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsApprovedInput = {
@@ -93181,6 +107380,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsApprovedInput = {
@@ -93269,6 +107474,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput = {
@@ -93307,6 +107514,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsRequestedInput = {
@@ -93376,6 +107585,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsRequestedInput = {
@@ -93434,6 +107649,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsApprovedInput = {
@@ -93503,6 +107724,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsApprovedInput = {
@@ -93561,6 +107788,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput = {
@@ -93715,6 +107948,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReasonCodesInput = {
@@ -93753,6 +107988,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReasonCodesInput = {
@@ -93807,6 +108044,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReasonCodesInput = {
@@ -93845,6 +108084,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutProductsServicesInput = {
@@ -93883,6 +108124,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProductsServicesInput = {
@@ -93921,6 +108164,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProductsServicesInput = {
@@ -94018,6 +108263,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProductsServicesInput = {
@@ -94056,6 +108303,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CurrencyUpsertWithoutProductsServicesInput = {
@@ -94143,6 +108392,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountsInput = {
@@ -94181,6 +108432,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountsInput = {
@@ -94580,6 +108833,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountsInput = {
@@ -94618,6 +108873,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutChildrenInput = {
@@ -94813,6 +109070,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFinancialPeriodsInput = {
@@ -94851,6 +109110,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFinancialPeriodsInput = {
@@ -95047,6 +109308,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFinancialPeriodsInput = {
@@ -95085,6 +109348,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OpeningBalanceUpsertWithWhereUniqueWithoutPeriodInput = {
@@ -95171,6 +109436,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutOpeningBalancesInput = {
@@ -95209,6 +109476,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutOpeningBalancesInput = {
@@ -95404,6 +109673,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutOpeningBalancesInput = {
@@ -95442,6 +109713,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutOpeningBalancesInput = {
@@ -95639,6 +109912,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountBalanceSnapshotsInput = {
@@ -95677,6 +109952,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountBalanceSnapshotsInput = {
@@ -95872,6 +110149,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountBalanceSnapshotsInput = {
@@ -95910,6 +110189,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutAccountBalanceSnapshotsInput = {
@@ -96107,6 +110388,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalEntriesInput = {
@@ -96145,6 +110428,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalEntriesInput = {
@@ -96629,6 +110914,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesSubmittedInput = {
@@ -96687,6 +110978,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesSubmittedInput = {
@@ -96750,6 +111047,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesApprovedInput = {
@@ -96808,6 +111111,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesApprovedInput = {
@@ -96871,6 +111180,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesPostedInput = {
@@ -96929,6 +111244,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesPostedInput = {
@@ -96992,6 +111313,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesReversedInput = {
@@ -97050,6 +111377,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesReversedInput = {
@@ -97152,6 +111485,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalEntriesInput = {
@@ -97190,6 +111525,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type FinancialPeriodUpsertWithoutJournalEntriesInput = {
@@ -97602,6 +111939,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesSubmittedInput = {
@@ -97660,6 +112003,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesApprovedInput = {
@@ -97729,6 +112078,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesApprovedInput = {
@@ -97787,6 +112142,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesPostedInput = {
@@ -97856,6 +112217,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesPostedInput = {
@@ -97914,6 +112281,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesReversedInput = {
@@ -97983,6 +112356,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesReversedInput = {
@@ -98041,6 +112420,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutEntryInput = {
@@ -98095,6 +112480,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalLinesInput = {
@@ -98133,6 +112520,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalLinesInput = {
@@ -98533,6 +112922,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalLinesInput = {
@@ -98571,6 +112962,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithoutLinesInput = {
@@ -99003,6 +113396,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReversalReasonCodesInput = {
@@ -99041,6 +113436,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReversalReasonCodesInput = {
@@ -99247,6 +113644,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReversalReasonCodesInput = {
@@ -99285,6 +113684,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput = {
@@ -99355,6 +113756,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTransactionsInput = {
@@ -99393,6 +113796,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTransactionsInput = {
@@ -99737,6 +114142,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsCreatedInput = {
@@ -99795,6 +114206,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsCreatedInput = {
@@ -99858,6 +114275,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsSubmittedInput = {
@@ -99916,6 +114339,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsSubmittedInput = {
@@ -99979,6 +114408,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsApprovedInput = {
@@ -100037,6 +114472,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsApprovedInput = {
@@ -100100,6 +114541,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsPostedInput = {
@@ -100158,6 +114605,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsPostedInput = {
@@ -100221,6 +114674,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsReversedInput = {
@@ -100279,6 +114738,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsReversedInput = {
@@ -100593,6 +115058,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTransactionsInput = {
@@ -100631,6 +115098,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutTransactionsInput = {
@@ -101023,6 +115492,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsCreatedInput = {
@@ -101081,6 +115556,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUpsertWithoutTransactionsSubmittedInput = {
@@ -101150,6 +115631,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsSubmittedInput = {
@@ -101208,6 +115695,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUpsertWithoutTransactionsApprovedInput = {
@@ -101277,6 +115770,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsApprovedInput = {
@@ -101335,6 +115834,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUpsertWithoutTransactionsPostedInput = {
@@ -101404,6 +115909,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsPostedInput = {
@@ -101462,6 +115973,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUpsertWithoutTransactionsReversedInput = {
@@ -101531,6 +116048,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsReversedInput = {
@@ -101589,6 +116112,12 @@ export namespace Prisma {
     transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type ReversalReasonCodeUpsertWithoutTransactionsInput = {
@@ -101779,6 +116308,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetsInput = {
@@ -101817,6 +116348,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetsInput = {
@@ -101899,6 +116432,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetsInput = {
@@ -101937,6 +116472,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetLineUpsertWithWhereUniqueWithoutBudgetInput = {
@@ -101991,6 +116528,8 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetLinesInput = {
@@ -102029,6 +116568,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetLinesInput = {
@@ -102171,6 +116712,8 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetLinesInput = {
@@ -102209,6 +116752,8 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutLinesInput = {
@@ -102347,6 +116892,8 @@ export namespace Prisma {
     transactions?: TransactionCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -102385,6 +116932,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -102448,6 +116997,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutOrganizationMembershipsInput = {
@@ -102506,6 +117061,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutOrganizationMembershipsInput = {
@@ -102560,6 +117121,8 @@ export namespace Prisma {
     transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -102598,6 +117161,8 @@ export namespace Prisma {
     transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganizationMembershipsInput = {
@@ -102667,6 +117232,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganizationMembershipsInput = {
@@ -102725,6 +117296,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type SecurityEventCreateWithoutAuditLogInput = {
@@ -103005,6 +117582,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -103063,6 +117646,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -103137,6 +117726,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -103195,6 +117790,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserCreateWithoutNotificationPreferencesInput = {
@@ -103253,6 +117854,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserUncheckedCreateWithoutNotificationPreferencesInput = {
@@ -103311,6 +117918,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
     transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
     transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
   }
 
   export type UserCreateOrConnectWithoutNotificationPreferencesInput = {
@@ -103385,6 +117998,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationPreferencesInput = {
@@ -103443,6 +118062,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type OrganizationMembershipCreateManyUserInput = {
@@ -103960,6 +118585,102 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type ApprovalRequestCreateManySubmittedByInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalRequestCreateManyDecidedByInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalStepInstanceCreateManyDecidedByInput = {
+    id?: string
+    requestId: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalDecisionRecordCreateManyActorInput = {
+    id?: string
+    requestId: string
+    stepInstanceId: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovalPolicyStepCreateManyAssigneeUserInput = {
+    id?: string
+    policyId: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalStepInstanceCreateManyAssigneeUserInput = {
+    id?: string
+    requestId: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrganizationMembershipUpdateWithoutUserInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -104421,6 +119142,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedByInput = {
@@ -104479,6 +119206,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCreatedByInput = {
@@ -104572,6 +119305,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedByInput = {
@@ -104630,6 +119369,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutUpdatedByInput = {
@@ -105645,6 +120390,306 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ApprovalRequestUpdateWithoutSubmittedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutApprovalRequestsNestedInput
+    policy?: ApprovalPolicyUpdateOneRequiredWithoutRequestsNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
+    stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateWithoutSubmittedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateManyWithoutSubmittedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalRequestUpdateWithoutDecidedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutApprovalRequestsNestedInput
+    policy?: ApprovalPolicyUpdateOneRequiredWithoutRequestsNestedInput
+    submittedBy?: UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput
+    stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateWithoutDecidedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateManyWithoutDecidedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalStepInstanceUpdateWithoutDecidedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    request?: ApprovalRequestUpdateOneRequiredWithoutStepInstancesNestedInput
+    assigneeRole?: RoleUpdateOneWithoutApprovalStepInstanceAssigneeRoleNestedInput
+    assigneeUser?: UserUpdateOneWithoutApprovalStepInstanceAssigneeUserNestedInput
+    decisions?: ApprovalDecisionRecordUpdateManyWithoutStepInstanceNestedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateWithoutDecidedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    decisions?: ApprovalDecisionRecordUncheckedUpdateManyWithoutStepInstanceNestedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalDecisionRecordUpdateWithoutActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    request?: ApprovalRequestUpdateOneRequiredWithoutDecisionRecordsNestedInput
+    stepInstance?: ApprovalStepInstanceUpdateOneRequiredWithoutDecisionsNestedInput
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateWithoutActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepInstanceId?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateManyWithoutActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepInstanceId?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalPolicyStepUpdateWithoutAssigneeUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    policy?: ApprovalPolicyUpdateOneRequiredWithoutStepsNestedInput
+    assigneeRole?: RoleUpdateOneWithoutApprovalPolicyStepsNestedInput
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateWithoutAssigneeUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalStepInstanceUpdateWithoutAssigneeUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    request?: ApprovalRequestUpdateOneRequiredWithoutStepInstancesNestedInput
+    assigneeRole?: RoleUpdateOneWithoutApprovalStepInstanceAssigneeRoleNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalStepInstancesDecidedNestedInput
+    decisions?: ApprovalDecisionRecordUpdateManyWithoutStepInstanceNestedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateWithoutAssigneeUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    decisions?: ApprovalDecisionRecordUncheckedUpdateManyWithoutStepInstanceNestedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type RolePermissionCreateManyRoleInput = {
     permissionId: string
     conditions?: NullableJsonNullValueInput | InputJsonValue
@@ -105697,6 +120742,41 @@ export namespace Prisma {
     decidedById?: string | null
     decidedAt?: Date | string | null
     actionedAt?: Date | string | null
+  }
+
+  export type ApprovalPolicyStepCreateManyAssigneeRoleInput = {
+    id?: string
+    policyId: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeUserId?: string | null
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalStepInstanceCreateManyAssigneeRoleInput = {
+    id?: string
+    requestId: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeUserId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type RolePermissionUpdateWithoutRoleInput = {
@@ -105861,6 +120941,113 @@ export namespace Prisma {
     actionedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type ApprovalPolicyStepUpdateWithoutAssigneeRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    policy?: ApprovalPolicyUpdateOneRequiredWithoutStepsNestedInput
+    assigneeUser?: UserUpdateOneWithoutApprovalPolicyStepAssigneeUserNestedInput
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateWithoutAssigneeRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalStepInstanceUpdateWithoutAssigneeRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    request?: ApprovalRequestUpdateOneRequiredWithoutStepInstancesNestedInput
+    assigneeUser?: UserUpdateOneWithoutApprovalStepInstanceAssigneeUserNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalStepInstancesDecidedNestedInput
+    decisions?: ApprovalDecisionRecordUpdateManyWithoutStepInstanceNestedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateWithoutAssigneeRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    decisions?: ApprovalDecisionRecordUncheckedUpdateManyWithoutStepInstanceNestedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type RolePermissionCreateManyPermissionInput = {
     roleId: string
     conditions?: NullableJsonNullValueInput | InputJsonValue
@@ -105967,6 +121154,312 @@ export namespace Prisma {
     decidedById?: NullableStringFieldUpdateOperationsInput | string | null
     decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     actionedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ApprovalPolicyStepCreateManyPolicyInput = {
+    id?: string
+    stepOrder: number
+    name: string
+    type: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode?: $Enums.ResolutionMode
+    quorum?: number | null
+    conditionOperator?: $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: boolean
+    isFinalApprover?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalRequestCreateManyPolicyInput = {
+    id?: string
+    organizationId: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalPolicyStepUpdateWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigneeRole?: RoleUpdateOneWithoutApprovalPolicyStepsNestedInput
+    assigneeUser?: UserUpdateOneWithoutApprovalPolicyStepAssigneeUserNestedInput
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalPolicyStepUncheckedUpdateManyWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    conditionOperator?: NullableEnumApprovalConditionOperatorFieldUpdateOperationsInput | $Enums.ApprovalConditionOperator | null
+    conditionValue?: NullableJsonNullValueInput | InputJsonValue
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    isFinalApprover?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalRequestUpdateWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutApprovalRequestsNestedInput
+    submittedBy?: UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
+    stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateManyWithoutPolicyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalStepInstanceCreateManyRequestInput = {
+    id?: string
+    stepOrder: number
+    stepName: string
+    stepType: $Enums.ApprovalStepType
+    assigneeType: $Enums.ApprovalAssigneeType
+    assigneeRoleId?: string | null
+    assigneeUserId?: string | null
+    resolutionMode: $Enums.ResolutionMode
+    quorum?: number | null
+    status?: $Enums.ApprovalRequestStatus
+    decidedAt?: Date | string | null
+    decidedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalDecisionRecordCreateManyRequestInput = {
+    id?: string
+    stepInstanceId: string
+    actorId: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovalStepInstanceUpdateWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assigneeRole?: RoleUpdateOneWithoutApprovalStepInstanceAssigneeRoleNestedInput
+    assigneeUser?: UserUpdateOneWithoutApprovalStepInstanceAssigneeUserNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalStepInstancesDecidedNestedInput
+    decisions?: ApprovalDecisionRecordUpdateManyWithoutStepInstanceNestedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    decisions?: ApprovalDecisionRecordUncheckedUpdateManyWithoutStepInstanceNestedInput
+  }
+
+  export type ApprovalStepInstanceUncheckedUpdateManyWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepOrder?: IntFieldUpdateOperationsInput | number
+    stepName?: StringFieldUpdateOperationsInput | string
+    stepType?: EnumApprovalStepTypeFieldUpdateOperationsInput | $Enums.ApprovalStepType
+    assigneeType?: EnumApprovalAssigneeTypeFieldUpdateOperationsInput | $Enums.ApprovalAssigneeType
+    assigneeRoleId?: NullableStringFieldUpdateOperationsInput | string | null
+    assigneeUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionMode?: EnumResolutionModeFieldUpdateOperationsInput | $Enums.ResolutionMode
+    quorum?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalDecisionRecordUpdateWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stepInstance?: ApprovalStepInstanceUpdateOneRequiredWithoutDecisionsNestedInput
+    actor?: UserUpdateOneRequiredWithoutApprovalDecisionRecordsNestedInput
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepInstanceId?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stepInstanceId?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalDecisionRecordCreateManyStepInstanceInput = {
+    id?: string
+    requestId: string
+    actorId: string
+    decision: $Enums.ApprovalDecision
+    reason?: string | null
+    sodViolation?: boolean
+    sodWaiverId?: string | null
+    delegationId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovalDecisionRecordUpdateWithoutStepInstanceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    request?: ApprovalRequestUpdateOneRequiredWithoutDecisionRecordsNestedInput
+    actor?: UserUpdateOneRequiredWithoutApprovalDecisionRecordsNestedInput
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateWithoutStepInstanceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalDecisionRecordUncheckedUpdateManyWithoutStepInstanceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    decision?: EnumApprovalDecisionFieldUpdateOperationsInput | $Enums.ApprovalDecision
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    sodViolation?: BoolFieldUpdateOperationsInput | boolean
+    sodWaiverId?: NullableStringFieldUpdateOperationsInput | string | null
+    delegationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrganizationMembershipCreateManyOrganizationInput = {
@@ -106250,6 +121743,35 @@ export namespace Prisma {
     budgetId: string
     accountId: string
     amount: Decimal | DecimalJsLike | number | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalPolicyCreateManyOrganizationInput = {
+    id?: string
+    name: string
+    description?: string | null
+    entityType: $Enums.ApprovalEntityType
+    isActive?: boolean
+    priority?: number
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type ApprovalRequestCreateManyOrganizationInput = {
+    id?: string
+    entityType: $Enums.ApprovalEntityType
+    entityId: string
+    policyId: string
+    policySnapshot: JsonNullValueInput | InputJsonValue
+    status?: $Enums.ApprovalRequestStatus
+    submittedById: string
+    submittedAt?: Date | string
+    currentStepIndex?: number
+    decidedAt?: Date | string | null
+    decidedById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -107175,6 +122697,101 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ApprovalPolicyUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    steps?: ApprovalPolicyStepUpdateManyWithoutPolicyNestedInput
+    requests?: ApprovalRequestUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type ApprovalPolicyUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    steps?: ApprovalPolicyStepUncheckedUpdateManyWithoutPolicyNestedInput
+    requests?: ApprovalRequestUncheckedUpdateManyWithoutPolicyNestedInput
+  }
+
+  export type ApprovalPolicyUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    priority?: IntFieldUpdateOperationsInput | number
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovalRequestUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    policy?: ApprovalPolicyUpdateOneRequiredWithoutRequestsNestedInput
+    submittedBy?: UserUpdateOneRequiredWithoutApprovalRequestsSubmittedNestedInput
+    decidedBy?: UserUpdateOneWithoutApprovalRequestsDecidedNestedInput
+    stepInstances?: ApprovalStepInstanceUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stepInstances?: ApprovalStepInstanceUncheckedUpdateManyWithoutRequestNestedInput
+    decisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type ApprovalRequestUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: EnumApprovalEntityTypeFieldUpdateOperationsInput | $Enums.ApprovalEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    policyId?: StringFieldUpdateOperationsInput | string
+    policySnapshot?: JsonNullValueInput | InputJsonValue
+    status?: EnumApprovalRequestStatusFieldUpdateOperationsInput | $Enums.ApprovalRequestStatus
+    submittedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentStepIndex?: IntFieldUpdateOperationsInput | number
+    decidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    decidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LocationCreateManyParentInput = {
     id?: string
     organizationId: string
@@ -107395,6 +123012,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPrimaryLocationInput = {
@@ -107453,6 +123076,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutPrimaryLocationInput = {
@@ -107858,6 +123487,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHomeDepartmentInput = {
@@ -107916,6 +123551,12 @@ export namespace Prisma {
     transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
     transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
     transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutHomeDepartmentInput = {

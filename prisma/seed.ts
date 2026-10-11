@@ -215,6 +215,97 @@ async function seedReversalReasonCodes(orgId: string) {
   return REVERSAL_REASON_CODES.length;
 }
 
+async function seedApprovalPolicy(orgId: string) {
+  const ceoRole = await prisma.role.findUniqueOrThrow({
+    where: { code: 'CEO' },
+    select: { id: true },
+  });
+
+  // Q2: every amount requires CEO approval in Phase 1. Single policy with
+  // AMOUNT_GREATER_THAN = 0 condition, two steps: APPROVAL (CEO) then SIGN_OFF (CEO).
+  const existing = await prisma.approvalPolicy.findFirst({
+    where: { organizationId: orgId, entityType: 'TRANSACTION' },
+    include: { steps: true },
+  });
+
+  if (existing) {
+    await prisma.approvalPolicyStep.deleteMany({ where: { policyId: existing.id } });
+    await prisma.approvalPolicyStep.createMany({
+      data: [
+        {
+          policyId: existing.id,
+          stepOrder: 1,
+          name: 'CEO Approval',
+          type: 'APPROVAL',
+          assigneeType: 'ROLE',
+          assigneeRoleId: ceoRole.id,
+          resolutionMode: 'ANY',
+          conditionOperator: 'AMOUNT_GREATER_THAN',
+          conditionValue: { amount: 0, currency: 'TZS' },
+          isRequired: true,
+          isFinalApprover: true,
+        },
+        {
+          policyId: existing.id,
+          stepOrder: 2,
+          name: 'CEO Sign-Off',
+          type: 'SIGN_OFF',
+          assigneeType: 'ROLE',
+          assigneeRoleId: ceoRole.id,
+          resolutionMode: 'ANY',
+          conditionOperator: 'ALWAYS',
+          conditionValue: null,
+          isRequired: true,
+          isFinalApprover: true,
+        },
+      ],
+    });
+    return existing;
+  }
+
+  const policy = await prisma.approvalPolicy.create({
+    data: {
+      organizationId: orgId,
+      name: 'CEO Final Approval',
+      description: 'All financial actions route to CEO for final approval (Q2: every amount).',
+      entityType: 'TRANSACTION',
+      isActive: true,
+      priority: 100,
+      steps: {
+        create: [
+          {
+            stepOrder: 1,
+            name: 'CEO Approval',
+            type: 'APPROVAL',
+            assigneeType: 'ROLE',
+            assigneeRoleId: ceoRole.id,
+            resolutionMode: 'ANY',
+            conditionOperator: 'AMOUNT_GREATER_THAN',
+            conditionValue: { amount: 0, currency: 'TZS' },
+            isRequired: true,
+            isFinalApprover: true,
+          },
+          {
+            stepOrder: 2,
+            name: 'CEO Sign-Off',
+            type: 'SIGN_OFF',
+            assigneeType: 'ROLE',
+            assigneeRoleId: ceoRole.id,
+            resolutionMode: 'ANY',
+            conditionOperator: 'ALWAYS',
+            conditionValue: null,
+            isRequired: true,
+            isFinalApprover: true,
+          },
+        ],
+      },
+    },
+    include: { steps: true },
+  });
+
+  return policy;
+}
+
 async function seedCeo(orgId: string) {
   const email = process.env.SEED_CEO_EMAIL?.trim();
   const password = process.env.SEED_CEO_PASSWORD;
@@ -306,6 +397,9 @@ async function main() {
 
   const rrcCount = await seedReversalReasonCodes(org.id);
   console.log(`  reversal reasons  ${rrcCount} codes`);
+
+  await seedApprovalPolicy(org.id);
+  console.log(`  approval policy  CEO Final Approval (2 steps, Q2: every amount)`);
 
   const ceo = await seedCeo(org.id);
   console.log(`  CEO account     ${ceo.message}`);

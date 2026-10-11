@@ -494,6 +494,16 @@ enum AuditAction {
   JOURNAL_ENTRY_VOIDED
   JOURNAL_ENTRY_SUBMITTED
   JOURNAL_ENTRY_APPROVED
+  APPROVAL_POLICY_CREATED
+  APPROVAL_POLICY_UPDATED
+  APPROVAL_POLICY_DELETED
+  APPROVAL_REQUEST_CREATED
+  APPROVAL_REQUEST_SUBMITTED
+  APPROVAL_REQUEST_APPROVED
+  APPROVAL_REQUEST_REJECTED
+  APPROVAL_REQUEST_CANCELLED
+  APPROVAL_STEP_DECIDED
+  APPROVAL_DECISION_RECORDED
 }
 
 enum AuditEntityType {
@@ -526,6 +536,10 @@ enum AuditEntityType {
   OPENING_BALANCE
   JOURNAL_ENTRY
   ACCOUNT_BALANCE_SNAPSHOT
+  APPROVAL_POLICY
+  APPROVAL_REQUEST
+  APPROVAL_STEP_INSTANCE
+  APPROVAL_DECISION_RECORD
 }
 
 enum AuditResult {
@@ -625,6 +639,96 @@ enum IdempotencyKeyStatus {
   FAILED
 }
 
+/// Approval Workflow enums (M6) --------------------------------------------------
+enum ApprovalEntityType {
+  TRANSACTION
+  JOURNAL_ENTRY
+  INVOICE
+  PAYMENT
+  RECEIPT
+  QUOTATION
+  CREDIT_NOTE
+  DEBIT_NOTE
+  REFUND
+  BUDGET
+  BUDGET_REVISION
+  BUDGET_TRANSFER
+  COMMITMENT
+  PERIOD_REOPEN
+  FINANCIAL_CLOSE
+  ADJUSTMENT
+  REVERSAL
+  MASTER_DATA_CHANGE
+  SUPPLIER_BANK_DETAIL_CHANGE
+  CUSTOMER_CREDIT_LIMIT
+  DOCUMENT
+  IMPORT_BATCH
+  RECONCILIATION
+  RECONCILIATION_ADJUSTMENT
+  TAX_FILING
+}
+
+enum ApprovalRequestStatus {
+  PENDING
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+  CANCELLED
+  EXPIRED
+  SUPERSEDED
+}
+
+enum ApprovalStepType {
+  APPROVAL
+  REVIEW
+  NOTIFICATION
+  SIGN_OFF
+}
+
+enum ApprovalAssigneeType {
+  ROLE
+  USER
+  USER_DELEGATED
+  SPECIFIC_USER
+}
+
+enum ApprovalOutcome {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ResolutionMode {
+  ANY
+  ALL
+  QUORUM
+}
+
+enum ApprovalConditionOperator {
+  ALWAYS
+  AMOUNT_GREATER_THAN
+  AMOUNT_GREATER_OR_EQUAL
+  AMOUNT_LESS_THAN
+  AMOUNT_BETWEEN
+  PERCENT_OF_BUDGET
+  OVER_BUDGET
+  NEW_COUNTERPARTY
+  SUPPLIER_BANK_DETAIL_CHANGED
+  FUNDING_RESTRICTED
+  CROSS_PROJECT
+  CURRENCY_NOT_BASE
+  MANUAL_FLAG
+}
+
+enum ApprovalDecision {
+  APPROVED
+  REJECTED
+  DEFERRED
+  RETURNED_FOR_CHANGES
+  SKIPPED
+  CANCELLED
+}
+
 // ============================================================================
 // B1. IDENTITY, ACCESS & AUTHENTICATION   (PDF 4, PDF 5)
 // ============================================================================
@@ -683,29 +787,35 @@ model User {
   updatedAt   DateTime  @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
 
-  organizationMemberships OrganizationMembership[]
-  sessions                Session[]
-  loginHistory            LoginHistory[]
-  mfaDevices              MfaDevice[]
-  userRoles               UserRole[]
-  delegationsGranted      Delegation[]              @relation("DelegationGrantor")
-  delegationsReceived     Delegation[]              @relation("DelegationGrantee")
-  accessReviewItems       AccessReviewItem[]
-  notifications           Notification[]
-  notificationPreferences NotificationPreference[]
-  createdUsers            User[]                    @relation("UserCreatedBy")
-  updatedUsers            User[]                    @relation("UserUpdatedBy")
-  changeRequestsRequested MasterDataChangeRequest[] @relation("ChangeRequestRequestedBy")
-  changeRequestsApproved  MasterDataChangeRequest[] @relation("ChangeRequestApprovedBy")
-  journalEntriesSubmitted JournalEntry[]            @relation("JournalEntrySubmittedBy")
-  journalEntriesApproved  JournalEntry[]            @relation("JournalEntryApprovedBy")
-  journalEntriesPosted    JournalEntry[]            @relation("JournalEntryPostedBy")
-  journalEntriesReversed  JournalEntry[]            @relation("JournalEntryReversedBy")
-  transactionsCreated     Transaction[]             @relation("TransactionCreatedBy")
-  transactionsSubmitted   Transaction[]             @relation("TransactionSubmittedBy")
-  transactionsApproved    Transaction[]             @relation("TransactionApprovedBy")
-  transactionsPosted      Transaction[]             @relation("TransactionPostedBy")
-  transactionsReversed    Transaction[]             @relation("TransactionReversedBy")
+  organizationMemberships          OrganizationMembership[]
+  sessions                         Session[]
+  loginHistory                     LoginHistory[]
+  mfaDevices                       MfaDevice[]
+  userRoles                        UserRole[]
+  delegationsGranted               Delegation[]              @relation("DelegationGrantor")
+  delegationsReceived              Delegation[]              @relation("DelegationGrantee")
+  accessReviewItems                AccessReviewItem[]
+  notifications                    Notification[]
+  notificationPreferences          NotificationPreference[]
+  createdUsers                     User[]                    @relation("UserCreatedBy")
+  updatedUsers                     User[]                    @relation("UserUpdatedBy")
+  changeRequestsRequested          MasterDataChangeRequest[] @relation("ChangeRequestRequestedBy")
+  changeRequestsApproved           MasterDataChangeRequest[] @relation("ChangeRequestApprovedBy")
+  journalEntriesSubmitted          JournalEntry[]            @relation("JournalEntrySubmittedBy")
+  journalEntriesApproved           JournalEntry[]            @relation("JournalEntryApprovedBy")
+  journalEntriesPosted             JournalEntry[]            @relation("JournalEntryPostedBy")
+  journalEntriesReversed           JournalEntry[]            @relation("JournalEntryReversedBy")
+  transactionsCreated              Transaction[]             @relation("TransactionCreatedBy")
+  transactionsSubmitted            Transaction[]             @relation("TransactionSubmittedBy")
+  transactionsApproved             Transaction[]             @relation("TransactionApprovedBy")
+  transactionsPosted               Transaction[]             @relation("TransactionPostedBy")
+  transactionsReversed             Transaction[]             @relation("TransactionReversedBy")
+  approvalRequestsSubmitted        ApprovalRequest[]         @relation("ApprovalRequestSubmittedBy")
+  approvalRequestsDecided          ApprovalRequest[]         @relation("ApprovalRequestDecidedBy")
+  approvalStepInstancesDecided     ApprovalStepInstance[]    @relation("ApprovalStepInstanceDecidedBy")
+  approvalDecisionRecords          ApprovalDecisionRecord[]  @relation("ApprovalDecisionRecordActor")
+  approvalPolicyStepAssigneeUser   ApprovalPolicyStep[]      @relation("ApprovalPolicyStepAssigneeUser")
+  approvalStepInstanceAssigneeUser ApprovalStepInstance[]    @relation("ApprovalStepInstanceAssigneeUser")
 
   @@index([status, isActive])
   @@index([primaryLocationId])
@@ -855,11 +965,13 @@ model Role {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  rolePermissions   RolePermission[]
-  scopeGrants       RoleScopeGrant[]
-  userRoles         UserRole[]
-  delegations       Delegation[]
-  accessReviewItems AccessReviewItem[]
+  rolePermissions                  RolePermission[]
+  scopeGrants                      RoleScopeGrant[]
+  userRoles                        UserRole[]
+  delegations                      Delegation[]
+  accessReviewItems                AccessReviewItem[]
+  approvalPolicySteps              ApprovalPolicyStep[]   @relation("ApprovalPolicyStepAssigneeRole")
+  approvalStepInstanceAssigneeRole ApprovalStepInstance[] @relation("ApprovalStepInstanceAssigneeRole")
 
   @@index([isSystem, isActive])
   @@map("roles")
@@ -1012,6 +1124,134 @@ model AccessReviewItem {
   @@map("access_review_items")
 }
 
+/// Approval Workflow models (M6) -------------------------------------------------
+model ApprovalPolicy {
+  id             String             @id @default(cuid())
+  organizationId String             @map("organization_id")
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  entityType     ApprovalEntityType
+  isActive       Boolean            @default(true)
+  priority       Int                @default(100)
+  createdById    String?            @map("created_by_id")
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedById    String?            @map("updated_by_id")
+  updatedAt      DateTime           @updatedAt @map("updated_at")
+
+  steps    ApprovalPolicyStep[] @relation("ApprovalPolicySteps")
+  requests ApprovalRequest[]    @relation("ApprovalRequestPolicy")
+
+  @@index([organizationId, entityType, isActive])
+  @@map("approval_policies")
+}
+
+model ApprovalPolicyStep {
+  id                String                     @id @default(cuid())
+  policyId          String                     @map("policy_id")
+  policy            ApprovalPolicy             @relation("ApprovalPolicySteps", fields: [policyId], references: [id], onDelete: Cascade)
+  stepOrder         Int                        @map("step_order")
+  name              String
+  type              ApprovalStepType
+  assigneeType      ApprovalAssigneeType       @map("assignee_type")
+  assigneeRoleId    String?                    @map("assignee_role_id")
+  assigneeRole      Role?                      @relation("ApprovalPolicyStepAssigneeRole", fields: [assigneeRoleId], references: [id])
+  assigneeUserId    String?                    @map("assignee_user_id")
+  assigneeUser      User?                      @relation("ApprovalPolicyStepAssigneeUser", fields: [assigneeUserId], references: [id])
+  resolutionMode    ResolutionMode             @default(ANY) @map("resolution_mode")
+  quorum            Int? // used when resolutionMode = QUORUM
+  conditionOperator ApprovalConditionOperator? @map("condition_operator")
+  conditionValue    Json?                      @map("condition_value")
+  isRequired        Boolean                    @default(true) @map("is_required")
+  isFinalApprover   Boolean                    @default(false) @map("is_final_approver")
+  createdAt         DateTime                   @default(now()) @map("created_at")
+  updatedAt         DateTime                   @updatedAt @map("updated_at")
+
+  @@unique([policyId, stepOrder])
+  @@index([policyId])
+  @@map("approval_policy_steps")
+}
+
+model ApprovalRequest {
+  id               String                @id @default(cuid())
+  organizationId   String                @map("organization_id")
+  organization     Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  entityType       ApprovalEntityType    @map("entity_type")
+  entityId         String                @map("entity_id")
+  policyId         String                @map("policy_id")
+  policy           ApprovalPolicy        @relation("ApprovalRequestPolicy", fields: [policyId], references: [id])
+  policySnapshot   Json                  @map("policy_snapshot")
+  status           ApprovalRequestStatus @default(PENDING)
+  submittedById    String                @map("submitted_by_id")
+  submittedBy      User                  @relation("ApprovalRequestSubmittedBy", fields: [submittedById], references: [id])
+  submittedAt      DateTime              @default(now()) @map("submitted_at")
+  currentStepIndex Int                   @default(0) @map("current_step_index")
+  decidedAt        DateTime?             @map("decided_at")
+  decidedById      String?               @map("decided_by_id")
+  decidedBy        User?                 @relation("ApprovalRequestDecidedBy", fields: [decidedById], references: [id])
+  createdAt        DateTime              @default(now()) @map("created_at")
+  updatedAt        DateTime              @updatedAt @map("updated_at")
+
+  stepInstances   ApprovalStepInstance[]   @relation("ApprovalRequestStepInstances")
+  decisionRecords ApprovalDecisionRecord[] @relation("ApprovalRequestDecisionRecords")
+
+  @@index([organizationId, entityType, entityId])
+  @@index([status])
+  @@index([submittedById])
+  @@map("approval_requests")
+}
+
+model ApprovalStepInstance {
+  id             String                @id @default(cuid())
+  requestId      String                @map("request_id")
+  request        ApprovalRequest       @relation("ApprovalRequestStepInstances", fields: [requestId], references: [id], onDelete: Cascade)
+  stepOrder      Int                   @map("step_order")
+  stepName       String                @map("step_name")
+  stepType       ApprovalStepType      @map("step_type")
+  assigneeType   ApprovalAssigneeType  @map("assignee_type")
+  assigneeRoleId String?               @map("assignee_role_id")
+  assigneeRole   Role?                 @relation("ApprovalStepInstanceAssigneeRole", fields: [assigneeRoleId], references: [id])
+  assigneeUserId String?               @map("assignee_user_id")
+  assigneeUser   User?                 @relation("ApprovalStepInstanceAssigneeUser", fields: [assigneeUserId], references: [id])
+  resolutionMode ResolutionMode        @map("resolution_mode")
+  quorum         Int?
+  status         ApprovalRequestStatus @default(PENDING)
+  decidedAt      DateTime?             @map("decided_at")
+  decidedById    String?               @map("decided_by_id")
+  decidedBy      User?                 @relation("ApprovalStepInstanceDecidedBy", fields: [decidedById], references: [id])
+  createdAt      DateTime              @default(now()) @map("created_at")
+  updatedAt      DateTime              @updatedAt @map("updated_at")
+
+  decisions ApprovalDecisionRecord[] @relation("ApprovalStepInstanceDecisions")
+
+  @@unique([requestId, stepOrder])
+  @@index([requestId])
+  @@index([assigneeUserId, status])
+  @@index([assigneeRoleId, status])
+  @@map("approval_step_instances")
+}
+
+model ApprovalDecisionRecord {
+  id             String               @id @default(cuid())
+  requestId      String               @map("request_id")
+  request        ApprovalRequest      @relation("ApprovalRequestDecisionRecords", fields: [requestId], references: [id], onDelete: Cascade)
+  stepInstanceId String               @map("step_instance_id")
+  stepInstance   ApprovalStepInstance @relation("ApprovalStepInstanceDecisions", fields: [stepInstanceId], references: [id], onDelete: Cascade)
+  actorId        String               @map("actor_id")
+  actor          User                 @relation("ApprovalDecisionRecordActor", fields: [actorId], references: [id])
+  decision       ApprovalDecision
+  reason         String?
+  sodViolation   Boolean              @default(false) @map("sod_violation")
+  sodWaiverId    String?              @map("sod_waiver_id")
+  delegationId   String?              @map("delegation_id")
+  createdAt      DateTime             @default(now()) @map("created_at")
+
+  @@index([requestId])
+  @@index([stepInstanceId])
+  @@index([actorId])
+  @@map("approval_decision_records")
+}
+
 // ============================================================================
 // B3. ORGANISATION ROOT
 //
@@ -1060,6 +1300,8 @@ model Organization {
   transactions             Transaction[]
   budgets                  Budget[]
   budgetLines              BudgetLine[]
+  approvalPolicies         ApprovalPolicy[]
+  approvalRequests         ApprovalRequest[]
 
   @@index([registrationStatus])
   @@map("organizations")

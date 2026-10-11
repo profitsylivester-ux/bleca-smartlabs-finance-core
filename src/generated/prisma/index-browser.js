@@ -331,6 +331,87 @@ exports.Prisma.AccessReviewItemScalarFieldEnum = {
   actionedAt: 'actionedAt'
 };
 
+exports.Prisma.ApprovalPolicyScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  description: 'description',
+  entityType: 'entityType',
+  isActive: 'isActive',
+  priority: 'priority',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedById: 'updatedById',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApprovalPolicyStepScalarFieldEnum = {
+  id: 'id',
+  policyId: 'policyId',
+  stepOrder: 'stepOrder',
+  name: 'name',
+  type: 'type',
+  assigneeType: 'assigneeType',
+  assigneeRoleId: 'assigneeRoleId',
+  assigneeUserId: 'assigneeUserId',
+  resolutionMode: 'resolutionMode',
+  quorum: 'quorum',
+  conditionOperator: 'conditionOperator',
+  conditionValue: 'conditionValue',
+  isRequired: 'isRequired',
+  isFinalApprover: 'isFinalApprover',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApprovalRequestScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  policyId: 'policyId',
+  policySnapshot: 'policySnapshot',
+  status: 'status',
+  submittedById: 'submittedById',
+  submittedAt: 'submittedAt',
+  currentStepIndex: 'currentStepIndex',
+  decidedAt: 'decidedAt',
+  decidedById: 'decidedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApprovalStepInstanceScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  stepOrder: 'stepOrder',
+  stepName: 'stepName',
+  stepType: 'stepType',
+  assigneeType: 'assigneeType',
+  assigneeRoleId: 'assigneeRoleId',
+  assigneeUserId: 'assigneeUserId',
+  resolutionMode: 'resolutionMode',
+  quorum: 'quorum',
+  status: 'status',
+  decidedAt: 'decidedAt',
+  decidedById: 'decidedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApprovalDecisionRecordScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  stepInstanceId: 'stepInstanceId',
+  actorId: 'actorId',
+  decision: 'decision',
+  reason: 'reason',
+  sodViolation: 'sodViolation',
+  sodWaiverId: 'sodWaiverId',
+  delegationId: 'delegationId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.OrganizationScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -971,6 +1052,89 @@ exports.AccessReviewStatus = exports.$Enums.AccessReviewStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.ApprovalEntityType = exports.$Enums.ApprovalEntityType = {
+  TRANSACTION: 'TRANSACTION',
+  JOURNAL_ENTRY: 'JOURNAL_ENTRY',
+  INVOICE: 'INVOICE',
+  PAYMENT: 'PAYMENT',
+  RECEIPT: 'RECEIPT',
+  QUOTATION: 'QUOTATION',
+  CREDIT_NOTE: 'CREDIT_NOTE',
+  DEBIT_NOTE: 'DEBIT_NOTE',
+  REFUND: 'REFUND',
+  BUDGET: 'BUDGET',
+  BUDGET_REVISION: 'BUDGET_REVISION',
+  BUDGET_TRANSFER: 'BUDGET_TRANSFER',
+  COMMITMENT: 'COMMITMENT',
+  PERIOD_REOPEN: 'PERIOD_REOPEN',
+  FINANCIAL_CLOSE: 'FINANCIAL_CLOSE',
+  ADJUSTMENT: 'ADJUSTMENT',
+  REVERSAL: 'REVERSAL',
+  MASTER_DATA_CHANGE: 'MASTER_DATA_CHANGE',
+  SUPPLIER_BANK_DETAIL_CHANGE: 'SUPPLIER_BANK_DETAIL_CHANGE',
+  CUSTOMER_CREDIT_LIMIT: 'CUSTOMER_CREDIT_LIMIT',
+  DOCUMENT: 'DOCUMENT',
+  IMPORT_BATCH: 'IMPORT_BATCH',
+  RECONCILIATION: 'RECONCILIATION',
+  RECONCILIATION_ADJUSTMENT: 'RECONCILIATION_ADJUSTMENT',
+  TAX_FILING: 'TAX_FILING'
+};
+
+exports.ApprovalStepType = exports.$Enums.ApprovalStepType = {
+  APPROVAL: 'APPROVAL',
+  REVIEW: 'REVIEW',
+  NOTIFICATION: 'NOTIFICATION',
+  SIGN_OFF: 'SIGN_OFF'
+};
+
+exports.ApprovalAssigneeType = exports.$Enums.ApprovalAssigneeType = {
+  ROLE: 'ROLE',
+  USER: 'USER',
+  USER_DELEGATED: 'USER_DELEGATED',
+  SPECIFIC_USER: 'SPECIFIC_USER'
+};
+
+exports.ResolutionMode = exports.$Enums.ResolutionMode = {
+  ANY: 'ANY',
+  ALL: 'ALL',
+  QUORUM: 'QUORUM'
+};
+
+exports.ApprovalConditionOperator = exports.$Enums.ApprovalConditionOperator = {
+  ALWAYS: 'ALWAYS',
+  AMOUNT_GREATER_THAN: 'AMOUNT_GREATER_THAN',
+  AMOUNT_GREATER_OR_EQUAL: 'AMOUNT_GREATER_OR_EQUAL',
+  AMOUNT_LESS_THAN: 'AMOUNT_LESS_THAN',
+  AMOUNT_BETWEEN: 'AMOUNT_BETWEEN',
+  PERCENT_OF_BUDGET: 'PERCENT_OF_BUDGET',
+  OVER_BUDGET: 'OVER_BUDGET',
+  NEW_COUNTERPARTY: 'NEW_COUNTERPARTY',
+  SUPPLIER_BANK_DETAIL_CHANGED: 'SUPPLIER_BANK_DETAIL_CHANGED',
+  FUNDING_RESTRICTED: 'FUNDING_RESTRICTED',
+  CROSS_PROJECT: 'CROSS_PROJECT',
+  CURRENCY_NOT_BASE: 'CURRENCY_NOT_BASE',
+  MANUAL_FLAG: 'MANUAL_FLAG'
+};
+
+exports.ApprovalRequestStatus = exports.$Enums.ApprovalRequestStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED',
+  SUPERSEDED: 'SUPERSEDED'
+};
+
+exports.ApprovalDecision = exports.$Enums.ApprovalDecision = {
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  DEFERRED: 'DEFERRED',
+  RETURNED_FOR_CHANGES: 'RETURNED_FOR_CHANGES',
+  SKIPPED: 'SKIPPED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.OrganizationType = exports.$Enums.OrganizationType = {
   SINGLE_ENTITY: 'SINGLE_ENTITY'
 };
@@ -1053,7 +1217,11 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   FINANCIAL_PERIOD: 'FINANCIAL_PERIOD',
   OPENING_BALANCE: 'OPENING_BALANCE',
   JOURNAL_ENTRY: 'JOURNAL_ENTRY',
-  ACCOUNT_BALANCE_SNAPSHOT: 'ACCOUNT_BALANCE_SNAPSHOT'
+  ACCOUNT_BALANCE_SNAPSHOT: 'ACCOUNT_BALANCE_SNAPSHOT',
+  APPROVAL_POLICY: 'APPROVAL_POLICY',
+  APPROVAL_REQUEST: 'APPROVAL_REQUEST',
+  APPROVAL_STEP_INSTANCE: 'APPROVAL_STEP_INSTANCE',
+  APPROVAL_DECISION_RECORD: 'APPROVAL_DECISION_RECORD'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -1279,7 +1447,17 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   JOURNAL_ENTRY_REVERSED: 'JOURNAL_ENTRY_REVERSED',
   JOURNAL_ENTRY_VOIDED: 'JOURNAL_ENTRY_VOIDED',
   JOURNAL_ENTRY_SUBMITTED: 'JOURNAL_ENTRY_SUBMITTED',
-  JOURNAL_ENTRY_APPROVED: 'JOURNAL_ENTRY_APPROVED'
+  JOURNAL_ENTRY_APPROVED: 'JOURNAL_ENTRY_APPROVED',
+  APPROVAL_POLICY_CREATED: 'APPROVAL_POLICY_CREATED',
+  APPROVAL_POLICY_UPDATED: 'APPROVAL_POLICY_UPDATED',
+  APPROVAL_POLICY_DELETED: 'APPROVAL_POLICY_DELETED',
+  APPROVAL_REQUEST_CREATED: 'APPROVAL_REQUEST_CREATED',
+  APPROVAL_REQUEST_SUBMITTED: 'APPROVAL_REQUEST_SUBMITTED',
+  APPROVAL_REQUEST_APPROVED: 'APPROVAL_REQUEST_APPROVED',
+  APPROVAL_REQUEST_REJECTED: 'APPROVAL_REQUEST_REJECTED',
+  APPROVAL_REQUEST_CANCELLED: 'APPROVAL_REQUEST_CANCELLED',
+  APPROVAL_STEP_DECIDED: 'APPROVAL_STEP_DECIDED',
+  APPROVAL_DECISION_RECORDED: 'APPROVAL_DECISION_RECORDED'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -1386,6 +1564,11 @@ exports.Prisma.ModelName = {
   Delegation: 'Delegation',
   AccessReview: 'AccessReview',
   AccessReviewItem: 'AccessReviewItem',
+  ApprovalPolicy: 'ApprovalPolicy',
+  ApprovalPolicyStep: 'ApprovalPolicyStep',
+  ApprovalRequest: 'ApprovalRequest',
+  ApprovalStepInstance: 'ApprovalStepInstance',
+  ApprovalDecisionRecord: 'ApprovalDecisionRecord',
   Organization: 'Organization',
   Location: 'Location',
   Department: 'Department',
