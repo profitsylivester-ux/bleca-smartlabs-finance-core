@@ -352,7 +352,7 @@ describe('M6 Approval Workflow', () => {
 
     const { request } = await createTransactionAndSubmit(financeOfficerActor, 10000, orgId);
 
-    const originalStepsCount = request.policySnapshot?.steps?.length ?? 0;
+    const originalStepsCount = (request.policySnapshot as { steps?: unknown[] } | undefined)?.steps?.length ?? 0;
     expect(originalStepsCount).toBeGreaterThan(0);
 
     await prisma.approvalPolicy.update({
@@ -422,7 +422,7 @@ describe('M6 Approval Workflow', () => {
       orderBy: { createdAt: 'asc' },
     });
     expect(decisionRecords.length).toBe(1);
-    expect(decisionRecords[0].decision).toBe('APPROVED');
+    expect(decisionRecords[0]!.decision).toBe('APPROVED');
   });
 
   it('every decision audited with SOD evidence', async () => {
@@ -531,8 +531,8 @@ describe('M6 Access Review', () => {
     expect(review.items.length).toBe(2);
     expect(review.status).toBe('OPEN');
 
-    const itemToCertify = review.items[0];
-    const itemToRevoke = review.items[1];
+    const itemToCertify = review.items[0]!;
+    const itemToRevoke = review.items[1]!;
 
     await prisma.accessReviewItem.update({
       where: { id: itemToCertify.id },

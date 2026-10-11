@@ -66,13 +66,6 @@ export async function advanceRequest(
     throw new Error(`No step snapshot at index ${currentStepIndex}`);
   }
 
-  const context: ConditionContext = {
-    organizationId: request.organizationId,
-    entityType: request.entityType,
-    entityId: request.entityId,
-    submittedById: request.submittedById,
-  };
-
   const resolution = await resolveApprovers(
     stepSnapshot,
     {
@@ -88,7 +81,51 @@ export async function advanceRequest(
   );
 
   const isActorAuthorized = resolution.resolvedAssigneeIds.includes(actor.userId);
+  const isSelfApprovalAttempt = actor.userId === request.submittedById;
+
   if (!isActorAuthorized && decision !== 'SKIPPED') {
+    if (isSelfApprovalAttempt) {
+      await tx.approvalDecisionRecord.create({
+        data: {
+          requestId: request.id,
+          stepInstanceId: currentStepInstance.id,
+          actorId: actor.userId,
+          decision: 'REJECTED',
+          reason: 'Self-approval attempt blocked: SOD violation',
+          sodViolation: true,
+          sodWaiverId: null,
+          delegationId: null,
+        },
+      });
+
+      await writeAuditEntry(
+        tx,
+        { id: actor.userId, name: actor.fullName, roleCodes: actor.roleCodes },
+        {
+          action: 'APPROVAL_STEP_DECIDED',
+          entityType: 'APPROVAL_STEP_INSTANCE',
+          entityId: request.id,
+          entityLabel: currentStepInstance.stepName,
+          description: `Self-approval attempt blocked for step "${currentStepInstance.stepName}" on request ${request.id}`,
+          changes: {
+            stepStatus: { from: 'PENDING', to: 'REJECTED' },
+            requestStatus: { from: request.status, to: request.status },
+          },
+          metadata: {
+            decision: 'REJECTED',
+            reason: 'Self-approval attempt blocked: SOD violation',
+            sodViolation: true,
+            sodWaiverId: null,
+            delegationId: null,
+            actorRoleCodes: actor.roleCodes,
+            stepInstanceId: currentStepInstance.id,
+          },
+          result: 'FAILURE',
+          channel: 'WEB',
+        },
+        { organizationId: request.organizationId, requestId: request.id }
+      );
+    }
     throw new Error(`User ${actor.userId} is not authorized to decide on this step`);
   }
 
@@ -120,8 +157,7 @@ export async function advanceRequest(
     currentStepIndex,
     decision,
     decisionRecord,
-    actor,
-    reason
+    actor
   );
 
   await writeAuditEntry(
@@ -130,7 +166,7 @@ export async function advanceRequest(
     {
       action: 'APPROVAL_STEP_DECIDED',
       entityType: 'APPROVAL_STEP_INSTANCE',
-      entityId: currentStepInstance.id,
+      entityId: request.id,
       entityLabel: currentStepInstance.stepName,
       description: `Step "${currentStepInstance.stepName}" ${decision.toLowerCase()} for request ${request.id}`,
       changes: {
@@ -144,6 +180,7 @@ export async function advanceRequest(
         sodWaiverId: resolution.sodWaiverId,
         delegationId: resolution.delegationId,
         actorRoleCodes: actor.roleCodes,
+        stepInstanceId: currentStepInstance.id,
       },
       result: 'SUCCESS',
       channel: 'WEB',
@@ -166,8 +203,7 @@ async function advanceWorkflow(
   currentStepIndex: number,
   decision: ApprovalDecision,
   decisionRecord: ApprovalDecisionRecord,
-  actor: { userId: string; fullName: string; roleCodes: string[] },
-  reason?: string
+  actor: { userId: string; fullName: string; roleCodes: string[] }
 ): Promise<{
   isComplete: boolean;
   nextStepInstance: ApprovalStepInstance | null;
@@ -245,6 +281,11 @@ async function advanceWorkflow(
     };
   }
 
+  const currentStepSnapshot = policySnapshot.steps[currentStepIndex];
+  if (currentStepSnapshot?.isFinalApprover) {
+    return completeRequest(tx, request, actor);
+  }
+
   const nextStepIndex = currentStepIndex + 1;
   if (nextStepIndex >= totalSteps) {
     return completeRequest(tx, request, actor);
@@ -292,6 +333,13 @@ async function completeRequest(
       currentStepIndex: (request.policySnapshot as unknown as PolicySnapshot).steps.length,
     },
   });
+
+  if (request.entityType === 'TRANSACTION') {
+    await tx.transaction.update({
+      where: { id: request.entityId },
+      data: { status: 'APPROVED' },
+    });
+  }
 
   await writeAuditEntry(
     tx,

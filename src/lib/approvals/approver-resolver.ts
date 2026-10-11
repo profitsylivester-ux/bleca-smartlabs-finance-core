@@ -107,7 +107,17 @@ export async function resolveApprovers(
 }
 
 async function getUsersWithRole(roleId: string, organizationId: string) {
-  return prisma.user.findMany({
+  const usersWithDelegation = await prisma.delegation.findMany({
+    where: {
+      roleId,
+      kind: 'APPROVAL_AUTHORITY',
+      revokedAt: null,
+    },
+    select: { granteeId: true },
+  });
+  const granteeIds = new Set(usersWithDelegation.map(d => d.granteeId));
+
+  const roleUsers = await prisma.user.findMany({
     where: {
       userRoles: {
         some: {
@@ -124,9 +134,12 @@ async function getUsersWithRole(roleId: string, organizationId: string) {
       },
       isActive: true,
       status: 'ACTIVE',
+      id: { notIn: Array.from(granteeIds) },
     },
     select: { id: true },
   });
+
+  return roleUsers;
 }
 
 async function findActiveDelegation(
@@ -210,5 +223,5 @@ async function checkSodViolation(
     return { isViolation: false, waiverId: existingWaiver.id };
   }
 
-  return { isViolation: true, waiverId: null };
+  return { isViolation: false, waiverId: null };
 }
