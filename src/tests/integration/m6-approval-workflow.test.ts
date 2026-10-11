@@ -7,6 +7,7 @@ import { runIdempotent } from '@/lib/api/idempotency';
 import { writeAuditEntry } from '@/lib/audit/writer';
 import type { ConditionContext } from '@/lib/approvals';
 import type { ActorContext } from '@/lib/kernel/context';
+import type { ApprovalRequest, ApprovalStepInstance } from '@/lib/approvals/types';
 
 let getOrgId: () => Promise<string>;
 let financeOfficerId: string;
@@ -145,7 +146,16 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  // Clean up approval requests first (FK constraint on submitted_by_id)
+  // Clean up approval data only - skip immutable POSTED/APPROVED transactions and journal entries
+  // Database is reset between test runs, so just clean up test-specific approval records
+  // Note: users with POSTED journal entries cannot be deleted due to immutability triggers;
+  // the database reset handles this.
+  await prisma.approvalDecisionRecord.deleteMany({
+    where: { actorId: { in: [financeOfficerId, ceoId, delegateId] } },
+  });
+  await prisma.approvalStepInstance.deleteMany({
+    where: { decidedById: { in: [financeOfficerId, ceoId, delegateId] } },
+  });
   await prisma.approvalRequest.deleteMany({
     where: { submittedById: { in: [financeOfficerId, ceoId, delegateId] } },
   });
@@ -153,7 +163,6 @@ afterAll(async () => {
     where: { userId: { in: [financeOfficerId, ceoId, delegateId] }, revokedAt: null },
     data: { revokedAt: new Date(), revokedReason: 'ADMIN_REVOKED', absoluteExpiresAt: new Date(0) },
   });
-  await prisma.user.deleteMany({ where: { id: { in: [financeOfficerId, ceoId, delegateId] } } });
   await prisma.$disconnect();
 });
 
@@ -201,7 +210,9 @@ describe('M6 Approval Workflow', () => {
       prisma
     );
 
-    return { transaction: tx, request };
+    const requestWithSteps = request as ApprovalRequest & { stepInstances: ApprovalStepInstance[] };
+
+    return { transaction: tx, request: requestWithSteps };
   };
 
   it('full submit → route → approve → post flow for Transaction', async () => {
@@ -212,7 +223,7 @@ describe('M6 Approval Workflow', () => {
     expect(request.stepInstances.length).toBeGreaterThan(0);
     expect(request.currentStepIndex).toBe(0);
 
-    const firstStep = request.stepInstances[0];
+    const firstStep = request.stepInstances[0]!;
     expect(firstStep.status).toBe('PENDING');
 
     const idempotencyKey1 = `test-approve-${request.id}-step-1`;
@@ -242,7 +253,7 @@ describe('M6 Approval Workflow', () => {
     const orgId = await getOrgId();
     const { request } = await createTransactionAndSubmit(financeOfficerActor, 3000, orgId);
 
-    const firstStep = request.stepInstances[0];
+    const firstStep = request.stepInstances[0]!;
     expect(firstStep.status).toBe('PENDING');
 
     await expect(
