@@ -132,8 +132,8 @@ export async function POST(
             const sourceNormalBalance = transfer.sourceAccount.ledgerAccount.normalBalance;
             const destNormalBalance = transfer.destinationAccount.ledgerAccount.normalBalance;
 
-            const sourceAmount = transfer.amount;
-            const destAmount = transfer.destinationAmount ?? transfer.amount;
+            const sourceAmount = Number(transfer.amount);
+            const destAmount = transfer.destinationAmount ? Number(transfer.destinationAmount) : sourceAmount;
             const sourceCurrency = transfer.currencyCode;
             const destCurrency = transfer.destinationCurrencyCode ?? transfer.currencyCode;
 
