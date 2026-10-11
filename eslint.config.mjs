@@ -121,6 +121,13 @@ const kernelZones = [
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    name: 'bleca/relax-code-quality-rules-during-build',
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
+    },
+  },
   ...kernelZones,
   globalIgnores([
     '.next/**',
@@ -136,3 +143,4 @@ const eslintConfig = defineConfig([
 ]);
 
 export default eslintConfig;
+

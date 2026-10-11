@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { createHash } from 'crypto';
-import { prisma } from '@/lib/db/prisma';
+import { prisma, ImportErrorType } from '@/lib/db/prisma';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
