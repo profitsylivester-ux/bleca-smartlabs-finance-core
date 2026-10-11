@@ -539,7 +539,6 @@ describe('M5 Audit Trail Verification', () => {
   beforeAll(async () => {
     await prisma.$executeRawUnsafe(`TRUNCATE TABLE transactions RESTART IDENTITY CASCADE`);
     await prisma.$executeRawUnsafe(`TRUNCATE TABLE journal_lines, journal_entries RESTART IDENTITY CASCADE`);
-    await prisma.$executeRawUnsafe(`TRUNCATE TABLE audit_logs RESTART IDENTITY CASCADE`);
   });
 
   it('every transition attempt writes audit entry', async () => {
@@ -585,3 +584,5 @@ describe('M5 Audit Trail Verification', () => {
     expect((auditLog?.metadata as Record<string, unknown>)?.isLegalTransition).toBe(true);
   });
 });
+
+
