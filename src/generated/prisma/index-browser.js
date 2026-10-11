@@ -515,6 +515,40 @@ exports.Prisma.FundingSourceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TreasuryAccountScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  kind: 'kind',
+  currencyCode: 'currencyCode',
+  ledgerAccountId: 'ledgerAccountId',
+  locationId: 'locationId',
+  fundingSourceId: 'fundingSourceId',
+  accountNumberEnc: 'accountNumberEnc',
+  providerConfigEnc: 'providerConfigEnc',
+  isActive: 'isActive',
+  isRestricted: 'isRestricted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentScheduleScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  treasuryAccountId: 'treasuryAccountId',
+  code: 'code',
+  description: 'description',
+  amount: 'amount',
+  currencyCode: 'currencyCode',
+  frequency: 'frequency',
+  nextDueDate: 'nextDueDate',
+  endDate: 'endDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CurrencyScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -707,6 +741,7 @@ exports.Prisma.JournalLineScalarFieldEnum = {
   costCentreId: 'costCentreId',
   locationId: 'locationId',
   fundingSourceId: 'fundingSourceId',
+  treasuryAccountId: 'treasuryAccountId',
   createdAt: 'createdAt'
 };
 
@@ -738,6 +773,7 @@ exports.Prisma.TransactionScalarFieldEnum = {
   costCentreId: 'costCentreId',
   locationId: 'locationId',
   fundingSourceId: 'fundingSourceId',
+  treasuryAccountId: 'treasuryAccountId',
   paymentMethod: 'paymentMethod',
   supportingDocumentId: 'supportingDocumentId',
   createdById: 'createdById',
@@ -1197,6 +1233,16 @@ exports.FundingSourceType = exports.$Enums.FundingSourceType = {
   OTHER: 'OTHER'
 };
 
+exports.TreasuryAccountKind = exports.$Enums.TreasuryAccountKind = {
+  CASH: 'CASH',
+  BANK: 'BANK',
+  MOBILE_MONEY: 'MOBILE_MONEY',
+  PAYMENT_GATEWAY: 'PAYMENT_GATEWAY',
+  PROJECT_FUND: 'PROJECT_FUND',
+  GRANT_FUND: 'GRANT_FUND',
+  OTHER: 'OTHER'
+};
+
 exports.CurrencyType = exports.$Enums.CurrencyType = {
   FIAT: 'FIAT',
   CRYPTO: 'CRYPTO',
@@ -1243,7 +1289,9 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   APPROVAL_REQUEST: 'APPROVAL_REQUEST',
   APPROVAL_STEP_INSTANCE: 'APPROVAL_STEP_INSTANCE',
   APPROVAL_DECISION_RECORD: 'APPROVAL_DECISION_RECORD',
-  SOD_WAIVER: 'SOD_WAIVER'
+  SOD_WAIVER: 'SOD_WAIVER',
+  TREASURY_ACCOUNT: 'TREASURY_ACCOUNT',
+  PAYMENT_SCHEDULE: 'PAYMENT_SCHEDULE'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -1600,6 +1648,8 @@ exports.Prisma.ModelName = {
   CostCentre: 'CostCentre',
   Project: 'Project',
   FundingSource: 'FundingSource',
+  TreasuryAccount: 'TreasuryAccount',
+  PaymentSchedule: 'PaymentSchedule',
   Currency: 'Currency',
   ExchangeRate: 'ExchangeRate',
   MasterDataChangeRequest: 'MasterDataChangeRequest',

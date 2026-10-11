@@ -142,6 +142,17 @@ export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
  */
 export type FundingSource = $Result.DefaultSelection<Prisma.$FundingSourcePayload>
 /**
+ * Model TreasuryAccount
+ * Treasury Accounts — PDF §10: cash, bank, mobile money, gateways, project/grant funds.
+ * Each links to a ledger Account. Sensitive fields encrypted at rest.
+ */
+export type TreasuryAccount = $Result.DefaultSelection<Prisma.$TreasuryAccountPayload>
+/**
+ * Model PaymentSchedule
+ * Payment Schedules — due/overdue status for recurring obligations.
+ */
+export type PaymentSchedule = $Result.DefaultSelection<Prisma.$PaymentSchedulePayload>
+/**
  * Model Currency
  * 
  */
@@ -736,6 +747,19 @@ export const PaymentMethod: {
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 
 
+export const TreasuryAccountKind: {
+  CASH: 'CASH',
+  BANK: 'BANK',
+  MOBILE_MONEY: 'MOBILE_MONEY',
+  PAYMENT_GATEWAY: 'PAYMENT_GATEWAY',
+  PROJECT_FUND: 'PROJECT_FUND',
+  GRANT_FUND: 'GRANT_FUND',
+  OTHER: 'OTHER'
+};
+
+export type TreasuryAccountKind = (typeof TreasuryAccountKind)[keyof typeof TreasuryAccountKind]
+
+
 export const TransactionStatus: {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED',
@@ -851,7 +875,9 @@ export const AuditEntityType: {
   APPROVAL_REQUEST: 'APPROVAL_REQUEST',
   APPROVAL_STEP_INSTANCE: 'APPROVAL_STEP_INSTANCE',
   APPROVAL_DECISION_RECORD: 'APPROVAL_DECISION_RECORD',
-  SOD_WAIVER: 'SOD_WAIVER'
+  SOD_WAIVER: 'SOD_WAIVER',
+  TREASURY_ACCOUNT: 'TREASURY_ACCOUNT',
+  PAYMENT_SCHEDULE: 'PAYMENT_SCHEDULE'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -1240,6 +1266,10 @@ export const JournalSource: typeof $Enums.JournalSource
 export type PaymentMethod = $Enums.PaymentMethod
 
 export const PaymentMethod: typeof $Enums.PaymentMethod
+
+export type TreasuryAccountKind = $Enums.TreasuryAccountKind
+
+export const TreasuryAccountKind: typeof $Enums.TreasuryAccountKind
 
 export type TransactionStatus = $Enums.TransactionStatus
 
@@ -1696,6 +1726,26 @@ export class PrismaClient<
     * ```
     */
   get fundingSource(): Prisma.FundingSourceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.treasuryAccount`: Exposes CRUD operations for the **TreasuryAccount** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TreasuryAccounts
+    * const treasuryAccounts = await prisma.treasuryAccount.findMany()
+    * ```
+    */
+  get treasuryAccount(): Prisma.TreasuryAccountDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.paymentSchedule`: Exposes CRUD operations for the **PaymentSchedule** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PaymentSchedules
+    * const paymentSchedules = await prisma.paymentSchedule.findMany()
+    * ```
+    */
+  get paymentSchedule(): Prisma.PaymentScheduleDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.currency`: Exposes CRUD operations for the **Currency** model.
@@ -2402,6 +2452,8 @@ export namespace Prisma {
     CostCentre: 'CostCentre',
     Project: 'Project',
     FundingSource: 'FundingSource',
+    TreasuryAccount: 'TreasuryAccount',
+    PaymentSchedule: 'PaymentSchedule',
     Currency: 'Currency',
     ExchangeRate: 'ExchangeRate',
     MasterDataChangeRequest: 'MasterDataChangeRequest',
@@ -2444,7 +2496,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "treasuryAccount" | "paymentSchedule" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4295,6 +4347,154 @@ export namespace Prisma {
           count: {
             args: Prisma.FundingSourceCountArgs<ExtArgs>
             result: $Utils.Optional<FundingSourceCountAggregateOutputType> | number
+          }
+        }
+      }
+      TreasuryAccount: {
+        payload: Prisma.$TreasuryAccountPayload<ExtArgs>
+        fields: Prisma.TreasuryAccountFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TreasuryAccountFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TreasuryAccountFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload>
+          }
+          findFirst: {
+            args: Prisma.TreasuryAccountFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TreasuryAccountFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload>
+          }
+          findMany: {
+            args: Prisma.TreasuryAccountFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload>[]
+          }
+          create: {
+            args: Prisma.TreasuryAccountCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload>
+          }
+          createMany: {
+            args: Prisma.TreasuryAccountCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TreasuryAccountCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload>[]
+          }
+          delete: {
+            args: Prisma.TreasuryAccountDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload>
+          }
+          update: {
+            args: Prisma.TreasuryAccountUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload>
+          }
+          deleteMany: {
+            args: Prisma.TreasuryAccountDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TreasuryAccountUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TreasuryAccountUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload>[]
+          }
+          upsert: {
+            args: Prisma.TreasuryAccountUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TreasuryAccountPayload>
+          }
+          aggregate: {
+            args: Prisma.TreasuryAccountAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTreasuryAccount>
+          }
+          groupBy: {
+            args: Prisma.TreasuryAccountGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TreasuryAccountGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TreasuryAccountCountArgs<ExtArgs>
+            result: $Utils.Optional<TreasuryAccountCountAggregateOutputType> | number
+          }
+        }
+      }
+      PaymentSchedule: {
+        payload: Prisma.$PaymentSchedulePayload<ExtArgs>
+        fields: Prisma.PaymentScheduleFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PaymentScheduleFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PaymentScheduleFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload>
+          }
+          findFirst: {
+            args: Prisma.PaymentScheduleFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PaymentScheduleFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload>
+          }
+          findMany: {
+            args: Prisma.PaymentScheduleFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload>[]
+          }
+          create: {
+            args: Prisma.PaymentScheduleCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload>
+          }
+          createMany: {
+            args: Prisma.PaymentScheduleCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PaymentScheduleCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload>[]
+          }
+          delete: {
+            args: Prisma.PaymentScheduleDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload>
+          }
+          update: {
+            args: Prisma.PaymentScheduleUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload>
+          }
+          deleteMany: {
+            args: Prisma.PaymentScheduleDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PaymentScheduleUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PaymentScheduleUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload>[]
+          }
+          upsert: {
+            args: Prisma.PaymentScheduleUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentSchedulePayload>
+          }
+          aggregate: {
+            args: Prisma.PaymentScheduleAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePaymentSchedule>
+          }
+          groupBy: {
+            args: Prisma.PaymentScheduleGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PaymentScheduleGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PaymentScheduleCountArgs<ExtArgs>
+            result: $Utils.Optional<PaymentScheduleCountAggregateOutputType> | number
           }
         }
       }
@@ -6195,6 +6395,8 @@ export namespace Prisma {
     costCentre?: CostCentreOmit
     project?: ProjectOmit
     fundingSource?: FundingSourceOmit
+    treasuryAccount?: TreasuryAccountOmit
+    paymentSchedule?: PaymentScheduleOmit
     currency?: CurrencyOmit
     exchangeRate?: ExchangeRateOmit
     masterDataChangeRequest?: MasterDataChangeRequestOmit
@@ -6906,6 +7108,8 @@ export namespace Prisma {
     budgetLines: number
     approvalPolicies: number
     approvalRequests: number
+    treasuryAccounts: number
+    paymentSchedules: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6930,6 +7134,8 @@ export namespace Prisma {
     budgetLines?: boolean | OrganizationCountOutputTypeCountBudgetLinesArgs
     approvalPolicies?: boolean | OrganizationCountOutputTypeCountApprovalPoliciesArgs
     approvalRequests?: boolean | OrganizationCountOutputTypeCountApprovalRequestsArgs
+    treasuryAccounts?: boolean | OrganizationCountOutputTypeCountTreasuryAccountsArgs
+    paymentSchedules?: boolean | OrganizationCountOutputTypeCountPaymentSchedulesArgs
   }
 
   // Custom InputTypes
@@ -7090,6 +7296,20 @@ export namespace Prisma {
     where?: ApprovalRequestWhereInput
   }
 
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountTreasuryAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TreasuryAccountWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountPaymentSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentScheduleWhereInput
+  }
+
 
   /**
    * Count Type LocationCountOutputType
@@ -7100,6 +7320,7 @@ export namespace Prisma {
     users: number
     journalLines: number
     transactions: number
+    treasuryAccounts: number
   }
 
   export type LocationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7107,6 +7328,7 @@ export namespace Prisma {
     users?: boolean | LocationCountOutputTypeCountUsersArgs
     journalLines?: boolean | LocationCountOutputTypeCountJournalLinesArgs
     transactions?: boolean | LocationCountOutputTypeCountTransactionsArgs
+    treasuryAccounts?: boolean | LocationCountOutputTypeCountTreasuryAccountsArgs
   }
 
   // Custom InputTypes
@@ -7146,6 +7368,13 @@ export namespace Prisma {
    */
   export type LocationCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransactionWhereInput
+  }
+
+  /**
+   * LocationCountOutputType without action
+   */
+  export type LocationCountOutputTypeCountTreasuryAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TreasuryAccountWhereInput
   }
 
 
@@ -7303,11 +7532,13 @@ export namespace Prisma {
   export type FundingSourceCountOutputType = {
     journalLines: number
     transactions: number
+    treasuryAccounts: number
   }
 
   export type FundingSourceCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     journalLines?: boolean | FundingSourceCountOutputTypeCountJournalLinesArgs
     transactions?: boolean | FundingSourceCountOutputTypeCountTransactionsArgs
+    treasuryAccounts?: boolean | FundingSourceCountOutputTypeCountTreasuryAccountsArgs
   }
 
   // Custom InputTypes
@@ -7335,6 +7566,62 @@ export namespace Prisma {
     where?: TransactionWhereInput
   }
 
+  /**
+   * FundingSourceCountOutputType without action
+   */
+  export type FundingSourceCountOutputTypeCountTreasuryAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TreasuryAccountWhereInput
+  }
+
+
+  /**
+   * Count Type TreasuryAccountCountOutputType
+   */
+
+  export type TreasuryAccountCountOutputType = {
+    journalLines: number
+    transactions: number
+    paymentSchedules: number
+  }
+
+  export type TreasuryAccountCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    journalLines?: boolean | TreasuryAccountCountOutputTypeCountJournalLinesArgs
+    transactions?: boolean | TreasuryAccountCountOutputTypeCountTransactionsArgs
+    paymentSchedules?: boolean | TreasuryAccountCountOutputTypeCountPaymentSchedulesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TreasuryAccountCountOutputType without action
+   */
+  export type TreasuryAccountCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccountCountOutputType
+     */
+    select?: TreasuryAccountCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TreasuryAccountCountOutputType without action
+   */
+  export type TreasuryAccountCountOutputTypeCountJournalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalLineWhereInput
+  }
+
+  /**
+   * TreasuryAccountCountOutputType without action
+   */
+  export type TreasuryAccountCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+  }
+
+  /**
+   * TreasuryAccountCountOutputType without action
+   */
+  export type TreasuryAccountCountOutputTypeCountPaymentSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentScheduleWhereInput
+  }
+
 
   /**
    * Count Type CurrencyCountOutputType
@@ -7348,6 +7635,8 @@ export namespace Prisma {
     accountBalanceSnapshots: number
     journalLines: number
     transactions: number
+    treasuryAccounts: number
+    paymentSchedules: number
   }
 
   export type CurrencyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7358,6 +7647,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: boolean | CurrencyCountOutputTypeCountAccountBalanceSnapshotsArgs
     journalLines?: boolean | CurrencyCountOutputTypeCountJournalLinesArgs
     transactions?: boolean | CurrencyCountOutputTypeCountTransactionsArgs
+    treasuryAccounts?: boolean | CurrencyCountOutputTypeCountTreasuryAccountsArgs
+    paymentSchedules?: boolean | CurrencyCountOutputTypeCountPaymentSchedulesArgs
   }
 
   // Custom InputTypes
@@ -7420,6 +7711,20 @@ export namespace Prisma {
     where?: TransactionWhereInput
   }
 
+  /**
+   * CurrencyCountOutputType without action
+   */
+  export type CurrencyCountOutputTypeCountTreasuryAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TreasuryAccountWhereInput
+  }
+
+  /**
+   * CurrencyCountOutputType without action
+   */
+  export type CurrencyCountOutputTypeCountPaymentSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentScheduleWhereInput
+  }
+
 
   /**
    * Count Type MasterDataChangeRequestCountOutputType
@@ -7463,6 +7768,7 @@ export namespace Prisma {
     journalLines: number
     accountBalanceSnapshots: number
     transactions: number
+    treasuryAccounts: number
   }
 
   export type AccountCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7472,6 +7778,7 @@ export namespace Prisma {
     journalLines?: boolean | AccountCountOutputTypeCountJournalLinesArgs
     accountBalanceSnapshots?: boolean | AccountCountOutputTypeCountAccountBalanceSnapshotsArgs
     transactions?: boolean | AccountCountOutputTypeCountTransactionsArgs
+    treasuryAccounts?: boolean | AccountCountOutputTypeCountTreasuryAccountsArgs
   }
 
   // Custom InputTypes
@@ -7525,6 +7832,13 @@ export namespace Prisma {
    */
   export type AccountCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransactionWhereInput
+  }
+
+  /**
+   * AccountCountOutputType without action
+   */
+  export type AccountCountOutputTypeCountTreasuryAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TreasuryAccountWhereInput
   }
 
 
@@ -32235,6 +32549,8 @@ export namespace Prisma {
     budgetLines?: boolean | Organization$budgetLinesArgs<ExtArgs>
     approvalPolicies?: boolean | Organization$approvalPoliciesArgs<ExtArgs>
     approvalRequests?: boolean | Organization$approvalRequestsArgs<ExtArgs>
+    treasuryAccounts?: boolean | Organization$treasuryAccountsArgs<ExtArgs>
+    paymentSchedules?: boolean | Organization$paymentSchedulesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -32321,6 +32637,8 @@ export namespace Prisma {
     budgetLines?: boolean | Organization$budgetLinesArgs<ExtArgs>
     approvalPolicies?: boolean | Organization$approvalPoliciesArgs<ExtArgs>
     approvalRequests?: boolean | Organization$approvalRequestsArgs<ExtArgs>
+    treasuryAccounts?: boolean | Organization$treasuryAccountsArgs<ExtArgs>
+    paymentSchedules?: boolean | Organization$paymentSchedulesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -32350,6 +32668,8 @@ export namespace Prisma {
       budgetLines: Prisma.$BudgetLinePayload<ExtArgs>[]
       approvalPolicies: Prisma.$ApprovalPolicyPayload<ExtArgs>[]
       approvalRequests: Prisma.$ApprovalRequestPayload<ExtArgs>[]
+      treasuryAccounts: Prisma.$TreasuryAccountPayload<ExtArgs>[]
+      paymentSchedules: Prisma.$PaymentSchedulePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -32790,6 +33110,8 @@ export namespace Prisma {
     budgetLines<T extends Organization$budgetLinesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$budgetLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BudgetLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     approvalPolicies<T extends Organization$approvalPoliciesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$approvalPoliciesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalPolicyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     approvalRequests<T extends Organization$approvalRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$approvalRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovalRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    treasuryAccounts<T extends Organization$treasuryAccountsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$treasuryAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    paymentSchedules<T extends Organization$paymentSchedulesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$paymentSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -33728,6 +34050,54 @@ export namespace Prisma {
   }
 
   /**
+   * Organization.treasuryAccounts
+   */
+  export type Organization$treasuryAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    where?: TreasuryAccountWhereInput
+    orderBy?: TreasuryAccountOrderByWithRelationInput | TreasuryAccountOrderByWithRelationInput[]
+    cursor?: TreasuryAccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TreasuryAccountScalarFieldEnum | TreasuryAccountScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.paymentSchedules
+   */
+  export type Organization$paymentSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    where?: PaymentScheduleWhereInput
+    orderBy?: PaymentScheduleOrderByWithRelationInput | PaymentScheduleOrderByWithRelationInput[]
+    cursor?: PaymentScheduleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentScheduleScalarFieldEnum | PaymentScheduleScalarFieldEnum[]
+  }
+
+  /**
    * Organization without action
    */
   export type OrganizationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -33992,6 +34362,7 @@ export namespace Prisma {
     users?: boolean | Location$usersArgs<ExtArgs>
     journalLines?: boolean | Location$journalLinesArgs<ExtArgs>
     transactions?: boolean | Location$transactionsArgs<ExtArgs>
+    treasuryAccounts?: boolean | Location$treasuryAccountsArgs<ExtArgs>
     _count?: boolean | LocationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["location"]>
 
@@ -34061,6 +34432,7 @@ export namespace Prisma {
     users?: boolean | Location$usersArgs<ExtArgs>
     journalLines?: boolean | Location$journalLinesArgs<ExtArgs>
     transactions?: boolean | Location$transactionsArgs<ExtArgs>
+    treasuryAccounts?: boolean | Location$treasuryAccountsArgs<ExtArgs>
     _count?: boolean | LocationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type LocationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -34081,6 +34453,7 @@ export namespace Prisma {
       users: Prisma.$UserPayload<ExtArgs>[]
       journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      treasuryAccounts: Prisma.$TreasuryAccountPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -34498,6 +34871,7 @@ export namespace Prisma {
     users<T extends Location$usersArgs<ExtArgs> = {}>(args?: Subset<T, Location$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     journalLines<T extends Location$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, Location$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends Location$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Location$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    treasuryAccounts<T extends Location$treasuryAccountsArgs<ExtArgs> = {}>(args?: Subset<T, Location$treasuryAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -35050,6 +35424,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Location.treasuryAccounts
+   */
+  export type Location$treasuryAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    where?: TreasuryAccountWhereInput
+    orderBy?: TreasuryAccountOrderByWithRelationInput | TreasuryAccountOrderByWithRelationInput[]
+    cursor?: TreasuryAccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TreasuryAccountScalarFieldEnum | TreasuryAccountScalarFieldEnum[]
   }
 
   /**
@@ -38937,6 +39335,7 @@ export namespace Prisma {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     journalLines?: boolean | FundingSource$journalLinesArgs<ExtArgs>
     transactions?: boolean | FundingSource$transactionsArgs<ExtArgs>
+    treasuryAccounts?: boolean | FundingSource$treasuryAccountsArgs<ExtArgs>
     _count?: boolean | FundingSourceCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fundingSource"]>
 
@@ -38989,6 +39388,7 @@ export namespace Prisma {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     journalLines?: boolean | FundingSource$journalLinesArgs<ExtArgs>
     transactions?: boolean | FundingSource$transactionsArgs<ExtArgs>
+    treasuryAccounts?: boolean | FundingSource$treasuryAccountsArgs<ExtArgs>
     _count?: boolean | FundingSourceCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FundingSourceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -39004,6 +39404,7 @@ export namespace Prisma {
       organization: Prisma.$OrganizationPayload<ExtArgs>
       journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      treasuryAccounts: Prisma.$TreasuryAccountPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -39414,6 +39815,7 @@ export namespace Prisma {
     organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     journalLines<T extends FundingSource$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, FundingSource$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends FundingSource$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, FundingSource$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    treasuryAccounts<T extends FundingSource$treasuryAccountsArgs<ExtArgs> = {}>(args?: Subset<T, FundingSource$treasuryAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -39898,6 +40300,30 @@ export namespace Prisma {
   }
 
   /**
+   * FundingSource.treasuryAccounts
+   */
+  export type FundingSource$treasuryAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    where?: TreasuryAccountWhereInput
+    orderBy?: TreasuryAccountOrderByWithRelationInput | TreasuryAccountOrderByWithRelationInput[]
+    cursor?: TreasuryAccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TreasuryAccountScalarFieldEnum | TreasuryAccountScalarFieldEnum[]
+  }
+
+  /**
    * FundingSource without action
    */
   export type FundingSourceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -39913,6 +40339,2568 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FundingSourceInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TreasuryAccount
+   */
+
+  export type AggregateTreasuryAccount = {
+    _count: TreasuryAccountCountAggregateOutputType | null
+    _min: TreasuryAccountMinAggregateOutputType | null
+    _max: TreasuryAccountMaxAggregateOutputType | null
+  }
+
+  export type TreasuryAccountMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    kind: $Enums.TreasuryAccountKind | null
+    currencyCode: string | null
+    ledgerAccountId: string | null
+    locationId: string | null
+    fundingSourceId: string | null
+    accountNumberEnc: string | null
+    providerConfigEnc: string | null
+    isActive: boolean | null
+    isRestricted: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TreasuryAccountMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    name: string | null
+    kind: $Enums.TreasuryAccountKind | null
+    currencyCode: string | null
+    ledgerAccountId: string | null
+    locationId: string | null
+    fundingSourceId: string | null
+    accountNumberEnc: string | null
+    providerConfigEnc: string | null
+    isActive: boolean | null
+    isRestricted: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TreasuryAccountCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    code: number
+    name: number
+    kind: number
+    currencyCode: number
+    ledgerAccountId: number
+    locationId: number
+    fundingSourceId: number
+    accountNumberEnc: number
+    providerConfigEnc: number
+    isActive: number
+    isRestricted: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TreasuryAccountMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    kind?: true
+    currencyCode?: true
+    ledgerAccountId?: true
+    locationId?: true
+    fundingSourceId?: true
+    accountNumberEnc?: true
+    providerConfigEnc?: true
+    isActive?: true
+    isRestricted?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TreasuryAccountMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    kind?: true
+    currencyCode?: true
+    ledgerAccountId?: true
+    locationId?: true
+    fundingSourceId?: true
+    accountNumberEnc?: true
+    providerConfigEnc?: true
+    isActive?: true
+    isRestricted?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TreasuryAccountCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    name?: true
+    kind?: true
+    currencyCode?: true
+    ledgerAccountId?: true
+    locationId?: true
+    fundingSourceId?: true
+    accountNumberEnc?: true
+    providerConfigEnc?: true
+    isActive?: true
+    isRestricted?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TreasuryAccountAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TreasuryAccount to aggregate.
+     */
+    where?: TreasuryAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TreasuryAccounts to fetch.
+     */
+    orderBy?: TreasuryAccountOrderByWithRelationInput | TreasuryAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TreasuryAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TreasuryAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TreasuryAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TreasuryAccounts
+    **/
+    _count?: true | TreasuryAccountCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TreasuryAccountMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TreasuryAccountMaxAggregateInputType
+  }
+
+  export type GetTreasuryAccountAggregateType<T extends TreasuryAccountAggregateArgs> = {
+        [P in keyof T & keyof AggregateTreasuryAccount]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTreasuryAccount[P]>
+      : GetScalarType<T[P], AggregateTreasuryAccount[P]>
+  }
+
+
+
+
+  export type TreasuryAccountGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TreasuryAccountWhereInput
+    orderBy?: TreasuryAccountOrderByWithAggregationInput | TreasuryAccountOrderByWithAggregationInput[]
+    by: TreasuryAccountScalarFieldEnum[] | TreasuryAccountScalarFieldEnum
+    having?: TreasuryAccountScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TreasuryAccountCountAggregateInputType | true
+    _min?: TreasuryAccountMinAggregateInputType
+    _max?: TreasuryAccountMaxAggregateInputType
+  }
+
+  export type TreasuryAccountGroupByOutputType = {
+    id: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId: string | null
+    fundingSourceId: string | null
+    accountNumberEnc: string | null
+    providerConfigEnc: string | null
+    isActive: boolean
+    isRestricted: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: TreasuryAccountCountAggregateOutputType | null
+    _min: TreasuryAccountMinAggregateOutputType | null
+    _max: TreasuryAccountMaxAggregateOutputType | null
+  }
+
+  type GetTreasuryAccountGroupByPayload<T extends TreasuryAccountGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TreasuryAccountGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TreasuryAccountGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TreasuryAccountGroupByOutputType[P]>
+            : GetScalarType<T[P], TreasuryAccountGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TreasuryAccountSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    kind?: boolean
+    currencyCode?: boolean
+    ledgerAccountId?: boolean
+    locationId?: boolean
+    fundingSourceId?: boolean
+    accountNumberEnc?: boolean
+    providerConfigEnc?: boolean
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    ledgerAccount?: boolean | AccountDefaultArgs<ExtArgs>
+    location?: boolean | TreasuryAccount$locationArgs<ExtArgs>
+    fundingSource?: boolean | TreasuryAccount$fundingSourceArgs<ExtArgs>
+    journalLines?: boolean | TreasuryAccount$journalLinesArgs<ExtArgs>
+    transactions?: boolean | TreasuryAccount$transactionsArgs<ExtArgs>
+    paymentSchedules?: boolean | TreasuryAccount$paymentSchedulesArgs<ExtArgs>
+    _count?: boolean | TreasuryAccountCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["treasuryAccount"]>
+
+  export type TreasuryAccountSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    kind?: boolean
+    currencyCode?: boolean
+    ledgerAccountId?: boolean
+    locationId?: boolean
+    fundingSourceId?: boolean
+    accountNumberEnc?: boolean
+    providerConfigEnc?: boolean
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    ledgerAccount?: boolean | AccountDefaultArgs<ExtArgs>
+    location?: boolean | TreasuryAccount$locationArgs<ExtArgs>
+    fundingSource?: boolean | TreasuryAccount$fundingSourceArgs<ExtArgs>
+  }, ExtArgs["result"]["treasuryAccount"]>
+
+  export type TreasuryAccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    kind?: boolean
+    currencyCode?: boolean
+    ledgerAccountId?: boolean
+    locationId?: boolean
+    fundingSourceId?: boolean
+    accountNumberEnc?: boolean
+    providerConfigEnc?: boolean
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    ledgerAccount?: boolean | AccountDefaultArgs<ExtArgs>
+    location?: boolean | TreasuryAccount$locationArgs<ExtArgs>
+    fundingSource?: boolean | TreasuryAccount$fundingSourceArgs<ExtArgs>
+  }, ExtArgs["result"]["treasuryAccount"]>
+
+  export type TreasuryAccountSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    name?: boolean
+    kind?: boolean
+    currencyCode?: boolean
+    ledgerAccountId?: boolean
+    locationId?: boolean
+    fundingSourceId?: boolean
+    accountNumberEnc?: boolean
+    providerConfigEnc?: boolean
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TreasuryAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "code" | "name" | "kind" | "currencyCode" | "ledgerAccountId" | "locationId" | "fundingSourceId" | "accountNumberEnc" | "providerConfigEnc" | "isActive" | "isRestricted" | "createdAt" | "updatedAt", ExtArgs["result"]["treasuryAccount"]>
+  export type TreasuryAccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    ledgerAccount?: boolean | AccountDefaultArgs<ExtArgs>
+    location?: boolean | TreasuryAccount$locationArgs<ExtArgs>
+    fundingSource?: boolean | TreasuryAccount$fundingSourceArgs<ExtArgs>
+    journalLines?: boolean | TreasuryAccount$journalLinesArgs<ExtArgs>
+    transactions?: boolean | TreasuryAccount$transactionsArgs<ExtArgs>
+    paymentSchedules?: boolean | TreasuryAccount$paymentSchedulesArgs<ExtArgs>
+    _count?: boolean | TreasuryAccountCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type TreasuryAccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    ledgerAccount?: boolean | AccountDefaultArgs<ExtArgs>
+    location?: boolean | TreasuryAccount$locationArgs<ExtArgs>
+    fundingSource?: boolean | TreasuryAccount$fundingSourceArgs<ExtArgs>
+  }
+  export type TreasuryAccountIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+    ledgerAccount?: boolean | AccountDefaultArgs<ExtArgs>
+    location?: boolean | TreasuryAccount$locationArgs<ExtArgs>
+    fundingSource?: boolean | TreasuryAccount$fundingSourceArgs<ExtArgs>
+  }
+
+  export type $TreasuryAccountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TreasuryAccount"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      currency: Prisma.$CurrencyPayload<ExtArgs>
+      ledgerAccount: Prisma.$AccountPayload<ExtArgs>
+      location: Prisma.$LocationPayload<ExtArgs> | null
+      fundingSource: Prisma.$FundingSourcePayload<ExtArgs> | null
+      journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      paymentSchedules: Prisma.$PaymentSchedulePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      code: string
+      name: string
+      kind: $Enums.TreasuryAccountKind
+      currencyCode: string
+      ledgerAccountId: string
+      locationId: string | null
+      fundingSourceId: string | null
+      /**
+       * AES-256-GCM ciphertext. Plaintext account numbers/API keys must never reach the table.
+       */
+      accountNumberEnc: string | null
+      /**
+       * Provider-specific config (e.g., mobile money provider, gateway merchant ID).
+       */
+      providerConfigEnc: string | null
+      isActive: boolean
+      isRestricted: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["treasuryAccount"]>
+    composites: {}
+  }
+
+  type TreasuryAccountGetPayload<S extends boolean | null | undefined | TreasuryAccountDefaultArgs> = $Result.GetResult<Prisma.$TreasuryAccountPayload, S>
+
+  type TreasuryAccountCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TreasuryAccountFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TreasuryAccountCountAggregateInputType | true
+    }
+
+  export interface TreasuryAccountDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TreasuryAccount'], meta: { name: 'TreasuryAccount' } }
+    /**
+     * Find zero or one TreasuryAccount that matches the filter.
+     * @param {TreasuryAccountFindUniqueArgs} args - Arguments to find a TreasuryAccount
+     * @example
+     * // Get one TreasuryAccount
+     * const treasuryAccount = await prisma.treasuryAccount.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TreasuryAccountFindUniqueArgs>(args: SelectSubset<T, TreasuryAccountFindUniqueArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TreasuryAccount that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TreasuryAccountFindUniqueOrThrowArgs} args - Arguments to find a TreasuryAccount
+     * @example
+     * // Get one TreasuryAccount
+     * const treasuryAccount = await prisma.treasuryAccount.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TreasuryAccountFindUniqueOrThrowArgs>(args: SelectSubset<T, TreasuryAccountFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TreasuryAccount that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TreasuryAccountFindFirstArgs} args - Arguments to find a TreasuryAccount
+     * @example
+     * // Get one TreasuryAccount
+     * const treasuryAccount = await prisma.treasuryAccount.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TreasuryAccountFindFirstArgs>(args?: SelectSubset<T, TreasuryAccountFindFirstArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TreasuryAccount that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TreasuryAccountFindFirstOrThrowArgs} args - Arguments to find a TreasuryAccount
+     * @example
+     * // Get one TreasuryAccount
+     * const treasuryAccount = await prisma.treasuryAccount.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TreasuryAccountFindFirstOrThrowArgs>(args?: SelectSubset<T, TreasuryAccountFindFirstOrThrowArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TreasuryAccounts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TreasuryAccountFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TreasuryAccounts
+     * const treasuryAccounts = await prisma.treasuryAccount.findMany()
+     * 
+     * // Get first 10 TreasuryAccounts
+     * const treasuryAccounts = await prisma.treasuryAccount.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const treasuryAccountWithIdOnly = await prisma.treasuryAccount.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TreasuryAccountFindManyArgs>(args?: SelectSubset<T, TreasuryAccountFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TreasuryAccount.
+     * @param {TreasuryAccountCreateArgs} args - Arguments to create a TreasuryAccount.
+     * @example
+     * // Create one TreasuryAccount
+     * const TreasuryAccount = await prisma.treasuryAccount.create({
+     *   data: {
+     *     // ... data to create a TreasuryAccount
+     *   }
+     * })
+     * 
+     */
+    create<T extends TreasuryAccountCreateArgs>(args: SelectSubset<T, TreasuryAccountCreateArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TreasuryAccounts.
+     * @param {TreasuryAccountCreateManyArgs} args - Arguments to create many TreasuryAccounts.
+     * @example
+     * // Create many TreasuryAccounts
+     * const treasuryAccount = await prisma.treasuryAccount.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TreasuryAccountCreateManyArgs>(args?: SelectSubset<T, TreasuryAccountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TreasuryAccounts and returns the data saved in the database.
+     * @param {TreasuryAccountCreateManyAndReturnArgs} args - Arguments to create many TreasuryAccounts.
+     * @example
+     * // Create many TreasuryAccounts
+     * const treasuryAccount = await prisma.treasuryAccount.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TreasuryAccounts and only return the `id`
+     * const treasuryAccountWithIdOnly = await prisma.treasuryAccount.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TreasuryAccountCreateManyAndReturnArgs>(args?: SelectSubset<T, TreasuryAccountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TreasuryAccount.
+     * @param {TreasuryAccountDeleteArgs} args - Arguments to delete one TreasuryAccount.
+     * @example
+     * // Delete one TreasuryAccount
+     * const TreasuryAccount = await prisma.treasuryAccount.delete({
+     *   where: {
+     *     // ... filter to delete one TreasuryAccount
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TreasuryAccountDeleteArgs>(args: SelectSubset<T, TreasuryAccountDeleteArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TreasuryAccount.
+     * @param {TreasuryAccountUpdateArgs} args - Arguments to update one TreasuryAccount.
+     * @example
+     * // Update one TreasuryAccount
+     * const treasuryAccount = await prisma.treasuryAccount.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TreasuryAccountUpdateArgs>(args: SelectSubset<T, TreasuryAccountUpdateArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TreasuryAccounts.
+     * @param {TreasuryAccountDeleteManyArgs} args - Arguments to filter TreasuryAccounts to delete.
+     * @example
+     * // Delete a few TreasuryAccounts
+     * const { count } = await prisma.treasuryAccount.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TreasuryAccountDeleteManyArgs>(args?: SelectSubset<T, TreasuryAccountDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TreasuryAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TreasuryAccountUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TreasuryAccounts
+     * const treasuryAccount = await prisma.treasuryAccount.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TreasuryAccountUpdateManyArgs>(args: SelectSubset<T, TreasuryAccountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TreasuryAccounts and returns the data updated in the database.
+     * @param {TreasuryAccountUpdateManyAndReturnArgs} args - Arguments to update many TreasuryAccounts.
+     * @example
+     * // Update many TreasuryAccounts
+     * const treasuryAccount = await prisma.treasuryAccount.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TreasuryAccounts and only return the `id`
+     * const treasuryAccountWithIdOnly = await prisma.treasuryAccount.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TreasuryAccountUpdateManyAndReturnArgs>(args: SelectSubset<T, TreasuryAccountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TreasuryAccount.
+     * @param {TreasuryAccountUpsertArgs} args - Arguments to update or create a TreasuryAccount.
+     * @example
+     * // Update or create a TreasuryAccount
+     * const treasuryAccount = await prisma.treasuryAccount.upsert({
+     *   create: {
+     *     // ... data to create a TreasuryAccount
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TreasuryAccount we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TreasuryAccountUpsertArgs>(args: SelectSubset<T, TreasuryAccountUpsertArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TreasuryAccounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TreasuryAccountCountArgs} args - Arguments to filter TreasuryAccounts to count.
+     * @example
+     * // Count the number of TreasuryAccounts
+     * const count = await prisma.treasuryAccount.count({
+     *   where: {
+     *     // ... the filter for the TreasuryAccounts we want to count
+     *   }
+     * })
+    **/
+    count<T extends TreasuryAccountCountArgs>(
+      args?: Subset<T, TreasuryAccountCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TreasuryAccountCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TreasuryAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TreasuryAccountAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TreasuryAccountAggregateArgs>(args: Subset<T, TreasuryAccountAggregateArgs>): Prisma.PrismaPromise<GetTreasuryAccountAggregateType<T>>
+
+    /**
+     * Group by TreasuryAccount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TreasuryAccountGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TreasuryAccountGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TreasuryAccountGroupByArgs['orderBy'] }
+        : { orderBy?: TreasuryAccountGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TreasuryAccountGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTreasuryAccountGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TreasuryAccount model
+   */
+  readonly fields: TreasuryAccountFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TreasuryAccount.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TreasuryAccountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    currency<T extends CurrencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CurrencyDefaultArgs<ExtArgs>>): Prisma__CurrencyClient<$Result.GetResult<Prisma.$CurrencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    ledgerAccount<T extends AccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AccountDefaultArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    location<T extends TreasuryAccount$locationArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccount$locationArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    fundingSource<T extends TreasuryAccount$fundingSourceArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccount$fundingSourceArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    journalLines<T extends TreasuryAccount$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccount$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transactions<T extends TreasuryAccount$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccount$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    paymentSchedules<T extends TreasuryAccount$paymentSchedulesArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccount$paymentSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TreasuryAccount model
+   */
+  interface TreasuryAccountFieldRefs {
+    readonly id: FieldRef<"TreasuryAccount", 'String'>
+    readonly organizationId: FieldRef<"TreasuryAccount", 'String'>
+    readonly code: FieldRef<"TreasuryAccount", 'String'>
+    readonly name: FieldRef<"TreasuryAccount", 'String'>
+    readonly kind: FieldRef<"TreasuryAccount", 'TreasuryAccountKind'>
+    readonly currencyCode: FieldRef<"TreasuryAccount", 'String'>
+    readonly ledgerAccountId: FieldRef<"TreasuryAccount", 'String'>
+    readonly locationId: FieldRef<"TreasuryAccount", 'String'>
+    readonly fundingSourceId: FieldRef<"TreasuryAccount", 'String'>
+    readonly accountNumberEnc: FieldRef<"TreasuryAccount", 'String'>
+    readonly providerConfigEnc: FieldRef<"TreasuryAccount", 'String'>
+    readonly isActive: FieldRef<"TreasuryAccount", 'Boolean'>
+    readonly isRestricted: FieldRef<"TreasuryAccount", 'Boolean'>
+    readonly createdAt: FieldRef<"TreasuryAccount", 'DateTime'>
+    readonly updatedAt: FieldRef<"TreasuryAccount", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TreasuryAccount findUnique
+   */
+  export type TreasuryAccountFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which TreasuryAccount to fetch.
+     */
+    where: TreasuryAccountWhereUniqueInput
+  }
+
+  /**
+   * TreasuryAccount findUniqueOrThrow
+   */
+  export type TreasuryAccountFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which TreasuryAccount to fetch.
+     */
+    where: TreasuryAccountWhereUniqueInput
+  }
+
+  /**
+   * TreasuryAccount findFirst
+   */
+  export type TreasuryAccountFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which TreasuryAccount to fetch.
+     */
+    where?: TreasuryAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TreasuryAccounts to fetch.
+     */
+    orderBy?: TreasuryAccountOrderByWithRelationInput | TreasuryAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TreasuryAccounts.
+     */
+    cursor?: TreasuryAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TreasuryAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TreasuryAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TreasuryAccounts.
+     */
+    distinct?: TreasuryAccountScalarFieldEnum | TreasuryAccountScalarFieldEnum[]
+  }
+
+  /**
+   * TreasuryAccount findFirstOrThrow
+   */
+  export type TreasuryAccountFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which TreasuryAccount to fetch.
+     */
+    where?: TreasuryAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TreasuryAccounts to fetch.
+     */
+    orderBy?: TreasuryAccountOrderByWithRelationInput | TreasuryAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TreasuryAccounts.
+     */
+    cursor?: TreasuryAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TreasuryAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TreasuryAccounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TreasuryAccounts.
+     */
+    distinct?: TreasuryAccountScalarFieldEnum | TreasuryAccountScalarFieldEnum[]
+  }
+
+  /**
+   * TreasuryAccount findMany
+   */
+  export type TreasuryAccountFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    /**
+     * Filter, which TreasuryAccounts to fetch.
+     */
+    where?: TreasuryAccountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TreasuryAccounts to fetch.
+     */
+    orderBy?: TreasuryAccountOrderByWithRelationInput | TreasuryAccountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TreasuryAccounts.
+     */
+    cursor?: TreasuryAccountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TreasuryAccounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TreasuryAccounts.
+     */
+    skip?: number
+    distinct?: TreasuryAccountScalarFieldEnum | TreasuryAccountScalarFieldEnum[]
+  }
+
+  /**
+   * TreasuryAccount create
+   */
+  export type TreasuryAccountCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TreasuryAccount.
+     */
+    data: XOR<TreasuryAccountCreateInput, TreasuryAccountUncheckedCreateInput>
+  }
+
+  /**
+   * TreasuryAccount createMany
+   */
+  export type TreasuryAccountCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TreasuryAccounts.
+     */
+    data: TreasuryAccountCreateManyInput | TreasuryAccountCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TreasuryAccount createManyAndReturn
+   */
+  export type TreasuryAccountCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * The data used to create many TreasuryAccounts.
+     */
+    data: TreasuryAccountCreateManyInput | TreasuryAccountCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TreasuryAccount update
+   */
+  export type TreasuryAccountUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TreasuryAccount.
+     */
+    data: XOR<TreasuryAccountUpdateInput, TreasuryAccountUncheckedUpdateInput>
+    /**
+     * Choose, which TreasuryAccount to update.
+     */
+    where: TreasuryAccountWhereUniqueInput
+  }
+
+  /**
+   * TreasuryAccount updateMany
+   */
+  export type TreasuryAccountUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TreasuryAccounts.
+     */
+    data: XOR<TreasuryAccountUpdateManyMutationInput, TreasuryAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which TreasuryAccounts to update
+     */
+    where?: TreasuryAccountWhereInput
+    /**
+     * Limit how many TreasuryAccounts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TreasuryAccount updateManyAndReturn
+   */
+  export type TreasuryAccountUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * The data used to update TreasuryAccounts.
+     */
+    data: XOR<TreasuryAccountUpdateManyMutationInput, TreasuryAccountUncheckedUpdateManyInput>
+    /**
+     * Filter which TreasuryAccounts to update
+     */
+    where?: TreasuryAccountWhereInput
+    /**
+     * Limit how many TreasuryAccounts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TreasuryAccount upsert
+   */
+  export type TreasuryAccountUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TreasuryAccount to update in case it exists.
+     */
+    where: TreasuryAccountWhereUniqueInput
+    /**
+     * In case the TreasuryAccount found by the `where` argument doesn't exist, create a new TreasuryAccount with this data.
+     */
+    create: XOR<TreasuryAccountCreateInput, TreasuryAccountUncheckedCreateInput>
+    /**
+     * In case the TreasuryAccount was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TreasuryAccountUpdateInput, TreasuryAccountUncheckedUpdateInput>
+  }
+
+  /**
+   * TreasuryAccount delete
+   */
+  export type TreasuryAccountDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    /**
+     * Filter which TreasuryAccount to delete.
+     */
+    where: TreasuryAccountWhereUniqueInput
+  }
+
+  /**
+   * TreasuryAccount deleteMany
+   */
+  export type TreasuryAccountDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TreasuryAccounts to delete
+     */
+    where?: TreasuryAccountWhereInput
+    /**
+     * Limit how many TreasuryAccounts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TreasuryAccount.location
+   */
+  export type TreasuryAccount$locationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Location
+     */
+    select?: LocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Location
+     */
+    omit?: LocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LocationInclude<ExtArgs> | null
+    where?: LocationWhereInput
+  }
+
+  /**
+   * TreasuryAccount.fundingSource
+   */
+  export type TreasuryAccount$fundingSourceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingSource
+     */
+    select?: FundingSourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingSource
+     */
+    omit?: FundingSourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingSourceInclude<ExtArgs> | null
+    where?: FundingSourceWhereInput
+  }
+
+  /**
+   * TreasuryAccount.journalLines
+   */
+  export type TreasuryAccount$journalLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    where?: JournalLineWhereInput
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    cursor?: JournalLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
+   * TreasuryAccount.transactions
+   */
+  export type TreasuryAccount$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * TreasuryAccount.paymentSchedules
+   */
+  export type TreasuryAccount$paymentSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    where?: PaymentScheduleWhereInput
+    orderBy?: PaymentScheduleOrderByWithRelationInput | PaymentScheduleOrderByWithRelationInput[]
+    cursor?: PaymentScheduleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentScheduleScalarFieldEnum | PaymentScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * TreasuryAccount without action
+   */
+  export type TreasuryAccountDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PaymentSchedule
+   */
+
+  export type AggregatePaymentSchedule = {
+    _count: PaymentScheduleCountAggregateOutputType | null
+    _avg: PaymentScheduleAvgAggregateOutputType | null
+    _sum: PaymentScheduleSumAggregateOutputType | null
+    _min: PaymentScheduleMinAggregateOutputType | null
+    _max: PaymentScheduleMaxAggregateOutputType | null
+  }
+
+  export type PaymentScheduleAvgAggregateOutputType = {
+    amount: Decimal | null
+  }
+
+  export type PaymentScheduleSumAggregateOutputType = {
+    amount: Decimal | null
+  }
+
+  export type PaymentScheduleMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    treasuryAccountId: string | null
+    code: string | null
+    description: string | null
+    amount: Decimal | null
+    currencyCode: string | null
+    frequency: string | null
+    nextDueDate: Date | null
+    endDate: Date | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PaymentScheduleMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    treasuryAccountId: string | null
+    code: string | null
+    description: string | null
+    amount: Decimal | null
+    currencyCode: string | null
+    frequency: string | null
+    nextDueDate: Date | null
+    endDate: Date | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PaymentScheduleCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    treasuryAccountId: number
+    code: number
+    description: number
+    amount: number
+    currencyCode: number
+    frequency: number
+    nextDueDate: number
+    endDate: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PaymentScheduleAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type PaymentScheduleSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type PaymentScheduleMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    treasuryAccountId?: true
+    code?: true
+    description?: true
+    amount?: true
+    currencyCode?: true
+    frequency?: true
+    nextDueDate?: true
+    endDate?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PaymentScheduleMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    treasuryAccountId?: true
+    code?: true
+    description?: true
+    amount?: true
+    currencyCode?: true
+    frequency?: true
+    nextDueDate?: true
+    endDate?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PaymentScheduleCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    treasuryAccountId?: true
+    code?: true
+    description?: true
+    amount?: true
+    currencyCode?: true
+    frequency?: true
+    nextDueDate?: true
+    endDate?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PaymentScheduleAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentSchedule to aggregate.
+     */
+    where?: PaymentScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentSchedules to fetch.
+     */
+    orderBy?: PaymentScheduleOrderByWithRelationInput | PaymentScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PaymentScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PaymentSchedules
+    **/
+    _count?: true | PaymentScheduleCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PaymentScheduleAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PaymentScheduleSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PaymentScheduleMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PaymentScheduleMaxAggregateInputType
+  }
+
+  export type GetPaymentScheduleAggregateType<T extends PaymentScheduleAggregateArgs> = {
+        [P in keyof T & keyof AggregatePaymentSchedule]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePaymentSchedule[P]>
+      : GetScalarType<T[P], AggregatePaymentSchedule[P]>
+  }
+
+
+
+
+  export type PaymentScheduleGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentScheduleWhereInput
+    orderBy?: PaymentScheduleOrderByWithAggregationInput | PaymentScheduleOrderByWithAggregationInput[]
+    by: PaymentScheduleScalarFieldEnum[] | PaymentScheduleScalarFieldEnum
+    having?: PaymentScheduleScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PaymentScheduleCountAggregateInputType | true
+    _avg?: PaymentScheduleAvgAggregateInputType
+    _sum?: PaymentScheduleSumAggregateInputType
+    _min?: PaymentScheduleMinAggregateInputType
+    _max?: PaymentScheduleMaxAggregateInputType
+  }
+
+  export type PaymentScheduleGroupByOutputType = {
+    id: string
+    organizationId: string
+    treasuryAccountId: string
+    code: string
+    description: string | null
+    amount: Decimal
+    currencyCode: string
+    frequency: string
+    nextDueDate: Date
+    endDate: Date | null
+    status: string
+    createdAt: Date
+    updatedAt: Date
+    _count: PaymentScheduleCountAggregateOutputType | null
+    _avg: PaymentScheduleAvgAggregateOutputType | null
+    _sum: PaymentScheduleSumAggregateOutputType | null
+    _min: PaymentScheduleMinAggregateOutputType | null
+    _max: PaymentScheduleMaxAggregateOutputType | null
+  }
+
+  type GetPaymentScheduleGroupByPayload<T extends PaymentScheduleGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PaymentScheduleGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PaymentScheduleGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PaymentScheduleGroupByOutputType[P]>
+            : GetScalarType<T[P], PaymentScheduleGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PaymentScheduleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    treasuryAccountId?: boolean
+    code?: boolean
+    description?: boolean
+    amount?: boolean
+    currencyCode?: boolean
+    frequency?: boolean
+    nextDueDate?: boolean
+    endDate?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    treasuryAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentSchedule"]>
+
+  export type PaymentScheduleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    treasuryAccountId?: boolean
+    code?: boolean
+    description?: boolean
+    amount?: boolean
+    currencyCode?: boolean
+    frequency?: boolean
+    nextDueDate?: boolean
+    endDate?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    treasuryAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentSchedule"]>
+
+  export type PaymentScheduleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    treasuryAccountId?: boolean
+    code?: boolean
+    description?: boolean
+    amount?: boolean
+    currencyCode?: boolean
+    frequency?: boolean
+    nextDueDate?: boolean
+    endDate?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    treasuryAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentSchedule"]>
+
+  export type PaymentScheduleSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    treasuryAccountId?: boolean
+    code?: boolean
+    description?: boolean
+    amount?: boolean
+    currencyCode?: boolean
+    frequency?: boolean
+    nextDueDate?: boolean
+    endDate?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PaymentScheduleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "treasuryAccountId" | "code" | "description" | "amount" | "currencyCode" | "frequency" | "nextDueDate" | "endDate" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentSchedule"]>
+  export type PaymentScheduleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    treasuryAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+  }
+  export type PaymentScheduleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    treasuryAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+  }
+  export type PaymentScheduleIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    treasuryAccount?: boolean | TreasuryAccountDefaultArgs<ExtArgs>
+    currency?: boolean | CurrencyDefaultArgs<ExtArgs>
+  }
+
+  export type $PaymentSchedulePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PaymentSchedule"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      treasuryAccount: Prisma.$TreasuryAccountPayload<ExtArgs>
+      currency: Prisma.$CurrencyPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      treasuryAccountId: string
+      code: string
+      description: string | null
+      amount: Prisma.Decimal
+      currencyCode: string
+      frequency: string
+      nextDueDate: Date
+      endDate: Date | null
+      status: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["paymentSchedule"]>
+    composites: {}
+  }
+
+  type PaymentScheduleGetPayload<S extends boolean | null | undefined | PaymentScheduleDefaultArgs> = $Result.GetResult<Prisma.$PaymentSchedulePayload, S>
+
+  type PaymentScheduleCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PaymentScheduleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PaymentScheduleCountAggregateInputType | true
+    }
+
+  export interface PaymentScheduleDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PaymentSchedule'], meta: { name: 'PaymentSchedule' } }
+    /**
+     * Find zero or one PaymentSchedule that matches the filter.
+     * @param {PaymentScheduleFindUniqueArgs} args - Arguments to find a PaymentSchedule
+     * @example
+     * // Get one PaymentSchedule
+     * const paymentSchedule = await prisma.paymentSchedule.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PaymentScheduleFindUniqueArgs>(args: SelectSubset<T, PaymentScheduleFindUniqueArgs<ExtArgs>>): Prisma__PaymentScheduleClient<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PaymentSchedule that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PaymentScheduleFindUniqueOrThrowArgs} args - Arguments to find a PaymentSchedule
+     * @example
+     * // Get one PaymentSchedule
+     * const paymentSchedule = await prisma.paymentSchedule.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PaymentScheduleFindUniqueOrThrowArgs>(args: SelectSubset<T, PaymentScheduleFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PaymentScheduleClient<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentSchedule that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentScheduleFindFirstArgs} args - Arguments to find a PaymentSchedule
+     * @example
+     * // Get one PaymentSchedule
+     * const paymentSchedule = await prisma.paymentSchedule.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PaymentScheduleFindFirstArgs>(args?: SelectSubset<T, PaymentScheduleFindFirstArgs<ExtArgs>>): Prisma__PaymentScheduleClient<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentSchedule that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentScheduleFindFirstOrThrowArgs} args - Arguments to find a PaymentSchedule
+     * @example
+     * // Get one PaymentSchedule
+     * const paymentSchedule = await prisma.paymentSchedule.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PaymentScheduleFindFirstOrThrowArgs>(args?: SelectSubset<T, PaymentScheduleFindFirstOrThrowArgs<ExtArgs>>): Prisma__PaymentScheduleClient<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PaymentSchedules that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentScheduleFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PaymentSchedules
+     * const paymentSchedules = await prisma.paymentSchedule.findMany()
+     * 
+     * // Get first 10 PaymentSchedules
+     * const paymentSchedules = await prisma.paymentSchedule.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const paymentScheduleWithIdOnly = await prisma.paymentSchedule.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PaymentScheduleFindManyArgs>(args?: SelectSubset<T, PaymentScheduleFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PaymentSchedule.
+     * @param {PaymentScheduleCreateArgs} args - Arguments to create a PaymentSchedule.
+     * @example
+     * // Create one PaymentSchedule
+     * const PaymentSchedule = await prisma.paymentSchedule.create({
+     *   data: {
+     *     // ... data to create a PaymentSchedule
+     *   }
+     * })
+     * 
+     */
+    create<T extends PaymentScheduleCreateArgs>(args: SelectSubset<T, PaymentScheduleCreateArgs<ExtArgs>>): Prisma__PaymentScheduleClient<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PaymentSchedules.
+     * @param {PaymentScheduleCreateManyArgs} args - Arguments to create many PaymentSchedules.
+     * @example
+     * // Create many PaymentSchedules
+     * const paymentSchedule = await prisma.paymentSchedule.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PaymentScheduleCreateManyArgs>(args?: SelectSubset<T, PaymentScheduleCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PaymentSchedules and returns the data saved in the database.
+     * @param {PaymentScheduleCreateManyAndReturnArgs} args - Arguments to create many PaymentSchedules.
+     * @example
+     * // Create many PaymentSchedules
+     * const paymentSchedule = await prisma.paymentSchedule.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PaymentSchedules and only return the `id`
+     * const paymentScheduleWithIdOnly = await prisma.paymentSchedule.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PaymentScheduleCreateManyAndReturnArgs>(args?: SelectSubset<T, PaymentScheduleCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PaymentSchedule.
+     * @param {PaymentScheduleDeleteArgs} args - Arguments to delete one PaymentSchedule.
+     * @example
+     * // Delete one PaymentSchedule
+     * const PaymentSchedule = await prisma.paymentSchedule.delete({
+     *   where: {
+     *     // ... filter to delete one PaymentSchedule
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PaymentScheduleDeleteArgs>(args: SelectSubset<T, PaymentScheduleDeleteArgs<ExtArgs>>): Prisma__PaymentScheduleClient<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PaymentSchedule.
+     * @param {PaymentScheduleUpdateArgs} args - Arguments to update one PaymentSchedule.
+     * @example
+     * // Update one PaymentSchedule
+     * const paymentSchedule = await prisma.paymentSchedule.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PaymentScheduleUpdateArgs>(args: SelectSubset<T, PaymentScheduleUpdateArgs<ExtArgs>>): Prisma__PaymentScheduleClient<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PaymentSchedules.
+     * @param {PaymentScheduleDeleteManyArgs} args - Arguments to filter PaymentSchedules to delete.
+     * @example
+     * // Delete a few PaymentSchedules
+     * const { count } = await prisma.paymentSchedule.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PaymentScheduleDeleteManyArgs>(args?: SelectSubset<T, PaymentScheduleDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentSchedules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentScheduleUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PaymentSchedules
+     * const paymentSchedule = await prisma.paymentSchedule.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PaymentScheduleUpdateManyArgs>(args: SelectSubset<T, PaymentScheduleUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentSchedules and returns the data updated in the database.
+     * @param {PaymentScheduleUpdateManyAndReturnArgs} args - Arguments to update many PaymentSchedules.
+     * @example
+     * // Update many PaymentSchedules
+     * const paymentSchedule = await prisma.paymentSchedule.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PaymentSchedules and only return the `id`
+     * const paymentScheduleWithIdOnly = await prisma.paymentSchedule.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PaymentScheduleUpdateManyAndReturnArgs>(args: SelectSubset<T, PaymentScheduleUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PaymentSchedule.
+     * @param {PaymentScheduleUpsertArgs} args - Arguments to update or create a PaymentSchedule.
+     * @example
+     * // Update or create a PaymentSchedule
+     * const paymentSchedule = await prisma.paymentSchedule.upsert({
+     *   create: {
+     *     // ... data to create a PaymentSchedule
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PaymentSchedule we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PaymentScheduleUpsertArgs>(args: SelectSubset<T, PaymentScheduleUpsertArgs<ExtArgs>>): Prisma__PaymentScheduleClient<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PaymentSchedules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentScheduleCountArgs} args - Arguments to filter PaymentSchedules to count.
+     * @example
+     * // Count the number of PaymentSchedules
+     * const count = await prisma.paymentSchedule.count({
+     *   where: {
+     *     // ... the filter for the PaymentSchedules we want to count
+     *   }
+     * })
+    **/
+    count<T extends PaymentScheduleCountArgs>(
+      args?: Subset<T, PaymentScheduleCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PaymentScheduleCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PaymentSchedule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentScheduleAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PaymentScheduleAggregateArgs>(args: Subset<T, PaymentScheduleAggregateArgs>): Prisma.PrismaPromise<GetPaymentScheduleAggregateType<T>>
+
+    /**
+     * Group by PaymentSchedule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentScheduleGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PaymentScheduleGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PaymentScheduleGroupByArgs['orderBy'] }
+        : { orderBy?: PaymentScheduleGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PaymentScheduleGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPaymentScheduleGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PaymentSchedule model
+   */
+  readonly fields: PaymentScheduleFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PaymentSchedule.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PaymentScheduleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    treasuryAccount<T extends TreasuryAccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TreasuryAccountDefaultArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    currency<T extends CurrencyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CurrencyDefaultArgs<ExtArgs>>): Prisma__CurrencyClient<$Result.GetResult<Prisma.$CurrencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PaymentSchedule model
+   */
+  interface PaymentScheduleFieldRefs {
+    readonly id: FieldRef<"PaymentSchedule", 'String'>
+    readonly organizationId: FieldRef<"PaymentSchedule", 'String'>
+    readonly treasuryAccountId: FieldRef<"PaymentSchedule", 'String'>
+    readonly code: FieldRef<"PaymentSchedule", 'String'>
+    readonly description: FieldRef<"PaymentSchedule", 'String'>
+    readonly amount: FieldRef<"PaymentSchedule", 'Decimal'>
+    readonly currencyCode: FieldRef<"PaymentSchedule", 'String'>
+    readonly frequency: FieldRef<"PaymentSchedule", 'String'>
+    readonly nextDueDate: FieldRef<"PaymentSchedule", 'DateTime'>
+    readonly endDate: FieldRef<"PaymentSchedule", 'DateTime'>
+    readonly status: FieldRef<"PaymentSchedule", 'String'>
+    readonly createdAt: FieldRef<"PaymentSchedule", 'DateTime'>
+    readonly updatedAt: FieldRef<"PaymentSchedule", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PaymentSchedule findUnique
+   */
+  export type PaymentScheduleFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentSchedule to fetch.
+     */
+    where: PaymentScheduleWhereUniqueInput
+  }
+
+  /**
+   * PaymentSchedule findUniqueOrThrow
+   */
+  export type PaymentScheduleFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentSchedule to fetch.
+     */
+    where: PaymentScheduleWhereUniqueInput
+  }
+
+  /**
+   * PaymentSchedule findFirst
+   */
+  export type PaymentScheduleFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentSchedule to fetch.
+     */
+    where?: PaymentScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentSchedules to fetch.
+     */
+    orderBy?: PaymentScheduleOrderByWithRelationInput | PaymentScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentSchedules.
+     */
+    cursor?: PaymentScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentSchedules.
+     */
+    distinct?: PaymentScheduleScalarFieldEnum | PaymentScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentSchedule findFirstOrThrow
+   */
+  export type PaymentScheduleFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentSchedule to fetch.
+     */
+    where?: PaymentScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentSchedules to fetch.
+     */
+    orderBy?: PaymentScheduleOrderByWithRelationInput | PaymentScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentSchedules.
+     */
+    cursor?: PaymentScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentSchedules.
+     */
+    distinct?: PaymentScheduleScalarFieldEnum | PaymentScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentSchedule findMany
+   */
+  export type PaymentScheduleFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentSchedules to fetch.
+     */
+    where?: PaymentScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentSchedules to fetch.
+     */
+    orderBy?: PaymentScheduleOrderByWithRelationInput | PaymentScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PaymentSchedules.
+     */
+    cursor?: PaymentScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentSchedules.
+     */
+    skip?: number
+    distinct?: PaymentScheduleScalarFieldEnum | PaymentScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentSchedule create
+   */
+  export type PaymentScheduleCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PaymentSchedule.
+     */
+    data: XOR<PaymentScheduleCreateInput, PaymentScheduleUncheckedCreateInput>
+  }
+
+  /**
+   * PaymentSchedule createMany
+   */
+  export type PaymentScheduleCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PaymentSchedules.
+     */
+    data: PaymentScheduleCreateManyInput | PaymentScheduleCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PaymentSchedule createManyAndReturn
+   */
+  export type PaymentScheduleCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * The data used to create many PaymentSchedules.
+     */
+    data: PaymentScheduleCreateManyInput | PaymentScheduleCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PaymentSchedule update
+   */
+  export type PaymentScheduleUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PaymentSchedule.
+     */
+    data: XOR<PaymentScheduleUpdateInput, PaymentScheduleUncheckedUpdateInput>
+    /**
+     * Choose, which PaymentSchedule to update.
+     */
+    where: PaymentScheduleWhereUniqueInput
+  }
+
+  /**
+   * PaymentSchedule updateMany
+   */
+  export type PaymentScheduleUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PaymentSchedules.
+     */
+    data: XOR<PaymentScheduleUpdateManyMutationInput, PaymentScheduleUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentSchedules to update
+     */
+    where?: PaymentScheduleWhereInput
+    /**
+     * Limit how many PaymentSchedules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentSchedule updateManyAndReturn
+   */
+  export type PaymentScheduleUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * The data used to update PaymentSchedules.
+     */
+    data: XOR<PaymentScheduleUpdateManyMutationInput, PaymentScheduleUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentSchedules to update
+     */
+    where?: PaymentScheduleWhereInput
+    /**
+     * Limit how many PaymentSchedules to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PaymentSchedule upsert
+   */
+  export type PaymentScheduleUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PaymentSchedule to update in case it exists.
+     */
+    where: PaymentScheduleWhereUniqueInput
+    /**
+     * In case the PaymentSchedule found by the `where` argument doesn't exist, create a new PaymentSchedule with this data.
+     */
+    create: XOR<PaymentScheduleCreateInput, PaymentScheduleUncheckedCreateInput>
+    /**
+     * In case the PaymentSchedule was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PaymentScheduleUpdateInput, PaymentScheduleUncheckedUpdateInput>
+  }
+
+  /**
+   * PaymentSchedule delete
+   */
+  export type PaymentScheduleDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    /**
+     * Filter which PaymentSchedule to delete.
+     */
+    where: PaymentScheduleWhereUniqueInput
+  }
+
+  /**
+   * PaymentSchedule deleteMany
+   */
+  export type PaymentScheduleDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentSchedules to delete
+     */
+    where?: PaymentScheduleWhereInput
+    /**
+     * Limit how many PaymentSchedules to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentSchedule without action
+   */
+  export type PaymentScheduleDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
   }
 
 
@@ -40161,6 +43149,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: boolean | Currency$accountBalanceSnapshotsArgs<ExtArgs>
     journalLines?: boolean | Currency$journalLinesArgs<ExtArgs>
     transactions?: boolean | Currency$transactionsArgs<ExtArgs>
+    treasuryAccounts?: boolean | Currency$treasuryAccountsArgs<ExtArgs>
+    paymentSchedules?: boolean | Currency$paymentSchedulesArgs<ExtArgs>
     _count?: boolean | CurrencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["currency"]>
 
@@ -40212,6 +43202,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: boolean | Currency$accountBalanceSnapshotsArgs<ExtArgs>
     journalLines?: boolean | Currency$journalLinesArgs<ExtArgs>
     transactions?: boolean | Currency$transactionsArgs<ExtArgs>
+    treasuryAccounts?: boolean | Currency$treasuryAccountsArgs<ExtArgs>
+    paymentSchedules?: boolean | Currency$paymentSchedulesArgs<ExtArgs>
     _count?: boolean | CurrencyCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CurrencyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -40227,6 +43219,8 @@ export namespace Prisma {
       accountBalanceSnapshots: Prisma.$AccountBalanceSnapshotPayload<ExtArgs>[]
       journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      treasuryAccounts: Prisma.$TreasuryAccountPayload<ExtArgs>[]
+      paymentSchedules: Prisma.$PaymentSchedulePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -40640,6 +43634,8 @@ export namespace Prisma {
     accountBalanceSnapshots<T extends Currency$accountBalanceSnapshotsArgs<ExtArgs> = {}>(args?: Subset<T, Currency$accountBalanceSnapshotsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountBalanceSnapshotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     journalLines<T extends Currency$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, Currency$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends Currency$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Currency$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    treasuryAccounts<T extends Currency$treasuryAccountsArgs<ExtArgs> = {}>(args?: Subset<T, Currency$treasuryAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    paymentSchedules<T extends Currency$paymentSchedulesArgs<ExtArgs> = {}>(args?: Subset<T, Currency$paymentSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -41232,6 +44228,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Currency.treasuryAccounts
+   */
+  export type Currency$treasuryAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    where?: TreasuryAccountWhereInput
+    orderBy?: TreasuryAccountOrderByWithRelationInput | TreasuryAccountOrderByWithRelationInput[]
+    cursor?: TreasuryAccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TreasuryAccountScalarFieldEnum | TreasuryAccountScalarFieldEnum[]
+  }
+
+  /**
+   * Currency.paymentSchedules
+   */
+  export type Currency$paymentSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentSchedule
+     */
+    select?: PaymentScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentSchedule
+     */
+    omit?: PaymentScheduleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentScheduleInclude<ExtArgs> | null
+    where?: PaymentScheduleWhereInput
+    orderBy?: PaymentScheduleOrderByWithRelationInput | PaymentScheduleOrderByWithRelationInput[]
+    cursor?: PaymentScheduleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentScheduleScalarFieldEnum | PaymentScheduleScalarFieldEnum[]
   }
 
   /**
@@ -47378,6 +50422,7 @@ export namespace Prisma {
     journalLines?: boolean | Account$journalLinesArgs<ExtArgs>
     accountBalanceSnapshots?: boolean | Account$accountBalanceSnapshotsArgs<ExtArgs>
     transactions?: boolean | Account$transactionsArgs<ExtArgs>
+    treasuryAccounts?: boolean | Account$treasuryAccountsArgs<ExtArgs>
     _count?: boolean | AccountCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["account"]>
 
@@ -47455,6 +50500,7 @@ export namespace Prisma {
     journalLines?: boolean | Account$journalLinesArgs<ExtArgs>
     accountBalanceSnapshots?: boolean | Account$accountBalanceSnapshotsArgs<ExtArgs>
     transactions?: boolean | Account$transactionsArgs<ExtArgs>
+    treasuryAccounts?: boolean | Account$treasuryAccountsArgs<ExtArgs>
     _count?: boolean | AccountCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -47477,6 +50523,7 @@ export namespace Prisma {
       journalLines: Prisma.$JournalLinePayload<ExtArgs>[]
       accountBalanceSnapshots: Prisma.$AccountBalanceSnapshotPayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      treasuryAccounts: Prisma.$TreasuryAccountPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -47898,6 +50945,7 @@ export namespace Prisma {
     journalLines<T extends Account$journalLinesArgs<ExtArgs> = {}>(args?: Subset<T, Account$journalLinesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accountBalanceSnapshots<T extends Account$accountBalanceSnapshotsArgs<ExtArgs> = {}>(args?: Subset<T, Account$accountBalanceSnapshotsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountBalanceSnapshotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends Account$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Account$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    treasuryAccounts<T extends Account$treasuryAccountsArgs<ExtArgs> = {}>(args?: Subset<T, Account$treasuryAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -48500,6 +51548,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Account.treasuryAccounts
+   */
+  export type Account$treasuryAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    where?: TreasuryAccountWhereInput
+    orderBy?: TreasuryAccountOrderByWithRelationInput | TreasuryAccountOrderByWithRelationInput[]
+    cursor?: TreasuryAccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TreasuryAccountScalarFieldEnum | TreasuryAccountScalarFieldEnum[]
   }
 
   /**
@@ -53885,6 +56957,7 @@ export namespace Prisma {
     costCentreId: string | null
     locationId: string | null
     fundingSourceId: string | null
+    treasuryAccountId: string | null
     createdAt: Date | null
   }
 
@@ -53905,6 +56978,7 @@ export namespace Prisma {
     costCentreId: string | null
     locationId: string | null
     fundingSourceId: string | null
+    treasuryAccountId: string | null
     createdAt: Date | null
   }
 
@@ -53925,6 +56999,7 @@ export namespace Prisma {
     costCentreId: number
     locationId: number
     fundingSourceId: number
+    treasuryAccountId: number
     createdAt: number
     _all: number
   }
@@ -53963,6 +57038,7 @@ export namespace Prisma {
     costCentreId?: true
     locationId?: true
     fundingSourceId?: true
+    treasuryAccountId?: true
     createdAt?: true
   }
 
@@ -53983,6 +57059,7 @@ export namespace Prisma {
     costCentreId?: true
     locationId?: true
     fundingSourceId?: true
+    treasuryAccountId?: true
     createdAt?: true
   }
 
@@ -54003,6 +57080,7 @@ export namespace Prisma {
     costCentreId?: true
     locationId?: true
     fundingSourceId?: true
+    treasuryAccountId?: true
     createdAt?: true
     _all?: true
   }
@@ -54110,6 +57188,7 @@ export namespace Prisma {
     costCentreId: string | null
     locationId: string | null
     fundingSourceId: string | null
+    treasuryAccountId: string | null
     createdAt: Date
     _count: JournalLineCountAggregateOutputType | null
     _avg: JournalLineAvgAggregateOutputType | null
@@ -54149,6 +57228,7 @@ export namespace Prisma {
     costCentreId?: boolean
     locationId?: boolean
     fundingSourceId?: boolean
+    treasuryAccountId?: boolean
     createdAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     entry?: boolean | JournalEntryDefaultArgs<ExtArgs>
@@ -54159,6 +57239,7 @@ export namespace Prisma {
     costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
     location?: boolean | JournalLine$locationArgs<ExtArgs>
     fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | JournalLine$treasuryAccountArgs<ExtArgs>
   }, ExtArgs["result"]["journalLine"]>
 
   export type JournalLineSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -54178,6 +57259,7 @@ export namespace Prisma {
     costCentreId?: boolean
     locationId?: boolean
     fundingSourceId?: boolean
+    treasuryAccountId?: boolean
     createdAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     entry?: boolean | JournalEntryDefaultArgs<ExtArgs>
@@ -54188,6 +57270,7 @@ export namespace Prisma {
     costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
     location?: boolean | JournalLine$locationArgs<ExtArgs>
     fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | JournalLine$treasuryAccountArgs<ExtArgs>
   }, ExtArgs["result"]["journalLine"]>
 
   export type JournalLineSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -54207,6 +57290,7 @@ export namespace Prisma {
     costCentreId?: boolean
     locationId?: boolean
     fundingSourceId?: boolean
+    treasuryAccountId?: boolean
     createdAt?: boolean
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     entry?: boolean | JournalEntryDefaultArgs<ExtArgs>
@@ -54217,6 +57301,7 @@ export namespace Prisma {
     costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
     location?: boolean | JournalLine$locationArgs<ExtArgs>
     fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | JournalLine$treasuryAccountArgs<ExtArgs>
   }, ExtArgs["result"]["journalLine"]>
 
   export type JournalLineSelectScalar = {
@@ -54236,10 +57321,11 @@ export namespace Prisma {
     costCentreId?: boolean
     locationId?: boolean
     fundingSourceId?: boolean
+    treasuryAccountId?: boolean
     createdAt?: boolean
   }
 
-  export type JournalLineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "entryId" | "accountId" | "lineNumber" | "description" | "debit" | "credit" | "currencyCode" | "baseAmount" | "fxRate" | "projectId" | "departmentId" | "costCentreId" | "locationId" | "fundingSourceId" | "createdAt", ExtArgs["result"]["journalLine"]>
+  export type JournalLineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "entryId" | "accountId" | "lineNumber" | "description" | "debit" | "credit" | "currencyCode" | "baseAmount" | "fxRate" | "projectId" | "departmentId" | "costCentreId" | "locationId" | "fundingSourceId" | "treasuryAccountId" | "createdAt", ExtArgs["result"]["journalLine"]>
   export type JournalLineInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     entry?: boolean | JournalEntryDefaultArgs<ExtArgs>
@@ -54250,6 +57336,7 @@ export namespace Prisma {
     costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
     location?: boolean | JournalLine$locationArgs<ExtArgs>
     fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | JournalLine$treasuryAccountArgs<ExtArgs>
   }
   export type JournalLineIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -54261,6 +57348,7 @@ export namespace Prisma {
     costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
     location?: boolean | JournalLine$locationArgs<ExtArgs>
     fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | JournalLine$treasuryAccountArgs<ExtArgs>
   }
   export type JournalLineIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
@@ -54272,6 +57360,7 @@ export namespace Prisma {
     costCentre?: boolean | JournalLine$costCentreArgs<ExtArgs>
     location?: boolean | JournalLine$locationArgs<ExtArgs>
     fundingSource?: boolean | JournalLine$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | JournalLine$treasuryAccountArgs<ExtArgs>
   }
 
   export type $JournalLinePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -54286,6 +57375,7 @@ export namespace Prisma {
       costCentre: Prisma.$CostCentrePayload<ExtArgs> | null
       location: Prisma.$LocationPayload<ExtArgs> | null
       fundingSource: Prisma.$FundingSourcePayload<ExtArgs> | null
+      treasuryAccount: Prisma.$TreasuryAccountPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -54304,6 +57394,7 @@ export namespace Prisma {
       costCentreId: string | null
       locationId: string | null
       fundingSourceId: string | null
+      treasuryAccountId: string | null
       createdAt: Date
     }, ExtArgs["result"]["journalLine"]>
     composites: {}
@@ -54708,6 +57799,7 @@ export namespace Prisma {
     costCentre<T extends JournalLine$costCentreArgs<ExtArgs> = {}>(args?: Subset<T, JournalLine$costCentreArgs<ExtArgs>>): Prisma__CostCentreClient<$Result.GetResult<Prisma.$CostCentrePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     location<T extends JournalLine$locationArgs<ExtArgs> = {}>(args?: Subset<T, JournalLine$locationArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     fundingSource<T extends JournalLine$fundingSourceArgs<ExtArgs> = {}>(args?: Subset<T, JournalLine$fundingSourceArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    treasuryAccount<T extends JournalLine$treasuryAccountArgs<ExtArgs> = {}>(args?: Subset<T, JournalLine$treasuryAccountArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -54753,6 +57845,7 @@ export namespace Prisma {
     readonly costCentreId: FieldRef<"JournalLine", 'String'>
     readonly locationId: FieldRef<"JournalLine", 'String'>
     readonly fundingSourceId: FieldRef<"JournalLine", 'String'>
+    readonly treasuryAccountId: FieldRef<"JournalLine", 'String'>
     readonly createdAt: FieldRef<"JournalLine", 'DateTime'>
   }
     
@@ -55242,6 +58335,25 @@ export namespace Prisma {
      */
     include?: FundingSourceInclude<ExtArgs> | null
     where?: FundingSourceWhereInput
+  }
+
+  /**
+   * JournalLine.treasuryAccount
+   */
+  export type JournalLine$treasuryAccountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    where?: TreasuryAccountWhereInput
   }
 
   /**
@@ -56467,6 +59579,7 @@ export namespace Prisma {
     costCentreId: string | null
     locationId: string | null
     fundingSourceId: string | null
+    treasuryAccountId: string | null
     paymentMethod: $Enums.PaymentMethod | null
     supportingDocumentId: string | null
     createdById: string | null
@@ -56502,6 +59615,7 @@ export namespace Prisma {
     costCentreId: string | null
     locationId: string | null
     fundingSourceId: string | null
+    treasuryAccountId: string | null
     paymentMethod: $Enums.PaymentMethod | null
     supportingDocumentId: string | null
     createdById: string | null
@@ -56537,6 +59651,7 @@ export namespace Prisma {
     costCentreId: number
     locationId: number
     fundingSourceId: number
+    treasuryAccountId: number
     paymentMethod: number
     supportingDocumentId: number
     createdById: number
@@ -56582,6 +59697,7 @@ export namespace Prisma {
     costCentreId?: true
     locationId?: true
     fundingSourceId?: true
+    treasuryAccountId?: true
     paymentMethod?: true
     supportingDocumentId?: true
     createdById?: true
@@ -56617,6 +59733,7 @@ export namespace Prisma {
     costCentreId?: true
     locationId?: true
     fundingSourceId?: true
+    treasuryAccountId?: true
     paymentMethod?: true
     supportingDocumentId?: true
     createdById?: true
@@ -56652,6 +59769,7 @@ export namespace Prisma {
     costCentreId?: true
     locationId?: true
     fundingSourceId?: true
+    treasuryAccountId?: true
     paymentMethod?: true
     supportingDocumentId?: true
     createdById?: true
@@ -56774,6 +59892,7 @@ export namespace Prisma {
     costCentreId: string | null
     locationId: string | null
     fundingSourceId: string | null
+    treasuryAccountId: string | null
     paymentMethod: $Enums.PaymentMethod
     supportingDocumentId: string | null
     createdById: string | null
@@ -56828,6 +59947,7 @@ export namespace Prisma {
     costCentreId?: boolean
     locationId?: boolean
     fundingSourceId?: boolean
+    treasuryAccountId?: boolean
     paymentMethod?: boolean
     supportingDocumentId?: boolean
     createdById?: boolean
@@ -56853,6 +59973,7 @@ export namespace Prisma {
     costCentre?: boolean | Transaction$costCentreArgs<ExtArgs>
     location?: boolean | Transaction$locationArgs<ExtArgs>
     fundingSource?: boolean | Transaction$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | Transaction$treasuryAccountArgs<ExtArgs>
     createdBy?: boolean | Transaction$createdByArgs<ExtArgs>
     submittedBy?: boolean | Transaction$submittedByArgs<ExtArgs>
     approvedBy?: boolean | Transaction$approvedByArgs<ExtArgs>
@@ -56881,6 +60002,7 @@ export namespace Prisma {
     costCentreId?: boolean
     locationId?: boolean
     fundingSourceId?: boolean
+    treasuryAccountId?: boolean
     paymentMethod?: boolean
     supportingDocumentId?: boolean
     createdById?: boolean
@@ -56906,6 +60028,7 @@ export namespace Prisma {
     costCentre?: boolean | Transaction$costCentreArgs<ExtArgs>
     location?: boolean | Transaction$locationArgs<ExtArgs>
     fundingSource?: boolean | Transaction$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | Transaction$treasuryAccountArgs<ExtArgs>
     createdBy?: boolean | Transaction$createdByArgs<ExtArgs>
     submittedBy?: boolean | Transaction$submittedByArgs<ExtArgs>
     approvedBy?: boolean | Transaction$approvedByArgs<ExtArgs>
@@ -56931,6 +60054,7 @@ export namespace Prisma {
     costCentreId?: boolean
     locationId?: boolean
     fundingSourceId?: boolean
+    treasuryAccountId?: boolean
     paymentMethod?: boolean
     supportingDocumentId?: boolean
     createdById?: boolean
@@ -56956,6 +60080,7 @@ export namespace Prisma {
     costCentre?: boolean | Transaction$costCentreArgs<ExtArgs>
     location?: boolean | Transaction$locationArgs<ExtArgs>
     fundingSource?: boolean | Transaction$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | Transaction$treasuryAccountArgs<ExtArgs>
     createdBy?: boolean | Transaction$createdByArgs<ExtArgs>
     submittedBy?: boolean | Transaction$submittedByArgs<ExtArgs>
     approvedBy?: boolean | Transaction$approvedByArgs<ExtArgs>
@@ -56981,6 +60106,7 @@ export namespace Prisma {
     costCentreId?: boolean
     locationId?: boolean
     fundingSourceId?: boolean
+    treasuryAccountId?: boolean
     paymentMethod?: boolean
     supportingDocumentId?: boolean
     createdById?: boolean
@@ -57000,7 +60126,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "status" | "date" | "description" | "reference" | "number" | "accountId" | "amount" | "currencyCode" | "projectId" | "departmentId" | "costCentreId" | "locationId" | "fundingSourceId" | "paymentMethod" | "supportingDocumentId" | "createdById" | "submittedById" | "submittedAt" | "approvedById" | "approvedAt" | "postedById" | "postedAt" | "reversedById" | "reversedAt" | "voidedById" | "voidedAt" | "reversalReasonId" | "adjustingEntryId" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "status" | "date" | "description" | "reference" | "number" | "accountId" | "amount" | "currencyCode" | "projectId" | "departmentId" | "costCentreId" | "locationId" | "fundingSourceId" | "treasuryAccountId" | "paymentMethod" | "supportingDocumentId" | "createdById" | "submittedById" | "submittedAt" | "approvedById" | "approvedAt" | "postedById" | "postedAt" | "reversedById" | "reversedAt" | "voidedById" | "voidedAt" | "reversalReasonId" | "adjustingEntryId" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organization?: boolean | OrganizationDefaultArgs<ExtArgs>
     account?: boolean | Transaction$accountArgs<ExtArgs>
@@ -57010,6 +60136,7 @@ export namespace Prisma {
     costCentre?: boolean | Transaction$costCentreArgs<ExtArgs>
     location?: boolean | Transaction$locationArgs<ExtArgs>
     fundingSource?: boolean | Transaction$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | Transaction$treasuryAccountArgs<ExtArgs>
     createdBy?: boolean | Transaction$createdByArgs<ExtArgs>
     submittedBy?: boolean | Transaction$submittedByArgs<ExtArgs>
     approvedBy?: boolean | Transaction$approvedByArgs<ExtArgs>
@@ -57030,6 +60157,7 @@ export namespace Prisma {
     costCentre?: boolean | Transaction$costCentreArgs<ExtArgs>
     location?: boolean | Transaction$locationArgs<ExtArgs>
     fundingSource?: boolean | Transaction$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | Transaction$treasuryAccountArgs<ExtArgs>
     createdBy?: boolean | Transaction$createdByArgs<ExtArgs>
     submittedBy?: boolean | Transaction$submittedByArgs<ExtArgs>
     approvedBy?: boolean | Transaction$approvedByArgs<ExtArgs>
@@ -57047,6 +60175,7 @@ export namespace Prisma {
     costCentre?: boolean | Transaction$costCentreArgs<ExtArgs>
     location?: boolean | Transaction$locationArgs<ExtArgs>
     fundingSource?: boolean | Transaction$fundingSourceArgs<ExtArgs>
+    treasuryAccount?: boolean | Transaction$treasuryAccountArgs<ExtArgs>
     createdBy?: boolean | Transaction$createdByArgs<ExtArgs>
     submittedBy?: boolean | Transaction$submittedByArgs<ExtArgs>
     approvedBy?: boolean | Transaction$approvedByArgs<ExtArgs>
@@ -57067,6 +60196,7 @@ export namespace Prisma {
       costCentre: Prisma.$CostCentrePayload<ExtArgs> | null
       location: Prisma.$LocationPayload<ExtArgs> | null
       fundingSource: Prisma.$FundingSourcePayload<ExtArgs> | null
+      treasuryAccount: Prisma.$TreasuryAccountPayload<ExtArgs> | null
       createdBy: Prisma.$UserPayload<ExtArgs> | null
       submittedBy: Prisma.$UserPayload<ExtArgs> | null
       approvedBy: Prisma.$UserPayload<ExtArgs> | null
@@ -57093,6 +60223,7 @@ export namespace Prisma {
       costCentreId: string | null
       locationId: string | null
       fundingSourceId: string | null
+      treasuryAccountId: string | null
       paymentMethod: $Enums.PaymentMethod
       supportingDocumentId: string | null
       createdById: string | null
@@ -57512,6 +60643,7 @@ export namespace Prisma {
     costCentre<T extends Transaction$costCentreArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$costCentreArgs<ExtArgs>>): Prisma__CostCentreClient<$Result.GetResult<Prisma.$CostCentrePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     location<T extends Transaction$locationArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$locationArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     fundingSource<T extends Transaction$fundingSourceArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$fundingSourceArgs<ExtArgs>>): Prisma__FundingSourceClient<$Result.GetResult<Prisma.$FundingSourcePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    treasuryAccount<T extends Transaction$treasuryAccountArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$treasuryAccountArgs<ExtArgs>>): Prisma__TreasuryAccountClient<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     createdBy<T extends Transaction$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     submittedBy<T extends Transaction$submittedByArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$submittedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     approvedBy<T extends Transaction$approvedByArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$approvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -57565,6 +60697,7 @@ export namespace Prisma {
     readonly costCentreId: FieldRef<"Transaction", 'String'>
     readonly locationId: FieldRef<"Transaction", 'String'>
     readonly fundingSourceId: FieldRef<"Transaction", 'String'>
+    readonly treasuryAccountId: FieldRef<"Transaction", 'String'>
     readonly paymentMethod: FieldRef<"Transaction", 'PaymentMethod'>
     readonly supportingDocumentId: FieldRef<"Transaction", 'String'>
     readonly createdById: FieldRef<"Transaction", 'String'>
@@ -58089,6 +61222,25 @@ export namespace Prisma {
      */
     include?: FundingSourceInclude<ExtArgs> | null
     where?: FundingSourceWhereInput
+  }
+
+  /**
+   * Transaction.treasuryAccount
+   */
+  export type Transaction$treasuryAccountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TreasuryAccount
+     */
+    select?: TreasuryAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TreasuryAccount
+     */
+    omit?: TreasuryAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreasuryAccountInclude<ExtArgs> | null
+    where?: TreasuryAccountWhereInput
   }
 
   /**
@@ -70313,6 +73465,46 @@ export namespace Prisma {
   export type FundingSourceScalarFieldEnum = (typeof FundingSourceScalarFieldEnum)[keyof typeof FundingSourceScalarFieldEnum]
 
 
+  export const TreasuryAccountScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    code: 'code',
+    name: 'name',
+    kind: 'kind',
+    currencyCode: 'currencyCode',
+    ledgerAccountId: 'ledgerAccountId',
+    locationId: 'locationId',
+    fundingSourceId: 'fundingSourceId',
+    accountNumberEnc: 'accountNumberEnc',
+    providerConfigEnc: 'providerConfigEnc',
+    isActive: 'isActive',
+    isRestricted: 'isRestricted',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TreasuryAccountScalarFieldEnum = (typeof TreasuryAccountScalarFieldEnum)[keyof typeof TreasuryAccountScalarFieldEnum]
+
+
+  export const PaymentScheduleScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    treasuryAccountId: 'treasuryAccountId',
+    code: 'code',
+    description: 'description',
+    amount: 'amount',
+    currencyCode: 'currencyCode',
+    frequency: 'frequency',
+    nextDueDate: 'nextDueDate',
+    endDate: 'endDate',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PaymentScheduleScalarFieldEnum = (typeof PaymentScheduleScalarFieldEnum)[keyof typeof PaymentScheduleScalarFieldEnum]
+
+
   export const CurrencyScalarFieldEnum: {
     id: 'id',
     code: 'code',
@@ -70538,6 +73730,7 @@ export namespace Prisma {
     costCentreId: 'costCentreId',
     locationId: 'locationId',
     fundingSourceId: 'fundingSourceId',
+    treasuryAccountId: 'treasuryAccountId',
     createdAt: 'createdAt'
   };
 
@@ -70575,6 +73768,7 @@ export namespace Prisma {
     costCentreId: 'costCentreId',
     locationId: 'locationId',
     fundingSourceId: 'fundingSourceId',
+    treasuryAccountId: 'treasuryAccountId',
     paymentMethod: 'paymentMethod',
     supportingDocumentId: 'supportingDocumentId',
     createdById: 'createdById',
@@ -71250,6 +74444,20 @@ export namespace Prisma {
    * Reference to a field of type 'FundingSourceType[]'
    */
   export type ListEnumFundingSourceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FundingSourceType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TreasuryAccountKind'
+   */
+  export type EnumTreasuryAccountKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TreasuryAccountKind'>
+    
+
+
+  /**
+   * Reference to a field of type 'TreasuryAccountKind[]'
+   */
+  export type ListEnumTreasuryAccountKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TreasuryAccountKind[]'>
     
 
 
@@ -73778,6 +76986,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineListRelationFilter
     approvalPolicies?: ApprovalPolicyListRelationFilter
     approvalRequests?: ApprovalRequestListRelationFilter
+    treasuryAccounts?: TreasuryAccountListRelationFilter
+    paymentSchedules?: PaymentScheduleListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -73819,6 +77029,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineOrderByRelationAggregateInput
     approvalPolicies?: ApprovalPolicyOrderByRelationAggregateInput
     approvalRequests?: ApprovalRequestOrderByRelationAggregateInput
+    treasuryAccounts?: TreasuryAccountOrderByRelationAggregateInput
+    paymentSchedules?: PaymentScheduleOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -73863,6 +77075,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineListRelationFilter
     approvalPolicies?: ApprovalPolicyListRelationFilter
     approvalRequests?: ApprovalRequestListRelationFilter
+    treasuryAccounts?: TreasuryAccountListRelationFilter
+    paymentSchedules?: PaymentScheduleListRelationFilter
   }, "id" | "code">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -73938,6 +77152,7 @@ export namespace Prisma {
     users?: UserListRelationFilter
     journalLines?: JournalLineListRelationFilter
     transactions?: TransactionListRelationFilter
+    treasuryAccounts?: TreasuryAccountListRelationFilter
   }
 
   export type LocationOrderByWithRelationInput = {
@@ -73962,6 +77177,7 @@ export namespace Prisma {
     users?: UserOrderByRelationAggregateInput
     journalLines?: JournalLineOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
+    treasuryAccounts?: TreasuryAccountOrderByRelationAggregateInput
   }
 
   export type LocationWhereUniqueInput = Prisma.AtLeast<{
@@ -73990,6 +77206,7 @@ export namespace Prisma {
     users?: UserListRelationFilter
     journalLines?: JournalLineListRelationFilter
     transactions?: TransactionListRelationFilter
+    treasuryAccounts?: TreasuryAccountListRelationFilter
   }, "id" | "organizationId_code">
 
   export type LocationOrderByWithAggregationInput = {
@@ -74318,6 +77535,7 @@ export namespace Prisma {
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     journalLines?: JournalLineListRelationFilter
     transactions?: TransactionListRelationFilter
+    treasuryAccounts?: TreasuryAccountListRelationFilter
   }
 
   export type FundingSourceOrderByWithRelationInput = {
@@ -74335,6 +77553,7 @@ export namespace Prisma {
     organization?: OrganizationOrderByWithRelationInput
     journalLines?: JournalLineOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
+    treasuryAccounts?: TreasuryAccountOrderByRelationAggregateInput
   }
 
   export type FundingSourceWhereUniqueInput = Prisma.AtLeast<{
@@ -74356,6 +77575,7 @@ export namespace Prisma {
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     journalLines?: JournalLineListRelationFilter
     transactions?: TransactionListRelationFilter
+    treasuryAccounts?: TreasuryAccountListRelationFilter
   }, "id" | "organizationId_code">
 
   export type FundingSourceOrderByWithAggregationInput = {
@@ -74392,6 +77612,237 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"FundingSource"> | Date | string
   }
 
+  export type TreasuryAccountWhereInput = {
+    AND?: TreasuryAccountWhereInput | TreasuryAccountWhereInput[]
+    OR?: TreasuryAccountWhereInput[]
+    NOT?: TreasuryAccountWhereInput | TreasuryAccountWhereInput[]
+    id?: StringFilter<"TreasuryAccount"> | string
+    organizationId?: StringFilter<"TreasuryAccount"> | string
+    code?: StringFilter<"TreasuryAccount"> | string
+    name?: StringFilter<"TreasuryAccount"> | string
+    kind?: EnumTreasuryAccountKindFilter<"TreasuryAccount"> | $Enums.TreasuryAccountKind
+    currencyCode?: StringFilter<"TreasuryAccount"> | string
+    ledgerAccountId?: StringFilter<"TreasuryAccount"> | string
+    locationId?: StringNullableFilter<"TreasuryAccount"> | string | null
+    fundingSourceId?: StringNullableFilter<"TreasuryAccount"> | string | null
+    accountNumberEnc?: StringNullableFilter<"TreasuryAccount"> | string | null
+    providerConfigEnc?: StringNullableFilter<"TreasuryAccount"> | string | null
+    isActive?: BoolFilter<"TreasuryAccount"> | boolean
+    isRestricted?: BoolFilter<"TreasuryAccount"> | boolean
+    createdAt?: DateTimeFilter<"TreasuryAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"TreasuryAccount"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    currency?: XOR<CurrencyScalarRelationFilter, CurrencyWhereInput>
+    ledgerAccount?: XOR<AccountScalarRelationFilter, AccountWhereInput>
+    location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
+    fundingSource?: XOR<FundingSourceNullableScalarRelationFilter, FundingSourceWhereInput> | null
+    journalLines?: JournalLineListRelationFilter
+    transactions?: TransactionListRelationFilter
+    paymentSchedules?: PaymentScheduleListRelationFilter
+  }
+
+  export type TreasuryAccountOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    kind?: SortOrder
+    currencyCode?: SortOrder
+    ledgerAccountId?: SortOrder
+    locationId?: SortOrderInput | SortOrder
+    fundingSourceId?: SortOrderInput | SortOrder
+    accountNumberEnc?: SortOrderInput | SortOrder
+    providerConfigEnc?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    isRestricted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    currency?: CurrencyOrderByWithRelationInput
+    ledgerAccount?: AccountOrderByWithRelationInput
+    location?: LocationOrderByWithRelationInput
+    fundingSource?: FundingSourceOrderByWithRelationInput
+    journalLines?: JournalLineOrderByRelationAggregateInput
+    transactions?: TransactionOrderByRelationAggregateInput
+    paymentSchedules?: PaymentScheduleOrderByRelationAggregateInput
+  }
+
+  export type TreasuryAccountWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_code?: TreasuryAccountOrganizationIdCodeCompoundUniqueInput
+    AND?: TreasuryAccountWhereInput | TreasuryAccountWhereInput[]
+    OR?: TreasuryAccountWhereInput[]
+    NOT?: TreasuryAccountWhereInput | TreasuryAccountWhereInput[]
+    organizationId?: StringFilter<"TreasuryAccount"> | string
+    code?: StringFilter<"TreasuryAccount"> | string
+    name?: StringFilter<"TreasuryAccount"> | string
+    kind?: EnumTreasuryAccountKindFilter<"TreasuryAccount"> | $Enums.TreasuryAccountKind
+    currencyCode?: StringFilter<"TreasuryAccount"> | string
+    ledgerAccountId?: StringFilter<"TreasuryAccount"> | string
+    locationId?: StringNullableFilter<"TreasuryAccount"> | string | null
+    fundingSourceId?: StringNullableFilter<"TreasuryAccount"> | string | null
+    accountNumberEnc?: StringNullableFilter<"TreasuryAccount"> | string | null
+    providerConfigEnc?: StringNullableFilter<"TreasuryAccount"> | string | null
+    isActive?: BoolFilter<"TreasuryAccount"> | boolean
+    isRestricted?: BoolFilter<"TreasuryAccount"> | boolean
+    createdAt?: DateTimeFilter<"TreasuryAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"TreasuryAccount"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    currency?: XOR<CurrencyScalarRelationFilter, CurrencyWhereInput>
+    ledgerAccount?: XOR<AccountScalarRelationFilter, AccountWhereInput>
+    location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
+    fundingSource?: XOR<FundingSourceNullableScalarRelationFilter, FundingSourceWhereInput> | null
+    journalLines?: JournalLineListRelationFilter
+    transactions?: TransactionListRelationFilter
+    paymentSchedules?: PaymentScheduleListRelationFilter
+  }, "id" | "organizationId_code">
+
+  export type TreasuryAccountOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    kind?: SortOrder
+    currencyCode?: SortOrder
+    ledgerAccountId?: SortOrder
+    locationId?: SortOrderInput | SortOrder
+    fundingSourceId?: SortOrderInput | SortOrder
+    accountNumberEnc?: SortOrderInput | SortOrder
+    providerConfigEnc?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    isRestricted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TreasuryAccountCountOrderByAggregateInput
+    _max?: TreasuryAccountMaxOrderByAggregateInput
+    _min?: TreasuryAccountMinOrderByAggregateInput
+  }
+
+  export type TreasuryAccountScalarWhereWithAggregatesInput = {
+    AND?: TreasuryAccountScalarWhereWithAggregatesInput | TreasuryAccountScalarWhereWithAggregatesInput[]
+    OR?: TreasuryAccountScalarWhereWithAggregatesInput[]
+    NOT?: TreasuryAccountScalarWhereWithAggregatesInput | TreasuryAccountScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TreasuryAccount"> | string
+    organizationId?: StringWithAggregatesFilter<"TreasuryAccount"> | string
+    code?: StringWithAggregatesFilter<"TreasuryAccount"> | string
+    name?: StringWithAggregatesFilter<"TreasuryAccount"> | string
+    kind?: EnumTreasuryAccountKindWithAggregatesFilter<"TreasuryAccount"> | $Enums.TreasuryAccountKind
+    currencyCode?: StringWithAggregatesFilter<"TreasuryAccount"> | string
+    ledgerAccountId?: StringWithAggregatesFilter<"TreasuryAccount"> | string
+    locationId?: StringNullableWithAggregatesFilter<"TreasuryAccount"> | string | null
+    fundingSourceId?: StringNullableWithAggregatesFilter<"TreasuryAccount"> | string | null
+    accountNumberEnc?: StringNullableWithAggregatesFilter<"TreasuryAccount"> | string | null
+    providerConfigEnc?: StringNullableWithAggregatesFilter<"TreasuryAccount"> | string | null
+    isActive?: BoolWithAggregatesFilter<"TreasuryAccount"> | boolean
+    isRestricted?: BoolWithAggregatesFilter<"TreasuryAccount"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"TreasuryAccount"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TreasuryAccount"> | Date | string
+  }
+
+  export type PaymentScheduleWhereInput = {
+    AND?: PaymentScheduleWhereInput | PaymentScheduleWhereInput[]
+    OR?: PaymentScheduleWhereInput[]
+    NOT?: PaymentScheduleWhereInput | PaymentScheduleWhereInput[]
+    id?: StringFilter<"PaymentSchedule"> | string
+    organizationId?: StringFilter<"PaymentSchedule"> | string
+    treasuryAccountId?: StringFilter<"PaymentSchedule"> | string
+    code?: StringFilter<"PaymentSchedule"> | string
+    description?: StringNullableFilter<"PaymentSchedule"> | string | null
+    amount?: DecimalFilter<"PaymentSchedule"> | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFilter<"PaymentSchedule"> | string
+    frequency?: StringFilter<"PaymentSchedule"> | string
+    nextDueDate?: DateTimeFilter<"PaymentSchedule"> | Date | string
+    endDate?: DateTimeNullableFilter<"PaymentSchedule"> | Date | string | null
+    status?: StringFilter<"PaymentSchedule"> | string
+    createdAt?: DateTimeFilter<"PaymentSchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentSchedule"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    treasuryAccount?: XOR<TreasuryAccountScalarRelationFilter, TreasuryAccountWhereInput>
+    currency?: XOR<CurrencyScalarRelationFilter, CurrencyWhereInput>
+  }
+
+  export type PaymentScheduleOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    treasuryAccountId?: SortOrder
+    code?: SortOrder
+    description?: SortOrderInput | SortOrder
+    amount?: SortOrder
+    currencyCode?: SortOrder
+    frequency?: SortOrder
+    nextDueDate?: SortOrder
+    endDate?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    treasuryAccount?: TreasuryAccountOrderByWithRelationInput
+    currency?: CurrencyOrderByWithRelationInput
+  }
+
+  export type PaymentScheduleWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_code?: PaymentScheduleOrganizationIdCodeCompoundUniqueInput
+    AND?: PaymentScheduleWhereInput | PaymentScheduleWhereInput[]
+    OR?: PaymentScheduleWhereInput[]
+    NOT?: PaymentScheduleWhereInput | PaymentScheduleWhereInput[]
+    organizationId?: StringFilter<"PaymentSchedule"> | string
+    treasuryAccountId?: StringFilter<"PaymentSchedule"> | string
+    code?: StringFilter<"PaymentSchedule"> | string
+    description?: StringNullableFilter<"PaymentSchedule"> | string | null
+    amount?: DecimalFilter<"PaymentSchedule"> | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFilter<"PaymentSchedule"> | string
+    frequency?: StringFilter<"PaymentSchedule"> | string
+    nextDueDate?: DateTimeFilter<"PaymentSchedule"> | Date | string
+    endDate?: DateTimeNullableFilter<"PaymentSchedule"> | Date | string | null
+    status?: StringFilter<"PaymentSchedule"> | string
+    createdAt?: DateTimeFilter<"PaymentSchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentSchedule"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    treasuryAccount?: XOR<TreasuryAccountScalarRelationFilter, TreasuryAccountWhereInput>
+    currency?: XOR<CurrencyScalarRelationFilter, CurrencyWhereInput>
+  }, "id" | "organizationId_code">
+
+  export type PaymentScheduleOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    treasuryAccountId?: SortOrder
+    code?: SortOrder
+    description?: SortOrderInput | SortOrder
+    amount?: SortOrder
+    currencyCode?: SortOrder
+    frequency?: SortOrder
+    nextDueDate?: SortOrder
+    endDate?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PaymentScheduleCountOrderByAggregateInput
+    _avg?: PaymentScheduleAvgOrderByAggregateInput
+    _max?: PaymentScheduleMaxOrderByAggregateInput
+    _min?: PaymentScheduleMinOrderByAggregateInput
+    _sum?: PaymentScheduleSumOrderByAggregateInput
+  }
+
+  export type PaymentScheduleScalarWhereWithAggregatesInput = {
+    AND?: PaymentScheduleScalarWhereWithAggregatesInput | PaymentScheduleScalarWhereWithAggregatesInput[]
+    OR?: PaymentScheduleScalarWhereWithAggregatesInput[]
+    NOT?: PaymentScheduleScalarWhereWithAggregatesInput | PaymentScheduleScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PaymentSchedule"> | string
+    organizationId?: StringWithAggregatesFilter<"PaymentSchedule"> | string
+    treasuryAccountId?: StringWithAggregatesFilter<"PaymentSchedule"> | string
+    code?: StringWithAggregatesFilter<"PaymentSchedule"> | string
+    description?: StringNullableWithAggregatesFilter<"PaymentSchedule"> | string | null
+    amount?: DecimalWithAggregatesFilter<"PaymentSchedule"> | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringWithAggregatesFilter<"PaymentSchedule"> | string
+    frequency?: StringWithAggregatesFilter<"PaymentSchedule"> | string
+    nextDueDate?: DateTimeWithAggregatesFilter<"PaymentSchedule"> | Date | string
+    endDate?: DateTimeNullableWithAggregatesFilter<"PaymentSchedule"> | Date | string | null
+    status?: StringWithAggregatesFilter<"PaymentSchedule"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PaymentSchedule"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PaymentSchedule"> | Date | string
+  }
+
   export type CurrencyWhereInput = {
     AND?: CurrencyWhereInput | CurrencyWhereInput[]
     OR?: CurrencyWhereInput[]
@@ -74413,6 +77864,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotListRelationFilter
     journalLines?: JournalLineListRelationFilter
     transactions?: TransactionListRelationFilter
+    treasuryAccounts?: TreasuryAccountListRelationFilter
+    paymentSchedules?: PaymentScheduleListRelationFilter
   }
 
   export type CurrencyOrderByWithRelationInput = {
@@ -74433,6 +77886,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotOrderByRelationAggregateInput
     journalLines?: JournalLineOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
+    treasuryAccounts?: TreasuryAccountOrderByRelationAggregateInput
+    paymentSchedules?: PaymentScheduleOrderByRelationAggregateInput
   }
 
   export type CurrencyWhereUniqueInput = Prisma.AtLeast<{
@@ -74456,6 +77911,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotListRelationFilter
     journalLines?: JournalLineListRelationFilter
     transactions?: TransactionListRelationFilter
+    treasuryAccounts?: TreasuryAccountListRelationFilter
+    paymentSchedules?: PaymentScheduleListRelationFilter
   }, "id" | "code">
 
   export type CurrencyOrderByWithAggregationInput = {
@@ -74966,6 +78423,7 @@ export namespace Prisma {
     journalLines?: JournalLineListRelationFilter
     accountBalanceSnapshots?: AccountBalanceSnapshotListRelationFilter
     transactions?: TransactionListRelationFilter
+    treasuryAccounts?: TreasuryAccountListRelationFilter
   }
 
   export type AccountOrderByWithRelationInput = {
@@ -74994,6 +78452,7 @@ export namespace Prisma {
     journalLines?: JournalLineOrderByRelationAggregateInput
     accountBalanceSnapshots?: AccountBalanceSnapshotOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
+    treasuryAccounts?: TreasuryAccountOrderByRelationAggregateInput
   }
 
   export type AccountWhereUniqueInput = Prisma.AtLeast<{
@@ -75026,6 +78485,7 @@ export namespace Prisma {
     journalLines?: JournalLineListRelationFilter
     accountBalanceSnapshots?: AccountBalanceSnapshotListRelationFilter
     transactions?: TransactionListRelationFilter
+    treasuryAccounts?: TreasuryAccountListRelationFilter
   }, "id" | "organizationId_code">
 
   export type AccountOrderByWithAggregationInput = {
@@ -75592,6 +79052,7 @@ export namespace Prisma {
     costCentreId?: StringNullableFilter<"JournalLine"> | string | null
     locationId?: StringNullableFilter<"JournalLine"> | string | null
     fundingSourceId?: StringNullableFilter<"JournalLine"> | string | null
+    treasuryAccountId?: StringNullableFilter<"JournalLine"> | string | null
     createdAt?: DateTimeFilter<"JournalLine"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     entry?: XOR<JournalEntryScalarRelationFilter, JournalEntryWhereInput>
@@ -75602,6 +79063,7 @@ export namespace Prisma {
     costCentre?: XOR<CostCentreNullableScalarRelationFilter, CostCentreWhereInput> | null
     location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
     fundingSource?: XOR<FundingSourceNullableScalarRelationFilter, FundingSourceWhereInput> | null
+    treasuryAccount?: XOR<TreasuryAccountNullableScalarRelationFilter, TreasuryAccountWhereInput> | null
   }
 
   export type JournalLineOrderByWithRelationInput = {
@@ -75621,6 +79083,7 @@ export namespace Prisma {
     costCentreId?: SortOrderInput | SortOrder
     locationId?: SortOrderInput | SortOrder
     fundingSourceId?: SortOrderInput | SortOrder
+    treasuryAccountId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     organization?: OrganizationOrderByWithRelationInput
     entry?: JournalEntryOrderByWithRelationInput
@@ -75631,6 +79094,7 @@ export namespace Prisma {
     costCentre?: CostCentreOrderByWithRelationInput
     location?: LocationOrderByWithRelationInput
     fundingSource?: FundingSourceOrderByWithRelationInput
+    treasuryAccount?: TreasuryAccountOrderByWithRelationInput
   }
 
   export type JournalLineWhereUniqueInput = Prisma.AtLeast<{
@@ -75654,6 +79118,7 @@ export namespace Prisma {
     costCentreId?: StringNullableFilter<"JournalLine"> | string | null
     locationId?: StringNullableFilter<"JournalLine"> | string | null
     fundingSourceId?: StringNullableFilter<"JournalLine"> | string | null
+    treasuryAccountId?: StringNullableFilter<"JournalLine"> | string | null
     createdAt?: DateTimeFilter<"JournalLine"> | Date | string
     organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
     entry?: XOR<JournalEntryScalarRelationFilter, JournalEntryWhereInput>
@@ -75664,6 +79129,7 @@ export namespace Prisma {
     costCentre?: XOR<CostCentreNullableScalarRelationFilter, CostCentreWhereInput> | null
     location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
     fundingSource?: XOR<FundingSourceNullableScalarRelationFilter, FundingSourceWhereInput> | null
+    treasuryAccount?: XOR<TreasuryAccountNullableScalarRelationFilter, TreasuryAccountWhereInput> | null
   }, "id" | "entryId_lineNumber">
 
   export type JournalLineOrderByWithAggregationInput = {
@@ -75683,6 +79149,7 @@ export namespace Prisma {
     costCentreId?: SortOrderInput | SortOrder
     locationId?: SortOrderInput | SortOrder
     fundingSourceId?: SortOrderInput | SortOrder
+    treasuryAccountId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: JournalLineCountOrderByAggregateInput
     _avg?: JournalLineAvgOrderByAggregateInput
@@ -75711,6 +79178,7 @@ export namespace Prisma {
     costCentreId?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
     locationId?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
     fundingSourceId?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
+    treasuryAccountId?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JournalLine"> | Date | string
   }
 
@@ -75815,6 +79283,7 @@ export namespace Prisma {
     costCentreId?: StringNullableFilter<"Transaction"> | string | null
     locationId?: StringNullableFilter<"Transaction"> | string | null
     fundingSourceId?: StringNullableFilter<"Transaction"> | string | null
+    treasuryAccountId?: StringNullableFilter<"Transaction"> | string | null
     paymentMethod?: EnumPaymentMethodFilter<"Transaction"> | $Enums.PaymentMethod
     supportingDocumentId?: StringNullableFilter<"Transaction"> | string | null
     createdById?: StringNullableFilter<"Transaction"> | string | null
@@ -75840,6 +79309,7 @@ export namespace Prisma {
     costCentre?: XOR<CostCentreNullableScalarRelationFilter, CostCentreWhereInput> | null
     location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
     fundingSource?: XOR<FundingSourceNullableScalarRelationFilter, FundingSourceWhereInput> | null
+    treasuryAccount?: XOR<TreasuryAccountNullableScalarRelationFilter, TreasuryAccountWhereInput> | null
     createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     submittedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -75867,6 +79337,7 @@ export namespace Prisma {
     costCentreId?: SortOrderInput | SortOrder
     locationId?: SortOrderInput | SortOrder
     fundingSourceId?: SortOrderInput | SortOrder
+    treasuryAccountId?: SortOrderInput | SortOrder
     paymentMethod?: SortOrder
     supportingDocumentId?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
@@ -75892,6 +79363,7 @@ export namespace Prisma {
     costCentre?: CostCentreOrderByWithRelationInput
     location?: LocationOrderByWithRelationInput
     fundingSource?: FundingSourceOrderByWithRelationInput
+    treasuryAccount?: TreasuryAccountOrderByWithRelationInput
     createdBy?: UserOrderByWithRelationInput
     submittedBy?: UserOrderByWithRelationInput
     approvedBy?: UserOrderByWithRelationInput
@@ -75923,6 +79395,7 @@ export namespace Prisma {
     costCentreId?: StringNullableFilter<"Transaction"> | string | null
     locationId?: StringNullableFilter<"Transaction"> | string | null
     fundingSourceId?: StringNullableFilter<"Transaction"> | string | null
+    treasuryAccountId?: StringNullableFilter<"Transaction"> | string | null
     paymentMethod?: EnumPaymentMethodFilter<"Transaction"> | $Enums.PaymentMethod
     supportingDocumentId?: StringNullableFilter<"Transaction"> | string | null
     createdById?: StringNullableFilter<"Transaction"> | string | null
@@ -75948,6 +79421,7 @@ export namespace Prisma {
     costCentre?: XOR<CostCentreNullableScalarRelationFilter, CostCentreWhereInput> | null
     location?: XOR<LocationNullableScalarRelationFilter, LocationWhereInput> | null
     fundingSource?: XOR<FundingSourceNullableScalarRelationFilter, FundingSourceWhereInput> | null
+    treasuryAccount?: XOR<TreasuryAccountNullableScalarRelationFilter, TreasuryAccountWhereInput> | null
     createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     submittedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -75975,6 +79449,7 @@ export namespace Prisma {
     costCentreId?: SortOrderInput | SortOrder
     locationId?: SortOrderInput | SortOrder
     fundingSourceId?: SortOrderInput | SortOrder
+    treasuryAccountId?: SortOrderInput | SortOrder
     paymentMethod?: SortOrder
     supportingDocumentId?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
@@ -76018,6 +79493,7 @@ export namespace Prisma {
     costCentreId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     locationId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     fundingSourceId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    treasuryAccountId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     paymentMethod?: EnumPaymentMethodWithAggregatesFilter<"Transaction"> | $Enums.PaymentMethod
     supportingDocumentId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     createdById?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
@@ -79264,6 +82740,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -79305,6 +82783,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -79346,6 +82826,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -79387,6 +82869,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -79469,6 +82953,7 @@ export namespace Prisma {
     users?: UserCreateNestedManyWithoutPrimaryLocationInput
     journalLines?: JournalLineCreateNestedManyWithoutLocationInput
     transactions?: TransactionCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateInput = {
@@ -79491,6 +82976,7 @@ export namespace Prisma {
     users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUpdateInput = {
@@ -79513,6 +82999,7 @@ export namespace Prisma {
     users?: UserUpdateManyWithoutPrimaryLocationNestedInput
     journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
     transactions?: TransactionUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateInput = {
@@ -79535,6 +83022,7 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationCreateManyInput = {
@@ -79893,6 +83381,7 @@ export namespace Prisma {
     organization: OrganizationCreateNestedOneWithoutFundingSourcesInput
     journalLines?: JournalLineCreateNestedManyWithoutFundingSourceInput
     transactions?: TransactionCreateNestedManyWithoutFundingSourceInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceUncheckedCreateInput = {
@@ -79909,6 +83398,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutFundingSourceInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutFundingSourceInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceUpdateInput = {
@@ -79925,6 +83415,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneRequiredWithoutFundingSourcesNestedInput
     journalLines?: JournalLineUpdateManyWithoutFundingSourceNestedInput
     transactions?: TransactionUpdateManyWithoutFundingSourceNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutFundingSourceNestedInput
   }
 
   export type FundingSourceUncheckedUpdateInput = {
@@ -79941,6 +83432,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     journalLines?: JournalLineUncheckedUpdateManyWithoutFundingSourceNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutFundingSourceNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutFundingSourceNestedInput
   }
 
   export type FundingSourceCreateManyInput = {
@@ -79984,6 +83476,248 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TreasuryAccountCreateInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTreasuryAccountsInput
+    currency: CurrencyCreateNestedOneWithoutTreasuryAccountsInput
+    ledgerAccount: AccountCreateNestedOneWithoutTreasuryAccountsInput
+    location?: LocationCreateNestedOneWithoutTreasuryAccountsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
+    journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    ledgerAccount?: AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    location?: LocationUpdateOneWithoutTreasuryAccountsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountCreateManyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TreasuryAccountUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TreasuryAccountUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentScheduleCreateInput = {
+    id?: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutPaymentSchedulesInput
+    treasuryAccount: TreasuryAccountCreateNestedOneWithoutPaymentSchedulesInput
+    currency: CurrencyCreateNestedOneWithoutPaymentSchedulesInput
+  }
+
+  export type PaymentScheduleUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    treasuryAccountId: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentScheduleUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutPaymentSchedulesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneRequiredWithoutPaymentSchedulesNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutPaymentSchedulesNestedInput
+  }
+
+  export type PaymentScheduleUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    treasuryAccountId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentScheduleCreateManyInput = {
+    id?: string
+    organizationId: string
+    treasuryAccountId: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentScheduleUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentScheduleUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    treasuryAccountId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CurrencyCreateInput = {
     id?: string
     code: string
@@ -80002,6 +83736,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateInput = {
@@ -80022,6 +83758,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUpdateInput = {
@@ -80042,6 +83780,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateInput = {
@@ -80062,6 +83802,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyCreateManyInput = {
@@ -80605,6 +84347,7 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutAccountInput
     transactions?: TransactionCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountUncheckedCreateInput = {
@@ -80631,6 +84374,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountUpdateInput = {
@@ -80657,6 +84401,7 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateInput = {
@@ -80683,6 +84428,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountCreateManyInput = {
@@ -81277,6 +85023,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
     location?: LocationCreateNestedOneWithoutJournalLinesInput
     fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateInput = {
@@ -81296,6 +85043,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -81317,6 +85065,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
     location?: LocationUpdateOneWithoutJournalLinesNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateInput = {
@@ -81336,6 +85085,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -81356,6 +85106,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -81387,6 +85138,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -81507,6 +85259,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -81534,6 +85287,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -81581,6 +85335,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -81608,6 +85363,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -81645,6 +85401,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -81700,6 +85457,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -84794,6 +88552,18 @@ export namespace Prisma {
     none?: ApprovalPolicyWhereInput
   }
 
+  export type TreasuryAccountListRelationFilter = {
+    every?: TreasuryAccountWhereInput
+    some?: TreasuryAccountWhereInput
+    none?: TreasuryAccountWhereInput
+  }
+
+  export type PaymentScheduleListRelationFilter = {
+    every?: PaymentScheduleWhereInput
+    some?: PaymentScheduleWhereInput
+    none?: PaymentScheduleWhereInput
+  }
+
   export type LocationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -84855,6 +88625,14 @@ export namespace Prisma {
   }
 
   export type ApprovalPolicyOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TreasuryAccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PaymentScheduleOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -85223,6 +89001,190 @@ export namespace Prisma {
     _max?: NestedEnumFundingSourceTypeFilter<$PrismaModel>
   }
 
+  export type EnumTreasuryAccountKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.TreasuryAccountKind | EnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    in?: $Enums.TreasuryAccountKind[] | ListEnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TreasuryAccountKind[] | ListEnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumTreasuryAccountKindFilter<$PrismaModel> | $Enums.TreasuryAccountKind
+  }
+
+  export type CurrencyScalarRelationFilter = {
+    is?: CurrencyWhereInput
+    isNot?: CurrencyWhereInput
+  }
+
+  export type AccountScalarRelationFilter = {
+    is?: AccountWhereInput
+    isNot?: AccountWhereInput
+  }
+
+  export type FundingSourceNullableScalarRelationFilter = {
+    is?: FundingSourceWhereInput | null
+    isNot?: FundingSourceWhereInput | null
+  }
+
+  export type TreasuryAccountOrganizationIdCodeCompoundUniqueInput = {
+    organizationId: string
+    code: string
+  }
+
+  export type TreasuryAccountCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    kind?: SortOrder
+    currencyCode?: SortOrder
+    ledgerAccountId?: SortOrder
+    locationId?: SortOrder
+    fundingSourceId?: SortOrder
+    accountNumberEnc?: SortOrder
+    providerConfigEnc?: SortOrder
+    isActive?: SortOrder
+    isRestricted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TreasuryAccountMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    kind?: SortOrder
+    currencyCode?: SortOrder
+    ledgerAccountId?: SortOrder
+    locationId?: SortOrder
+    fundingSourceId?: SortOrder
+    accountNumberEnc?: SortOrder
+    providerConfigEnc?: SortOrder
+    isActive?: SortOrder
+    isRestricted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TreasuryAccountMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    kind?: SortOrder
+    currencyCode?: SortOrder
+    ledgerAccountId?: SortOrder
+    locationId?: SortOrder
+    fundingSourceId?: SortOrder
+    accountNumberEnc?: SortOrder
+    providerConfigEnc?: SortOrder
+    isActive?: SortOrder
+    isRestricted?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumTreasuryAccountKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TreasuryAccountKind | EnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    in?: $Enums.TreasuryAccountKind[] | ListEnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TreasuryAccountKind[] | ListEnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumTreasuryAccountKindWithAggregatesFilter<$PrismaModel> | $Enums.TreasuryAccountKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTreasuryAccountKindFilter<$PrismaModel>
+    _max?: NestedEnumTreasuryAccountKindFilter<$PrismaModel>
+  }
+
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type TreasuryAccountScalarRelationFilter = {
+    is?: TreasuryAccountWhereInput
+    isNot?: TreasuryAccountWhereInput
+  }
+
+  export type PaymentScheduleOrganizationIdCodeCompoundUniqueInput = {
+    organizationId: string
+    code: string
+  }
+
+  export type PaymentScheduleCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    treasuryAccountId?: SortOrder
+    code?: SortOrder
+    description?: SortOrder
+    amount?: SortOrder
+    currencyCode?: SortOrder
+    frequency?: SortOrder
+    nextDueDate?: SortOrder
+    endDate?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentScheduleAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type PaymentScheduleMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    treasuryAccountId?: SortOrder
+    code?: SortOrder
+    description?: SortOrder
+    amount?: SortOrder
+    currencyCode?: SortOrder
+    frequency?: SortOrder
+    nextDueDate?: SortOrder
+    endDate?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentScheduleMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    treasuryAccountId?: SortOrder
+    code?: SortOrder
+    description?: SortOrder
+    amount?: SortOrder
+    currencyCode?: SortOrder
+    frequency?: SortOrder
+    nextDueDate?: SortOrder
+    endDate?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentScheduleSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
   export type EnumCurrencyTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.CurrencyType | EnumCurrencyTypeFieldRefInput<$PrismaModel>
     in?: $Enums.CurrencyType[] | ListEnumCurrencyTypeFieldRefInput<$PrismaModel>
@@ -85297,27 +89259,11 @@ export namespace Prisma {
     _max?: NestedEnumCurrencyTypeFilter<$PrismaModel>
   }
 
-  export type DecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type EnumFxDifferenceTreatmentFilter<$PrismaModel = never> = {
     equals?: $Enums.FxDifferenceTreatment | EnumFxDifferenceTreatmentFieldRefInput<$PrismaModel>
     in?: $Enums.FxDifferenceTreatment[] | ListEnumFxDifferenceTreatmentFieldRefInput<$PrismaModel>
     notIn?: $Enums.FxDifferenceTreatment[] | ListEnumFxDifferenceTreatmentFieldRefInput<$PrismaModel>
     not?: NestedEnumFxDifferenceTreatmentFilter<$PrismaModel> | $Enums.FxDifferenceTreatment
-  }
-
-  export type CurrencyScalarRelationFilter = {
-    is?: CurrencyWhereInput
-    isNot?: CurrencyWhereInput
   }
 
   export type ExchangeRateBaseCurrencyIdQuoteCurrencyIdRateDateCompoundUniqueInput = {
@@ -85368,22 +89314,6 @@ export namespace Prisma {
 
   export type ExchangeRateSumOrderByAggregateInput = {
     rate?: SortOrder
-  }
-
-  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type EnumFxDifferenceTreatmentWithAggregatesFilter<$PrismaModel = never> = {
@@ -85889,11 +89819,6 @@ export namespace Prisma {
     not?: NestedEnumVerificationStatusFilter<$PrismaModel> | $Enums.VerificationStatus
   }
 
-  export type AccountScalarRelationFilter = {
-    is?: AccountWhereInput
-    isNot?: AccountWhereInput
-  }
-
   export type FinancialPeriodScalarRelationFilter = {
     is?: FinancialPeriodWhereInput
     isNot?: FinancialPeriodWhereInput
@@ -86194,9 +90119,9 @@ export namespace Prisma {
     isNot?: CostCentreWhereInput | null
   }
 
-  export type FundingSourceNullableScalarRelationFilter = {
-    is?: FundingSourceWhereInput | null
-    isNot?: FundingSourceWhereInput | null
+  export type TreasuryAccountNullableScalarRelationFilter = {
+    is?: TreasuryAccountWhereInput | null
+    isNot?: TreasuryAccountWhereInput | null
   }
 
   export type JournalLineEntryIdLineNumberCompoundUniqueInput = {
@@ -86221,6 +90146,7 @@ export namespace Prisma {
     costCentreId?: SortOrder
     locationId?: SortOrder
     fundingSourceId?: SortOrder
+    treasuryAccountId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -86249,6 +90175,7 @@ export namespace Prisma {
     costCentreId?: SortOrder
     locationId?: SortOrder
     fundingSourceId?: SortOrder
+    treasuryAccountId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -86269,6 +90196,7 @@ export namespace Prisma {
     costCentreId?: SortOrder
     locationId?: SortOrder
     fundingSourceId?: SortOrder
+    treasuryAccountId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -86356,6 +90284,7 @@ export namespace Prisma {
     costCentreId?: SortOrder
     locationId?: SortOrder
     fundingSourceId?: SortOrder
+    treasuryAccountId?: SortOrder
     paymentMethod?: SortOrder
     supportingDocumentId?: SortOrder
     createdById?: SortOrder
@@ -86395,6 +90324,7 @@ export namespace Prisma {
     costCentreId?: SortOrder
     locationId?: SortOrder
     fundingSourceId?: SortOrder
+    treasuryAccountId?: SortOrder
     paymentMethod?: SortOrder
     supportingDocumentId?: SortOrder
     createdById?: SortOrder
@@ -86430,6 +90360,7 @@ export namespace Prisma {
     costCentreId?: SortOrder
     locationId?: SortOrder
     fundingSourceId?: SortOrder
+    treasuryAccountId?: SortOrder
     paymentMethod?: SortOrder
     supportingDocumentId?: SortOrder
     createdById?: SortOrder
@@ -90175,6 +94106,20 @@ export namespace Prisma {
     connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
   }
 
+  export type TreasuryAccountCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<TreasuryAccountCreateWithoutOrganizationInput, TreasuryAccountUncheckedCreateWithoutOrganizationInput> | TreasuryAccountCreateWithoutOrganizationInput[] | TreasuryAccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutOrganizationInput | TreasuryAccountCreateOrConnectWithoutOrganizationInput[]
+    createMany?: TreasuryAccountCreateManyOrganizationInputEnvelope
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+  }
+
+  export type PaymentScheduleCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<PaymentScheduleCreateWithoutOrganizationInput, PaymentScheduleUncheckedCreateWithoutOrganizationInput> | PaymentScheduleCreateWithoutOrganizationInput[] | PaymentScheduleUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutOrganizationInput | PaymentScheduleCreateOrConnectWithoutOrganizationInput[]
+    createMany?: PaymentScheduleCreateManyOrganizationInputEnvelope
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -90320,6 +94265,20 @@ export namespace Prisma {
     connectOrCreate?: ApprovalRequestCreateOrConnectWithoutOrganizationInput | ApprovalRequestCreateOrConnectWithoutOrganizationInput[]
     createMany?: ApprovalRequestCreateManyOrganizationInputEnvelope
     connect?: ApprovalRequestWhereUniqueInput | ApprovalRequestWhereUniqueInput[]
+  }
+
+  export type TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<TreasuryAccountCreateWithoutOrganizationInput, TreasuryAccountUncheckedCreateWithoutOrganizationInput> | TreasuryAccountCreateWithoutOrganizationInput[] | TreasuryAccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutOrganizationInput | TreasuryAccountCreateOrConnectWithoutOrganizationInput[]
+    createMany?: TreasuryAccountCreateManyOrganizationInputEnvelope
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+  }
+
+  export type PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<PaymentScheduleCreateWithoutOrganizationInput, PaymentScheduleUncheckedCreateWithoutOrganizationInput> | PaymentScheduleCreateWithoutOrganizationInput[] | PaymentScheduleUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutOrganizationInput | PaymentScheduleCreateOrConnectWithoutOrganizationInput[]
+    createMany?: PaymentScheduleCreateManyOrganizationInputEnvelope
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
   }
 
   export type EnumOrganizationTypeFieldUpdateOperationsInput = {
@@ -90624,6 +94583,34 @@ export namespace Prisma {
     deleteMany?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
   }
 
+  export type TreasuryAccountUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutOrganizationInput, TreasuryAccountUncheckedCreateWithoutOrganizationInput> | TreasuryAccountCreateWithoutOrganizationInput[] | TreasuryAccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutOrganizationInput | TreasuryAccountCreateOrConnectWithoutOrganizationInput[]
+    upsert?: TreasuryAccountUpsertWithWhereUniqueWithoutOrganizationInput | TreasuryAccountUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: TreasuryAccountCreateManyOrganizationInputEnvelope
+    set?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    disconnect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    delete?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    update?: TreasuryAccountUpdateWithWhereUniqueWithoutOrganizationInput | TreasuryAccountUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: TreasuryAccountUpdateManyWithWhereWithoutOrganizationInput | TreasuryAccountUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
+  }
+
+  export type PaymentScheduleUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<PaymentScheduleCreateWithoutOrganizationInput, PaymentScheduleUncheckedCreateWithoutOrganizationInput> | PaymentScheduleCreateWithoutOrganizationInput[] | PaymentScheduleUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutOrganizationInput | PaymentScheduleCreateOrConnectWithoutOrganizationInput[]
+    upsert?: PaymentScheduleUpsertWithWhereUniqueWithoutOrganizationInput | PaymentScheduleUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: PaymentScheduleCreateManyOrganizationInputEnvelope
+    set?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    disconnect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    delete?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    update?: PaymentScheduleUpdateWithWhereUniqueWithoutOrganizationInput | PaymentScheduleUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: PaymentScheduleUpdateManyWithWhereWithoutOrganizationInput | PaymentScheduleUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -90918,6 +94905,34 @@ export namespace Prisma {
     deleteMany?: ApprovalRequestScalarWhereInput | ApprovalRequestScalarWhereInput[]
   }
 
+  export type TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutOrganizationInput, TreasuryAccountUncheckedCreateWithoutOrganizationInput> | TreasuryAccountCreateWithoutOrganizationInput[] | TreasuryAccountUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutOrganizationInput | TreasuryAccountCreateOrConnectWithoutOrganizationInput[]
+    upsert?: TreasuryAccountUpsertWithWhereUniqueWithoutOrganizationInput | TreasuryAccountUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: TreasuryAccountCreateManyOrganizationInputEnvelope
+    set?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    disconnect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    delete?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    update?: TreasuryAccountUpdateWithWhereUniqueWithoutOrganizationInput | TreasuryAccountUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: TreasuryAccountUpdateManyWithWhereWithoutOrganizationInput | TreasuryAccountUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
+  }
+
+  export type PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<PaymentScheduleCreateWithoutOrganizationInput, PaymentScheduleUncheckedCreateWithoutOrganizationInput> | PaymentScheduleCreateWithoutOrganizationInput[] | PaymentScheduleUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutOrganizationInput | PaymentScheduleCreateOrConnectWithoutOrganizationInput[]
+    upsert?: PaymentScheduleUpsertWithWhereUniqueWithoutOrganizationInput | PaymentScheduleUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: PaymentScheduleCreateManyOrganizationInputEnvelope
+    set?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    disconnect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    delete?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    update?: PaymentScheduleUpdateWithWhereUniqueWithoutOrganizationInput | PaymentScheduleUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: PaymentScheduleUpdateManyWithWhereWithoutOrganizationInput | PaymentScheduleUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+  }
+
   export type OrganizationCreateNestedOneWithoutLocationsInput = {
     create?: XOR<OrganizationCreateWithoutLocationsInput, OrganizationUncheckedCreateWithoutLocationsInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutLocationsInput
@@ -90958,6 +94973,13 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type TreasuryAccountCreateNestedManyWithoutLocationInput = {
+    create?: XOR<TreasuryAccountCreateWithoutLocationInput, TreasuryAccountUncheckedCreateWithoutLocationInput> | TreasuryAccountCreateWithoutLocationInput[] | TreasuryAccountUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutLocationInput | TreasuryAccountCreateOrConnectWithoutLocationInput[]
+    createMany?: TreasuryAccountCreateManyLocationInputEnvelope
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+  }
+
   export type LocationUncheckedCreateNestedManyWithoutParentInput = {
     create?: XOR<LocationCreateWithoutParentInput, LocationUncheckedCreateWithoutParentInput> | LocationCreateWithoutParentInput[] | LocationUncheckedCreateWithoutParentInput[]
     connectOrCreate?: LocationCreateOrConnectWithoutParentInput | LocationCreateOrConnectWithoutParentInput[]
@@ -90984,6 +95006,13 @@ export namespace Prisma {
     connectOrCreate?: TransactionCreateOrConnectWithoutLocationInput | TransactionCreateOrConnectWithoutLocationInput[]
     createMany?: TransactionCreateManyLocationInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type TreasuryAccountUncheckedCreateNestedManyWithoutLocationInput = {
+    create?: XOR<TreasuryAccountCreateWithoutLocationInput, TreasuryAccountUncheckedCreateWithoutLocationInput> | TreasuryAccountCreateWithoutLocationInput[] | TreasuryAccountUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutLocationInput | TreasuryAccountCreateOrConnectWithoutLocationInput[]
+    createMany?: TreasuryAccountCreateManyLocationInputEnvelope
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
   }
 
   export type EnumLocationTypeFieldUpdateOperationsInput = {
@@ -91064,6 +95093,20 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type TreasuryAccountUpdateManyWithoutLocationNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutLocationInput, TreasuryAccountUncheckedCreateWithoutLocationInput> | TreasuryAccountCreateWithoutLocationInput[] | TreasuryAccountUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutLocationInput | TreasuryAccountCreateOrConnectWithoutLocationInput[]
+    upsert?: TreasuryAccountUpsertWithWhereUniqueWithoutLocationInput | TreasuryAccountUpsertWithWhereUniqueWithoutLocationInput[]
+    createMany?: TreasuryAccountCreateManyLocationInputEnvelope
+    set?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    disconnect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    delete?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    update?: TreasuryAccountUpdateWithWhereUniqueWithoutLocationInput | TreasuryAccountUpdateWithWhereUniqueWithoutLocationInput[]
+    updateMany?: TreasuryAccountUpdateManyWithWhereWithoutLocationInput | TreasuryAccountUpdateManyWithWhereWithoutLocationInput[]
+    deleteMany?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
+  }
+
   export type LocationUncheckedUpdateManyWithoutParentNestedInput = {
     create?: XOR<LocationCreateWithoutParentInput, LocationUncheckedCreateWithoutParentInput> | LocationCreateWithoutParentInput[] | LocationUncheckedCreateWithoutParentInput[]
     connectOrCreate?: LocationCreateOrConnectWithoutParentInput | LocationCreateOrConnectWithoutParentInput[]
@@ -91118,6 +95161,20 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutLocationInput | TransactionUpdateWithWhereUniqueWithoutLocationInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutLocationInput | TransactionUpdateManyWithWhereWithoutLocationInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type TreasuryAccountUncheckedUpdateManyWithoutLocationNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutLocationInput, TreasuryAccountUncheckedCreateWithoutLocationInput> | TreasuryAccountCreateWithoutLocationInput[] | TreasuryAccountUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutLocationInput | TreasuryAccountCreateOrConnectWithoutLocationInput[]
+    upsert?: TreasuryAccountUpsertWithWhereUniqueWithoutLocationInput | TreasuryAccountUpsertWithWhereUniqueWithoutLocationInput[]
+    createMany?: TreasuryAccountCreateManyLocationInputEnvelope
+    set?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    disconnect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    delete?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    update?: TreasuryAccountUpdateWithWhereUniqueWithoutLocationInput | TreasuryAccountUpdateWithWhereUniqueWithoutLocationInput[]
+    updateMany?: TreasuryAccountUpdateManyWithWhereWithoutLocationInput | TreasuryAccountUpdateManyWithWhereWithoutLocationInput[]
+    deleteMany?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutDepartmentsInput = {
@@ -91596,6 +95653,13 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type TreasuryAccountCreateNestedManyWithoutFundingSourceInput = {
+    create?: XOR<TreasuryAccountCreateWithoutFundingSourceInput, TreasuryAccountUncheckedCreateWithoutFundingSourceInput> | TreasuryAccountCreateWithoutFundingSourceInput[] | TreasuryAccountUncheckedCreateWithoutFundingSourceInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutFundingSourceInput | TreasuryAccountCreateOrConnectWithoutFundingSourceInput[]
+    createMany?: TreasuryAccountCreateManyFundingSourceInputEnvelope
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+  }
+
   export type JournalLineUncheckedCreateNestedManyWithoutFundingSourceInput = {
     create?: XOR<JournalLineCreateWithoutFundingSourceInput, JournalLineUncheckedCreateWithoutFundingSourceInput> | JournalLineCreateWithoutFundingSourceInput[] | JournalLineUncheckedCreateWithoutFundingSourceInput[]
     connectOrCreate?: JournalLineCreateOrConnectWithoutFundingSourceInput | JournalLineCreateOrConnectWithoutFundingSourceInput[]
@@ -91608,6 +95672,13 @@ export namespace Prisma {
     connectOrCreate?: TransactionCreateOrConnectWithoutFundingSourceInput | TransactionCreateOrConnectWithoutFundingSourceInput[]
     createMany?: TransactionCreateManyFundingSourceInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type TreasuryAccountUncheckedCreateNestedManyWithoutFundingSourceInput = {
+    create?: XOR<TreasuryAccountCreateWithoutFundingSourceInput, TreasuryAccountUncheckedCreateWithoutFundingSourceInput> | TreasuryAccountCreateWithoutFundingSourceInput[] | TreasuryAccountUncheckedCreateWithoutFundingSourceInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutFundingSourceInput | TreasuryAccountCreateOrConnectWithoutFundingSourceInput[]
+    createMany?: TreasuryAccountCreateManyFundingSourceInputEnvelope
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
   }
 
   export type EnumFundingSourceTypeFieldUpdateOperationsInput = {
@@ -91650,6 +95721,20 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type TreasuryAccountUpdateManyWithoutFundingSourceNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutFundingSourceInput, TreasuryAccountUncheckedCreateWithoutFundingSourceInput> | TreasuryAccountCreateWithoutFundingSourceInput[] | TreasuryAccountUncheckedCreateWithoutFundingSourceInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutFundingSourceInput | TreasuryAccountCreateOrConnectWithoutFundingSourceInput[]
+    upsert?: TreasuryAccountUpsertWithWhereUniqueWithoutFundingSourceInput | TreasuryAccountUpsertWithWhereUniqueWithoutFundingSourceInput[]
+    createMany?: TreasuryAccountCreateManyFundingSourceInputEnvelope
+    set?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    disconnect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    delete?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    update?: TreasuryAccountUpdateWithWhereUniqueWithoutFundingSourceInput | TreasuryAccountUpdateWithWhereUniqueWithoutFundingSourceInput[]
+    updateMany?: TreasuryAccountUpdateManyWithWhereWithoutFundingSourceInput | TreasuryAccountUpdateManyWithWhereWithoutFundingSourceInput[]
+    deleteMany?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
+  }
+
   export type JournalLineUncheckedUpdateManyWithoutFundingSourceNestedInput = {
     create?: XOR<JournalLineCreateWithoutFundingSourceInput, JournalLineUncheckedCreateWithoutFundingSourceInput> | JournalLineCreateWithoutFundingSourceInput[] | JournalLineUncheckedCreateWithoutFundingSourceInput[]
     connectOrCreate?: JournalLineCreateOrConnectWithoutFundingSourceInput | JournalLineCreateOrConnectWithoutFundingSourceInput[]
@@ -91676,6 +95761,274 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutFundingSourceInput | TransactionUpdateWithWhereUniqueWithoutFundingSourceInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutFundingSourceInput | TransactionUpdateManyWithWhereWithoutFundingSourceInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type TreasuryAccountUncheckedUpdateManyWithoutFundingSourceNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutFundingSourceInput, TreasuryAccountUncheckedCreateWithoutFundingSourceInput> | TreasuryAccountCreateWithoutFundingSourceInput[] | TreasuryAccountUncheckedCreateWithoutFundingSourceInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutFundingSourceInput | TreasuryAccountCreateOrConnectWithoutFundingSourceInput[]
+    upsert?: TreasuryAccountUpsertWithWhereUniqueWithoutFundingSourceInput | TreasuryAccountUpsertWithWhereUniqueWithoutFundingSourceInput[]
+    createMany?: TreasuryAccountCreateManyFundingSourceInputEnvelope
+    set?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    disconnect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    delete?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    update?: TreasuryAccountUpdateWithWhereUniqueWithoutFundingSourceInput | TreasuryAccountUpdateWithWhereUniqueWithoutFundingSourceInput[]
+    updateMany?: TreasuryAccountUpdateManyWithWhereWithoutFundingSourceInput | TreasuryAccountUpdateManyWithWhereWithoutFundingSourceInput[]
+    deleteMany?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
+  }
+
+  export type OrganizationCreateNestedOneWithoutTreasuryAccountsInput = {
+    create?: XOR<OrganizationCreateWithoutTreasuryAccountsInput, OrganizationUncheckedCreateWithoutTreasuryAccountsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutTreasuryAccountsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type CurrencyCreateNestedOneWithoutTreasuryAccountsInput = {
+    create?: XOR<CurrencyCreateWithoutTreasuryAccountsInput, CurrencyUncheckedCreateWithoutTreasuryAccountsInput>
+    connectOrCreate?: CurrencyCreateOrConnectWithoutTreasuryAccountsInput
+    connect?: CurrencyWhereUniqueInput
+  }
+
+  export type AccountCreateNestedOneWithoutTreasuryAccountsInput = {
+    create?: XOR<AccountCreateWithoutTreasuryAccountsInput, AccountUncheckedCreateWithoutTreasuryAccountsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutTreasuryAccountsInput
+    connect?: AccountWhereUniqueInput
+  }
+
+  export type LocationCreateNestedOneWithoutTreasuryAccountsInput = {
+    create?: XOR<LocationCreateWithoutTreasuryAccountsInput, LocationUncheckedCreateWithoutTreasuryAccountsInput>
+    connectOrCreate?: LocationCreateOrConnectWithoutTreasuryAccountsInput
+    connect?: LocationWhereUniqueInput
+  }
+
+  export type FundingSourceCreateNestedOneWithoutTreasuryAccountsInput = {
+    create?: XOR<FundingSourceCreateWithoutTreasuryAccountsInput, FundingSourceUncheckedCreateWithoutTreasuryAccountsInput>
+    connectOrCreate?: FundingSourceCreateOrConnectWithoutTreasuryAccountsInput
+    connect?: FundingSourceWhereUniqueInput
+  }
+
+  export type JournalLineCreateNestedManyWithoutTreasuryAccountInput = {
+    create?: XOR<JournalLineCreateWithoutTreasuryAccountInput, JournalLineUncheckedCreateWithoutTreasuryAccountInput> | JournalLineCreateWithoutTreasuryAccountInput[] | JournalLineUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutTreasuryAccountInput | JournalLineCreateOrConnectWithoutTreasuryAccountInput[]
+    createMany?: JournalLineCreateManyTreasuryAccountInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
+  export type TransactionCreateNestedManyWithoutTreasuryAccountInput = {
+    create?: XOR<TransactionCreateWithoutTreasuryAccountInput, TransactionUncheckedCreateWithoutTreasuryAccountInput> | TransactionCreateWithoutTreasuryAccountInput[] | TransactionUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutTreasuryAccountInput | TransactionCreateOrConnectWithoutTreasuryAccountInput[]
+    createMany?: TransactionCreateManyTreasuryAccountInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput = {
+    create?: XOR<PaymentScheduleCreateWithoutTreasuryAccountInput, PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput> | PaymentScheduleCreateWithoutTreasuryAccountInput[] | PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput | PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput[]
+    createMany?: PaymentScheduleCreateManyTreasuryAccountInputEnvelope
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+  }
+
+  export type JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput = {
+    create?: XOR<JournalLineCreateWithoutTreasuryAccountInput, JournalLineUncheckedCreateWithoutTreasuryAccountInput> | JournalLineCreateWithoutTreasuryAccountInput[] | JournalLineUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutTreasuryAccountInput | JournalLineCreateOrConnectWithoutTreasuryAccountInput[]
+    createMany?: JournalLineCreateManyTreasuryAccountInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput = {
+    create?: XOR<TransactionCreateWithoutTreasuryAccountInput, TransactionUncheckedCreateWithoutTreasuryAccountInput> | TransactionCreateWithoutTreasuryAccountInput[] | TransactionUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutTreasuryAccountInput | TransactionCreateOrConnectWithoutTreasuryAccountInput[]
+    createMany?: TransactionCreateManyTreasuryAccountInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput = {
+    create?: XOR<PaymentScheduleCreateWithoutTreasuryAccountInput, PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput> | PaymentScheduleCreateWithoutTreasuryAccountInput[] | PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput | PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput[]
+    createMany?: PaymentScheduleCreateManyTreasuryAccountInputEnvelope
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+  }
+
+  export type EnumTreasuryAccountKindFieldUpdateOperationsInput = {
+    set?: $Enums.TreasuryAccountKind
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutTreasuryAccountsInput, OrganizationUncheckedCreateWithoutTreasuryAccountsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutTreasuryAccountsInput
+    upsert?: OrganizationUpsertWithoutTreasuryAccountsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutTreasuryAccountsInput, OrganizationUpdateWithoutTreasuryAccountsInput>, OrganizationUncheckedUpdateWithoutTreasuryAccountsInput>
+  }
+
+  export type CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput = {
+    create?: XOR<CurrencyCreateWithoutTreasuryAccountsInput, CurrencyUncheckedCreateWithoutTreasuryAccountsInput>
+    connectOrCreate?: CurrencyCreateOrConnectWithoutTreasuryAccountsInput
+    upsert?: CurrencyUpsertWithoutTreasuryAccountsInput
+    connect?: CurrencyWhereUniqueInput
+    update?: XOR<XOR<CurrencyUpdateToOneWithWhereWithoutTreasuryAccountsInput, CurrencyUpdateWithoutTreasuryAccountsInput>, CurrencyUncheckedUpdateWithoutTreasuryAccountsInput>
+  }
+
+  export type AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput = {
+    create?: XOR<AccountCreateWithoutTreasuryAccountsInput, AccountUncheckedCreateWithoutTreasuryAccountsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutTreasuryAccountsInput
+    upsert?: AccountUpsertWithoutTreasuryAccountsInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<XOR<AccountUpdateToOneWithWhereWithoutTreasuryAccountsInput, AccountUpdateWithoutTreasuryAccountsInput>, AccountUncheckedUpdateWithoutTreasuryAccountsInput>
+  }
+
+  export type LocationUpdateOneWithoutTreasuryAccountsNestedInput = {
+    create?: XOR<LocationCreateWithoutTreasuryAccountsInput, LocationUncheckedCreateWithoutTreasuryAccountsInput>
+    connectOrCreate?: LocationCreateOrConnectWithoutTreasuryAccountsInput
+    upsert?: LocationUpsertWithoutTreasuryAccountsInput
+    disconnect?: LocationWhereInput | boolean
+    delete?: LocationWhereInput | boolean
+    connect?: LocationWhereUniqueInput
+    update?: XOR<XOR<LocationUpdateToOneWithWhereWithoutTreasuryAccountsInput, LocationUpdateWithoutTreasuryAccountsInput>, LocationUncheckedUpdateWithoutTreasuryAccountsInput>
+  }
+
+  export type FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput = {
+    create?: XOR<FundingSourceCreateWithoutTreasuryAccountsInput, FundingSourceUncheckedCreateWithoutTreasuryAccountsInput>
+    connectOrCreate?: FundingSourceCreateOrConnectWithoutTreasuryAccountsInput
+    upsert?: FundingSourceUpsertWithoutTreasuryAccountsInput
+    disconnect?: FundingSourceWhereInput | boolean
+    delete?: FundingSourceWhereInput | boolean
+    connect?: FundingSourceWhereUniqueInput
+    update?: XOR<XOR<FundingSourceUpdateToOneWithWhereWithoutTreasuryAccountsInput, FundingSourceUpdateWithoutTreasuryAccountsInput>, FundingSourceUncheckedUpdateWithoutTreasuryAccountsInput>
+  }
+
+  export type JournalLineUpdateManyWithoutTreasuryAccountNestedInput = {
+    create?: XOR<JournalLineCreateWithoutTreasuryAccountInput, JournalLineUncheckedCreateWithoutTreasuryAccountInput> | JournalLineCreateWithoutTreasuryAccountInput[] | JournalLineUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutTreasuryAccountInput | JournalLineCreateOrConnectWithoutTreasuryAccountInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutTreasuryAccountInput | JournalLineUpsertWithWhereUniqueWithoutTreasuryAccountInput[]
+    createMany?: JournalLineCreateManyTreasuryAccountInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutTreasuryAccountInput | JournalLineUpdateWithWhereUniqueWithoutTreasuryAccountInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutTreasuryAccountInput | JournalLineUpdateManyWithWhereWithoutTreasuryAccountInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
+  export type TransactionUpdateManyWithoutTreasuryAccountNestedInput = {
+    create?: XOR<TransactionCreateWithoutTreasuryAccountInput, TransactionUncheckedCreateWithoutTreasuryAccountInput> | TransactionCreateWithoutTreasuryAccountInput[] | TransactionUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutTreasuryAccountInput | TransactionCreateOrConnectWithoutTreasuryAccountInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutTreasuryAccountInput | TransactionUpsertWithWhereUniqueWithoutTreasuryAccountInput[]
+    createMany?: TransactionCreateManyTreasuryAccountInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutTreasuryAccountInput | TransactionUpdateWithWhereUniqueWithoutTreasuryAccountInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutTreasuryAccountInput | TransactionUpdateManyWithWhereWithoutTreasuryAccountInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput = {
+    create?: XOR<PaymentScheduleCreateWithoutTreasuryAccountInput, PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput> | PaymentScheduleCreateWithoutTreasuryAccountInput[] | PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput | PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput[]
+    upsert?: PaymentScheduleUpsertWithWhereUniqueWithoutTreasuryAccountInput | PaymentScheduleUpsertWithWhereUniqueWithoutTreasuryAccountInput[]
+    createMany?: PaymentScheduleCreateManyTreasuryAccountInputEnvelope
+    set?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    disconnect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    delete?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    update?: PaymentScheduleUpdateWithWhereUniqueWithoutTreasuryAccountInput | PaymentScheduleUpdateWithWhereUniqueWithoutTreasuryAccountInput[]
+    updateMany?: PaymentScheduleUpdateManyWithWhereWithoutTreasuryAccountInput | PaymentScheduleUpdateManyWithWhereWithoutTreasuryAccountInput[]
+    deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput = {
+    create?: XOR<JournalLineCreateWithoutTreasuryAccountInput, JournalLineUncheckedCreateWithoutTreasuryAccountInput> | JournalLineCreateWithoutTreasuryAccountInput[] | JournalLineUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutTreasuryAccountInput | JournalLineCreateOrConnectWithoutTreasuryAccountInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutTreasuryAccountInput | JournalLineUpsertWithWhereUniqueWithoutTreasuryAccountInput[]
+    createMany?: JournalLineCreateManyTreasuryAccountInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutTreasuryAccountInput | JournalLineUpdateWithWhereUniqueWithoutTreasuryAccountInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutTreasuryAccountInput | JournalLineUpdateManyWithWhereWithoutTreasuryAccountInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput = {
+    create?: XOR<TransactionCreateWithoutTreasuryAccountInput, TransactionUncheckedCreateWithoutTreasuryAccountInput> | TransactionCreateWithoutTreasuryAccountInput[] | TransactionUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutTreasuryAccountInput | TransactionCreateOrConnectWithoutTreasuryAccountInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutTreasuryAccountInput | TransactionUpsertWithWhereUniqueWithoutTreasuryAccountInput[]
+    createMany?: TransactionCreateManyTreasuryAccountInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutTreasuryAccountInput | TransactionUpdateWithWhereUniqueWithoutTreasuryAccountInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutTreasuryAccountInput | TransactionUpdateManyWithWhereWithoutTreasuryAccountInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput = {
+    create?: XOR<PaymentScheduleCreateWithoutTreasuryAccountInput, PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput> | PaymentScheduleCreateWithoutTreasuryAccountInput[] | PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput | PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput[]
+    upsert?: PaymentScheduleUpsertWithWhereUniqueWithoutTreasuryAccountInput | PaymentScheduleUpsertWithWhereUniqueWithoutTreasuryAccountInput[]
+    createMany?: PaymentScheduleCreateManyTreasuryAccountInputEnvelope
+    set?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    disconnect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    delete?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    update?: PaymentScheduleUpdateWithWhereUniqueWithoutTreasuryAccountInput | PaymentScheduleUpdateWithWhereUniqueWithoutTreasuryAccountInput[]
+    updateMany?: PaymentScheduleUpdateManyWithWhereWithoutTreasuryAccountInput | PaymentScheduleUpdateManyWithWhereWithoutTreasuryAccountInput[]
+    deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+  }
+
+  export type OrganizationCreateNestedOneWithoutPaymentSchedulesInput = {
+    create?: XOR<OrganizationCreateWithoutPaymentSchedulesInput, OrganizationUncheckedCreateWithoutPaymentSchedulesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutPaymentSchedulesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type TreasuryAccountCreateNestedOneWithoutPaymentSchedulesInput = {
+    create?: XOR<TreasuryAccountCreateWithoutPaymentSchedulesInput, TreasuryAccountUncheckedCreateWithoutPaymentSchedulesInput>
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutPaymentSchedulesInput
+    connect?: TreasuryAccountWhereUniqueInput
+  }
+
+  export type CurrencyCreateNestedOneWithoutPaymentSchedulesInput = {
+    create?: XOR<CurrencyCreateWithoutPaymentSchedulesInput, CurrencyUncheckedCreateWithoutPaymentSchedulesInput>
+    connectOrCreate?: CurrencyCreateOrConnectWithoutPaymentSchedulesInput
+    connect?: CurrencyWhereUniqueInput
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutPaymentSchedulesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutPaymentSchedulesInput, OrganizationUncheckedCreateWithoutPaymentSchedulesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutPaymentSchedulesInput
+    upsert?: OrganizationUpsertWithoutPaymentSchedulesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutPaymentSchedulesInput, OrganizationUpdateWithoutPaymentSchedulesInput>, OrganizationUncheckedUpdateWithoutPaymentSchedulesInput>
+  }
+
+  export type TreasuryAccountUpdateOneRequiredWithoutPaymentSchedulesNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutPaymentSchedulesInput, TreasuryAccountUncheckedCreateWithoutPaymentSchedulesInput>
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutPaymentSchedulesInput
+    upsert?: TreasuryAccountUpsertWithoutPaymentSchedulesInput
+    connect?: TreasuryAccountWhereUniqueInput
+    update?: XOR<XOR<TreasuryAccountUpdateToOneWithWhereWithoutPaymentSchedulesInput, TreasuryAccountUpdateWithoutPaymentSchedulesInput>, TreasuryAccountUncheckedUpdateWithoutPaymentSchedulesInput>
+  }
+
+  export type CurrencyUpdateOneRequiredWithoutPaymentSchedulesNestedInput = {
+    create?: XOR<CurrencyCreateWithoutPaymentSchedulesInput, CurrencyUncheckedCreateWithoutPaymentSchedulesInput>
+    connectOrCreate?: CurrencyCreateOrConnectWithoutPaymentSchedulesInput
+    upsert?: CurrencyUpsertWithoutPaymentSchedulesInput
+    connect?: CurrencyWhereUniqueInput
+    update?: XOR<XOR<CurrencyUpdateToOneWithWhereWithoutPaymentSchedulesInput, CurrencyUpdateWithoutPaymentSchedulesInput>, CurrencyUncheckedUpdateWithoutPaymentSchedulesInput>
   }
 
   export type ExchangeRateCreateNestedManyWithoutBaseCurrencyInput = {
@@ -91727,6 +96080,20 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type TreasuryAccountCreateNestedManyWithoutCurrencyInput = {
+    create?: XOR<TreasuryAccountCreateWithoutCurrencyInput, TreasuryAccountUncheckedCreateWithoutCurrencyInput> | TreasuryAccountCreateWithoutCurrencyInput[] | TreasuryAccountUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutCurrencyInput | TreasuryAccountCreateOrConnectWithoutCurrencyInput[]
+    createMany?: TreasuryAccountCreateManyCurrencyInputEnvelope
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+  }
+
+  export type PaymentScheduleCreateNestedManyWithoutCurrencyInput = {
+    create?: XOR<PaymentScheduleCreateWithoutCurrencyInput, PaymentScheduleUncheckedCreateWithoutCurrencyInput> | PaymentScheduleCreateWithoutCurrencyInput[] | PaymentScheduleUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutCurrencyInput | PaymentScheduleCreateOrConnectWithoutCurrencyInput[]
+    createMany?: PaymentScheduleCreateManyCurrencyInputEnvelope
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+  }
+
   export type ExchangeRateUncheckedCreateNestedManyWithoutBaseCurrencyInput = {
     create?: XOR<ExchangeRateCreateWithoutBaseCurrencyInput, ExchangeRateUncheckedCreateWithoutBaseCurrencyInput> | ExchangeRateCreateWithoutBaseCurrencyInput[] | ExchangeRateUncheckedCreateWithoutBaseCurrencyInput[]
     connectOrCreate?: ExchangeRateCreateOrConnectWithoutBaseCurrencyInput | ExchangeRateCreateOrConnectWithoutBaseCurrencyInput[]
@@ -91774,6 +96141,20 @@ export namespace Prisma {
     connectOrCreate?: TransactionCreateOrConnectWithoutCurrencyInput | TransactionCreateOrConnectWithoutCurrencyInput[]
     createMany?: TransactionCreateManyCurrencyInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput = {
+    create?: XOR<TreasuryAccountCreateWithoutCurrencyInput, TreasuryAccountUncheckedCreateWithoutCurrencyInput> | TreasuryAccountCreateWithoutCurrencyInput[] | TreasuryAccountUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutCurrencyInput | TreasuryAccountCreateOrConnectWithoutCurrencyInput[]
+    createMany?: TreasuryAccountCreateManyCurrencyInputEnvelope
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+  }
+
+  export type PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput = {
+    create?: XOR<PaymentScheduleCreateWithoutCurrencyInput, PaymentScheduleUncheckedCreateWithoutCurrencyInput> | PaymentScheduleCreateWithoutCurrencyInput[] | PaymentScheduleUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutCurrencyInput | PaymentScheduleCreateOrConnectWithoutCurrencyInput[]
+    createMany?: PaymentScheduleCreateManyCurrencyInputEnvelope
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
   }
 
   export type EnumCurrencyTypeFieldUpdateOperationsInput = {
@@ -91878,6 +96259,34 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type TreasuryAccountUpdateManyWithoutCurrencyNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutCurrencyInput, TreasuryAccountUncheckedCreateWithoutCurrencyInput> | TreasuryAccountCreateWithoutCurrencyInput[] | TreasuryAccountUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutCurrencyInput | TreasuryAccountCreateOrConnectWithoutCurrencyInput[]
+    upsert?: TreasuryAccountUpsertWithWhereUniqueWithoutCurrencyInput | TreasuryAccountUpsertWithWhereUniqueWithoutCurrencyInput[]
+    createMany?: TreasuryAccountCreateManyCurrencyInputEnvelope
+    set?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    disconnect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    delete?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    update?: TreasuryAccountUpdateWithWhereUniqueWithoutCurrencyInput | TreasuryAccountUpdateWithWhereUniqueWithoutCurrencyInput[]
+    updateMany?: TreasuryAccountUpdateManyWithWhereWithoutCurrencyInput | TreasuryAccountUpdateManyWithWhereWithoutCurrencyInput[]
+    deleteMany?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
+  }
+
+  export type PaymentScheduleUpdateManyWithoutCurrencyNestedInput = {
+    create?: XOR<PaymentScheduleCreateWithoutCurrencyInput, PaymentScheduleUncheckedCreateWithoutCurrencyInput> | PaymentScheduleCreateWithoutCurrencyInput[] | PaymentScheduleUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutCurrencyInput | PaymentScheduleCreateOrConnectWithoutCurrencyInput[]
+    upsert?: PaymentScheduleUpsertWithWhereUniqueWithoutCurrencyInput | PaymentScheduleUpsertWithWhereUniqueWithoutCurrencyInput[]
+    createMany?: PaymentScheduleCreateManyCurrencyInputEnvelope
+    set?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    disconnect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    delete?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    update?: PaymentScheduleUpdateWithWhereUniqueWithoutCurrencyInput | PaymentScheduleUpdateWithWhereUniqueWithoutCurrencyInput[]
+    updateMany?: PaymentScheduleUpdateManyWithWhereWithoutCurrencyInput | PaymentScheduleUpdateManyWithWhereWithoutCurrencyInput[]
+    deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+  }
+
   export type ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput = {
     create?: XOR<ExchangeRateCreateWithoutBaseCurrencyInput, ExchangeRateUncheckedCreateWithoutBaseCurrencyInput> | ExchangeRateCreateWithoutBaseCurrencyInput[] | ExchangeRateUncheckedCreateWithoutBaseCurrencyInput[]
     connectOrCreate?: ExchangeRateCreateOrConnectWithoutBaseCurrencyInput | ExchangeRateCreateOrConnectWithoutBaseCurrencyInput[]
@@ -91976,6 +96385,34 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutCurrencyInput, TreasuryAccountUncheckedCreateWithoutCurrencyInput> | TreasuryAccountCreateWithoutCurrencyInput[] | TreasuryAccountUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutCurrencyInput | TreasuryAccountCreateOrConnectWithoutCurrencyInput[]
+    upsert?: TreasuryAccountUpsertWithWhereUniqueWithoutCurrencyInput | TreasuryAccountUpsertWithWhereUniqueWithoutCurrencyInput[]
+    createMany?: TreasuryAccountCreateManyCurrencyInputEnvelope
+    set?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    disconnect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    delete?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    update?: TreasuryAccountUpdateWithWhereUniqueWithoutCurrencyInput | TreasuryAccountUpdateWithWhereUniqueWithoutCurrencyInput[]
+    updateMany?: TreasuryAccountUpdateManyWithWhereWithoutCurrencyInput | TreasuryAccountUpdateManyWithWhereWithoutCurrencyInput[]
+    deleteMany?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
+  }
+
+  export type PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput = {
+    create?: XOR<PaymentScheduleCreateWithoutCurrencyInput, PaymentScheduleUncheckedCreateWithoutCurrencyInput> | PaymentScheduleCreateWithoutCurrencyInput[] | PaymentScheduleUncheckedCreateWithoutCurrencyInput[]
+    connectOrCreate?: PaymentScheduleCreateOrConnectWithoutCurrencyInput | PaymentScheduleCreateOrConnectWithoutCurrencyInput[]
+    upsert?: PaymentScheduleUpsertWithWhereUniqueWithoutCurrencyInput | PaymentScheduleUpsertWithWhereUniqueWithoutCurrencyInput[]
+    createMany?: PaymentScheduleCreateManyCurrencyInputEnvelope
+    set?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    disconnect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    delete?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    connect?: PaymentScheduleWhereUniqueInput | PaymentScheduleWhereUniqueInput[]
+    update?: PaymentScheduleUpdateWithWhereUniqueWithoutCurrencyInput | PaymentScheduleUpdateWithWhereUniqueWithoutCurrencyInput[]
+    updateMany?: PaymentScheduleUpdateManyWithWhereWithoutCurrencyInput | PaymentScheduleUpdateManyWithWhereWithoutCurrencyInput[]
+    deleteMany?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+  }
+
   export type CurrencyCreateNestedOneWithoutExchangeRatesBaseInput = {
     create?: XOR<CurrencyCreateWithoutExchangeRatesBaseInput, CurrencyUncheckedCreateWithoutExchangeRatesBaseInput>
     connectOrCreate?: CurrencyCreateOrConnectWithoutExchangeRatesBaseInput
@@ -91986,14 +96423,6 @@ export namespace Prisma {
     create?: XOR<CurrencyCreateWithoutExchangeRatesQuoteInput, CurrencyUncheckedCreateWithoutExchangeRatesQuoteInput>
     connectOrCreate?: CurrencyCreateOrConnectWithoutExchangeRatesQuoteInput
     connect?: CurrencyWhereUniqueInput
-  }
-
-  export type DecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type EnumFxDifferenceTreatmentFieldUpdateOperationsInput = {
@@ -92222,6 +96651,13 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type TreasuryAccountCreateNestedManyWithoutLedgerAccountInput = {
+    create?: XOR<TreasuryAccountCreateWithoutLedgerAccountInput, TreasuryAccountUncheckedCreateWithoutLedgerAccountInput> | TreasuryAccountCreateWithoutLedgerAccountInput[] | TreasuryAccountUncheckedCreateWithoutLedgerAccountInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutLedgerAccountInput | TreasuryAccountCreateOrConnectWithoutLedgerAccountInput[]
+    createMany?: TreasuryAccountCreateManyLedgerAccountInputEnvelope
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutParentInput = {
     create?: XOR<AccountCreateWithoutParentInput, AccountUncheckedCreateWithoutParentInput> | AccountCreateWithoutParentInput[] | AccountUncheckedCreateWithoutParentInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutParentInput | AccountCreateOrConnectWithoutParentInput[]
@@ -92262,6 +96698,13 @@ export namespace Prisma {
     connectOrCreate?: TransactionCreateOrConnectWithoutAccountInput | TransactionCreateOrConnectWithoutAccountInput[]
     createMany?: TransactionCreateManyAccountInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type TreasuryAccountUncheckedCreateNestedManyWithoutLedgerAccountInput = {
+    create?: XOR<TreasuryAccountCreateWithoutLedgerAccountInput, TreasuryAccountUncheckedCreateWithoutLedgerAccountInput> | TreasuryAccountCreateWithoutLedgerAccountInput[] | TreasuryAccountUncheckedCreateWithoutLedgerAccountInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutLedgerAccountInput | TreasuryAccountCreateOrConnectWithoutLedgerAccountInput[]
+    createMany?: TreasuryAccountCreateManyLedgerAccountInputEnvelope
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
   }
 
   export type EnumAccountTypeFieldUpdateOperationsInput = {
@@ -92382,6 +96825,20 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type TreasuryAccountUpdateManyWithoutLedgerAccountNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutLedgerAccountInput, TreasuryAccountUncheckedCreateWithoutLedgerAccountInput> | TreasuryAccountCreateWithoutLedgerAccountInput[] | TreasuryAccountUncheckedCreateWithoutLedgerAccountInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutLedgerAccountInput | TreasuryAccountCreateOrConnectWithoutLedgerAccountInput[]
+    upsert?: TreasuryAccountUpsertWithWhereUniqueWithoutLedgerAccountInput | TreasuryAccountUpsertWithWhereUniqueWithoutLedgerAccountInput[]
+    createMany?: TreasuryAccountCreateManyLedgerAccountInputEnvelope
+    set?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    disconnect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    delete?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    update?: TreasuryAccountUpdateWithWhereUniqueWithoutLedgerAccountInput | TreasuryAccountUpdateWithWhereUniqueWithoutLedgerAccountInput[]
+    updateMany?: TreasuryAccountUpdateManyWithWhereWithoutLedgerAccountInput | TreasuryAccountUpdateManyWithWhereWithoutLedgerAccountInput[]
+    deleteMany?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutParentNestedInput = {
     create?: XOR<AccountCreateWithoutParentInput, AccountUncheckedCreateWithoutParentInput> | AccountCreateWithoutParentInput[] | AccountUncheckedCreateWithoutParentInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutParentInput | AccountCreateOrConnectWithoutParentInput[]
@@ -92464,6 +96921,20 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutAccountInput | TransactionUpdateWithWhereUniqueWithoutAccountInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutAccountInput | TransactionUpdateManyWithWhereWithoutAccountInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutLedgerAccountInput, TreasuryAccountUncheckedCreateWithoutLedgerAccountInput> | TreasuryAccountCreateWithoutLedgerAccountInput[] | TreasuryAccountUncheckedCreateWithoutLedgerAccountInput[]
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutLedgerAccountInput | TreasuryAccountCreateOrConnectWithoutLedgerAccountInput[]
+    upsert?: TreasuryAccountUpsertWithWhereUniqueWithoutLedgerAccountInput | TreasuryAccountUpsertWithWhereUniqueWithoutLedgerAccountInput[]
+    createMany?: TreasuryAccountCreateManyLedgerAccountInputEnvelope
+    set?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    disconnect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    delete?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    connect?: TreasuryAccountWhereUniqueInput | TreasuryAccountWhereUniqueInput[]
+    update?: TreasuryAccountUpdateWithWhereUniqueWithoutLedgerAccountInput | TreasuryAccountUpdateWithWhereUniqueWithoutLedgerAccountInput[]
+    updateMany?: TreasuryAccountUpdateManyWithWhereWithoutLedgerAccountInput | TreasuryAccountUpdateManyWithWhereWithoutLedgerAccountInput[]
+    deleteMany?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutFinancialPeriodsInput = {
@@ -93078,6 +97549,12 @@ export namespace Prisma {
     connect?: FundingSourceWhereUniqueInput
   }
 
+  export type TreasuryAccountCreateNestedOneWithoutJournalLinesInput = {
+    create?: XOR<TreasuryAccountCreateWithoutJournalLinesInput, TreasuryAccountUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutJournalLinesInput
+    connect?: TreasuryAccountWhereUniqueInput
+  }
+
   export type OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput = {
     create?: XOR<OrganizationCreateWithoutJournalLinesInput, OrganizationUncheckedCreateWithoutJournalLinesInput>
     connectOrCreate?: OrganizationCreateOrConnectWithoutJournalLinesInput
@@ -93158,6 +97635,16 @@ export namespace Prisma {
     delete?: FundingSourceWhereInput | boolean
     connect?: FundingSourceWhereUniqueInput
     update?: XOR<XOR<FundingSourceUpdateToOneWithWhereWithoutJournalLinesInput, FundingSourceUpdateWithoutJournalLinesInput>, FundingSourceUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type TreasuryAccountUpdateOneWithoutJournalLinesNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutJournalLinesInput, TreasuryAccountUncheckedCreateWithoutJournalLinesInput>
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutJournalLinesInput
+    upsert?: TreasuryAccountUpsertWithoutJournalLinesInput
+    disconnect?: TreasuryAccountWhereInput | boolean
+    delete?: TreasuryAccountWhereInput | boolean
+    connect?: TreasuryAccountWhereUniqueInput
+    update?: XOR<XOR<TreasuryAccountUpdateToOneWithWhereWithoutJournalLinesInput, TreasuryAccountUpdateWithoutJournalLinesInput>, TreasuryAccountUncheckedUpdateWithoutJournalLinesInput>
   }
 
   export type OrganizationCreateNestedOneWithoutReversalReasonCodesInput = {
@@ -93304,6 +97791,12 @@ export namespace Prisma {
     create?: XOR<FundingSourceCreateWithoutTransactionsInput, FundingSourceUncheckedCreateWithoutTransactionsInput>
     connectOrCreate?: FundingSourceCreateOrConnectWithoutTransactionsInput
     connect?: FundingSourceWhereUniqueInput
+  }
+
+  export type TreasuryAccountCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<TreasuryAccountCreateWithoutTransactionsInput, TreasuryAccountUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutTransactionsInput
+    connect?: TreasuryAccountWhereUniqueInput
   }
 
   export type UserCreateNestedOneWithoutTransactionsCreatedInput = {
@@ -93458,6 +97951,16 @@ export namespace Prisma {
     delete?: FundingSourceWhereInput | boolean
     connect?: FundingSourceWhereUniqueInput
     update?: XOR<XOR<FundingSourceUpdateToOneWithWhereWithoutTransactionsInput, FundingSourceUpdateWithoutTransactionsInput>, FundingSourceUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type TreasuryAccountUpdateOneWithoutTransactionsNestedInput = {
+    create?: XOR<TreasuryAccountCreateWithoutTransactionsInput, TreasuryAccountUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: TreasuryAccountCreateOrConnectWithoutTransactionsInput
+    upsert?: TreasuryAccountUpsertWithoutTransactionsInput
+    disconnect?: TreasuryAccountWhereInput | boolean
+    delete?: TreasuryAccountWhereInput | boolean
+    connect?: TreasuryAccountWhereUniqueInput
+    update?: XOR<XOR<TreasuryAccountUpdateToOneWithWhereWithoutTransactionsInput, TreasuryAccountUpdateWithoutTransactionsInput>, TreasuryAccountUncheckedUpdateWithoutTransactionsInput>
   }
 
   export type UserUpdateOneWithoutTransactionsCreatedNestedInput = {
@@ -94582,6 +99085,50 @@ export namespace Prisma {
     _max?: NestedEnumFundingSourceTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumTreasuryAccountKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.TreasuryAccountKind | EnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    in?: $Enums.TreasuryAccountKind[] | ListEnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TreasuryAccountKind[] | ListEnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumTreasuryAccountKindFilter<$PrismaModel> | $Enums.TreasuryAccountKind
+  }
+
+  export type NestedEnumTreasuryAccountKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TreasuryAccountKind | EnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    in?: $Enums.TreasuryAccountKind[] | ListEnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TreasuryAccountKind[] | ListEnumTreasuryAccountKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumTreasuryAccountKindWithAggregatesFilter<$PrismaModel> | $Enums.TreasuryAccountKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTreasuryAccountKindFilter<$PrismaModel>
+    _max?: NestedEnumTreasuryAccountKindFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
   export type NestedEnumCurrencyTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.CurrencyType | EnumCurrencyTypeFieldRefInput<$PrismaModel>
     in?: $Enums.CurrencyType[] | ListEnumCurrencyTypeFieldRefInput<$PrismaModel>
@@ -94599,38 +99146,11 @@ export namespace Prisma {
     _max?: NestedEnumCurrencyTypeFilter<$PrismaModel>
   }
 
-  export type NestedDecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type NestedEnumFxDifferenceTreatmentFilter<$PrismaModel = never> = {
     equals?: $Enums.FxDifferenceTreatment | EnumFxDifferenceTreatmentFieldRefInput<$PrismaModel>
     in?: $Enums.FxDifferenceTreatment[] | ListEnumFxDifferenceTreatmentFieldRefInput<$PrismaModel>
     notIn?: $Enums.FxDifferenceTreatment[] | ListEnumFxDifferenceTreatmentFieldRefInput<$PrismaModel>
     not?: NestedEnumFxDifferenceTreatmentFilter<$PrismaModel> | $Enums.FxDifferenceTreatment
-  }
-
-  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type NestedEnumFxDifferenceTreatmentWithAggregatesFilter<$PrismaModel = never> = {
@@ -95209,6 +99729,7 @@ export namespace Prisma {
     children?: LocationCreateNestedManyWithoutParentInput
     journalLines?: JournalLineCreateNestedManyWithoutLocationInput
     transactions?: TransactionCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateWithoutUsersInput = {
@@ -95230,6 +99751,7 @@ export namespace Prisma {
     children?: LocationUncheckedCreateNestedManyWithoutParentInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationCreateOrConnectWithoutUsersInput = {
@@ -96602,6 +101124,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
     postedBy?: UserCreateNestedOneWithoutTransactionsPostedInput
@@ -96628,6 +101151,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     submittedById?: string | null
@@ -96684,6 +101208,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
     postedBy?: UserCreateNestedOneWithoutTransactionsPostedInput
@@ -96710,6 +101235,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -96766,6 +101292,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     postedBy?: UserCreateNestedOneWithoutTransactionsPostedInput
@@ -96792,6 +101319,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -96848,6 +101376,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -96874,6 +101403,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -96930,6 +101460,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -96956,6 +101487,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -97392,6 +101924,7 @@ export namespace Prisma {
     children?: LocationUpdateManyWithoutParentNestedInput
     journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
     transactions?: TransactionUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateWithoutUsersInput = {
@@ -97413,6 +101946,7 @@ export namespace Prisma {
     children?: LocationUncheckedUpdateManyWithoutParentNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type DepartmentUpsertWithoutUsersInput = {
@@ -98315,6 +102849,7 @@ export namespace Prisma {
     costCentreId?: StringNullableFilter<"Transaction"> | string | null
     locationId?: StringNullableFilter<"Transaction"> | string | null
     fundingSourceId?: StringNullableFilter<"Transaction"> | string | null
+    treasuryAccountId?: StringNullableFilter<"Transaction"> | string | null
     paymentMethod?: EnumPaymentMethodFilter<"Transaction"> | $Enums.PaymentMethod
     supportingDocumentId?: StringNullableFilter<"Transaction"> | string | null
     createdById?: StringNullableFilter<"Transaction"> | string | null
@@ -101905,6 +106440,8 @@ export namespace Prisma {
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutApprovalPoliciesInput = {
@@ -101945,6 +106482,8 @@ export namespace Prisma {
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutApprovalPoliciesInput = {
@@ -102095,6 +106634,8 @@ export namespace Prisma {
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutApprovalPoliciesInput = {
@@ -102135,6 +106676,8 @@ export namespace Prisma {
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ApprovalPolicyStepUpsertWithWhereUniqueWithoutPolicyInput = {
@@ -102675,6 +107218,8 @@ export namespace Prisma {
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutApprovalRequestsInput = {
@@ -102715,6 +107260,8 @@ export namespace Prisma {
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutApprovalRequestsInput = {
@@ -103200,6 +107747,8 @@ export namespace Prisma {
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutApprovalRequestsInput = {
@@ -103240,6 +107789,8 @@ export namespace Prisma {
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ApprovalPolicyUpsertWithoutRequestsInput = {
@@ -105888,6 +110439,7 @@ export namespace Prisma {
     users?: UserCreateNestedManyWithoutPrimaryLocationInput
     journalLines?: JournalLineCreateNestedManyWithoutLocationInput
     transactions?: TransactionCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateWithoutOrganizationInput = {
@@ -105909,6 +110461,7 @@ export namespace Prisma {
     users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationCreateOrConnectWithoutOrganizationInput = {
@@ -106050,6 +110603,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     journalLines?: JournalLineCreateNestedManyWithoutFundingSourceInput
     transactions?: TransactionCreateNestedManyWithoutFundingSourceInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceUncheckedCreateWithoutOrganizationInput = {
@@ -106065,6 +110619,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutFundingSourceInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutFundingSourceInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceCreateOrConnectWithoutOrganizationInput = {
@@ -106250,6 +110805,7 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutAccountInput
     transactions?: TransactionCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountUncheckedCreateWithoutOrganizationInput = {
@@ -106275,6 +110831,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountCreateOrConnectWithoutOrganizationInput = {
@@ -106494,6 +111051,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
     location?: LocationCreateNestedOneWithoutJournalLinesInput
     fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutOrganizationInput = {
@@ -106512,6 +111070,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -106550,6 +111109,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -106576,6 +111136,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -106758,6 +111319,96 @@ export namespace Prisma {
 
   export type ApprovalRequestCreateManyOrganizationInputEnvelope = {
     data: ApprovalRequestCreateManyOrganizationInput | ApprovalRequestCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TreasuryAccountCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    currency: CurrencyCreateNestedOneWithoutTreasuryAccountsInput
+    ledgerAccount: AccountCreateNestedOneWithoutTreasuryAccountsInput
+    location?: LocationCreateNestedOneWithoutTreasuryAccountsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
+    journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountCreateOrConnectWithoutOrganizationInput = {
+    where: TreasuryAccountWhereUniqueInput
+    create: XOR<TreasuryAccountCreateWithoutOrganizationInput, TreasuryAccountUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type TreasuryAccountCreateManyOrganizationInputEnvelope = {
+    data: TreasuryAccountCreateManyOrganizationInput | TreasuryAccountCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PaymentScheduleCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    treasuryAccount: TreasuryAccountCreateNestedOneWithoutPaymentSchedulesInput
+    currency: CurrencyCreateNestedOneWithoutPaymentSchedulesInput
+  }
+
+  export type PaymentScheduleUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    treasuryAccountId: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentScheduleCreateOrConnectWithoutOrganizationInput = {
+    where: PaymentScheduleWhereUniqueInput
+    create: XOR<PaymentScheduleCreateWithoutOrganizationInput, PaymentScheduleUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type PaymentScheduleCreateManyOrganizationInputEnvelope = {
+    data: PaymentScheduleCreateManyOrganizationInput | PaymentScheduleCreateManyOrganizationInput[]
     skipDuplicates?: boolean
   }
 
@@ -107246,6 +111897,7 @@ export namespace Prisma {
     costCentreId?: StringNullableFilter<"JournalLine"> | string | null
     locationId?: StringNullableFilter<"JournalLine"> | string | null
     fundingSourceId?: StringNullableFilter<"JournalLine"> | string | null
+    treasuryAccountId?: StringNullableFilter<"JournalLine"> | string | null
     createdAt?: DateTimeFilter<"JournalLine"> | Date | string
   }
 
@@ -107376,6 +112028,78 @@ export namespace Prisma {
     data: XOR<ApprovalRequestUpdateManyMutationInput, ApprovalRequestUncheckedUpdateManyWithoutOrganizationInput>
   }
 
+  export type TreasuryAccountUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: TreasuryAccountWhereUniqueInput
+    update: XOR<TreasuryAccountUpdateWithoutOrganizationInput, TreasuryAccountUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<TreasuryAccountCreateWithoutOrganizationInput, TreasuryAccountUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type TreasuryAccountUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: TreasuryAccountWhereUniqueInput
+    data: XOR<TreasuryAccountUpdateWithoutOrganizationInput, TreasuryAccountUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type TreasuryAccountUpdateManyWithWhereWithoutOrganizationInput = {
+    where: TreasuryAccountScalarWhereInput
+    data: XOR<TreasuryAccountUpdateManyMutationInput, TreasuryAccountUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type TreasuryAccountScalarWhereInput = {
+    AND?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
+    OR?: TreasuryAccountScalarWhereInput[]
+    NOT?: TreasuryAccountScalarWhereInput | TreasuryAccountScalarWhereInput[]
+    id?: StringFilter<"TreasuryAccount"> | string
+    organizationId?: StringFilter<"TreasuryAccount"> | string
+    code?: StringFilter<"TreasuryAccount"> | string
+    name?: StringFilter<"TreasuryAccount"> | string
+    kind?: EnumTreasuryAccountKindFilter<"TreasuryAccount"> | $Enums.TreasuryAccountKind
+    currencyCode?: StringFilter<"TreasuryAccount"> | string
+    ledgerAccountId?: StringFilter<"TreasuryAccount"> | string
+    locationId?: StringNullableFilter<"TreasuryAccount"> | string | null
+    fundingSourceId?: StringNullableFilter<"TreasuryAccount"> | string | null
+    accountNumberEnc?: StringNullableFilter<"TreasuryAccount"> | string | null
+    providerConfigEnc?: StringNullableFilter<"TreasuryAccount"> | string | null
+    isActive?: BoolFilter<"TreasuryAccount"> | boolean
+    isRestricted?: BoolFilter<"TreasuryAccount"> | boolean
+    createdAt?: DateTimeFilter<"TreasuryAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"TreasuryAccount"> | Date | string
+  }
+
+  export type PaymentScheduleUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: PaymentScheduleWhereUniqueInput
+    update: XOR<PaymentScheduleUpdateWithoutOrganizationInput, PaymentScheduleUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<PaymentScheduleCreateWithoutOrganizationInput, PaymentScheduleUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type PaymentScheduleUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: PaymentScheduleWhereUniqueInput
+    data: XOR<PaymentScheduleUpdateWithoutOrganizationInput, PaymentScheduleUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type PaymentScheduleUpdateManyWithWhereWithoutOrganizationInput = {
+    where: PaymentScheduleScalarWhereInput
+    data: XOR<PaymentScheduleUpdateManyMutationInput, PaymentScheduleUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type PaymentScheduleScalarWhereInput = {
+    AND?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+    OR?: PaymentScheduleScalarWhereInput[]
+    NOT?: PaymentScheduleScalarWhereInput | PaymentScheduleScalarWhereInput[]
+    id?: StringFilter<"PaymentSchedule"> | string
+    organizationId?: StringFilter<"PaymentSchedule"> | string
+    treasuryAccountId?: StringFilter<"PaymentSchedule"> | string
+    code?: StringFilter<"PaymentSchedule"> | string
+    description?: StringNullableFilter<"PaymentSchedule"> | string | null
+    amount?: DecimalFilter<"PaymentSchedule"> | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFilter<"PaymentSchedule"> | string
+    frequency?: StringFilter<"PaymentSchedule"> | string
+    nextDueDate?: DateTimeFilter<"PaymentSchedule"> | Date | string
+    endDate?: DateTimeNullableFilter<"PaymentSchedule"> | Date | string | null
+    status?: StringFilter<"PaymentSchedule"> | string
+    createdAt?: DateTimeFilter<"PaymentSchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentSchedule"> | Date | string
+  }
+
   export type OrganizationCreateWithoutLocationsInput = {
     id?: string
     code: string
@@ -107414,6 +112138,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -107454,6 +112180,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -107480,6 +112208,7 @@ export namespace Prisma {
     users?: UserCreateNestedManyWithoutPrimaryLocationInput
     journalLines?: JournalLineCreateNestedManyWithoutLocationInput
     transactions?: TransactionCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateWithoutChildrenInput = {
@@ -107501,6 +112230,7 @@ export namespace Prisma {
     users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationCreateOrConnectWithoutChildrenInput = {
@@ -107527,6 +112257,7 @@ export namespace Prisma {
     users?: UserCreateNestedManyWithoutPrimaryLocationInput
     journalLines?: JournalLineCreateNestedManyWithoutLocationInput
     transactions?: TransactionCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateWithoutParentInput = {
@@ -107548,6 +112279,7 @@ export namespace Prisma {
     users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationCreateOrConnectWithoutParentInput = {
@@ -107721,6 +112453,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutJournalLinesInput
     costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
     fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutLocationInput = {
@@ -107739,6 +112472,7 @@ export namespace Prisma {
     departmentId?: string | null
     costCentreId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -107777,6 +112511,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutTransactionsInput
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -107803,6 +112538,7 @@ export namespace Prisma {
     departmentId?: string | null
     costCentreId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -107831,6 +112567,56 @@ export namespace Prisma {
 
   export type TransactionCreateManyLocationInputEnvelope = {
     data: TransactionCreateManyLocationInput | TransactionCreateManyLocationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TreasuryAccountCreateWithoutLocationInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTreasuryAccountsInput
+    currency: CurrencyCreateNestedOneWithoutTreasuryAccountsInput
+    ledgerAccount: AccountCreateNestedOneWithoutTreasuryAccountsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
+    journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateWithoutLocationInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountCreateOrConnectWithoutLocationInput = {
+    where: TreasuryAccountWhereUniqueInput
+    create: XOR<TreasuryAccountCreateWithoutLocationInput, TreasuryAccountUncheckedCreateWithoutLocationInput>
+  }
+
+  export type TreasuryAccountCreateManyLocationInputEnvelope = {
+    data: TreasuryAccountCreateManyLocationInput | TreasuryAccountCreateManyLocationInput[]
     skipDuplicates?: boolean
   }
 
@@ -107883,6 +112669,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -107923,6 +112711,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type LocationUpsertWithoutChildrenInput = {
@@ -107955,6 +112745,7 @@ export namespace Prisma {
     users?: UserUpdateManyWithoutPrimaryLocationNestedInput
     journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
     transactions?: TransactionUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateWithoutChildrenInput = {
@@ -107976,6 +112767,7 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUpsertWithWhereUniqueWithoutParentInput = {
@@ -108042,6 +112834,22 @@ export namespace Prisma {
     data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutLocationInput>
   }
 
+  export type TreasuryAccountUpsertWithWhereUniqueWithoutLocationInput = {
+    where: TreasuryAccountWhereUniqueInput
+    update: XOR<TreasuryAccountUpdateWithoutLocationInput, TreasuryAccountUncheckedUpdateWithoutLocationInput>
+    create: XOR<TreasuryAccountCreateWithoutLocationInput, TreasuryAccountUncheckedCreateWithoutLocationInput>
+  }
+
+  export type TreasuryAccountUpdateWithWhereUniqueWithoutLocationInput = {
+    where: TreasuryAccountWhereUniqueInput
+    data: XOR<TreasuryAccountUpdateWithoutLocationInput, TreasuryAccountUncheckedUpdateWithoutLocationInput>
+  }
+
+  export type TreasuryAccountUpdateManyWithWhereWithoutLocationInput = {
+    where: TreasuryAccountScalarWhereInput
+    data: XOR<TreasuryAccountUpdateManyMutationInput, TreasuryAccountUncheckedUpdateManyWithoutLocationInput>
+  }
+
   export type OrganizationCreateWithoutDepartmentsInput = {
     id?: string
     code: string
@@ -108080,6 +112888,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -108120,6 +112930,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -108399,6 +113211,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
     location?: LocationCreateNestedOneWithoutJournalLinesInput
     fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutDepartmentInput = {
@@ -108417,6 +113230,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -108455,6 +113269,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -108481,6 +113296,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -108561,6 +113377,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -108601,6 +113419,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutChildrenInput = {
@@ -108762,6 +113582,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCostCentresInput = {
@@ -108802,6 +113624,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCostCentresInput = {
@@ -108861,6 +113685,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutJournalLinesInput
     location?: LocationCreateNestedOneWithoutJournalLinesInput
     fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutCostCentreInput = {
@@ -108879,6 +113704,7 @@ export namespace Prisma {
     departmentId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -108917,6 +113743,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -108943,6 +113770,7 @@ export namespace Prisma {
     departmentId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -109023,6 +113851,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCostCentresInput = {
@@ -109063,6 +113893,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutCostCentresInput = {
@@ -109176,6 +114008,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProjectsInput = {
@@ -109216,6 +114050,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProjectsInput = {
@@ -109240,6 +114076,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
     location?: LocationCreateNestedOneWithoutJournalLinesInput
     fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutProjectInput = {
@@ -109258,6 +114095,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -109296,6 +114134,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -109322,6 +114161,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -109402,6 +114242,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProjectsInput = {
@@ -109442,6 +114284,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutProjectInput = {
@@ -109514,6 +114358,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFundingSourcesInput = {
@@ -109554,6 +114400,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFundingSourcesInput = {
@@ -109578,6 +114426,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutJournalLinesInput
     costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
     location?: LocationCreateNestedOneWithoutJournalLinesInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutFundingSourceInput = {
@@ -109596,6 +114445,7 @@ export namespace Prisma {
     departmentId?: string | null
     costCentreId?: string | null
     locationId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -109634,6 +114484,7 @@ export namespace Prisma {
     department?: DepartmentCreateNestedOneWithoutTransactionsInput
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -109660,6 +114511,7 @@ export namespace Prisma {
     departmentId?: string | null
     costCentreId?: string | null
     locationId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -109688,6 +114540,56 @@ export namespace Prisma {
 
   export type TransactionCreateManyFundingSourceInputEnvelope = {
     data: TransactionCreateManyFundingSourceInput | TransactionCreateManyFundingSourceInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TreasuryAccountCreateWithoutFundingSourceInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTreasuryAccountsInput
+    currency: CurrencyCreateNestedOneWithoutTreasuryAccountsInput
+    ledgerAccount: AccountCreateNestedOneWithoutTreasuryAccountsInput
+    location?: LocationCreateNestedOneWithoutTreasuryAccountsInput
+    journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateWithoutFundingSourceInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountCreateOrConnectWithoutFundingSourceInput = {
+    where: TreasuryAccountWhereUniqueInput
+    create: XOR<TreasuryAccountCreateWithoutFundingSourceInput, TreasuryAccountUncheckedCreateWithoutFundingSourceInput>
+  }
+
+  export type TreasuryAccountCreateManyFundingSourceInputEnvelope = {
+    data: TreasuryAccountCreateManyFundingSourceInput | TreasuryAccountCreateManyFundingSourceInput[]
     skipDuplicates?: boolean
   }
 
@@ -109740,6 +114642,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFundingSourcesInput = {
@@ -109780,6 +114684,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput = {
@@ -109812,6 +114718,1212 @@ export namespace Prisma {
   export type TransactionUpdateManyWithWhereWithoutFundingSourceInput = {
     where: TransactionScalarWhereInput
     data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutFundingSourceInput>
+  }
+
+  export type TreasuryAccountUpsertWithWhereUniqueWithoutFundingSourceInput = {
+    where: TreasuryAccountWhereUniqueInput
+    update: XOR<TreasuryAccountUpdateWithoutFundingSourceInput, TreasuryAccountUncheckedUpdateWithoutFundingSourceInput>
+    create: XOR<TreasuryAccountCreateWithoutFundingSourceInput, TreasuryAccountUncheckedCreateWithoutFundingSourceInput>
+  }
+
+  export type TreasuryAccountUpdateWithWhereUniqueWithoutFundingSourceInput = {
+    where: TreasuryAccountWhereUniqueInput
+    data: XOR<TreasuryAccountUpdateWithoutFundingSourceInput, TreasuryAccountUncheckedUpdateWithoutFundingSourceInput>
+  }
+
+  export type TreasuryAccountUpdateManyWithWhereWithoutFundingSourceInput = {
+    where: TreasuryAccountScalarWhereInput
+    data: XOR<TreasuryAccountUpdateManyMutationInput, TreasuryAccountUncheckedUpdateManyWithoutFundingSourceInput>
+  }
+
+  export type OrganizationCreateWithoutTreasuryAccountsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutTreasuryAccountsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutTreasuryAccountsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutTreasuryAccountsInput, OrganizationUncheckedCreateWithoutTreasuryAccountsInput>
+  }
+
+  export type CurrencyCreateWithoutTreasuryAccountsInput = {
+    id?: string
+    code: string
+    name: string
+    symbol?: string | null
+    type?: $Enums.CurrencyType
+    decimalPlaces?: number
+    isBase?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exchangeRatesBase?: ExchangeRateCreateNestedManyWithoutBaseCurrencyInput
+    exchangeRatesQuote?: ExchangeRateCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceCreateNestedManyWithoutCurrencyInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutCurrencyInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
+    journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
+    transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
+  }
+
+  export type CurrencyUncheckedCreateWithoutTreasuryAccountsInput = {
+    id?: string
+    code: string
+    name: string
+    symbol?: string | null
+    type?: $Enums.CurrencyType
+    decimalPlaces?: number
+    isBase?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exchangeRatesBase?: ExchangeRateUncheckedCreateNestedManyWithoutBaseCurrencyInput
+    exchangeRatesQuote?: ExchangeRateUncheckedCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutCurrencyInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
+  }
+
+  export type CurrencyCreateOrConnectWithoutTreasuryAccountsInput = {
+    where: CurrencyWhereUniqueInput
+    create: XOR<CurrencyCreateWithoutTreasuryAccountsInput, CurrencyUncheckedCreateWithoutTreasuryAccountsInput>
+  }
+
+  export type AccountCreateWithoutTreasuryAccountsInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type: $Enums.AccountType
+    subCategory?: $Enums.AccountSubCategory | null
+    normalBalance: $Enums.NormalBalance
+    isPostable?: boolean
+    isReconcilable?: boolean
+    requiresDocument?: boolean
+    status?: $Enums.AccountStatus
+    validatedByQualifiedAccountant?: boolean
+    validatorNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAccountsInput
+    parent?: AccountCreateNestedOneWithoutChildrenInput
+    children?: AccountCreateNestedManyWithoutParentInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutAccountInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutAccountInput
+    journalLines?: JournalLineCreateNestedManyWithoutAccountInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutAccountInput
+    transactions?: TransactionCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountUncheckedCreateWithoutTreasuryAccountsInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    description?: string | null
+    type: $Enums.AccountType
+    subCategory?: $Enums.AccountSubCategory | null
+    normalBalance: $Enums.NormalBalance
+    parentId?: string | null
+    isPostable?: boolean
+    isReconcilable?: boolean
+    requiresDocument?: boolean
+    status?: $Enums.AccountStatus
+    validatedByQualifiedAccountant?: boolean
+    validatorNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: AccountUncheckedCreateNestedManyWithoutParentInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutAccountInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutAccountInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutAccountInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutTreasuryAccountsInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutTreasuryAccountsInput, AccountUncheckedCreateWithoutTreasuryAccountsInput>
+  }
+
+  export type LocationCreateWithoutTreasuryAccountsInput = {
+    id?: string
+    code: string
+    name: string
+    type: $Enums.LocationType
+    isOwned?: boolean
+    permissionReference?: string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: string
+    isActive?: boolean
+    effectiveFrom?: Date | string | null
+    effectiveTo?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutLocationsInput
+    parent?: LocationCreateNestedOneWithoutChildrenInput
+    children?: LocationCreateNestedManyWithoutParentInput
+    users?: UserCreateNestedManyWithoutPrimaryLocationInput
+    journalLines?: JournalLineCreateNestedManyWithoutLocationInput
+    transactions?: TransactionCreateNestedManyWithoutLocationInput
+  }
+
+  export type LocationUncheckedCreateWithoutTreasuryAccountsInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    type: $Enums.LocationType
+    isOwned?: boolean
+    permissionReference?: string | null
+    parentId?: string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: string
+    isActive?: boolean
+    effectiveFrom?: Date | string | null
+    effectiveTo?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    children?: LocationUncheckedCreateNestedManyWithoutParentInput
+    users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutLocationInput
+  }
+
+  export type LocationCreateOrConnectWithoutTreasuryAccountsInput = {
+    where: LocationWhereUniqueInput
+    create: XOR<LocationCreateWithoutTreasuryAccountsInput, LocationUncheckedCreateWithoutTreasuryAccountsInput>
+  }
+
+  export type FundingSourceCreateWithoutTreasuryAccountsInput = {
+    id?: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description?: string | null
+    isRestricted?: boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutFundingSourcesInput
+    journalLines?: JournalLineCreateNestedManyWithoutFundingSourceInput
+    transactions?: TransactionCreateNestedManyWithoutFundingSourceInput
+  }
+
+  export type FundingSourceUncheckedCreateWithoutTreasuryAccountsInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    type: $Enums.FundingSourceType
+    description?: string | null
+    isRestricted?: boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutFundingSourceInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutFundingSourceInput
+  }
+
+  export type FundingSourceCreateOrConnectWithoutTreasuryAccountsInput = {
+    where: FundingSourceWhereUniqueInput
+    create: XOR<FundingSourceCreateWithoutTreasuryAccountsInput, FundingSourceUncheckedCreateWithoutTreasuryAccountsInput>
+  }
+
+  export type JournalLineCreateWithoutTreasuryAccountInput = {
+    id?: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    createdAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutJournalLinesInput
+    entry: JournalEntryCreateNestedOneWithoutLinesInput
+    account: AccountCreateNestedOneWithoutJournalLinesInput
+    currency: CurrencyCreateNestedOneWithoutJournalLinesInput
+    project?: ProjectCreateNestedOneWithoutJournalLinesInput
+    department?: DepartmentCreateNestedOneWithoutJournalLinesInput
+    costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
+    location?: LocationCreateNestedOneWithoutJournalLinesInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+  }
+
+  export type JournalLineUncheckedCreateWithoutTreasuryAccountInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type JournalLineCreateOrConnectWithoutTreasuryAccountInput = {
+    where: JournalLineWhereUniqueInput
+    create: XOR<JournalLineCreateWithoutTreasuryAccountInput, JournalLineUncheckedCreateWithoutTreasuryAccountInput>
+  }
+
+  export type JournalLineCreateManyTreasuryAccountInputEnvelope = {
+    data: JournalLineCreateManyTreasuryAccountInput | JournalLineCreateManyTreasuryAccountInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransactionCreateWithoutTreasuryAccountInput = {
+    id?: string
+    status?: $Enums.TransactionStatus
+    date: Date | string
+    description?: string | null
+    reference?: string | null
+    number?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    paymentMethod?: $Enums.PaymentMethod
+    supportingDocumentId?: string | null
+    submittedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    postedAt?: Date | string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTransactionsInput
+    account?: AccountCreateNestedOneWithoutTransactionsInput
+    currency: CurrencyCreateNestedOneWithoutTransactionsInput
+    project?: ProjectCreateNestedOneWithoutTransactionsInput
+    department?: DepartmentCreateNestedOneWithoutTransactionsInput
+    costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
+    location?: LocationCreateNestedOneWithoutTransactionsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
+    submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
+    approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
+    postedBy?: UserCreateNestedOneWithoutTransactionsPostedInput
+    reversedBy?: UserCreateNestedOneWithoutTransactionsReversedInput
+    reversalReason?: ReversalReasonCodeCreateNestedOneWithoutTransactionsInput
+    adjustingEntry?: TransactionCreateNestedOneWithoutAdjustedEntriesInput
+    adjustedEntries?: TransactionCreateNestedManyWithoutAdjustingEntryInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutTransactionInput
+  }
+
+  export type TransactionUncheckedCreateWithoutTreasuryAccountInput = {
+    id?: string
+    organizationId: string
+    status?: $Enums.TransactionStatus
+    date: Date | string
+    description?: string | null
+    reference?: string | null
+    number?: string | null
+    accountId?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
+    paymentMethod?: $Enums.PaymentMethod
+    supportingDocumentId?: string | null
+    createdById?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    reversalReasonId?: string | null
+    adjustingEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adjustedEntries?: TransactionUncheckedCreateNestedManyWithoutAdjustingEntryInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutTransactionInput
+  }
+
+  export type TransactionCreateOrConnectWithoutTreasuryAccountInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutTreasuryAccountInput, TransactionUncheckedCreateWithoutTreasuryAccountInput>
+  }
+
+  export type TransactionCreateManyTreasuryAccountInputEnvelope = {
+    data: TransactionCreateManyTreasuryAccountInput | TransactionCreateManyTreasuryAccountInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PaymentScheduleCreateWithoutTreasuryAccountInput = {
+    id?: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutPaymentSchedulesInput
+    currency: CurrencyCreateNestedOneWithoutPaymentSchedulesInput
+  }
+
+  export type PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput = {
+    id?: string
+    organizationId: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentScheduleCreateOrConnectWithoutTreasuryAccountInput = {
+    where: PaymentScheduleWhereUniqueInput
+    create: XOR<PaymentScheduleCreateWithoutTreasuryAccountInput, PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput>
+  }
+
+  export type PaymentScheduleCreateManyTreasuryAccountInputEnvelope = {
+    data: PaymentScheduleCreateManyTreasuryAccountInput | PaymentScheduleCreateManyTreasuryAccountInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganizationUpsertWithoutTreasuryAccountsInput = {
+    update: XOR<OrganizationUpdateWithoutTreasuryAccountsInput, OrganizationUncheckedUpdateWithoutTreasuryAccountsInput>
+    create: XOR<OrganizationCreateWithoutTreasuryAccountsInput, OrganizationUncheckedCreateWithoutTreasuryAccountsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutTreasuryAccountsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutTreasuryAccountsInput, OrganizationUncheckedUpdateWithoutTreasuryAccountsInput>
+  }
+
+  export type OrganizationUpdateWithoutTreasuryAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutTreasuryAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type CurrencyUpsertWithoutTreasuryAccountsInput = {
+    update: XOR<CurrencyUpdateWithoutTreasuryAccountsInput, CurrencyUncheckedUpdateWithoutTreasuryAccountsInput>
+    create: XOR<CurrencyCreateWithoutTreasuryAccountsInput, CurrencyUncheckedCreateWithoutTreasuryAccountsInput>
+    where?: CurrencyWhereInput
+  }
+
+  export type CurrencyUpdateToOneWithWhereWithoutTreasuryAccountsInput = {
+    where?: CurrencyWhereInput
+    data: XOR<CurrencyUpdateWithoutTreasuryAccountsInput, CurrencyUncheckedUpdateWithoutTreasuryAccountsInput>
+  }
+
+  export type CurrencyUpdateWithoutTreasuryAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCurrencyTypeFieldUpdateOperationsInput | $Enums.CurrencyType
+    decimalPlaces?: IntFieldUpdateOperationsInput | number
+    isBase?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exchangeRatesBase?: ExchangeRateUpdateManyWithoutBaseCurrencyNestedInput
+    exchangeRatesQuote?: ExchangeRateUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutCurrencyNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutCurrencyNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
+    journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
+    transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
+  }
+
+  export type CurrencyUncheckedUpdateWithoutTreasuryAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCurrencyTypeFieldUpdateOperationsInput | $Enums.CurrencyType
+    decimalPlaces?: IntFieldUpdateOperationsInput | number
+    isBase?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exchangeRatesBase?: ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+    exchangeRatesQuote?: ExchangeRateUncheckedUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutCurrencyNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
+  }
+
+  export type AccountUpsertWithoutTreasuryAccountsInput = {
+    update: XOR<AccountUpdateWithoutTreasuryAccountsInput, AccountUncheckedUpdateWithoutTreasuryAccountsInput>
+    create: XOR<AccountCreateWithoutTreasuryAccountsInput, AccountUncheckedCreateWithoutTreasuryAccountsInput>
+    where?: AccountWhereInput
+  }
+
+  export type AccountUpdateToOneWithWhereWithoutTreasuryAccountsInput = {
+    where?: AccountWhereInput
+    data: XOR<AccountUpdateWithoutTreasuryAccountsInput, AccountUncheckedUpdateWithoutTreasuryAccountsInput>
+  }
+
+  export type AccountUpdateWithoutTreasuryAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+    subCategory?: NullableEnumAccountSubCategoryFieldUpdateOperationsInput | $Enums.AccountSubCategory | null
+    normalBalance?: EnumNormalBalanceFieldUpdateOperationsInput | $Enums.NormalBalance
+    isPostable?: BoolFieldUpdateOperationsInput | boolean
+    isReconcilable?: BoolFieldUpdateOperationsInput | boolean
+    requiresDocument?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    validatedByQualifiedAccountant?: BoolFieldUpdateOperationsInput | boolean
+    validatorNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAccountsNestedInput
+    parent?: AccountUpdateOneWithoutChildrenNestedInput
+    children?: AccountUpdateManyWithoutParentNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutAccountNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutAccountNestedInput
+    journalLines?: JournalLineUpdateManyWithoutAccountNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutAccountNestedInput
+    transactions?: TransactionUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutTreasuryAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+    subCategory?: NullableEnumAccountSubCategoryFieldUpdateOperationsInput | $Enums.AccountSubCategory | null
+    normalBalance?: EnumNormalBalanceFieldUpdateOperationsInput | $Enums.NormalBalance
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isPostable?: BoolFieldUpdateOperationsInput | boolean
+    isReconcilable?: BoolFieldUpdateOperationsInput | boolean
+    requiresDocument?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumAccountStatusFieldUpdateOperationsInput | $Enums.AccountStatus
+    validatedByQualifiedAccountant?: BoolFieldUpdateOperationsInput | boolean
+    validatorNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: AccountUncheckedUpdateManyWithoutParentNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutAccountNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutAccountNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutAccountNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type LocationUpsertWithoutTreasuryAccountsInput = {
+    update: XOR<LocationUpdateWithoutTreasuryAccountsInput, LocationUncheckedUpdateWithoutTreasuryAccountsInput>
+    create: XOR<LocationCreateWithoutTreasuryAccountsInput, LocationUncheckedCreateWithoutTreasuryAccountsInput>
+    where?: LocationWhereInput
+  }
+
+  export type LocationUpdateToOneWithWhereWithoutTreasuryAccountsInput = {
+    where?: LocationWhereInput
+    data: XOR<LocationUpdateWithoutTreasuryAccountsInput, LocationUncheckedUpdateWithoutTreasuryAccountsInput>
+  }
+
+  export type LocationUpdateWithoutTreasuryAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLocationTypeFieldUpdateOperationsInput | $Enums.LocationType
+    isOwned?: BoolFieldUpdateOperationsInput | boolean
+    permissionReference?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    effectiveFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutLocationsNestedInput
+    parent?: LocationUpdateOneWithoutChildrenNestedInput
+    children?: LocationUpdateManyWithoutParentNestedInput
+    users?: UserUpdateManyWithoutPrimaryLocationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
+    transactions?: TransactionUpdateManyWithoutLocationNestedInput
+  }
+
+  export type LocationUncheckedUpdateWithoutTreasuryAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumLocationTypeFieldUpdateOperationsInput | $Enums.LocationType
+    isOwned?: BoolFieldUpdateOperationsInput | boolean
+    permissionReference?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableJsonNullValueInput | InputJsonValue
+    timezone?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    effectiveFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    effectiveTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: LocationUncheckedUpdateManyWithoutParentNestedInput
+    users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutLocationNestedInput
+  }
+
+  export type FundingSourceUpsertWithoutTreasuryAccountsInput = {
+    update: XOR<FundingSourceUpdateWithoutTreasuryAccountsInput, FundingSourceUncheckedUpdateWithoutTreasuryAccountsInput>
+    create: XOR<FundingSourceCreateWithoutTreasuryAccountsInput, FundingSourceUncheckedCreateWithoutTreasuryAccountsInput>
+    where?: FundingSourceWhereInput
+  }
+
+  export type FundingSourceUpdateToOneWithWhereWithoutTreasuryAccountsInput = {
+    where?: FundingSourceWhereInput
+    data: XOR<FundingSourceUpdateWithoutTreasuryAccountsInput, FundingSourceUncheckedUpdateWithoutTreasuryAccountsInput>
+  }
+
+  export type FundingSourceUpdateWithoutTreasuryAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutFundingSourcesNestedInput
+    journalLines?: JournalLineUpdateManyWithoutFundingSourceNestedInput
+    transactions?: TransactionUpdateManyWithoutFundingSourceNestedInput
+  }
+
+  export type FundingSourceUncheckedUpdateWithoutTreasuryAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumFundingSourceTypeFieldUpdateOperationsInput | $Enums.FundingSourceType
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    restrictions?: NullableJsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutFundingSourceNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutFundingSourceNestedInput
+  }
+
+  export type JournalLineUpsertWithWhereUniqueWithoutTreasuryAccountInput = {
+    where: JournalLineWhereUniqueInput
+    update: XOR<JournalLineUpdateWithoutTreasuryAccountInput, JournalLineUncheckedUpdateWithoutTreasuryAccountInput>
+    create: XOR<JournalLineCreateWithoutTreasuryAccountInput, JournalLineUncheckedCreateWithoutTreasuryAccountInput>
+  }
+
+  export type JournalLineUpdateWithWhereUniqueWithoutTreasuryAccountInput = {
+    where: JournalLineWhereUniqueInput
+    data: XOR<JournalLineUpdateWithoutTreasuryAccountInput, JournalLineUncheckedUpdateWithoutTreasuryAccountInput>
+  }
+
+  export type JournalLineUpdateManyWithWhereWithoutTreasuryAccountInput = {
+    where: JournalLineScalarWhereInput
+    data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyWithoutTreasuryAccountInput>
+  }
+
+  export type TransactionUpsertWithWhereUniqueWithoutTreasuryAccountInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutTreasuryAccountInput, TransactionUncheckedUpdateWithoutTreasuryAccountInput>
+    create: XOR<TransactionCreateWithoutTreasuryAccountInput, TransactionUncheckedCreateWithoutTreasuryAccountInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutTreasuryAccountInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutTreasuryAccountInput, TransactionUncheckedUpdateWithoutTreasuryAccountInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutTreasuryAccountInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutTreasuryAccountInput>
+  }
+
+  export type PaymentScheduleUpsertWithWhereUniqueWithoutTreasuryAccountInput = {
+    where: PaymentScheduleWhereUniqueInput
+    update: XOR<PaymentScheduleUpdateWithoutTreasuryAccountInput, PaymentScheduleUncheckedUpdateWithoutTreasuryAccountInput>
+    create: XOR<PaymentScheduleCreateWithoutTreasuryAccountInput, PaymentScheduleUncheckedCreateWithoutTreasuryAccountInput>
+  }
+
+  export type PaymentScheduleUpdateWithWhereUniqueWithoutTreasuryAccountInput = {
+    where: PaymentScheduleWhereUniqueInput
+    data: XOR<PaymentScheduleUpdateWithoutTreasuryAccountInput, PaymentScheduleUncheckedUpdateWithoutTreasuryAccountInput>
+  }
+
+  export type PaymentScheduleUpdateManyWithWhereWithoutTreasuryAccountInput = {
+    where: PaymentScheduleScalarWhereInput
+    data: XOR<PaymentScheduleUpdateManyMutationInput, PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountInput>
+  }
+
+  export type OrganizationCreateWithoutPaymentSchedulesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutPaymentSchedulesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutPaymentSchedulesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutPaymentSchedulesInput, OrganizationUncheckedCreateWithoutPaymentSchedulesInput>
+  }
+
+  export type TreasuryAccountCreateWithoutPaymentSchedulesInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTreasuryAccountsInput
+    currency: CurrencyCreateNestedOneWithoutTreasuryAccountsInput
+    ledgerAccount: AccountCreateNestedOneWithoutTreasuryAccountsInput
+    location?: LocationCreateNestedOneWithoutTreasuryAccountsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
+    journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateWithoutPaymentSchedulesInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountCreateOrConnectWithoutPaymentSchedulesInput = {
+    where: TreasuryAccountWhereUniqueInput
+    create: XOR<TreasuryAccountCreateWithoutPaymentSchedulesInput, TreasuryAccountUncheckedCreateWithoutPaymentSchedulesInput>
+  }
+
+  export type CurrencyCreateWithoutPaymentSchedulesInput = {
+    id?: string
+    code: string
+    name: string
+    symbol?: string | null
+    type?: $Enums.CurrencyType
+    decimalPlaces?: number
+    isBase?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exchangeRatesBase?: ExchangeRateCreateNestedManyWithoutBaseCurrencyInput
+    exchangeRatesQuote?: ExchangeRateCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceCreateNestedManyWithoutCurrencyInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutCurrencyInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
+    journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
+    transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+  }
+
+  export type CurrencyUncheckedCreateWithoutPaymentSchedulesInput = {
+    id?: string
+    code: string
+    name: string
+    symbol?: string | null
+    type?: $Enums.CurrencyType
+    decimalPlaces?: number
+    isBase?: boolean
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    exchangeRatesBase?: ExchangeRateUncheckedCreateNestedManyWithoutBaseCurrencyInput
+    exchangeRatesQuote?: ExchangeRateUncheckedCreateNestedManyWithoutQuoteCurrencyInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutCurrencyInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+  }
+
+  export type CurrencyCreateOrConnectWithoutPaymentSchedulesInput = {
+    where: CurrencyWhereUniqueInput
+    create: XOR<CurrencyCreateWithoutPaymentSchedulesInput, CurrencyUncheckedCreateWithoutPaymentSchedulesInput>
+  }
+
+  export type OrganizationUpsertWithoutPaymentSchedulesInput = {
+    update: XOR<OrganizationUpdateWithoutPaymentSchedulesInput, OrganizationUncheckedUpdateWithoutPaymentSchedulesInput>
+    create: XOR<OrganizationCreateWithoutPaymentSchedulesInput, OrganizationUncheckedCreateWithoutPaymentSchedulesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutPaymentSchedulesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutPaymentSchedulesInput, OrganizationUncheckedUpdateWithoutPaymentSchedulesInput>
+  }
+
+  export type OrganizationUpdateWithoutPaymentSchedulesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutPaymentSchedulesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type TreasuryAccountUpsertWithoutPaymentSchedulesInput = {
+    update: XOR<TreasuryAccountUpdateWithoutPaymentSchedulesInput, TreasuryAccountUncheckedUpdateWithoutPaymentSchedulesInput>
+    create: XOR<TreasuryAccountCreateWithoutPaymentSchedulesInput, TreasuryAccountUncheckedCreateWithoutPaymentSchedulesInput>
+    where?: TreasuryAccountWhereInput
+  }
+
+  export type TreasuryAccountUpdateToOneWithWhereWithoutPaymentSchedulesInput = {
+    where?: TreasuryAccountWhereInput
+    data: XOR<TreasuryAccountUpdateWithoutPaymentSchedulesInput, TreasuryAccountUncheckedUpdateWithoutPaymentSchedulesInput>
+  }
+
+  export type TreasuryAccountUpdateWithoutPaymentSchedulesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    ledgerAccount?: AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    location?: LocationUpdateOneWithoutTreasuryAccountsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateWithoutPaymentSchedulesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type CurrencyUpsertWithoutPaymentSchedulesInput = {
+    update: XOR<CurrencyUpdateWithoutPaymentSchedulesInput, CurrencyUncheckedUpdateWithoutPaymentSchedulesInput>
+    create: XOR<CurrencyCreateWithoutPaymentSchedulesInput, CurrencyUncheckedCreateWithoutPaymentSchedulesInput>
+    where?: CurrencyWhereInput
+  }
+
+  export type CurrencyUpdateToOneWithWhereWithoutPaymentSchedulesInput = {
+    where?: CurrencyWhereInput
+    data: XOR<CurrencyUpdateWithoutPaymentSchedulesInput, CurrencyUncheckedUpdateWithoutPaymentSchedulesInput>
+  }
+
+  export type CurrencyUpdateWithoutPaymentSchedulesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCurrencyTypeFieldUpdateOperationsInput | $Enums.CurrencyType
+    decimalPlaces?: IntFieldUpdateOperationsInput | number
+    isBase?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exchangeRatesBase?: ExchangeRateUpdateManyWithoutBaseCurrencyNestedInput
+    exchangeRatesQuote?: ExchangeRateUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutCurrencyNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutCurrencyNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
+    journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
+    transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+  }
+
+  export type CurrencyUncheckedUpdateWithoutPaymentSchedulesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumCurrencyTypeFieldUpdateOperationsInput | $Enums.CurrencyType
+    decimalPlaces?: IntFieldUpdateOperationsInput | number
+    isBase?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    exchangeRatesBase?: ExchangeRateUncheckedUpdateManyWithoutBaseCurrencyNestedInput
+    exchangeRatesQuote?: ExchangeRateUncheckedUpdateManyWithoutQuoteCurrencyNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutCurrencyNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type ExchangeRateCreateWithoutBaseCurrencyInput = {
@@ -110005,6 +116117,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
     location?: LocationCreateNestedOneWithoutJournalLinesInput
     fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutCurrencyInput = {
@@ -110023,6 +116136,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -110061,6 +116175,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -110087,6 +116202,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -110115,6 +116231,96 @@ export namespace Prisma {
 
   export type TransactionCreateManyCurrencyInputEnvelope = {
     data: TransactionCreateManyCurrencyInput | TransactionCreateManyCurrencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TreasuryAccountCreateWithoutCurrencyInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTreasuryAccountsInput
+    ledgerAccount: AccountCreateNestedOneWithoutTreasuryAccountsInput
+    location?: LocationCreateNestedOneWithoutTreasuryAccountsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
+    journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateWithoutCurrencyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountCreateOrConnectWithoutCurrencyInput = {
+    where: TreasuryAccountWhereUniqueInput
+    create: XOR<TreasuryAccountCreateWithoutCurrencyInput, TreasuryAccountUncheckedCreateWithoutCurrencyInput>
+  }
+
+  export type TreasuryAccountCreateManyCurrencyInputEnvelope = {
+    data: TreasuryAccountCreateManyCurrencyInput | TreasuryAccountCreateManyCurrencyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PaymentScheduleCreateWithoutCurrencyInput = {
+    id?: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutPaymentSchedulesInput
+    treasuryAccount: TreasuryAccountCreateNestedOneWithoutPaymentSchedulesInput
+  }
+
+  export type PaymentScheduleUncheckedCreateWithoutCurrencyInput = {
+    id?: string
+    organizationId: string
+    treasuryAccountId: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentScheduleCreateOrConnectWithoutCurrencyInput = {
+    where: PaymentScheduleWhereUniqueInput
+    create: XOR<PaymentScheduleCreateWithoutCurrencyInput, PaymentScheduleUncheckedCreateWithoutCurrencyInput>
+  }
+
+  export type PaymentScheduleCreateManyCurrencyInputEnvelope = {
+    data: PaymentScheduleCreateManyCurrencyInput | PaymentScheduleCreateManyCurrencyInput[]
     skipDuplicates?: boolean
   }
 
@@ -110245,6 +116451,38 @@ export namespace Prisma {
     data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutCurrencyInput>
   }
 
+  export type TreasuryAccountUpsertWithWhereUniqueWithoutCurrencyInput = {
+    where: TreasuryAccountWhereUniqueInput
+    update: XOR<TreasuryAccountUpdateWithoutCurrencyInput, TreasuryAccountUncheckedUpdateWithoutCurrencyInput>
+    create: XOR<TreasuryAccountCreateWithoutCurrencyInput, TreasuryAccountUncheckedCreateWithoutCurrencyInput>
+  }
+
+  export type TreasuryAccountUpdateWithWhereUniqueWithoutCurrencyInput = {
+    where: TreasuryAccountWhereUniqueInput
+    data: XOR<TreasuryAccountUpdateWithoutCurrencyInput, TreasuryAccountUncheckedUpdateWithoutCurrencyInput>
+  }
+
+  export type TreasuryAccountUpdateManyWithWhereWithoutCurrencyInput = {
+    where: TreasuryAccountScalarWhereInput
+    data: XOR<TreasuryAccountUpdateManyMutationInput, TreasuryAccountUncheckedUpdateManyWithoutCurrencyInput>
+  }
+
+  export type PaymentScheduleUpsertWithWhereUniqueWithoutCurrencyInput = {
+    where: PaymentScheduleWhereUniqueInput
+    update: XOR<PaymentScheduleUpdateWithoutCurrencyInput, PaymentScheduleUncheckedUpdateWithoutCurrencyInput>
+    create: XOR<PaymentScheduleCreateWithoutCurrencyInput, PaymentScheduleUncheckedCreateWithoutCurrencyInput>
+  }
+
+  export type PaymentScheduleUpdateWithWhereUniqueWithoutCurrencyInput = {
+    where: PaymentScheduleWhereUniqueInput
+    data: XOR<PaymentScheduleUpdateWithoutCurrencyInput, PaymentScheduleUncheckedUpdateWithoutCurrencyInput>
+  }
+
+  export type PaymentScheduleUpdateManyWithWhereWithoutCurrencyInput = {
+    where: PaymentScheduleScalarWhereInput
+    data: XOR<PaymentScheduleUpdateManyMutationInput, PaymentScheduleUncheckedUpdateManyWithoutCurrencyInput>
+  }
+
   export type CurrencyCreateWithoutExchangeRatesBaseInput = {
     id?: string
     code: string
@@ -110262,6 +116500,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutExchangeRatesBaseInput = {
@@ -110281,6 +116521,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutExchangeRatesBaseInput = {
@@ -110305,6 +116547,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutExchangeRatesQuoteInput = {
@@ -110324,6 +116568,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutExchangeRatesQuoteInput = {
@@ -110359,6 +116605,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutExchangeRatesBaseInput = {
@@ -110378,6 +116626,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUpsertWithoutExchangeRatesQuoteInput = {
@@ -110408,6 +116658,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutExchangeRatesQuoteInput = {
@@ -110427,6 +116679,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type OrganizationCreateWithoutMasterDataChangeRequestsInput = {
@@ -110467,6 +116721,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput = {
@@ -110507,6 +116763,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMasterDataChangeRequestsInput = {
@@ -110875,6 +117133,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput = {
@@ -110915,6 +117175,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsRequestedInput = {
@@ -111361,6 +117623,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReasonCodesInput = {
@@ -111401,6 +117665,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReasonCodesInput = {
@@ -111457,6 +117723,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReasonCodesInput = {
@@ -111497,6 +117765,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutProductsServicesInput = {
@@ -111537,6 +117807,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProductsServicesInput = {
@@ -111577,6 +117849,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProductsServicesInput = {
@@ -111601,6 +117875,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutProductsServicesInput = {
@@ -111620,6 +117896,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutProductsServicesInput = {
@@ -111676,6 +117954,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProductsServicesInput = {
@@ -111716,6 +117996,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CurrencyUpsertWithoutProductsServicesInput = {
@@ -111746,6 +118028,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutProductsServicesInput = {
@@ -111765,6 +118049,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type OrganizationCreateWithoutAccountsInput = {
@@ -111805,6 +118091,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountsInput = {
@@ -111845,6 +118133,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountsInput = {
@@ -111875,6 +118165,7 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutAccountInput
     transactions?: TransactionCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountUncheckedCreateWithoutChildrenInput = {
@@ -111900,6 +118191,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountCreateOrConnectWithoutChildrenInput = {
@@ -111930,6 +118222,7 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutAccountInput
     transactions?: TransactionCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountUncheckedCreateWithoutParentInput = {
@@ -111955,6 +118248,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountCreateOrConnectWithoutParentInput = {
@@ -112052,6 +118346,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
     location?: LocationCreateNestedOneWithoutJournalLinesInput
     fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutAccountInput = {
@@ -112070,6 +118365,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -112140,6 +118436,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -112166,6 +118463,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -112194,6 +118492,56 @@ export namespace Prisma {
 
   export type TransactionCreateManyAccountInputEnvelope = {
     data: TransactionCreateManyAccountInput | TransactionCreateManyAccountInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TreasuryAccountCreateWithoutLedgerAccountInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTreasuryAccountsInput
+    currency: CurrencyCreateNestedOneWithoutTreasuryAccountsInput
+    location?: LocationCreateNestedOneWithoutTreasuryAccountsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
+    journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateWithoutLedgerAccountInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountCreateOrConnectWithoutLedgerAccountInput = {
+    where: TreasuryAccountWhereUniqueInput
+    create: XOR<TreasuryAccountCreateWithoutLedgerAccountInput, TreasuryAccountUncheckedCreateWithoutLedgerAccountInput>
+  }
+
+  export type TreasuryAccountCreateManyLedgerAccountInputEnvelope = {
+    data: TreasuryAccountCreateManyLedgerAccountInput | TreasuryAccountCreateManyLedgerAccountInput[]
     skipDuplicates?: boolean
   }
 
@@ -112246,6 +118594,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountsInput = {
@@ -112286,6 +118636,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutChildrenInput = {
@@ -112322,6 +118674,7 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutChildrenInput = {
@@ -112347,6 +118700,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUpsertWithWhereUniqueWithoutParentInput = {
@@ -112445,6 +118799,22 @@ export namespace Prisma {
     data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutAccountInput>
   }
 
+  export type TreasuryAccountUpsertWithWhereUniqueWithoutLedgerAccountInput = {
+    where: TreasuryAccountWhereUniqueInput
+    update: XOR<TreasuryAccountUpdateWithoutLedgerAccountInput, TreasuryAccountUncheckedUpdateWithoutLedgerAccountInput>
+    create: XOR<TreasuryAccountCreateWithoutLedgerAccountInput, TreasuryAccountUncheckedCreateWithoutLedgerAccountInput>
+  }
+
+  export type TreasuryAccountUpdateWithWhereUniqueWithoutLedgerAccountInput = {
+    where: TreasuryAccountWhereUniqueInput
+    data: XOR<TreasuryAccountUpdateWithoutLedgerAccountInput, TreasuryAccountUncheckedUpdateWithoutLedgerAccountInput>
+  }
+
+  export type TreasuryAccountUpdateManyWithWhereWithoutLedgerAccountInput = {
+    where: TreasuryAccountScalarWhereInput
+    data: XOR<TreasuryAccountUpdateManyMutationInput, TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountInput>
+  }
+
   export type OrganizationCreateWithoutFinancialPeriodsInput = {
     id?: string
     code: string
@@ -112483,6 +118853,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFinancialPeriodsInput = {
@@ -112523,6 +118895,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFinancialPeriodsInput = {
@@ -112721,6 +119095,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFinancialPeriodsInput = {
@@ -112761,6 +119137,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OpeningBalanceUpsertWithWhereUniqueWithoutPeriodInput = {
@@ -112849,6 +119227,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutOpeningBalancesInput = {
@@ -112889,6 +119269,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutOpeningBalancesInput = {
@@ -112919,6 +119301,7 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutAccountInput
     transactions?: TransactionCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountUncheckedCreateWithoutOpeningBalancesInput = {
@@ -112944,6 +119327,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountCreateOrConnectWithoutOpeningBalancesInput = {
@@ -113011,6 +119395,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutOpeningBalancesInput = {
@@ -113030,6 +119416,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutOpeningBalancesInput = {
@@ -113086,6 +119474,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutOpeningBalancesInput = {
@@ -113126,6 +119516,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutOpeningBalancesInput = {
@@ -113162,6 +119554,7 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutOpeningBalancesInput = {
@@ -113187,6 +119580,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type FinancialPeriodUpsertWithoutOpeningBalancesInput = {
@@ -113266,6 +119660,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutOpeningBalancesInput = {
@@ -113285,6 +119681,8 @@ export namespace Prisma {
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type OrganizationCreateWithoutAccountBalanceSnapshotsInput = {
@@ -113325,6 +119723,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountBalanceSnapshotsInput = {
@@ -113365,6 +119765,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountBalanceSnapshotsInput = {
@@ -113395,6 +119797,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutAccountInput
     journalLines?: JournalLineCreateNestedManyWithoutAccountInput
     transactions?: TransactionCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountUncheckedCreateWithoutAccountBalanceSnapshotsInput = {
@@ -113420,6 +119823,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutAccountInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountCreateOrConnectWithoutAccountBalanceSnapshotsInput = {
@@ -113487,6 +119891,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutAccountBalanceSnapshotsInput = {
@@ -113506,6 +119912,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutAccountBalanceSnapshotsInput = {
@@ -113562,6 +119970,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountBalanceSnapshotsInput = {
@@ -113602,6 +120012,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutAccountBalanceSnapshotsInput = {
@@ -113638,6 +120050,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutAccountNestedInput
     journalLines?: JournalLineUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutAccountBalanceSnapshotsInput = {
@@ -113663,6 +120076,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutAccountNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type FinancialPeriodUpsertWithoutAccountBalanceSnapshotsInput = {
@@ -113742,6 +120156,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutAccountBalanceSnapshotsInput = {
@@ -113761,6 +120177,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type OrganizationCreateWithoutJournalEntriesInput = {
@@ -113801,6 +120219,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalEntriesInput = {
@@ -113841,6 +120261,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalEntriesInput = {
@@ -113917,6 +120339,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -113943,6 +120366,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -114842,6 +121266,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutJournalLinesInput
     location?: LocationCreateNestedOneWithoutJournalLinesInput
     fundingSource?: FundingSourceCreateNestedOneWithoutJournalLinesInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutJournalLinesInput
   }
 
   export type JournalLineUncheckedCreateWithoutEntryInput = {
@@ -114860,6 +121285,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -114922,6 +121348,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalEntriesInput = {
@@ -114962,6 +121390,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type FinancialPeriodUpsertWithoutJournalEntriesInput = {
@@ -115050,6 +121480,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -115076,6 +121507,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -115941,6 +122373,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalLinesInput = {
@@ -115981,6 +122415,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalLinesInput = {
@@ -116076,6 +122512,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutAccountInput
     transactions?: TransactionCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountUncheckedCreateWithoutJournalLinesInput = {
@@ -116101,6 +122538,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountCreateOrConnectWithoutJournalLinesInput = {
@@ -116125,6 +122563,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceCreateNestedManyWithoutCurrencyInput
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutJournalLinesInput = {
@@ -116144,6 +122584,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutJournalLinesInput = {
@@ -116271,6 +122713,7 @@ export namespace Prisma {
     children?: LocationCreateNestedManyWithoutParentInput
     users?: UserCreateNestedManyWithoutPrimaryLocationInput
     transactions?: TransactionCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateWithoutJournalLinesInput = {
@@ -116292,6 +122735,7 @@ export namespace Prisma {
     children?: LocationUncheckedCreateNestedManyWithoutParentInput
     users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationCreateOrConnectWithoutJournalLinesInput = {
@@ -116312,6 +122756,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutFundingSourcesInput
     transactions?: TransactionCreateNestedManyWithoutFundingSourceInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceUncheckedCreateWithoutJournalLinesInput = {
@@ -116327,11 +122772,57 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     transactions?: TransactionUncheckedCreateNestedManyWithoutFundingSourceInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceCreateOrConnectWithoutJournalLinesInput = {
     where: FundingSourceWhereUniqueInput
     create: XOR<FundingSourceCreateWithoutJournalLinesInput, FundingSourceUncheckedCreateWithoutJournalLinesInput>
+  }
+
+  export type TreasuryAccountCreateWithoutJournalLinesInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTreasuryAccountsInput
+    currency: CurrencyCreateNestedOneWithoutTreasuryAccountsInput
+    ledgerAccount: AccountCreateNestedOneWithoutTreasuryAccountsInput
+    location?: LocationCreateNestedOneWithoutTreasuryAccountsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
+    transactions?: TransactionCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateWithoutJournalLinesInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountCreateOrConnectWithoutJournalLinesInput = {
+    where: TreasuryAccountWhereUniqueInput
+    create: XOR<TreasuryAccountCreateWithoutJournalLinesInput, TreasuryAccountUncheckedCreateWithoutJournalLinesInput>
   }
 
   export type OrganizationUpsertWithoutJournalLinesInput = {
@@ -116383,6 +122874,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalLinesInput = {
@@ -116423,6 +122916,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithoutLinesInput = {
@@ -116530,6 +123025,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutJournalLinesInput = {
@@ -116555,6 +123051,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type CurrencyUpsertWithoutJournalLinesInput = {
@@ -116585,6 +123082,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceUpdateManyWithoutCurrencyNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutJournalLinesInput = {
@@ -116604,6 +123103,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type ProjectUpsertWithoutJournalLinesInput = {
@@ -116755,6 +123256,7 @@ export namespace Prisma {
     children?: LocationUpdateManyWithoutParentNestedInput
     users?: UserUpdateManyWithoutPrimaryLocationNestedInput
     transactions?: TransactionUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateWithoutJournalLinesInput = {
@@ -116776,6 +123278,7 @@ export namespace Prisma {
     children?: LocationUncheckedUpdateManyWithoutParentNestedInput
     users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type FundingSourceUpsertWithoutJournalLinesInput = {
@@ -116802,6 +123305,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutFundingSourcesNestedInput
     transactions?: TransactionUpdateManyWithoutFundingSourceNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutFundingSourceNestedInput
   }
 
   export type FundingSourceUncheckedUpdateWithoutJournalLinesInput = {
@@ -116817,6 +123321,58 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     transactions?: TransactionUncheckedUpdateManyWithoutFundingSourceNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutFundingSourceNestedInput
+  }
+
+  export type TreasuryAccountUpsertWithoutJournalLinesInput = {
+    update: XOR<TreasuryAccountUpdateWithoutJournalLinesInput, TreasuryAccountUncheckedUpdateWithoutJournalLinesInput>
+    create: XOR<TreasuryAccountCreateWithoutJournalLinesInput, TreasuryAccountUncheckedCreateWithoutJournalLinesInput>
+    where?: TreasuryAccountWhereInput
+  }
+
+  export type TreasuryAccountUpdateToOneWithWhereWithoutJournalLinesInput = {
+    where?: TreasuryAccountWhereInput
+    data: XOR<TreasuryAccountUpdateWithoutJournalLinesInput, TreasuryAccountUncheckedUpdateWithoutJournalLinesInput>
+  }
+
+  export type TreasuryAccountUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    ledgerAccount?: AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    location?: LocationUpdateOneWithoutTreasuryAccountsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
+    transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateWithoutJournalLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
   }
 
   export type OrganizationCreateWithoutReversalReasonCodesInput = {
@@ -116857,6 +123413,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReversalReasonCodesInput = {
@@ -116897,6 +123455,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReversalReasonCodesInput = {
@@ -117000,6 +123560,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -117026,6 +123587,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -117105,6 +123667,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReversalReasonCodesInput = {
@@ -117145,6 +123709,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput = {
@@ -117217,6 +123783,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTransactionsInput = {
@@ -117257,6 +123825,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTransactionsInput = {
@@ -117287,6 +123857,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutAccountInput
     journalLines?: JournalLineCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountUncheckedCreateWithoutTransactionsInput = {
@@ -117312,6 +123883,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutAccountInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountCreateOrConnectWithoutTransactionsInput = {
@@ -117336,6 +123908,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceCreateNestedManyWithoutCurrencyInput
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUncheckedCreateWithoutTransactionsInput = {
@@ -117355,6 +123929,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutCurrencyInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutCurrencyInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutCurrencyInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutCurrencyInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyCreateOrConnectWithoutTransactionsInput = {
@@ -117482,6 +124058,7 @@ export namespace Prisma {
     children?: LocationCreateNestedManyWithoutParentInput
     users?: UserCreateNestedManyWithoutPrimaryLocationInput
     journalLines?: JournalLineCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLocationInput
   }
 
   export type LocationUncheckedCreateWithoutTransactionsInput = {
@@ -117503,6 +124080,7 @@ export namespace Prisma {
     children?: LocationUncheckedCreateNestedManyWithoutParentInput
     users?: UserUncheckedCreateNestedManyWithoutPrimaryLocationInput
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutLocationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLocationInput
   }
 
   export type LocationCreateOrConnectWithoutTransactionsInput = {
@@ -117523,6 +124101,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organization: OrganizationCreateNestedOneWithoutFundingSourcesInput
     journalLines?: JournalLineCreateNestedManyWithoutFundingSourceInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceUncheckedCreateWithoutTransactionsInput = {
@@ -117538,11 +124117,57 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutFundingSourceInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutFundingSourceInput
   }
 
   export type FundingSourceCreateOrConnectWithoutTransactionsInput = {
     where: FundingSourceWhereUniqueInput
     create: XOR<FundingSourceCreateWithoutTransactionsInput, FundingSourceUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type TreasuryAccountCreateWithoutTransactionsInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutTreasuryAccountsInput
+    currency: CurrencyCreateNestedOneWithoutTreasuryAccountsInput
+    ledgerAccount: AccountCreateNestedOneWithoutTreasuryAccountsInput
+    location?: LocationCreateNestedOneWithoutTreasuryAccountsInput
+    fundingSource?: FundingSourceCreateNestedOneWithoutTreasuryAccountsInput
+    journalLines?: JournalLineCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutTreasuryAccountInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutTreasuryAccountInput
+  }
+
+  export type TreasuryAccountCreateOrConnectWithoutTransactionsInput = {
+    where: TreasuryAccountWhereUniqueInput
+    create: XOR<TreasuryAccountCreateWithoutTransactionsInput, TreasuryAccountUncheckedCreateWithoutTransactionsInput>
   }
 
   export type UserCreateWithoutTransactionsCreatedInput = {
@@ -118297,6 +124922,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -118323,6 +124949,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -118374,6 +125001,7 @@ export namespace Prisma {
     costCentre?: CostCentreCreateNestedOneWithoutTransactionsInput
     location?: LocationCreateNestedOneWithoutTransactionsInput
     fundingSource?: FundingSourceCreateNestedOneWithoutTransactionsInput
+    treasuryAccount?: TreasuryAccountCreateNestedOneWithoutTransactionsInput
     createdBy?: UserCreateNestedOneWithoutTransactionsCreatedInput
     submittedBy?: UserCreateNestedOneWithoutTransactionsSubmittedInput
     approvedBy?: UserCreateNestedOneWithoutTransactionsApprovedInput
@@ -118400,6 +125028,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -118549,6 +125178,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTransactionsInput = {
@@ -118589,6 +125220,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutTransactionsInput = {
@@ -118625,6 +125258,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutAccountNestedInput
     journalLines?: JournalLineUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutTransactionsInput = {
@@ -118650,6 +125284,7 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutAccountNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type CurrencyUpsertWithoutTransactionsInput = {
@@ -118680,6 +125315,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceUpdateManyWithoutCurrencyNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutCurrencyNestedInput
   }
 
   export type CurrencyUncheckedUpdateWithoutTransactionsInput = {
@@ -118699,6 +125336,8 @@ export namespace Prisma {
     openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutCurrencyNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutCurrencyNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutCurrencyNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutCurrencyNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
   export type ProjectUpsertWithoutTransactionsInput = {
@@ -118850,6 +125489,7 @@ export namespace Prisma {
     children?: LocationUpdateManyWithoutParentNestedInput
     users?: UserUpdateManyWithoutPrimaryLocationNestedInput
     journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateWithoutTransactionsInput = {
@@ -118871,6 +125511,7 @@ export namespace Prisma {
     children?: LocationUncheckedUpdateManyWithoutParentNestedInput
     users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type FundingSourceUpsertWithoutTransactionsInput = {
@@ -118897,6 +125538,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneRequiredWithoutFundingSourcesNestedInput
     journalLines?: JournalLineUpdateManyWithoutFundingSourceNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutFundingSourceNestedInput
   }
 
   export type FundingSourceUncheckedUpdateWithoutTransactionsInput = {
@@ -118912,6 +125554,58 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     journalLines?: JournalLineUncheckedUpdateManyWithoutFundingSourceNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutFundingSourceNestedInput
+  }
+
+  export type TreasuryAccountUpsertWithoutTransactionsInput = {
+    update: XOR<TreasuryAccountUpdateWithoutTransactionsInput, TreasuryAccountUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<TreasuryAccountCreateWithoutTransactionsInput, TreasuryAccountUncheckedCreateWithoutTransactionsInput>
+    where?: TreasuryAccountWhereInput
+  }
+
+  export type TreasuryAccountUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: TreasuryAccountWhereInput
+    data: XOR<TreasuryAccountUpdateWithoutTransactionsInput, TreasuryAccountUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type TreasuryAccountUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    ledgerAccount?: AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    location?: LocationUpdateOneWithoutTreasuryAccountsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
   }
 
   export type UserUpsertWithoutTransactionsCreatedInput = {
@@ -119713,6 +126407,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -119739,6 +126434,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -119829,6 +126525,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetsInput = {
@@ -119869,6 +126567,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetsInput = {
@@ -119953,6 +126653,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetsInput = {
@@ -119993,6 +126695,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetLineUpsertWithWhereUniqueWithoutBudgetInput = {
@@ -120049,6 +126753,8 @@ export namespace Prisma {
     budgets?: BudgetCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetLinesInput = {
@@ -120089,6 +126795,8 @@ export namespace Prisma {
     budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetLinesInput = {
@@ -120152,6 +126860,7 @@ export namespace Prisma {
     journalLines?: JournalLineCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutAccountInput
     transactions?: TransactionCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountUncheckedCreateWithoutBudgetLinesInput = {
@@ -120177,6 +126886,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutAccountInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutLedgerAccountInput
   }
 
   export type AccountCreateOrConnectWithoutBudgetLinesInput = {
@@ -120233,6 +126943,8 @@ export namespace Prisma {
     budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetLinesInput = {
@@ -120273,6 +126985,8 @@ export namespace Prisma {
     budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutLinesInput = {
@@ -120348,6 +127062,7 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutBudgetLinesInput = {
@@ -120373,6 +127088,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type OrganizationCreateWithoutMembershipsInput = {
@@ -120413,6 +127129,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -120453,6 +127171,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
     approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -120648,6 +127368,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -120688,6 +127410,8 @@ export namespace Prisma {
     budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganizationMembershipsInput = {
@@ -121986,6 +128710,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     submittedById?: string | null
@@ -122020,6 +128745,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -122054,6 +128780,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -122088,6 +128815,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -122122,6 +128850,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -123492,6 +130221,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
     postedBy?: UserUpdateOneWithoutTransactionsPostedNestedInput
@@ -123518,6 +130248,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     submittedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123554,6 +130285,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     submittedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123598,6 +130330,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
     postedBy?: UserUpdateOneWithoutTransactionsPostedNestedInput
@@ -123624,6 +130357,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123660,6 +130394,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123704,6 +130439,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     postedBy?: UserUpdateOneWithoutTransactionsPostedNestedInput
@@ -123730,6 +130466,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123766,6 +130503,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123810,6 +130548,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -123836,6 +130575,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123872,6 +130612,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123916,6 +130657,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -123942,6 +130684,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -123978,6 +130721,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -125469,6 +132213,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -125487,6 +132232,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -125557,6 +132303,38 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type TreasuryAccountCreateManyOrganizationInput = {
+    id?: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentScheduleCreateManyOrganizationInput = {
+    id?: string
+    treasuryAccountId: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrganizationMembershipUpdateWithoutOrganizationInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -125594,6 +132372,7 @@ export namespace Prisma {
     users?: UserUpdateManyWithoutPrimaryLocationNestedInput
     journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
     transactions?: TransactionUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateWithoutOrganizationInput = {
@@ -125615,6 +132394,7 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateManyWithoutOrganizationInput = {
@@ -125767,6 +132547,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     journalLines?: JournalLineUpdateManyWithoutFundingSourceNestedInput
     transactions?: TransactionUpdateManyWithoutFundingSourceNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutFundingSourceNestedInput
   }
 
   export type FundingSourceUncheckedUpdateWithoutOrganizationInput = {
@@ -125782,6 +132563,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     journalLines?: JournalLineUncheckedUpdateManyWithoutFundingSourceNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutFundingSourceNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutFundingSourceNestedInput
   }
 
   export type FundingSourceUncheckedUpdateManyWithoutOrganizationInput = {
@@ -125982,6 +132764,7 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutOrganizationInput = {
@@ -126007,6 +132790,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateManyWithoutOrganizationInput = {
@@ -126264,6 +133048,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
     location?: LocationUpdateOneWithoutJournalLinesNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutOrganizationInput = {
@@ -126282,6 +133067,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -126301,6 +133087,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -126329,6 +133116,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -126355,6 +133143,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -126391,6 +133180,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -126575,6 +133365,108 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TreasuryAccountUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currency?: CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    ledgerAccount?: AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    location?: LocationUpdateOneWithoutTreasuryAccountsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentScheduleUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    treasuryAccount?: TreasuryAccountUpdateOneRequiredWithoutPaymentSchedulesNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutPaymentSchedulesNestedInput
+  }
+
+  export type PaymentScheduleUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    treasuryAccountId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentScheduleUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    treasuryAccountId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LocationCreateManyParentInput = {
     id?: string
     organizationId: string
@@ -126643,6 +133535,7 @@ export namespace Prisma {
     departmentId?: string | null
     costCentreId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -126661,6 +133554,7 @@ export namespace Prisma {
     departmentId?: string | null
     costCentreId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -126676,6 +133570,23 @@ export namespace Prisma {
     voidedAt?: Date | string | null
     reversalReasonId?: string | null
     adjustingEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TreasuryAccountCreateManyLocationInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -126699,6 +133610,7 @@ export namespace Prisma {
     users?: UserUpdateManyWithoutPrimaryLocationNestedInput
     journalLines?: JournalLineUpdateManyWithoutLocationNestedInput
     transactions?: TransactionUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateWithoutParentInput = {
@@ -126720,6 +133632,7 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutPrimaryLocationNestedInput
     journalLines?: JournalLineUncheckedUpdateManyWithoutLocationNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutLocationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLocationNestedInput
   }
 
   export type LocationUncheckedUpdateManyWithoutParentInput = {
@@ -126925,6 +133838,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
     costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutLocationInput = {
@@ -126943,6 +133857,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -126962,6 +133877,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -126990,6 +133906,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutTransactionsNestedInput
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -127016,6 +133933,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -127052,6 +133970,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -127067,6 +133986,63 @@ export namespace Prisma {
     voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
     adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TreasuryAccountUpdateWithoutLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    ledgerAccount?: AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateWithoutLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateManyWithoutLocationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -127143,6 +134119,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -127161,6 +134138,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -127443,6 +134421,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
     location?: LocationUpdateOneWithoutJournalLinesNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutDepartmentInput = {
@@ -127461,6 +134440,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -127480,6 +134460,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -127508,6 +134489,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -127534,6 +134516,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -127570,6 +134553,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -127605,6 +134589,7 @@ export namespace Prisma {
     departmentId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -127623,6 +134608,7 @@ export namespace Prisma {
     departmentId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -127659,6 +134645,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
     location?: LocationUpdateOneWithoutJournalLinesNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutCostCentreInput = {
@@ -127677,6 +134664,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -127696,6 +134684,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -127724,6 +134713,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -127750,6 +134740,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -127786,6 +134777,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -127821,6 +134813,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -127839,6 +134832,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -127875,6 +134869,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
     location?: LocationUpdateOneWithoutJournalLinesNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutProjectInput = {
@@ -127893,6 +134888,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -127912,6 +134908,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -127940,6 +134937,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -127966,6 +134964,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128002,6 +135001,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128037,6 +135037,7 @@ export namespace Prisma {
     departmentId?: string | null
     costCentreId?: string | null
     locationId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -128055,6 +135056,7 @@ export namespace Prisma {
     departmentId?: string | null
     costCentreId?: string | null
     locationId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -128070,6 +135072,23 @@ export namespace Prisma {
     voidedAt?: Date | string | null
     reversalReasonId?: string | null
     adjustingEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TreasuryAccountCreateManyFundingSourceInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    ledgerAccountId: string
+    locationId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -128091,6 +135110,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
     costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
     location?: LocationUpdateOneWithoutJournalLinesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutFundingSourceInput = {
@@ -128109,6 +135129,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -128128,6 +135149,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -128156,6 +135178,7 @@ export namespace Prisma {
     department?: DepartmentUpdateOneWithoutTransactionsNestedInput
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -128182,6 +135205,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128218,6 +135242,7 @@ export namespace Prisma {
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128233,6 +135258,347 @@ export namespace Prisma {
     voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
     adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TreasuryAccountUpdateWithoutFundingSourceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    ledgerAccount?: AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    location?: LocationUpdateOneWithoutTreasuryAccountsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateWithoutFundingSourceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateManyWithoutFundingSourceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineCreateManyTreasuryAccountInput = {
+    id?: string
+    organizationId: string
+    entryId: string
+    accountId: string
+    lineNumber: number
+    description?: string | null
+    debit?: Decimal | DecimalJsLike | number | string
+    credit?: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    baseAmount: Decimal | DecimalJsLike | number | string
+    fxRate?: Decimal | DecimalJsLike | number | string | null
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type TransactionCreateManyTreasuryAccountInput = {
+    id?: string
+    organizationId: string
+    status?: $Enums.TransactionStatus
+    date: Date | string
+    description?: string | null
+    reference?: string | null
+    number?: string | null
+    accountId?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    projectId?: string | null
+    departmentId?: string | null
+    costCentreId?: string | null
+    locationId?: string | null
+    fundingSourceId?: string | null
+    paymentMethod?: $Enums.PaymentMethod
+    supportingDocumentId?: string | null
+    createdById?: string | null
+    submittedById?: string | null
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    postedById?: string | null
+    postedAt?: Date | string | null
+    reversedById?: string | null
+    reversedAt?: Date | string | null
+    voidedById?: string | null
+    voidedAt?: Date | string | null
+    reversalReasonId?: string | null
+    adjustingEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentScheduleCreateManyTreasuryAccountInput = {
+    id?: string
+    organizationId: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    currencyCode: string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JournalLineUpdateWithoutTreasuryAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutJournalLinesNestedInput
+    entry?: JournalEntryUpdateOneRequiredWithoutLinesNestedInput
+    account?: AccountUpdateOneRequiredWithoutJournalLinesNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutJournalLinesNestedInput
+    project?: ProjectUpdateOneWithoutJournalLinesNestedInput
+    department?: DepartmentUpdateOneWithoutJournalLinesNestedInput
+    costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
+    location?: LocationUpdateOneWithoutJournalLinesNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+  }
+
+  export type JournalLineUncheckedUpdateWithoutTreasuryAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutTreasuryAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    entryId?: StringFieldUpdateOperationsInput | string
+    accountId?: StringFieldUpdateOperationsInput | string
+    lineNumber?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    baseAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    fxRate?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUpdateWithoutTreasuryAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTransactionsNestedInput
+    account?: AccountUpdateOneWithoutTransactionsNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTransactionsNestedInput
+    project?: ProjectUpdateOneWithoutTransactionsNestedInput
+    department?: DepartmentUpdateOneWithoutTransactionsNestedInput
+    costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
+    location?: LocationUpdateOneWithoutTransactionsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
+    submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
+    approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
+    postedBy?: UserUpdateOneWithoutTransactionsPostedNestedInput
+    reversedBy?: UserUpdateOneWithoutTransactionsReversedNestedInput
+    reversalReason?: ReversalReasonCodeUpdateOneWithoutTransactionsNestedInput
+    adjustingEntry?: TransactionUpdateOneWithoutAdjustedEntriesNestedInput
+    adjustedEntries?: TransactionUpdateManyWithoutAdjustingEntryNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutTransactionNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutTreasuryAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adjustedEntries?: TransactionUncheckedUpdateManyWithoutAdjustingEntryNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutTransactionNestedInput
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutTreasuryAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    accountId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    postedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reversedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
+    adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentScheduleUpdateWithoutTreasuryAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutPaymentSchedulesNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutPaymentSchedulesNestedInput
+  }
+
+  export type PaymentScheduleUncheckedUpdateWithoutTreasuryAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -128315,6 +135681,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -128333,6 +135700,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -128348,6 +135716,38 @@ export namespace Prisma {
     voidedAt?: Date | string | null
     reversalReasonId?: string | null
     adjustingEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TreasuryAccountCreateManyCurrencyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    ledgerAccountId: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentScheduleCreateManyCurrencyInput = {
+    id?: string
+    organizationId: string
+    treasuryAccountId: string
+    code: string
+    description?: string | null
+    amount: Decimal | DecimalJsLike | number | string
+    frequency: string
+    nextDueDate: Date | string
+    endDate?: Date | string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -128555,6 +135955,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
     location?: LocationUpdateOneWithoutJournalLinesNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutCurrencyInput = {
@@ -128573,6 +135974,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -128592,6 +135994,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -128620,6 +136023,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -128646,6 +136050,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128682,6 +136087,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -128697,6 +136103,108 @@ export namespace Prisma {
     voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
     adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TreasuryAccountUpdateWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    ledgerAccount?: AccountUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    location?: LocationUpdateOneWithoutTreasuryAccountsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateManyWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    ledgerAccountId?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentScheduleUpdateWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutPaymentSchedulesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneRequiredWithoutPaymentSchedulesNestedInput
+  }
+
+  export type PaymentScheduleUncheckedUpdateWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    treasuryAccountId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentScheduleUncheckedUpdateManyWithoutCurrencyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    treasuryAccountId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    nextDueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -128808,6 +136316,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -128837,6 +136346,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -128852,6 +136362,23 @@ export namespace Prisma {
     voidedAt?: Date | string | null
     reversalReasonId?: string | null
     adjustingEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TreasuryAccountCreateManyLedgerAccountInput = {
+    id?: string
+    organizationId: string
+    code: string
+    name: string
+    kind: $Enums.TreasuryAccountKind
+    currencyCode: string
+    locationId?: string | null
+    fundingSourceId?: string | null
+    accountNumberEnc?: string | null
+    providerConfigEnc?: string | null
+    isActive?: boolean
+    isRestricted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -128879,6 +136406,7 @@ export namespace Prisma {
     journalLines?: JournalLineUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutParentInput = {
@@ -128904,6 +136432,7 @@ export namespace Prisma {
     journalLines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
     accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutAccountNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountNestedInput
   }
 
   export type AccountUncheckedUpdateManyWithoutParentInput = {
@@ -129014,6 +136543,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
     location?: LocationUpdateOneWithoutJournalLinesNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutAccountInput = {
@@ -129032,6 +136562,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -129051,6 +136582,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -129112,6 +136644,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -129138,6 +136671,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -129174,6 +136708,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -129189,6 +136724,63 @@ export namespace Prisma {
     voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     reversalReasonId?: NullableStringFieldUpdateOperationsInput | string | null
     adjustingEntryId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TreasuryAccountUpdateWithoutLedgerAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    currency?: CurrencyUpdateOneRequiredWithoutTreasuryAccountsNestedInput
+    location?: LocationUpdateOneWithoutTreasuryAccountsNestedInput
+    fundingSource?: FundingSourceUpdateOneWithoutTreasuryAccountsNestedInput
+    journalLines?: JournalLineUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateWithoutLedgerAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalLines?: JournalLineUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutTreasuryAccountNestedInput
+  }
+
+  export type TreasuryAccountUncheckedUpdateManyWithoutLedgerAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: EnumTreasuryAccountKindFieldUpdateOperationsInput | $Enums.TreasuryAccountKind
+    currencyCode?: StringFieldUpdateOperationsInput | string
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    accountNumberEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    providerConfigEnc?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isRestricted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -129481,6 +137073,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     createdAt?: Date | string
   }
 
@@ -129675,6 +137268,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutJournalLinesNestedInput
     location?: LocationUpdateOneWithoutJournalLinesNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutJournalLinesNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutJournalLinesNestedInput
   }
 
   export type JournalLineUncheckedUpdateWithoutEntryInput = {
@@ -129693,6 +137287,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -129712,6 +137307,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -129758,6 +137354,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -129889,6 +137486,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -129915,6 +137513,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -129951,6 +137550,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -129985,6 +137585,7 @@ export namespace Prisma {
     costCentreId?: string | null
     locationId?: string | null
     fundingSourceId?: string | null
+    treasuryAccountId?: string | null
     paymentMethod?: $Enums.PaymentMethod
     supportingDocumentId?: string | null
     createdById?: string | null
@@ -130056,6 +137657,7 @@ export namespace Prisma {
     costCentre?: CostCentreUpdateOneWithoutTransactionsNestedInput
     location?: LocationUpdateOneWithoutTransactionsNestedInput
     fundingSource?: FundingSourceUpdateOneWithoutTransactionsNestedInput
+    treasuryAccount?: TreasuryAccountUpdateOneWithoutTransactionsNestedInput
     createdBy?: UserUpdateOneWithoutTransactionsCreatedNestedInput
     submittedBy?: UserUpdateOneWithoutTransactionsSubmittedNestedInput
     approvedBy?: UserUpdateOneWithoutTransactionsApprovedNestedInput
@@ -130082,6 +137684,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -130118,6 +137721,7 @@ export namespace Prisma {
     costCentreId?: NullableStringFieldUpdateOperationsInput | string | null
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     fundingSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    treasuryAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     supportingDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: NullableStringFieldUpdateOperationsInput | string | null

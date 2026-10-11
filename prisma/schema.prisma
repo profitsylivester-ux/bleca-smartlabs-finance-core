@@ -431,6 +431,17 @@ enum PaymentMethod {
   OTHER
 }
 
+/// Treasury Account kinds (PDF §10).
+enum TreasuryAccountKind {
+  CASH
+  BANK
+  MOBILE_MONEY
+  PAYMENT_GATEWAY
+  PROJECT_FUND
+  GRANT_FUND
+  OTHER
+}
+
 enum TransactionStatus {
   DRAFT
   SUBMITTED
@@ -543,6 +554,8 @@ enum AuditEntityType {
   APPROVAL_STEP_INSTANCE
   APPROVAL_DECISION_RECORD
   SOD_WAIVER
+  TREASURY_ACCOUNT
+  PAYMENT_SCHEDULE
 }
 
 enum AuditResult {
@@ -1341,6 +1354,8 @@ model Organization {
   budgetLines BudgetLine[]
   approvalPolicies ApprovalPolicy[]
   approvalRequests ApprovalRequest[]
+  treasuryAccounts TreasuryAccount[]
+  paymentSchedules PaymentSchedule[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -1369,6 +1384,7 @@ model Location {
   users            User[]         @relation("UserPrimaryLocation")
   journalLines     JournalLine[]
   transactions     Transaction[]
+  treasuryAccounts TreasuryAccount[]
 
   @@unique([organizationId, code])
   @@index([type, isActive])
@@ -1458,10 +1474,73 @@ model FundingSource {
 
   journalLines JournalLine[]
   transactions Transaction[]
+  treasuryAccounts TreasuryAccount[]
 
   @@unique([organizationId, code])
   @@index([type, isActive])
   @@map("funding_sources")
+}
+
+/// Treasury Accounts — PDF §10: cash, bank, mobile money, gateways, project/grant funds.
+/// Each links to a ledger Account. Sensitive fields encrypted at rest.
+model TreasuryAccount {
+  id                String               @id @default(cuid())
+  organizationId    String               @map("organization_id")
+  organization      Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code              String
+  name              String
+  kind              TreasuryAccountKind
+  currencyCode      String               @db.Char(3) @map("currency_code")
+  currency          Currency             @relation(fields: [currencyCode], references: [code])
+  ledgerAccountId   String               @map("ledger_account_id")
+  ledgerAccount     Account              @relation(fields: [ledgerAccountId], references: [id])
+  locationId        String?              @map("location_id")
+  location          Location?            @relation(fields: [locationId], references: [id])
+  fundingSourceId   String?              @map("funding_source_id")
+  fundingSource     FundingSource?       @relation(fields: [fundingSourceId], references: [id])
+  /// AES-256-GCM ciphertext. Plaintext account numbers/API keys must never reach the table.
+  accountNumberEnc  String?              @map("account_number_enc")
+  /// Provider-specific config (e.g., mobile money provider, gateway merchant ID).
+  providerConfigEnc String?              @map("provider_config_enc")
+  isActive          Boolean              @default(true) @map("is_active")
+  isRestricted      Boolean              @default(false) @map("is_restricted")
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
+
+  journalLines      JournalLine[]
+  transactions      Transaction[]
+  paymentSchedules  PaymentSchedule[]
+
+  @@unique([organizationId, code])
+  @@index([kind, isActive])
+  @@index([ledgerAccountId])
+  @@index([fundingSourceId])
+  @@map("treasury_accounts")
+}
+
+/// Payment Schedules — due/overdue status for recurring obligations.
+model PaymentSchedule {
+  id               String    @id @default(cuid())
+  organizationId   String    @map("organization_id")
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  treasuryAccountId String    @map("treasury_account_id")
+  treasuryAccount  TreasuryAccount @relation(fields: [treasuryAccountId], references: [id])
+  code             String
+  description      String?
+  amount           Decimal   @db.Decimal(20, 6)
+  currencyCode     String    @db.Char(3) @map("currency_code")
+  currency         Currency  @relation(fields: [currencyCode], references: [code])
+  frequency        String    // DAILY, WEEKLY, MONTHLY, QUARTERLY, ANNUALLY, CUSTOM
+  nextDueDate      DateTime  @db.Date @map("next_due_date")
+  endDate          DateTime? @db.Date @map("end_date")
+  status           String    @default("SCHEDULED") // SCHEDULED, DUE, PARTIALLY_PAID, PAID, OVERDUE, CANCELLED
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@unique([organizationId, code])
+  @@index([treasuryAccountId, status])
+  @@index([nextDueDate])
+  @@map("payment_schedules")
 }
 
 model Currency {
@@ -1483,6 +1562,8 @@ model Currency {
   accountBalanceSnapshots AccountBalanceSnapshot[]
   journalLines           JournalLine[]
   transactions           Transaction[]
+  treasuryAccounts       TreasuryAccount[]
+  paymentSchedules       PaymentSchedule[]
 
   @@map("currencies")
 }
@@ -1620,6 +1701,7 @@ model Account {
   journalLines           JournalLine[]
   accountBalanceSnapshots AccountBalanceSnapshot[]
   transactions           Transaction[]
+  treasuryAccounts       TreasuryAccount[]
 
   @@unique([organizationId, code])
   @@index([parentId])
@@ -1779,6 +1861,8 @@ model JournalLine {
   location       Location?    @relation(fields: [locationId], references: [id])
   fundingSourceId String?     @map("funding_source_id")
   fundingSource  FundingSource? @relation(fields: [fundingSourceId], references: [id])
+  treasuryAccountId String?   @map("treasury_account_id")
+  treasuryAccount TreasuryAccount? @relation(fields: [treasuryAccountId], references: [id])
   createdAt      DateTime     @default(now()) @map("created_at")
 
   @@index([entryId])
@@ -1788,6 +1872,7 @@ model JournalLine {
   @@index([costCentreId])
   @@index([locationId])
   @@index([fundingSourceId])
+  @@index([treasuryAccountId])
   @@unique([entryId, lineNumber])
   @@map("journal_lines")
 }
@@ -1838,6 +1923,8 @@ model Transaction {
   location           Location?            @relation(fields: [locationId], references: [id])
   fundingSourceId    String?              @map("funding_source_id")
   fundingSource      FundingSource?       @relation(fields: [fundingSourceId], references: [id])
+  treasuryAccountId  String?              @map("treasury_account_id")
+  treasuryAccount    TreasuryAccount?     @relation(fields: [treasuryAccountId], references: [id])
   paymentMethod      PaymentMethod        @default(CASH) @map("payment_method")
   supportingDocumentId String?            @map("supporting_document_id") // Document model in M12
   createdById        String?              @map("created_by_id")
@@ -1874,6 +1961,7 @@ model Transaction {
   @@index([costCentreId])
   @@index([locationId])
   @@index([fundingSourceId])
+  @@index([treasuryAccountId])
   @@index([supportingDocumentId])
   @@index([reversalReasonId])
   @@index([adjustingEntryId])

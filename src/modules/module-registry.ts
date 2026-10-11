@@ -145,10 +145,10 @@ export const MODULES: ModuleDefinition[] = [
   },
   {
     key: 'TREASURY_TRANSFERS',
-    path: null,
+    path: '/treasury/accounts',
     label: 'Cash, Bank & Mobile Money',
     description: 'Treasury accounts, transfers and cash position.',
-    availability: 'PLANNED',
+    availability: 'AVAILABLE',
     milestone: 'M7',
     icon: 'wallet',
     group: 'treasury',
