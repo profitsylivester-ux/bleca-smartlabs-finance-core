@@ -77,7 +77,7 @@ describe('M4 Double-Entry Accounting', () => {
     await expect(
       prisma.$executeRawUnsafe(
         `INSERT INTO journal_entries (id, organization_id, period_id, type, status, source, created_at, updated_at)
-         VALUES (gen_random_uuid(), '${orgId}', ${lockedPeriodId}, 'STANDARD', 'POSTED', 'MANUAL', now(), now())`,
+         VALUES (gen_random_uuid(), '${orgId}', '${lockedPeriodId}', 'STANDARD', 'POSTED', 'MANUAL', now(), now())`,
       ),
     ).rejects.toThrow();
   });
@@ -175,9 +175,9 @@ describe('M4 Double-Entry Accounting', () => {
     });
 
     await prisma.$executeRawUnsafe(
-      `INSERT INTO journal_lines (id, organization_id, entry_id, account_id, line_number, debit, credit, currency_code, created_at)
-       VALUES (gen_random_uuid(), '${orgId}', '${originalEntry.id}', '${assetAccount!.id}', 1, 100, 0, 'TZS', now()),
-       (gen_random_uuid(), '${orgId}', '${originalEntry.id}', '${liabilityAccount!.id}', 2, 0, 100, 'TZS', now())`,
+      `INSERT INTO journal_lines (id, organization_id, entry_id, account_id, line_number, debit, credit, currency_code, base_amount, created_at)
+       VALUES (gen_random_uuid(), '${orgId}', '${originalEntry.id}', '${assetAccount!.id}', 1, 100, 0, 'TZS', 100, now()),
+       (gen_random_uuid(), '${orgId}', '${originalEntry.id}', '${liabilityAccount!.id}', 2, 0, 100, 'TZS', 100, now())`,
     );
 
     const reversal = await prisma.journalEntry.create({
@@ -225,9 +225,9 @@ describe('M4 Double-Entry Accounting', () => {
     });
 
     await prisma.$executeRawUnsafe(
-      `INSERT INTO journal_lines (id, organization_id, entry_id, account_id, line_number, debit, credit, currency_code, created_at)
-       VALUES (gen_random_uuid(), '${orgId}', '${originalEntry.id}', '${assetAccount!.id}', 1, 1000, 0, 'TZS', now()),
-       (gen_random_uuid(), '${orgId}', '${originalEntry.id}', '${liabilityAccount!.id}', 2, 0, 1000, 'TZS', now())`,
+      `INSERT INTO journal_lines (id, organization_id, entry_id, account_id, line_number, debit, credit, currency_code, base_amount, created_at)
+       VALUES (gen_random_uuid(), '${orgId}', '${originalEntry.id}', '${assetAccount!.id}', 1, 1000, 0, 'TZS', 1000, now()),
+       (gen_random_uuid(), '${orgId}', '${originalEntry.id}', '${liabilityAccount!.id}', 2, 0, 1000, 'TZS', 1000, now())`,
     );
 
 const reversalEntry = await prisma.journalEntry.create({
@@ -242,9 +242,9 @@ const reversalEntry = await prisma.journalEntry.create({
     });
 
     await prisma.$executeRawUnsafe(
-      `INSERT INTO journal_lines (id, organization_id, entry_id, account_id, line_number, debit, credit, currency_code, created_at)
-       VALUES (gen_random_uuid(), '${orgId}', '${reversalEntry.id}', '${assetAccount!.id}', 1, 500, 0, 'TZS', now()),
-       (gen_random_uuid(), '${orgId}', '${reversalEntry.id}', '${liabilityAccount!.id}', 2, 0, 500, 'TZS', now())`,
+      `INSERT INTO journal_lines (id, organization_id, entry_id, account_id, line_number, debit, credit, currency_code, base_amount, created_at)
+       VALUES (gen_random_uuid(), '${orgId}', '${reversalEntry.id}', '${assetAccount!.id}', 1, 500, 0, 'TZS', 500, now()),
+       (gen_random_uuid(), '${orgId}', '${reversalEntry.id}', '${liabilityAccount!.id}', 2, 0, 500, 'TZS', 500, now())`,
     );
 
     const totalDebit = await prisma.journalLine.aggregate({ where: { entryId: { not: reversalEntry.id }, debit: { not: 0 } }, _sum: { debit: true } }).then((r) => r._sum.debit || 0);

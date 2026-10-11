@@ -322,8 +322,8 @@ describe('M3 Task 1: Period Lock Trigger', () => {
     );
 
     const tx = await prisma.$executeRawUnsafe(
-      `INSERT INTO transactions (id, organization_id, status, date, created_at, updated_at)
-       VALUES (gen_random_uuid(), $1, 'DRAFT', $2, now(), now())`,
+      `INSERT INTO transactions (id, organization_id, status, date, amount, currency_code, created_at, updated_at)
+       VALUES (gen_random_uuid(), $1, 'DRAFT', $2, 100, 'TZS', now(), now())`,
       orgId,
       new Date('2025-06-15'),
     );

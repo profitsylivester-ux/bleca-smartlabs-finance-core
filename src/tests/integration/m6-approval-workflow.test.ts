@@ -55,6 +55,7 @@ beforeAll(async () => {
       fullName: 'Test Finance Officer',
       passwordHash: '$argon2id$v=19$m=65536,t=3,p=4$test$test',
       passwordAlgorithm: 'ARGON2ID',
+      status: 'ACTIVE',
       organizationMemberships: { create: { organizationId: await getOrgId() } },
       userRoles: { create: { roleId: financeOfficerRole!.id } },
     },
@@ -82,6 +83,7 @@ beforeAll(async () => {
       fullName: 'Test CEO',
       passwordHash: '$argon2id$v=19$m=65536,t=3,p=4$test$test',
       passwordAlgorithm: 'ARGON2ID',
+      status: 'ACTIVE',
       organizationMemberships: { create: { organizationId: await getOrgId() } },
       userRoles: { create: { roleId: ceoRole!.id } },
     },
@@ -108,6 +110,7 @@ beforeAll(async () => {
       fullName: 'Test Delegate',
       passwordHash: '$argon2id$v=19$m=65536,t=3,p=4$test$test',
       passwordAlgorithm: 'ARGON2ID',
+      status: 'ACTIVE',
       organizationMemberships: { create: { organizationId: await getOrgId() } },
       userRoles: { create: { roleId: ceoRole!.id } },
     },
@@ -142,6 +145,10 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  // Clean up approval requests first (FK constraint on submitted_by_id)
+  await prisma.approvalRequest.deleteMany({
+    where: { submittedById: { in: [financeOfficerId, ceoId, delegateId] } },
+  });
   await prisma.session.updateMany({
     where: { userId: { in: [financeOfficerId, ceoId, delegateId] }, revokedAt: null },
     data: { revokedAt: new Date(), revokedReason: 'ADMIN_REVOKED', absoluteExpiresAt: new Date(0) },
@@ -318,7 +325,7 @@ describe('M6 Approval Workflow', () => {
     expect(decisionRecord?.delegationId).toBe(delegation.id);
     expect(decisionRecord?.actorId).toBe(delegateId);
 
-    await delegation.update({
+    await prisma.delegation.update({
       where: { id: delegation.id },
       data: { expiresAt: new Date(Date.now() - 1000) },
     });
