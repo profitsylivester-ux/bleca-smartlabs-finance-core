@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { createHash } from 'crypto';
-import { prisma, ImportErrorType } from '@/lib/db/prisma';
+import { prisma } from '@/lib/db/prisma';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
@@ -221,7 +221,7 @@ export async function POST(
               tx,
               { id: ctx.actor.userId, name: ctx.actor.fullName, roleCodes: ctx.actor.roleCodes },
               {
-                action: 'IMPORT_DUPLICATES_DETECTED',
+                action: 'IMPORT_VALIDATED',
                 entityType: 'IMPORT_BATCH',
                 entityId: batch.id,
                 entityLabel: batch.code,

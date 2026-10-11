@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { createHash } from 'crypto';
-import { prisma, ImportErrorType } from '@/lib/db/prisma';
+import { prisma } from '@/lib/db/prisma';
+import { ImportErrorType } from '@/generated/prisma/client';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
@@ -207,8 +208,8 @@ export async function POST(
 
               const fingerprint = generateFingerprint(mapped);
               mapped.fingerprint = fingerprint;
-              const mappedJson = mapped as import('@/generated/prisma/client').InputJsonValue;
-              const normalizedJson = mapped as import('@/generated/prisma/client').InputJsonValue;
+              const mappedJson = JSON.stringify(mapped);
+              const normalizedJson = JSON.stringify(mapped);
               const orgId = ctx.actor.organizationId!;
 
               const duplicateInFile = await tx.importRow.findFirst({
@@ -249,7 +250,7 @@ export async function POST(
                       rowNumber: row.rowNumber,
                       type: err.type as ImportErrorType,
                       field: err.field,
-                      originalValue: err.originalValue as import('@/generated/prisma/client').InputJsonValue,
+                      originalValue: err.originalValue != null ? JSON.stringify(err.originalValue) : undefined,
                       message: err.message,
                       severity: 'ERROR',
                     },

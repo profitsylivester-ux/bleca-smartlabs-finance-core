@@ -158,7 +158,7 @@ export async function POST(
                 thousandSeparator: body.thousandSeparator,
                 encoding: body.encoding,
                 hasHeader: body.hasHeader,
-                columnMap: body.columnMap as import('@/generated/prisma/client').InputJsonValue,
+                columnMap: body.columnMap,
                 createdById: ctx.actor.userId,
               },
               select: {

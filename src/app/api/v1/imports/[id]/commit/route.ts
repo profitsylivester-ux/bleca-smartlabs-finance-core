@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { Decimal } from '@prisma/client/runtime/library';
-import { prisma, TransactionStatus, VerificationStatus, JournalEntryType, JournalEntryStatus, JournalSource } from '@/lib/db/prisma';
+import { prisma } from '@/lib/db/prisma';
+import { TransactionStatus, JournalEntryType, JournalEntryStatus, JournalSource } from '@/generated/prisma/client';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
@@ -56,6 +57,7 @@ export async function POST(
         validRows: true,
         organizationId: true,
         uploadedById: true,
+        errorRows: true,
       },
     });
 
@@ -87,7 +89,6 @@ export async function POST(
     }
 
     const orgId = ctx.actor.organizationId!;
-    const importDate = new Date();
 
     const defaultLiabilityAccount = await prisma.account.findFirst({
       where: { organizationId: orgId, type: 'LIABILITY', isPostable: true },
@@ -142,7 +143,7 @@ export async function POST(
                     rowNumber: row.rowNumber,
                     type: 'SYSTEM',
                     field: 'normalizedData',
-                    originalValue: null,
+                    originalValue: undefined,
                     message: 'Missing normalized data',
                     severity: 'ERROR',
                   },
@@ -204,9 +205,6 @@ export async function POST(
                     departmentId,
                     costCentreId,
                     fundingSourceId,
-                    verificationStatus: VerificationStatus.PENDING_VERIFICATION,
-                    source: 'IMPORT',
-                    importDate,
                     createdById: ctx.actor.userId,
                     submittedById: ctx.actor.userId,
                     submittedAt: new Date(),
@@ -352,7 +350,7 @@ export async function POST(
                     rowNumber: row.rowNumber,
                     type: 'SYSTEM',
                     field: 'commit',
-                    originalValue: normalized,
+                    originalValue: normalized ? JSON.stringify(normalized) : undefined,
                     message: rowError instanceof Error ? rowError.message : 'Failed to commit row',
                     severity: 'ERROR',
                   },

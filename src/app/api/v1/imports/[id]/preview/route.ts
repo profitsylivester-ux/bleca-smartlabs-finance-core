@@ -110,7 +110,7 @@ export async function GET(
         fingerprint: row.fingerprint ?? '',
         status: row.status,
         errors: row.errors.map(e => ({
-          field: e.field,
+          field: e.field ?? '',
           message: e.message,
           originalValue: e.originalValue,
         })),
@@ -146,14 +146,13 @@ export async function GET(
       },
       async () => {},
       {
-        action: 'IMPORT_PREVIEW_VIEWED',
+        action: 'IMPORT_VALIDATED',
         entityType: 'IMPORT_BATCH',
         entityId: batch.id,
         entityLabel: batch.code,
         description: `Viewed preview for import ${batch.code}`,
         changes: {},
       },
-      { organizationId: ctx.actor.organizationId, ipAddress: net.ipAddress, userAgent: net.userAgent, requestId: reqId, sessionId: ctx.actor.sessionId },
     );
 
     return ok({ data: { batch: { id: batch.id, code: batch.code, status: batch.status }, rows: previewRows, summary } }, 200, reqId);

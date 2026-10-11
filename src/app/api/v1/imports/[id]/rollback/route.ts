@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { prisma, TransactionStatus, JournalEntryStatus } from '@/lib/db/prisma';
+import { prisma } from '@/lib/db/prisma';
+import { JournalEntryStatus } from '@/generated/prisma/client';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
@@ -163,7 +164,15 @@ export async function POST(
                   rolledBackAt: { from: null, to: new Date().toISOString() },
                   importedById: { from: batch.importedById, to: null },
                   importedAt: { from: batch.importedAt?.toISOString() ?? null, to: null },
-                  rollbackSummary: { from: null, to: result },
+                  rollbackSummary: {
+                  from: null,
+                  to: {
+                    deletedTransactions: result.deletedTransactions,
+                    deletedJournalEntries: result.deletedJournalEntries,
+                    deletedJournalLines: result.deletedJournalLines,
+                    resetRows: result.resetRows,
+                  },
+                },
                 },
               },
               {
