@@ -517,6 +517,14 @@ enum AuditAction {
   APPROVAL_DECISION_RECORDED
   SOD_WAIVER_GRANTED
   SOD_WAIVER_REJECTED
+  IMPORT_UPLOADED
+  IMPORT_MAPPING_SAVED
+  IMPORT_VALIDATED
+  IMPORT_APPROVED
+  IMPORT_EXECUTED
+  IMPORT_ROLLED_BACK
+  IMPORT_ROW_ERROR
+  IMPORT_ERROR_RESOLVED
 }
 
 enum AuditEntityType {
@@ -557,6 +565,10 @@ enum AuditEntityType {
   TREASURY_ACCOUNT
   PAYMENT_SCHEDULE
   TRANSFER
+  IMPORT_BATCH
+  IMPORT_ROW
+  IMPORT_FIELD_MAPPING
+  IMPORT_ERROR
 }
 
 enum AuditResult {
@@ -848,6 +860,14 @@ model User {
   transfersApproved           Transfer[] @relation("TransferApprovedBy")
   transfersProcessed          Transfer[] @relation("TransferProcessedBy")
   transfersReversed           Transfer[] @relation("TransferReversedBy")
+  importBatchesUploaded       ImportBatch[] @relation("ImportBatchUploadedBy")
+  importBatchesMapped         ImportBatch[] @relation("ImportBatchMappedBy")
+  importBatchesValidated      ImportBatch[] @relation("ImportBatchValidatedBy")
+  importBatchesApproved       ImportBatch[] @relation("ImportBatchApprovedBy")
+  importBatchesImported       ImportBatch[] @relation("ImportBatchImportedBy")
+  importBatchesRolledBack     ImportBatch[] @relation("ImportBatchRolledBackBy")
+  importFieldMappingsCreated  ImportFieldMapping[] @relation("ImportFieldMappingCreatedBy")
+  importErrorsResolved        ImportError[] @relation("ImportErrorResolvedBy")
 
   @@index([status, isActive])
   @@index([primaryLocationId])
@@ -1362,6 +1382,8 @@ model Organization {
   treasuryAccounts TreasuryAccount[]
   paymentSchedules PaymentSchedule[]
   transfers Transfer[]
+  importBatches ImportBatch[]
+  importFieldMappings ImportFieldMapping[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -2214,6 +2236,155 @@ model SecurityEvent {
   @@index([type, occurredAt])
   @@index([acknowledgedAt])
   @@map("security_events")
+}
+
+/// Import Pipeline models (PDF §52) — M8
+/// Seven-stage gated pipeline: Upload → Map Fields → Validate → Preview → Detect Duplicates → Approve → Import
+enum ImportSource {
+  EXCEL
+  CSV
+  API
+  MANUAL
+}
+
+enum ImportBatchStatus {
+  UPLOADED
+  MAPPING
+  VALIDATING
+  PREVIEW
+  AWAITING_APPROVAL
+  APPROVED
+  IMPORTING
+  COMPLETED
+  PARTIALLY_COMPLETED
+  FAILED
+  ROLLED_BACK
+}
+
+enum ImportErrorType {
+  VALIDATION
+  DUPLICATE
+  MAPPING
+  PERMISSION
+  SYSTEM
+  PARSE
+}
+
+model ImportBatch {
+  id                String           @id @default(cuid())
+  organizationId    String           @map("organization_id")
+  organization      Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code              String           // e.g., "IMP-2025-001"
+  source            ImportSource
+  fileName          String           @map("file_name")
+  fileHash          String           @map("file_hash") // SHA256 for duplicate detection
+  fileSize          Int              @map("file_size")
+  mimeType          String           @map("mime_type")
+  status            ImportBatchStatus @default(UPLOADED)
+  totalRows         Int              @default(0) @map("total_rows")
+  validRows         Int              @default(0) @map("valid_rows")
+  errorRows         Int              @default(0) @map("error_rows")
+  duplicateRows     Int              @default(0) @map("duplicate_rows")
+  uploadedById      String           @map("uploaded_by_id")
+  uploadedBy        User             @relation("ImportBatchUploadedBy", fields: [uploadedById], references: [id])
+  mappedById        String?          @map("mapped_by_id")
+  mappedBy          User?            @relation("ImportBatchMappedBy", fields: [mappedById], references: [id])
+  validatedById     String?          @map("validated_by_id")
+  validatedBy       User?            @relation("ImportBatchValidatedBy", fields: [validatedById], references: [id])
+  approvedById      String?          @map("approved_by_id")
+  approvedBy        User?            @relation("ImportBatchApprovedBy", fields: [approvedById], references: [id])
+  importedById      String?          @map("imported_by_id")
+  importedBy        User?            @relation("ImportBatchImportedBy", fields: [importedById], references: [id])
+  rolledBackById    String?          @map("rolled_back_by_id")
+  rolledBackBy      User?            @relation("ImportBatchRolledBackBy", fields: [rolledBackById], references: [id])
+  approvedAt        DateTime?        @map("approved_at")
+  importedAt        DateTime?        @map("imported_at")
+  rolledBackAt      DateTime?        @map("rolled_back_at")
+  errorSummary      Json?            @map("error_summary")
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  rows              ImportRow[]
+  fieldMappings     ImportFieldMapping[]
+  errors            ImportError[]
+
+  @@unique([organizationId, code])
+  @@unique([organizationId, fileHash])
+  @@index([status])
+  @@index([uploadedById])
+  @@map("import_batches")
+}
+
+model ImportRow {
+  id                String       @id @default(cuid())
+  batchId           String       @map("batch_id")
+  batch             ImportBatch  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  rowNumber         Int          @map("row_number")
+  rawData           Json         @map("raw_data") // Original row data verbatim
+  mappedData        Json?        @map("mapped_data") // After field mapping
+  normalizedData    Json?        @map("normalized_data") // After normalization (dates, amounts)
+  status            String       @default("PENDING") // PENDING, VALID, ERROR, DUPLICATE, SKIPPED
+  fingerprint       String?      // Normalized hash for duplicate detection
+  importedTransactionId String?  @map("imported_transaction_id")
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+
+  errors            ImportError[]
+
+  @@index([batchId, status])
+  @@index([batchId, fingerprint])
+  @@map("import_rows")
+}
+
+model ImportFieldMapping {
+  id                String   @id @default(cuid())
+  organizationId    String   @map("organization_id")
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  batchId           String?  @map("batch_id") // Null = global default for source
+  batch             ImportBatch? @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  source            ImportSource
+  name              String   // e.g., "CRDB Bank TZS CSV"
+  description       String?
+  dateFormat        String   @map("date_format") // e.g., "yyyy-MM-dd", "dd/MM/yyyy"
+  amountConvention  String   @map("amount_convention") // SINGLE_DEBIT_CREDIT | SEPARATE_DEBIT_CREDIT | SIGNED_SINGLE
+  decimalSeparator  String   @default(".") @map("decimal_separator")
+  thousandSeparator String   @default(",") @map("thousand_separator")
+  encoding          String   @default("UTF-8")
+  hasHeader         Boolean  @default(true) @map("has_header")
+  columnMap         Json     @map("column_map") // { date: 0, description: 1, debit: 2, credit: 3, reference: 4 }
+  isDefault         Boolean  @default(false) @map("is_default")
+  createdById       String   @map("created_by_id")
+  createdBy         User     @relation("ImportFieldMappingCreatedBy", fields: [createdById], references: [id])
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@unique([organizationId, source, name])
+  @@index([organizationId, source, isDefault])
+  @@map("import_field_mappings")
+}
+
+model ImportError {
+  id              String       @id @default(cuid())
+  batchId         String       @map("batch_id")
+  batch           ImportBatch  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  rowId           String?      @map("row_id")
+  row             ImportRow?   @relation(fields: [rowId], references: [id], onDelete: SetNull)
+  rowNumber       Int          @map("row_number")
+  type            ImportErrorType
+  field           String?      // Which column/field failed
+  originalValue   Json?        @map("original_value") // The raw value that failed
+  message         String
+  severity        String       @default("ERROR") // ERROR | WARNING
+  resolved        Boolean      @default(false)
+  resolvedById    String?      @map("resolved_by_id")
+  resolvedBy      User?        @relation("ImportErrorResolvedBy", fields: [resolvedById], references: [id])
+  resolvedAt      DateTime?    @map("resolved_at")
+  resolutionNote  String?      @map("resolution_note")
+  createdAt       DateTime     @default(now()) @map("created_at")
+
+  @@index([batchId, resolved])
+  @@index([batchId, rowNumber])
+  @@map("import_errors")
 }
 
 // ============================================================================

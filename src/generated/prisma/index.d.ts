@@ -269,6 +269,26 @@ export type AuditChainCheckpoint = $Result.DefaultSelection<Prisma.$AuditChainCh
  */
 export type SecurityEvent = $Result.DefaultSelection<Prisma.$SecurityEventPayload>
 /**
+ * Model ImportBatch
+ * 
+ */
+export type ImportBatch = $Result.DefaultSelection<Prisma.$ImportBatchPayload>
+/**
+ * Model ImportRow
+ * 
+ */
+export type ImportRow = $Result.DefaultSelection<Prisma.$ImportRowPayload>
+/**
+ * Model ImportFieldMapping
+ * 
+ */
+export type ImportFieldMapping = $Result.DefaultSelection<Prisma.$ImportFieldMappingPayload>
+/**
+ * Model ImportError
+ * 
+ */
+export type ImportError = $Result.DefaultSelection<Prisma.$ImportErrorPayload>
+/**
  * Model IdempotencyKey
  * All financial POST/PATCH/DELETE routes require an idempotency key so a
  * double-click, a retry or a replayed offline action cannot post twice.
@@ -841,7 +861,15 @@ export const AuditAction: {
   APPROVAL_STEP_DECIDED: 'APPROVAL_STEP_DECIDED',
   APPROVAL_DECISION_RECORDED: 'APPROVAL_DECISION_RECORDED',
   SOD_WAIVER_GRANTED: 'SOD_WAIVER_GRANTED',
-  SOD_WAIVER_REJECTED: 'SOD_WAIVER_REJECTED'
+  SOD_WAIVER_REJECTED: 'SOD_WAIVER_REJECTED',
+  IMPORT_UPLOADED: 'IMPORT_UPLOADED',
+  IMPORT_MAPPING_SAVED: 'IMPORT_MAPPING_SAVED',
+  IMPORT_VALIDATED: 'IMPORT_VALIDATED',
+  IMPORT_APPROVED: 'IMPORT_APPROVED',
+  IMPORT_EXECUTED: 'IMPORT_EXECUTED',
+  IMPORT_ROLLED_BACK: 'IMPORT_ROLLED_BACK',
+  IMPORT_ROW_ERROR: 'IMPORT_ROW_ERROR',
+  IMPORT_ERROR_RESOLVED: 'IMPORT_ERROR_RESOLVED'
 };
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
@@ -884,7 +912,11 @@ export const AuditEntityType: {
   SOD_WAIVER: 'SOD_WAIVER',
   TREASURY_ACCOUNT: 'TREASURY_ACCOUNT',
   PAYMENT_SCHEDULE: 'PAYMENT_SCHEDULE',
-  TRANSFER: 'TRANSFER'
+  TRANSFER: 'TRANSFER',
+  IMPORT_BATCH: 'IMPORT_BATCH',
+  IMPORT_ROW: 'IMPORT_ROW',
+  IMPORT_FIELD_MAPPING: 'IMPORT_FIELD_MAPPING',
+  IMPORT_ERROR: 'IMPORT_ERROR'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -1145,6 +1177,45 @@ export const TransferStatus: {
 
 export type TransferStatus = (typeof TransferStatus)[keyof typeof TransferStatus]
 
+
+export const ImportSource: {
+  EXCEL: 'EXCEL',
+  CSV: 'CSV',
+  API: 'API',
+  MANUAL: 'MANUAL'
+};
+
+export type ImportSource = (typeof ImportSource)[keyof typeof ImportSource]
+
+
+export const ImportBatchStatus: {
+  UPLOADED: 'UPLOADED',
+  MAPPING: 'MAPPING',
+  VALIDATING: 'VALIDATING',
+  PREVIEW: 'PREVIEW',
+  AWAITING_APPROVAL: 'AWAITING_APPROVAL',
+  APPROVED: 'APPROVED',
+  IMPORTING: 'IMPORTING',
+  COMPLETED: 'COMPLETED',
+  PARTIALLY_COMPLETED: 'PARTIALLY_COMPLETED',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK'
+};
+
+export type ImportBatchStatus = (typeof ImportBatchStatus)[keyof typeof ImportBatchStatus]
+
+
+export const ImportErrorType: {
+  VALIDATION: 'VALIDATION',
+  DUPLICATE: 'DUPLICATE',
+  MAPPING: 'MAPPING',
+  PERMISSION: 'PERMISSION',
+  SYSTEM: 'SYSTEM',
+  PARSE: 'PARSE'
+};
+
+export type ImportErrorType = (typeof ImportErrorType)[keyof typeof ImportErrorType]
+
 }
 
 export type UserStatus = $Enums.UserStatus
@@ -1382,6 +1453,18 @@ export const SODWaiverStatus: typeof $Enums.SODWaiverStatus
 export type TransferStatus = $Enums.TransferStatus
 
 export const TransferStatus: typeof $Enums.TransferStatus
+
+export type ImportSource = $Enums.ImportSource
+
+export const ImportSource: typeof $Enums.ImportSource
+
+export type ImportBatchStatus = $Enums.ImportBatchStatus
+
+export const ImportBatchStatus: typeof $Enums.ImportBatchStatus
+
+export type ImportErrorType = $Enums.ImportErrorType
+
+export const ImportErrorType: typeof $Enums.ImportErrorType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1992,6 +2075,46 @@ export class PrismaClient<
   get securityEvent(): Prisma.SecurityEventDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.importBatch`: Exposes CRUD operations for the **ImportBatch** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ImportBatches
+    * const importBatches = await prisma.importBatch.findMany()
+    * ```
+    */
+  get importBatch(): Prisma.ImportBatchDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.importRow`: Exposes CRUD operations for the **ImportRow** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ImportRows
+    * const importRows = await prisma.importRow.findMany()
+    * ```
+    */
+  get importRow(): Prisma.ImportRowDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.importFieldMapping`: Exposes CRUD operations for the **ImportFieldMapping** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ImportFieldMappings
+    * const importFieldMappings = await prisma.importFieldMapping.findMany()
+    * ```
+    */
+  get importFieldMapping(): Prisma.ImportFieldMappingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.importError`: Exposes CRUD operations for the **ImportError** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ImportErrors
+    * const importErrors = await prisma.importError.findMany()
+    * ```
+    */
+  get importError(): Prisma.ImportErrorDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.idempotencyKey`: Exposes CRUD operations for the **IdempotencyKey** model.
     * Example usage:
     * ```ts
@@ -2510,6 +2633,10 @@ export namespace Prisma {
     AuditChainHead: 'AuditChainHead',
     AuditChainCheckpoint: 'AuditChainCheckpoint',
     SecurityEvent: 'SecurityEvent',
+    ImportBatch: 'ImportBatch',
+    ImportRow: 'ImportRow',
+    ImportFieldMapping: 'ImportFieldMapping',
+    ImportError: 'ImportError',
     IdempotencyKey: 'IdempotencyKey',
     Notification: 'Notification',
     NotificationPreference: 'NotificationPreference'
@@ -2531,7 +2658,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "treasuryAccount" | "paymentSchedule" | "transfer" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "idempotencyKey" | "notification" | "notificationPreference"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "treasuryAccount" | "paymentSchedule" | "transfer" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "account" | "financialPeriod" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "importBatch" | "importRow" | "importFieldMapping" | "importError" | "idempotencyKey" | "notification" | "notificationPreference"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -6161,6 +6288,302 @@ export namespace Prisma {
           }
         }
       }
+      ImportBatch: {
+        payload: Prisma.$ImportBatchPayload<ExtArgs>
+        fields: Prisma.ImportBatchFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ImportBatchFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ImportBatchFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+          }
+          findFirst: {
+            args: Prisma.ImportBatchFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ImportBatchFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+          }
+          findMany: {
+            args: Prisma.ImportBatchFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload>[]
+          }
+          create: {
+            args: Prisma.ImportBatchCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+          }
+          createMany: {
+            args: Prisma.ImportBatchCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ImportBatchCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload>[]
+          }
+          delete: {
+            args: Prisma.ImportBatchDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+          }
+          update: {
+            args: Prisma.ImportBatchUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+          }
+          deleteMany: {
+            args: Prisma.ImportBatchDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ImportBatchUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ImportBatchUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload>[]
+          }
+          upsert: {
+            args: Prisma.ImportBatchUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+          }
+          aggregate: {
+            args: Prisma.ImportBatchAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateImportBatch>
+          }
+          groupBy: {
+            args: Prisma.ImportBatchGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ImportBatchGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ImportBatchCountArgs<ExtArgs>
+            result: $Utils.Optional<ImportBatchCountAggregateOutputType> | number
+          }
+        }
+      }
+      ImportRow: {
+        payload: Prisma.$ImportRowPayload<ExtArgs>
+        fields: Prisma.ImportRowFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ImportRowFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ImportRowFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload>
+          }
+          findFirst: {
+            args: Prisma.ImportRowFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ImportRowFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload>
+          }
+          findMany: {
+            args: Prisma.ImportRowFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload>[]
+          }
+          create: {
+            args: Prisma.ImportRowCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload>
+          }
+          createMany: {
+            args: Prisma.ImportRowCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ImportRowCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload>[]
+          }
+          delete: {
+            args: Prisma.ImportRowDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload>
+          }
+          update: {
+            args: Prisma.ImportRowUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload>
+          }
+          deleteMany: {
+            args: Prisma.ImportRowDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ImportRowUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ImportRowUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload>[]
+          }
+          upsert: {
+            args: Prisma.ImportRowUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportRowPayload>
+          }
+          aggregate: {
+            args: Prisma.ImportRowAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateImportRow>
+          }
+          groupBy: {
+            args: Prisma.ImportRowGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ImportRowGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ImportRowCountArgs<ExtArgs>
+            result: $Utils.Optional<ImportRowCountAggregateOutputType> | number
+          }
+        }
+      }
+      ImportFieldMapping: {
+        payload: Prisma.$ImportFieldMappingPayload<ExtArgs>
+        fields: Prisma.ImportFieldMappingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ImportFieldMappingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ImportFieldMappingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload>
+          }
+          findFirst: {
+            args: Prisma.ImportFieldMappingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ImportFieldMappingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload>
+          }
+          findMany: {
+            args: Prisma.ImportFieldMappingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload>[]
+          }
+          create: {
+            args: Prisma.ImportFieldMappingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload>
+          }
+          createMany: {
+            args: Prisma.ImportFieldMappingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ImportFieldMappingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload>[]
+          }
+          delete: {
+            args: Prisma.ImportFieldMappingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload>
+          }
+          update: {
+            args: Prisma.ImportFieldMappingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload>
+          }
+          deleteMany: {
+            args: Prisma.ImportFieldMappingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ImportFieldMappingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ImportFieldMappingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload>[]
+          }
+          upsert: {
+            args: Prisma.ImportFieldMappingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportFieldMappingPayload>
+          }
+          aggregate: {
+            args: Prisma.ImportFieldMappingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateImportFieldMapping>
+          }
+          groupBy: {
+            args: Prisma.ImportFieldMappingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ImportFieldMappingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ImportFieldMappingCountArgs<ExtArgs>
+            result: $Utils.Optional<ImportFieldMappingCountAggregateOutputType> | number
+          }
+        }
+      }
+      ImportError: {
+        payload: Prisma.$ImportErrorPayload<ExtArgs>
+        fields: Prisma.ImportErrorFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ImportErrorFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ImportErrorFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload>
+          }
+          findFirst: {
+            args: Prisma.ImportErrorFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ImportErrorFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload>
+          }
+          findMany: {
+            args: Prisma.ImportErrorFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload>[]
+          }
+          create: {
+            args: Prisma.ImportErrorCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload>
+          }
+          createMany: {
+            args: Prisma.ImportErrorCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ImportErrorCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload>[]
+          }
+          delete: {
+            args: Prisma.ImportErrorDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload>
+          }
+          update: {
+            args: Prisma.ImportErrorUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload>
+          }
+          deleteMany: {
+            args: Prisma.ImportErrorDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ImportErrorUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ImportErrorUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload>[]
+          }
+          upsert: {
+            args: Prisma.ImportErrorUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ImportErrorPayload>
+          }
+          aggregate: {
+            args: Prisma.ImportErrorAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateImportError>
+          }
+          groupBy: {
+            args: Prisma.ImportErrorGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ImportErrorGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ImportErrorCountArgs<ExtArgs>
+            result: $Utils.Optional<ImportErrorCountAggregateOutputType> | number
+          }
+        }
+      }
       IdempotencyKey: {
         payload: Prisma.$IdempotencyKeyPayload<ExtArgs>
         fields: Prisma.IdempotencyKeyFieldRefs
@@ -6528,6 +6951,10 @@ export namespace Prisma {
     auditChainHead?: AuditChainHeadOmit
     auditChainCheckpoint?: AuditChainCheckpointOmit
     securityEvent?: SecurityEventOmit
+    importBatch?: ImportBatchOmit
+    importRow?: ImportRowOmit
+    importFieldMapping?: ImportFieldMappingOmit
+    importError?: ImportErrorOmit
     idempotencyKey?: IdempotencyKeyOmit
     notification?: NotificationOmit
     notificationPreference?: NotificationPreferenceOmit
@@ -6647,6 +7074,14 @@ export namespace Prisma {
     transfersApproved: number
     transfersProcessed: number
     transfersReversed: number
+    importBatchesUploaded: number
+    importBatchesMapped: number
+    importBatchesValidated: number
+    importBatchesApproved: number
+    importBatchesImported: number
+    importBatchesRolledBack: number
+    importFieldMappingsCreated: number
+    importErrorsResolved: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6686,6 +7121,14 @@ export namespace Prisma {
     transfersApproved?: boolean | UserCountOutputTypeCountTransfersApprovedArgs
     transfersProcessed?: boolean | UserCountOutputTypeCountTransfersProcessedArgs
     transfersReversed?: boolean | UserCountOutputTypeCountTransfersReversedArgs
+    importBatchesUploaded?: boolean | UserCountOutputTypeCountImportBatchesUploadedArgs
+    importBatchesMapped?: boolean | UserCountOutputTypeCountImportBatchesMappedArgs
+    importBatchesValidated?: boolean | UserCountOutputTypeCountImportBatchesValidatedArgs
+    importBatchesApproved?: boolean | UserCountOutputTypeCountImportBatchesApprovedArgs
+    importBatchesImported?: boolean | UserCountOutputTypeCountImportBatchesImportedArgs
+    importBatchesRolledBack?: boolean | UserCountOutputTypeCountImportBatchesRolledBackArgs
+    importFieldMappingsCreated?: boolean | UserCountOutputTypeCountImportFieldMappingsCreatedArgs
+    importErrorsResolved?: boolean | UserCountOutputTypeCountImportErrorsResolvedArgs
   }
 
   // Custom InputTypes
@@ -6949,6 +7392,62 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountTransfersReversedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransferWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountImportBatchesUploadedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportBatchWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountImportBatchesMappedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportBatchWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountImportBatchesValidatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportBatchWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountImportBatchesApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportBatchWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountImportBatchesImportedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportBatchWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountImportBatchesRolledBackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportBatchWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountImportFieldMappingsCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportFieldMappingWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountImportErrorsResolvedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportErrorWhereInput
   }
 
 
@@ -7257,6 +7756,8 @@ export namespace Prisma {
     treasuryAccounts: number
     paymentSchedules: number
     transfers: number
+    importBatches: number
+    importFieldMappings: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7284,6 +7785,8 @@ export namespace Prisma {
     treasuryAccounts?: boolean | OrganizationCountOutputTypeCountTreasuryAccountsArgs
     paymentSchedules?: boolean | OrganizationCountOutputTypeCountPaymentSchedulesArgs
     transfers?: boolean | OrganizationCountOutputTypeCountTransfersArgs
+    importBatches?: boolean | OrganizationCountOutputTypeCountImportBatchesArgs
+    importFieldMappings?: boolean | OrganizationCountOutputTypeCountImportFieldMappingsArgs
   }
 
   // Custom InputTypes
@@ -7463,6 +7966,20 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransferWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountImportBatchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportBatchWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountImportFieldMappingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportFieldMappingWhereInput
   }
 
 
@@ -8301,6 +8818,86 @@ export namespace Prisma {
 
 
   /**
+   * Count Type ImportBatchCountOutputType
+   */
+
+  export type ImportBatchCountOutputType = {
+    rows: number
+    fieldMappings: number
+    errors: number
+  }
+
+  export type ImportBatchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    rows?: boolean | ImportBatchCountOutputTypeCountRowsArgs
+    fieldMappings?: boolean | ImportBatchCountOutputTypeCountFieldMappingsArgs
+    errors?: boolean | ImportBatchCountOutputTypeCountErrorsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ImportBatchCountOutputType without action
+   */
+  export type ImportBatchCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatchCountOutputType
+     */
+    select?: ImportBatchCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ImportBatchCountOutputType without action
+   */
+  export type ImportBatchCountOutputTypeCountRowsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportRowWhereInput
+  }
+
+  /**
+   * ImportBatchCountOutputType without action
+   */
+  export type ImportBatchCountOutputTypeCountFieldMappingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportFieldMappingWhereInput
+  }
+
+  /**
+   * ImportBatchCountOutputType without action
+   */
+  export type ImportBatchCountOutputTypeCountErrorsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportErrorWhereInput
+  }
+
+
+  /**
+   * Count Type ImportRowCountOutputType
+   */
+
+  export type ImportRowCountOutputType = {
+    errors: number
+  }
+
+  export type ImportRowCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    errors?: boolean | ImportRowCountOutputTypeCountErrorsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ImportRowCountOutputType without action
+   */
+  export type ImportRowCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRowCountOutputType
+     */
+    select?: ImportRowCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ImportRowCountOutputType without action
+   */
+  export type ImportRowCountOutputTypeCountErrorsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportErrorWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -8762,6 +9359,14 @@ export namespace Prisma {
     transfersApproved?: boolean | User$transfersApprovedArgs<ExtArgs>
     transfersProcessed?: boolean | User$transfersProcessedArgs<ExtArgs>
     transfersReversed?: boolean | User$transfersReversedArgs<ExtArgs>
+    importBatchesUploaded?: boolean | User$importBatchesUploadedArgs<ExtArgs>
+    importBatchesMapped?: boolean | User$importBatchesMappedArgs<ExtArgs>
+    importBatchesValidated?: boolean | User$importBatchesValidatedArgs<ExtArgs>
+    importBatchesApproved?: boolean | User$importBatchesApprovedArgs<ExtArgs>
+    importBatchesImported?: boolean | User$importBatchesImportedArgs<ExtArgs>
+    importBatchesRolledBack?: boolean | User$importBatchesRolledBackArgs<ExtArgs>
+    importFieldMappingsCreated?: boolean | User$importFieldMappingsCreatedArgs<ExtArgs>
+    importErrorsResolved?: boolean | User$importErrorsResolvedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8923,6 +9528,14 @@ export namespace Prisma {
     transfersApproved?: boolean | User$transfersApprovedArgs<ExtArgs>
     transfersProcessed?: boolean | User$transfersProcessedArgs<ExtArgs>
     transfersReversed?: boolean | User$transfersReversedArgs<ExtArgs>
+    importBatchesUploaded?: boolean | User$importBatchesUploadedArgs<ExtArgs>
+    importBatchesMapped?: boolean | User$importBatchesMappedArgs<ExtArgs>
+    importBatchesValidated?: boolean | User$importBatchesValidatedArgs<ExtArgs>
+    importBatchesApproved?: boolean | User$importBatchesApprovedArgs<ExtArgs>
+    importBatchesImported?: boolean | User$importBatchesImportedArgs<ExtArgs>
+    importBatchesRolledBack?: boolean | User$importBatchesRolledBackArgs<ExtArgs>
+    importFieldMappingsCreated?: boolean | User$importFieldMappingsCreatedArgs<ExtArgs>
+    importErrorsResolved?: boolean | User$importErrorsResolvedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8981,6 +9594,14 @@ export namespace Prisma {
       transfersApproved: Prisma.$TransferPayload<ExtArgs>[]
       transfersProcessed: Prisma.$TransferPayload<ExtArgs>[]
       transfersReversed: Prisma.$TransferPayload<ExtArgs>[]
+      importBatchesUploaded: Prisma.$ImportBatchPayload<ExtArgs>[]
+      importBatchesMapped: Prisma.$ImportBatchPayload<ExtArgs>[]
+      importBatchesValidated: Prisma.$ImportBatchPayload<ExtArgs>[]
+      importBatchesApproved: Prisma.$ImportBatchPayload<ExtArgs>[]
+      importBatchesImported: Prisma.$ImportBatchPayload<ExtArgs>[]
+      importBatchesRolledBack: Prisma.$ImportBatchPayload<ExtArgs>[]
+      importFieldMappingsCreated: Prisma.$ImportFieldMappingPayload<ExtArgs>[]
+      importErrorsResolved: Prisma.$ImportErrorPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9461,6 +10082,14 @@ export namespace Prisma {
     transfersApproved<T extends User$transfersApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$transfersApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transfersProcessed<T extends User$transfersProcessedArgs<ExtArgs> = {}>(args?: Subset<T, User$transfersProcessedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transfersReversed<T extends User$transfersReversedArgs<ExtArgs> = {}>(args?: Subset<T, User$transfersReversedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    importBatchesUploaded<T extends User$importBatchesUploadedArgs<ExtArgs> = {}>(args?: Subset<T, User$importBatchesUploadedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    importBatchesMapped<T extends User$importBatchesMappedArgs<ExtArgs> = {}>(args?: Subset<T, User$importBatchesMappedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    importBatchesValidated<T extends User$importBatchesValidatedArgs<ExtArgs> = {}>(args?: Subset<T, User$importBatchesValidatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    importBatchesApproved<T extends User$importBatchesApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$importBatchesApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    importBatchesImported<T extends User$importBatchesImportedArgs<ExtArgs> = {}>(args?: Subset<T, User$importBatchesImportedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    importBatchesRolledBack<T extends User$importBatchesRolledBackArgs<ExtArgs> = {}>(args?: Subset<T, User$importBatchesRolledBackArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    importFieldMappingsCreated<T extends User$importFieldMappingsCreatedArgs<ExtArgs> = {}>(args?: Subset<T, User$importFieldMappingsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    importErrorsResolved<T extends User$importErrorsResolvedArgs<ExtArgs> = {}>(args?: Subset<T, User$importErrorsResolvedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10856,6 +11485,198 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * User.importBatchesUploaded
+   */
+  export type User$importBatchesUploadedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    where?: ImportBatchWhereInput
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    cursor?: ImportBatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportBatchScalarFieldEnum | ImportBatchScalarFieldEnum[]
+  }
+
+  /**
+   * User.importBatchesMapped
+   */
+  export type User$importBatchesMappedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    where?: ImportBatchWhereInput
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    cursor?: ImportBatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportBatchScalarFieldEnum | ImportBatchScalarFieldEnum[]
+  }
+
+  /**
+   * User.importBatchesValidated
+   */
+  export type User$importBatchesValidatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    where?: ImportBatchWhereInput
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    cursor?: ImportBatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportBatchScalarFieldEnum | ImportBatchScalarFieldEnum[]
+  }
+
+  /**
+   * User.importBatchesApproved
+   */
+  export type User$importBatchesApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    where?: ImportBatchWhereInput
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    cursor?: ImportBatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportBatchScalarFieldEnum | ImportBatchScalarFieldEnum[]
+  }
+
+  /**
+   * User.importBatchesImported
+   */
+  export type User$importBatchesImportedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    where?: ImportBatchWhereInput
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    cursor?: ImportBatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportBatchScalarFieldEnum | ImportBatchScalarFieldEnum[]
+  }
+
+  /**
+   * User.importBatchesRolledBack
+   */
+  export type User$importBatchesRolledBackArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    where?: ImportBatchWhereInput
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    cursor?: ImportBatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportBatchScalarFieldEnum | ImportBatchScalarFieldEnum[]
+  }
+
+  /**
+   * User.importFieldMappingsCreated
+   */
+  export type User$importFieldMappingsCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    where?: ImportFieldMappingWhereInput
+    orderBy?: ImportFieldMappingOrderByWithRelationInput | ImportFieldMappingOrderByWithRelationInput[]
+    cursor?: ImportFieldMappingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportFieldMappingScalarFieldEnum | ImportFieldMappingScalarFieldEnum[]
+  }
+
+  /**
+   * User.importErrorsResolved
+   */
+  export type User$importErrorsResolvedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    where?: ImportErrorWhereInput
+    orderBy?: ImportErrorOrderByWithRelationInput | ImportErrorOrderByWithRelationInput[]
+    cursor?: ImportErrorWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportErrorScalarFieldEnum | ImportErrorScalarFieldEnum[]
   }
 
   /**
@@ -32882,6 +33703,8 @@ export namespace Prisma {
     treasuryAccounts?: boolean | Organization$treasuryAccountsArgs<ExtArgs>
     paymentSchedules?: boolean | Organization$paymentSchedulesArgs<ExtArgs>
     transfers?: boolean | Organization$transfersArgs<ExtArgs>
+    importBatches?: boolean | Organization$importBatchesArgs<ExtArgs>
+    importFieldMappings?: boolean | Organization$importFieldMappingsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -32971,6 +33794,8 @@ export namespace Prisma {
     treasuryAccounts?: boolean | Organization$treasuryAccountsArgs<ExtArgs>
     paymentSchedules?: boolean | Organization$paymentSchedulesArgs<ExtArgs>
     transfers?: boolean | Organization$transfersArgs<ExtArgs>
+    importBatches?: boolean | Organization$importBatchesArgs<ExtArgs>
+    importFieldMappings?: boolean | Organization$importFieldMappingsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -33003,6 +33828,8 @@ export namespace Prisma {
       treasuryAccounts: Prisma.$TreasuryAccountPayload<ExtArgs>[]
       paymentSchedules: Prisma.$PaymentSchedulePayload<ExtArgs>[]
       transfers: Prisma.$TransferPayload<ExtArgs>[]
+      importBatches: Prisma.$ImportBatchPayload<ExtArgs>[]
+      importFieldMappings: Prisma.$ImportFieldMappingPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -33446,6 +34273,8 @@ export namespace Prisma {
     treasuryAccounts<T extends Organization$treasuryAccountsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$treasuryAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreasuryAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     paymentSchedules<T extends Organization$paymentSchedulesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$paymentSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transfers<T extends Organization$transfersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$transfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    importBatches<T extends Organization$importBatchesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$importBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    importFieldMappings<T extends Organization$importFieldMappingsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$importFieldMappingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -34453,6 +35282,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransferScalarFieldEnum | TransferScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.importBatches
+   */
+  export type Organization$importBatchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    where?: ImportBatchWhereInput
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    cursor?: ImportBatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportBatchScalarFieldEnum | ImportBatchScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.importFieldMappings
+   */
+  export type Organization$importFieldMappingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    where?: ImportFieldMappingWhereInput
+    orderBy?: ImportFieldMappingOrderByWithRelationInput | ImportFieldMappingOrderByWithRelationInput[]
+    cursor?: ImportFieldMappingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportFieldMappingScalarFieldEnum | ImportFieldMappingScalarFieldEnum[]
   }
 
   /**
@@ -71746,6 +72623,5291 @@ export namespace Prisma {
 
 
   /**
+   * Model ImportBatch
+   */
+
+  export type AggregateImportBatch = {
+    _count: ImportBatchCountAggregateOutputType | null
+    _avg: ImportBatchAvgAggregateOutputType | null
+    _sum: ImportBatchSumAggregateOutputType | null
+    _min: ImportBatchMinAggregateOutputType | null
+    _max: ImportBatchMaxAggregateOutputType | null
+  }
+
+  export type ImportBatchAvgAggregateOutputType = {
+    fileSize: number | null
+    totalRows: number | null
+    validRows: number | null
+    errorRows: number | null
+    duplicateRows: number | null
+  }
+
+  export type ImportBatchSumAggregateOutputType = {
+    fileSize: number | null
+    totalRows: number | null
+    validRows: number | null
+    errorRows: number | null
+    duplicateRows: number | null
+  }
+
+  export type ImportBatchMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    source: $Enums.ImportSource | null
+    fileName: string | null
+    fileHash: string | null
+    fileSize: number | null
+    mimeType: string | null
+    status: $Enums.ImportBatchStatus | null
+    totalRows: number | null
+    validRows: number | null
+    errorRows: number | null
+    duplicateRows: number | null
+    uploadedById: string | null
+    mappedById: string | null
+    validatedById: string | null
+    approvedById: string | null
+    importedById: string | null
+    rolledBackById: string | null
+    approvedAt: Date | null
+    importedAt: Date | null
+    rolledBackAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ImportBatchMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    code: string | null
+    source: $Enums.ImportSource | null
+    fileName: string | null
+    fileHash: string | null
+    fileSize: number | null
+    mimeType: string | null
+    status: $Enums.ImportBatchStatus | null
+    totalRows: number | null
+    validRows: number | null
+    errorRows: number | null
+    duplicateRows: number | null
+    uploadedById: string | null
+    mappedById: string | null
+    validatedById: string | null
+    approvedById: string | null
+    importedById: string | null
+    rolledBackById: string | null
+    approvedAt: Date | null
+    importedAt: Date | null
+    rolledBackAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ImportBatchCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    code: number
+    source: number
+    fileName: number
+    fileHash: number
+    fileSize: number
+    mimeType: number
+    status: number
+    totalRows: number
+    validRows: number
+    errorRows: number
+    duplicateRows: number
+    uploadedById: number
+    mappedById: number
+    validatedById: number
+    approvedById: number
+    importedById: number
+    rolledBackById: number
+    approvedAt: number
+    importedAt: number
+    rolledBackAt: number
+    errorSummary: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ImportBatchAvgAggregateInputType = {
+    fileSize?: true
+    totalRows?: true
+    validRows?: true
+    errorRows?: true
+    duplicateRows?: true
+  }
+
+  export type ImportBatchSumAggregateInputType = {
+    fileSize?: true
+    totalRows?: true
+    validRows?: true
+    errorRows?: true
+    duplicateRows?: true
+  }
+
+  export type ImportBatchMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    source?: true
+    fileName?: true
+    fileHash?: true
+    fileSize?: true
+    mimeType?: true
+    status?: true
+    totalRows?: true
+    validRows?: true
+    errorRows?: true
+    duplicateRows?: true
+    uploadedById?: true
+    mappedById?: true
+    validatedById?: true
+    approvedById?: true
+    importedById?: true
+    rolledBackById?: true
+    approvedAt?: true
+    importedAt?: true
+    rolledBackAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ImportBatchMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    source?: true
+    fileName?: true
+    fileHash?: true
+    fileSize?: true
+    mimeType?: true
+    status?: true
+    totalRows?: true
+    validRows?: true
+    errorRows?: true
+    duplicateRows?: true
+    uploadedById?: true
+    mappedById?: true
+    validatedById?: true
+    approvedById?: true
+    importedById?: true
+    rolledBackById?: true
+    approvedAt?: true
+    importedAt?: true
+    rolledBackAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ImportBatchCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    code?: true
+    source?: true
+    fileName?: true
+    fileHash?: true
+    fileSize?: true
+    mimeType?: true
+    status?: true
+    totalRows?: true
+    validRows?: true
+    errorRows?: true
+    duplicateRows?: true
+    uploadedById?: true
+    mappedById?: true
+    validatedById?: true
+    approvedById?: true
+    importedById?: true
+    rolledBackById?: true
+    approvedAt?: true
+    importedAt?: true
+    rolledBackAt?: true
+    errorSummary?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ImportBatchAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ImportBatch to aggregate.
+     */
+    where?: ImportBatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportBatches to fetch.
+     */
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ImportBatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportBatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportBatches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ImportBatches
+    **/
+    _count?: true | ImportBatchCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ImportBatchAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ImportBatchSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ImportBatchMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ImportBatchMaxAggregateInputType
+  }
+
+  export type GetImportBatchAggregateType<T extends ImportBatchAggregateArgs> = {
+        [P in keyof T & keyof AggregateImportBatch]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateImportBatch[P]>
+      : GetScalarType<T[P], AggregateImportBatch[P]>
+  }
+
+
+
+
+  export type ImportBatchGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportBatchWhereInput
+    orderBy?: ImportBatchOrderByWithAggregationInput | ImportBatchOrderByWithAggregationInput[]
+    by: ImportBatchScalarFieldEnum[] | ImportBatchScalarFieldEnum
+    having?: ImportBatchScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ImportBatchCountAggregateInputType | true
+    _avg?: ImportBatchAvgAggregateInputType
+    _sum?: ImportBatchSumAggregateInputType
+    _min?: ImportBatchMinAggregateInputType
+    _max?: ImportBatchMaxAggregateInputType
+  }
+
+  export type ImportBatchGroupByOutputType = {
+    id: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status: $Enums.ImportBatchStatus
+    totalRows: number
+    validRows: number
+    errorRows: number
+    duplicateRows: number
+    uploadedById: string
+    mappedById: string | null
+    validatedById: string | null
+    approvedById: string | null
+    importedById: string | null
+    rolledBackById: string | null
+    approvedAt: Date | null
+    importedAt: Date | null
+    rolledBackAt: Date | null
+    errorSummary: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ImportBatchCountAggregateOutputType | null
+    _avg: ImportBatchAvgAggregateOutputType | null
+    _sum: ImportBatchSumAggregateOutputType | null
+    _min: ImportBatchMinAggregateOutputType | null
+    _max: ImportBatchMaxAggregateOutputType | null
+  }
+
+  type GetImportBatchGroupByPayload<T extends ImportBatchGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ImportBatchGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ImportBatchGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ImportBatchGroupByOutputType[P]>
+            : GetScalarType<T[P], ImportBatchGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ImportBatchSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    source?: boolean
+    fileName?: boolean
+    fileHash?: boolean
+    fileSize?: boolean
+    mimeType?: boolean
+    status?: boolean
+    totalRows?: boolean
+    validRows?: boolean
+    errorRows?: boolean
+    duplicateRows?: boolean
+    uploadedById?: boolean
+    mappedById?: boolean
+    validatedById?: boolean
+    approvedById?: boolean
+    importedById?: boolean
+    rolledBackById?: boolean
+    approvedAt?: boolean
+    importedAt?: boolean
+    rolledBackAt?: boolean
+    errorSummary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+    mappedBy?: boolean | ImportBatch$mappedByArgs<ExtArgs>
+    validatedBy?: boolean | ImportBatch$validatedByArgs<ExtArgs>
+    approvedBy?: boolean | ImportBatch$approvedByArgs<ExtArgs>
+    importedBy?: boolean | ImportBatch$importedByArgs<ExtArgs>
+    rolledBackBy?: boolean | ImportBatch$rolledBackByArgs<ExtArgs>
+    rows?: boolean | ImportBatch$rowsArgs<ExtArgs>
+    fieldMappings?: boolean | ImportBatch$fieldMappingsArgs<ExtArgs>
+    errors?: boolean | ImportBatch$errorsArgs<ExtArgs>
+    _count?: boolean | ImportBatchCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["importBatch"]>
+
+  export type ImportBatchSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    source?: boolean
+    fileName?: boolean
+    fileHash?: boolean
+    fileSize?: boolean
+    mimeType?: boolean
+    status?: boolean
+    totalRows?: boolean
+    validRows?: boolean
+    errorRows?: boolean
+    duplicateRows?: boolean
+    uploadedById?: boolean
+    mappedById?: boolean
+    validatedById?: boolean
+    approvedById?: boolean
+    importedById?: boolean
+    rolledBackById?: boolean
+    approvedAt?: boolean
+    importedAt?: boolean
+    rolledBackAt?: boolean
+    errorSummary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+    mappedBy?: boolean | ImportBatch$mappedByArgs<ExtArgs>
+    validatedBy?: boolean | ImportBatch$validatedByArgs<ExtArgs>
+    approvedBy?: boolean | ImportBatch$approvedByArgs<ExtArgs>
+    importedBy?: boolean | ImportBatch$importedByArgs<ExtArgs>
+    rolledBackBy?: boolean | ImportBatch$rolledBackByArgs<ExtArgs>
+  }, ExtArgs["result"]["importBatch"]>
+
+  export type ImportBatchSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    source?: boolean
+    fileName?: boolean
+    fileHash?: boolean
+    fileSize?: boolean
+    mimeType?: boolean
+    status?: boolean
+    totalRows?: boolean
+    validRows?: boolean
+    errorRows?: boolean
+    duplicateRows?: boolean
+    uploadedById?: boolean
+    mappedById?: boolean
+    validatedById?: boolean
+    approvedById?: boolean
+    importedById?: boolean
+    rolledBackById?: boolean
+    approvedAt?: boolean
+    importedAt?: boolean
+    rolledBackAt?: boolean
+    errorSummary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+    mappedBy?: boolean | ImportBatch$mappedByArgs<ExtArgs>
+    validatedBy?: boolean | ImportBatch$validatedByArgs<ExtArgs>
+    approvedBy?: boolean | ImportBatch$approvedByArgs<ExtArgs>
+    importedBy?: boolean | ImportBatch$importedByArgs<ExtArgs>
+    rolledBackBy?: boolean | ImportBatch$rolledBackByArgs<ExtArgs>
+  }, ExtArgs["result"]["importBatch"]>
+
+  export type ImportBatchSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    code?: boolean
+    source?: boolean
+    fileName?: boolean
+    fileHash?: boolean
+    fileSize?: boolean
+    mimeType?: boolean
+    status?: boolean
+    totalRows?: boolean
+    validRows?: boolean
+    errorRows?: boolean
+    duplicateRows?: boolean
+    uploadedById?: boolean
+    mappedById?: boolean
+    validatedById?: boolean
+    approvedById?: boolean
+    importedById?: boolean
+    rolledBackById?: boolean
+    approvedAt?: boolean
+    importedAt?: boolean
+    rolledBackAt?: boolean
+    errorSummary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ImportBatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "code" | "source" | "fileName" | "fileHash" | "fileSize" | "mimeType" | "status" | "totalRows" | "validRows" | "errorRows" | "duplicateRows" | "uploadedById" | "mappedById" | "validatedById" | "approvedById" | "importedById" | "rolledBackById" | "approvedAt" | "importedAt" | "rolledBackAt" | "errorSummary" | "createdAt" | "updatedAt", ExtArgs["result"]["importBatch"]>
+  export type ImportBatchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+    mappedBy?: boolean | ImportBatch$mappedByArgs<ExtArgs>
+    validatedBy?: boolean | ImportBatch$validatedByArgs<ExtArgs>
+    approvedBy?: boolean | ImportBatch$approvedByArgs<ExtArgs>
+    importedBy?: boolean | ImportBatch$importedByArgs<ExtArgs>
+    rolledBackBy?: boolean | ImportBatch$rolledBackByArgs<ExtArgs>
+    rows?: boolean | ImportBatch$rowsArgs<ExtArgs>
+    fieldMappings?: boolean | ImportBatch$fieldMappingsArgs<ExtArgs>
+    errors?: boolean | ImportBatch$errorsArgs<ExtArgs>
+    _count?: boolean | ImportBatchCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ImportBatchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+    mappedBy?: boolean | ImportBatch$mappedByArgs<ExtArgs>
+    validatedBy?: boolean | ImportBatch$validatedByArgs<ExtArgs>
+    approvedBy?: boolean | ImportBatch$approvedByArgs<ExtArgs>
+    importedBy?: boolean | ImportBatch$importedByArgs<ExtArgs>
+    rolledBackBy?: boolean | ImportBatch$rolledBackByArgs<ExtArgs>
+  }
+  export type ImportBatchIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+    mappedBy?: boolean | ImportBatch$mappedByArgs<ExtArgs>
+    validatedBy?: boolean | ImportBatch$validatedByArgs<ExtArgs>
+    approvedBy?: boolean | ImportBatch$approvedByArgs<ExtArgs>
+    importedBy?: boolean | ImportBatch$importedByArgs<ExtArgs>
+    rolledBackBy?: boolean | ImportBatch$rolledBackByArgs<ExtArgs>
+  }
+
+  export type $ImportBatchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ImportBatch"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      uploadedBy: Prisma.$UserPayload<ExtArgs>
+      mappedBy: Prisma.$UserPayload<ExtArgs> | null
+      validatedBy: Prisma.$UserPayload<ExtArgs> | null
+      approvedBy: Prisma.$UserPayload<ExtArgs> | null
+      importedBy: Prisma.$UserPayload<ExtArgs> | null
+      rolledBackBy: Prisma.$UserPayload<ExtArgs> | null
+      rows: Prisma.$ImportRowPayload<ExtArgs>[]
+      fieldMappings: Prisma.$ImportFieldMappingPayload<ExtArgs>[]
+      errors: Prisma.$ImportErrorPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      code: string
+      source: $Enums.ImportSource
+      fileName: string
+      fileHash: string
+      fileSize: number
+      mimeType: string
+      status: $Enums.ImportBatchStatus
+      totalRows: number
+      validRows: number
+      errorRows: number
+      duplicateRows: number
+      uploadedById: string
+      mappedById: string | null
+      validatedById: string | null
+      approvedById: string | null
+      importedById: string | null
+      rolledBackById: string | null
+      approvedAt: Date | null
+      importedAt: Date | null
+      rolledBackAt: Date | null
+      errorSummary: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["importBatch"]>
+    composites: {}
+  }
+
+  type ImportBatchGetPayload<S extends boolean | null | undefined | ImportBatchDefaultArgs> = $Result.GetResult<Prisma.$ImportBatchPayload, S>
+
+  type ImportBatchCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ImportBatchFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ImportBatchCountAggregateInputType | true
+    }
+
+  export interface ImportBatchDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ImportBatch'], meta: { name: 'ImportBatch' } }
+    /**
+     * Find zero or one ImportBatch that matches the filter.
+     * @param {ImportBatchFindUniqueArgs} args - Arguments to find a ImportBatch
+     * @example
+     * // Get one ImportBatch
+     * const importBatch = await prisma.importBatch.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ImportBatchFindUniqueArgs>(args: SelectSubset<T, ImportBatchFindUniqueArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ImportBatch that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ImportBatchFindUniqueOrThrowArgs} args - Arguments to find a ImportBatch
+     * @example
+     * // Get one ImportBatch
+     * const importBatch = await prisma.importBatch.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ImportBatchFindUniqueOrThrowArgs>(args: SelectSubset<T, ImportBatchFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ImportBatch that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportBatchFindFirstArgs} args - Arguments to find a ImportBatch
+     * @example
+     * // Get one ImportBatch
+     * const importBatch = await prisma.importBatch.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ImportBatchFindFirstArgs>(args?: SelectSubset<T, ImportBatchFindFirstArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ImportBatch that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportBatchFindFirstOrThrowArgs} args - Arguments to find a ImportBatch
+     * @example
+     * // Get one ImportBatch
+     * const importBatch = await prisma.importBatch.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ImportBatchFindFirstOrThrowArgs>(args?: SelectSubset<T, ImportBatchFindFirstOrThrowArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ImportBatches that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportBatchFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ImportBatches
+     * const importBatches = await prisma.importBatch.findMany()
+     * 
+     * // Get first 10 ImportBatches
+     * const importBatches = await prisma.importBatch.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const importBatchWithIdOnly = await prisma.importBatch.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ImportBatchFindManyArgs>(args?: SelectSubset<T, ImportBatchFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ImportBatch.
+     * @param {ImportBatchCreateArgs} args - Arguments to create a ImportBatch.
+     * @example
+     * // Create one ImportBatch
+     * const ImportBatch = await prisma.importBatch.create({
+     *   data: {
+     *     // ... data to create a ImportBatch
+     *   }
+     * })
+     * 
+     */
+    create<T extends ImportBatchCreateArgs>(args: SelectSubset<T, ImportBatchCreateArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ImportBatches.
+     * @param {ImportBatchCreateManyArgs} args - Arguments to create many ImportBatches.
+     * @example
+     * // Create many ImportBatches
+     * const importBatch = await prisma.importBatch.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ImportBatchCreateManyArgs>(args?: SelectSubset<T, ImportBatchCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ImportBatches and returns the data saved in the database.
+     * @param {ImportBatchCreateManyAndReturnArgs} args - Arguments to create many ImportBatches.
+     * @example
+     * // Create many ImportBatches
+     * const importBatch = await prisma.importBatch.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ImportBatches and only return the `id`
+     * const importBatchWithIdOnly = await prisma.importBatch.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ImportBatchCreateManyAndReturnArgs>(args?: SelectSubset<T, ImportBatchCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ImportBatch.
+     * @param {ImportBatchDeleteArgs} args - Arguments to delete one ImportBatch.
+     * @example
+     * // Delete one ImportBatch
+     * const ImportBatch = await prisma.importBatch.delete({
+     *   where: {
+     *     // ... filter to delete one ImportBatch
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ImportBatchDeleteArgs>(args: SelectSubset<T, ImportBatchDeleteArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ImportBatch.
+     * @param {ImportBatchUpdateArgs} args - Arguments to update one ImportBatch.
+     * @example
+     * // Update one ImportBatch
+     * const importBatch = await prisma.importBatch.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ImportBatchUpdateArgs>(args: SelectSubset<T, ImportBatchUpdateArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ImportBatches.
+     * @param {ImportBatchDeleteManyArgs} args - Arguments to filter ImportBatches to delete.
+     * @example
+     * // Delete a few ImportBatches
+     * const { count } = await prisma.importBatch.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ImportBatchDeleteManyArgs>(args?: SelectSubset<T, ImportBatchDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ImportBatches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportBatchUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ImportBatches
+     * const importBatch = await prisma.importBatch.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ImportBatchUpdateManyArgs>(args: SelectSubset<T, ImportBatchUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ImportBatches and returns the data updated in the database.
+     * @param {ImportBatchUpdateManyAndReturnArgs} args - Arguments to update many ImportBatches.
+     * @example
+     * // Update many ImportBatches
+     * const importBatch = await prisma.importBatch.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ImportBatches and only return the `id`
+     * const importBatchWithIdOnly = await prisma.importBatch.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ImportBatchUpdateManyAndReturnArgs>(args: SelectSubset<T, ImportBatchUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ImportBatch.
+     * @param {ImportBatchUpsertArgs} args - Arguments to update or create a ImportBatch.
+     * @example
+     * // Update or create a ImportBatch
+     * const importBatch = await prisma.importBatch.upsert({
+     *   create: {
+     *     // ... data to create a ImportBatch
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ImportBatch we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ImportBatchUpsertArgs>(args: SelectSubset<T, ImportBatchUpsertArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ImportBatches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportBatchCountArgs} args - Arguments to filter ImportBatches to count.
+     * @example
+     * // Count the number of ImportBatches
+     * const count = await prisma.importBatch.count({
+     *   where: {
+     *     // ... the filter for the ImportBatches we want to count
+     *   }
+     * })
+    **/
+    count<T extends ImportBatchCountArgs>(
+      args?: Subset<T, ImportBatchCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ImportBatchCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ImportBatch.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportBatchAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ImportBatchAggregateArgs>(args: Subset<T, ImportBatchAggregateArgs>): Prisma.PrismaPromise<GetImportBatchAggregateType<T>>
+
+    /**
+     * Group by ImportBatch.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportBatchGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ImportBatchGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ImportBatchGroupByArgs['orderBy'] }
+        : { orderBy?: ImportBatchGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ImportBatchGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetImportBatchGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ImportBatch model
+   */
+  readonly fields: ImportBatchFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ImportBatch.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ImportBatchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    uploadedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    mappedBy<T extends ImportBatch$mappedByArgs<ExtArgs> = {}>(args?: Subset<T, ImportBatch$mappedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    validatedBy<T extends ImportBatch$validatedByArgs<ExtArgs> = {}>(args?: Subset<T, ImportBatch$validatedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    approvedBy<T extends ImportBatch$approvedByArgs<ExtArgs> = {}>(args?: Subset<T, ImportBatch$approvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    importedBy<T extends ImportBatch$importedByArgs<ExtArgs> = {}>(args?: Subset<T, ImportBatch$importedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    rolledBackBy<T extends ImportBatch$rolledBackByArgs<ExtArgs> = {}>(args?: Subset<T, ImportBatch$rolledBackByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    rows<T extends ImportBatch$rowsArgs<ExtArgs> = {}>(args?: Subset<T, ImportBatch$rowsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    fieldMappings<T extends ImportBatch$fieldMappingsArgs<ExtArgs> = {}>(args?: Subset<T, ImportBatch$fieldMappingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    errors<T extends ImportBatch$errorsArgs<ExtArgs> = {}>(args?: Subset<T, ImportBatch$errorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ImportBatch model
+   */
+  interface ImportBatchFieldRefs {
+    readonly id: FieldRef<"ImportBatch", 'String'>
+    readonly organizationId: FieldRef<"ImportBatch", 'String'>
+    readonly code: FieldRef<"ImportBatch", 'String'>
+    readonly source: FieldRef<"ImportBatch", 'ImportSource'>
+    readonly fileName: FieldRef<"ImportBatch", 'String'>
+    readonly fileHash: FieldRef<"ImportBatch", 'String'>
+    readonly fileSize: FieldRef<"ImportBatch", 'Int'>
+    readonly mimeType: FieldRef<"ImportBatch", 'String'>
+    readonly status: FieldRef<"ImportBatch", 'ImportBatchStatus'>
+    readonly totalRows: FieldRef<"ImportBatch", 'Int'>
+    readonly validRows: FieldRef<"ImportBatch", 'Int'>
+    readonly errorRows: FieldRef<"ImportBatch", 'Int'>
+    readonly duplicateRows: FieldRef<"ImportBatch", 'Int'>
+    readonly uploadedById: FieldRef<"ImportBatch", 'String'>
+    readonly mappedById: FieldRef<"ImportBatch", 'String'>
+    readonly validatedById: FieldRef<"ImportBatch", 'String'>
+    readonly approvedById: FieldRef<"ImportBatch", 'String'>
+    readonly importedById: FieldRef<"ImportBatch", 'String'>
+    readonly rolledBackById: FieldRef<"ImportBatch", 'String'>
+    readonly approvedAt: FieldRef<"ImportBatch", 'DateTime'>
+    readonly importedAt: FieldRef<"ImportBatch", 'DateTime'>
+    readonly rolledBackAt: FieldRef<"ImportBatch", 'DateTime'>
+    readonly errorSummary: FieldRef<"ImportBatch", 'Json'>
+    readonly createdAt: FieldRef<"ImportBatch", 'DateTime'>
+    readonly updatedAt: FieldRef<"ImportBatch", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ImportBatch findUnique
+   */
+  export type ImportBatchFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportBatch to fetch.
+     */
+    where: ImportBatchWhereUniqueInput
+  }
+
+  /**
+   * ImportBatch findUniqueOrThrow
+   */
+  export type ImportBatchFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportBatch to fetch.
+     */
+    where: ImportBatchWhereUniqueInput
+  }
+
+  /**
+   * ImportBatch findFirst
+   */
+  export type ImportBatchFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportBatch to fetch.
+     */
+    where?: ImportBatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportBatches to fetch.
+     */
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ImportBatches.
+     */
+    cursor?: ImportBatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportBatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportBatches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ImportBatches.
+     */
+    distinct?: ImportBatchScalarFieldEnum | ImportBatchScalarFieldEnum[]
+  }
+
+  /**
+   * ImportBatch findFirstOrThrow
+   */
+  export type ImportBatchFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportBatch to fetch.
+     */
+    where?: ImportBatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportBatches to fetch.
+     */
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ImportBatches.
+     */
+    cursor?: ImportBatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportBatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportBatches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ImportBatches.
+     */
+    distinct?: ImportBatchScalarFieldEnum | ImportBatchScalarFieldEnum[]
+  }
+
+  /**
+   * ImportBatch findMany
+   */
+  export type ImportBatchFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportBatches to fetch.
+     */
+    where?: ImportBatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportBatches to fetch.
+     */
+    orderBy?: ImportBatchOrderByWithRelationInput | ImportBatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ImportBatches.
+     */
+    cursor?: ImportBatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportBatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportBatches.
+     */
+    skip?: number
+    distinct?: ImportBatchScalarFieldEnum | ImportBatchScalarFieldEnum[]
+  }
+
+  /**
+   * ImportBatch create
+   */
+  export type ImportBatchCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ImportBatch.
+     */
+    data: XOR<ImportBatchCreateInput, ImportBatchUncheckedCreateInput>
+  }
+
+  /**
+   * ImportBatch createMany
+   */
+  export type ImportBatchCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ImportBatches.
+     */
+    data: ImportBatchCreateManyInput | ImportBatchCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ImportBatch createManyAndReturn
+   */
+  export type ImportBatchCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * The data used to create many ImportBatches.
+     */
+    data: ImportBatchCreateManyInput | ImportBatchCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ImportBatch update
+   */
+  export type ImportBatchUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ImportBatch.
+     */
+    data: XOR<ImportBatchUpdateInput, ImportBatchUncheckedUpdateInput>
+    /**
+     * Choose, which ImportBatch to update.
+     */
+    where: ImportBatchWhereUniqueInput
+  }
+
+  /**
+   * ImportBatch updateMany
+   */
+  export type ImportBatchUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ImportBatches.
+     */
+    data: XOR<ImportBatchUpdateManyMutationInput, ImportBatchUncheckedUpdateManyInput>
+    /**
+     * Filter which ImportBatches to update
+     */
+    where?: ImportBatchWhereInput
+    /**
+     * Limit how many ImportBatches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ImportBatch updateManyAndReturn
+   */
+  export type ImportBatchUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * The data used to update ImportBatches.
+     */
+    data: XOR<ImportBatchUpdateManyMutationInput, ImportBatchUncheckedUpdateManyInput>
+    /**
+     * Filter which ImportBatches to update
+     */
+    where?: ImportBatchWhereInput
+    /**
+     * Limit how many ImportBatches to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ImportBatch upsert
+   */
+  export type ImportBatchUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ImportBatch to update in case it exists.
+     */
+    where: ImportBatchWhereUniqueInput
+    /**
+     * In case the ImportBatch found by the `where` argument doesn't exist, create a new ImportBatch with this data.
+     */
+    create: XOR<ImportBatchCreateInput, ImportBatchUncheckedCreateInput>
+    /**
+     * In case the ImportBatch was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ImportBatchUpdateInput, ImportBatchUncheckedUpdateInput>
+  }
+
+  /**
+   * ImportBatch delete
+   */
+  export type ImportBatchDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    /**
+     * Filter which ImportBatch to delete.
+     */
+    where: ImportBatchWhereUniqueInput
+  }
+
+  /**
+   * ImportBatch deleteMany
+   */
+  export type ImportBatchDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ImportBatches to delete
+     */
+    where?: ImportBatchWhereInput
+    /**
+     * Limit how many ImportBatches to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ImportBatch.mappedBy
+   */
+  export type ImportBatch$mappedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ImportBatch.validatedBy
+   */
+  export type ImportBatch$validatedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ImportBatch.approvedBy
+   */
+  export type ImportBatch$approvedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ImportBatch.importedBy
+   */
+  export type ImportBatch$importedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ImportBatch.rolledBackBy
+   */
+  export type ImportBatch$rolledBackByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ImportBatch.rows
+   */
+  export type ImportBatch$rowsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    where?: ImportRowWhereInput
+    orderBy?: ImportRowOrderByWithRelationInput | ImportRowOrderByWithRelationInput[]
+    cursor?: ImportRowWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportRowScalarFieldEnum | ImportRowScalarFieldEnum[]
+  }
+
+  /**
+   * ImportBatch.fieldMappings
+   */
+  export type ImportBatch$fieldMappingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    where?: ImportFieldMappingWhereInput
+    orderBy?: ImportFieldMappingOrderByWithRelationInput | ImportFieldMappingOrderByWithRelationInput[]
+    cursor?: ImportFieldMappingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportFieldMappingScalarFieldEnum | ImportFieldMappingScalarFieldEnum[]
+  }
+
+  /**
+   * ImportBatch.errors
+   */
+  export type ImportBatch$errorsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    where?: ImportErrorWhereInput
+    orderBy?: ImportErrorOrderByWithRelationInput | ImportErrorOrderByWithRelationInput[]
+    cursor?: ImportErrorWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportErrorScalarFieldEnum | ImportErrorScalarFieldEnum[]
+  }
+
+  /**
+   * ImportBatch without action
+   */
+  export type ImportBatchDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ImportRow
+   */
+
+  export type AggregateImportRow = {
+    _count: ImportRowCountAggregateOutputType | null
+    _avg: ImportRowAvgAggregateOutputType | null
+    _sum: ImportRowSumAggregateOutputType | null
+    _min: ImportRowMinAggregateOutputType | null
+    _max: ImportRowMaxAggregateOutputType | null
+  }
+
+  export type ImportRowAvgAggregateOutputType = {
+    rowNumber: number | null
+  }
+
+  export type ImportRowSumAggregateOutputType = {
+    rowNumber: number | null
+  }
+
+  export type ImportRowMinAggregateOutputType = {
+    id: string | null
+    batchId: string | null
+    rowNumber: number | null
+    status: string | null
+    fingerprint: string | null
+    importedTransactionId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ImportRowMaxAggregateOutputType = {
+    id: string | null
+    batchId: string | null
+    rowNumber: number | null
+    status: string | null
+    fingerprint: string | null
+    importedTransactionId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ImportRowCountAggregateOutputType = {
+    id: number
+    batchId: number
+    rowNumber: number
+    rawData: number
+    mappedData: number
+    normalizedData: number
+    status: number
+    fingerprint: number
+    importedTransactionId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ImportRowAvgAggregateInputType = {
+    rowNumber?: true
+  }
+
+  export type ImportRowSumAggregateInputType = {
+    rowNumber?: true
+  }
+
+  export type ImportRowMinAggregateInputType = {
+    id?: true
+    batchId?: true
+    rowNumber?: true
+    status?: true
+    fingerprint?: true
+    importedTransactionId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ImportRowMaxAggregateInputType = {
+    id?: true
+    batchId?: true
+    rowNumber?: true
+    status?: true
+    fingerprint?: true
+    importedTransactionId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ImportRowCountAggregateInputType = {
+    id?: true
+    batchId?: true
+    rowNumber?: true
+    rawData?: true
+    mappedData?: true
+    normalizedData?: true
+    status?: true
+    fingerprint?: true
+    importedTransactionId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ImportRowAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ImportRow to aggregate.
+     */
+    where?: ImportRowWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportRows to fetch.
+     */
+    orderBy?: ImportRowOrderByWithRelationInput | ImportRowOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ImportRowWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportRows from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportRows.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ImportRows
+    **/
+    _count?: true | ImportRowCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ImportRowAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ImportRowSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ImportRowMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ImportRowMaxAggregateInputType
+  }
+
+  export type GetImportRowAggregateType<T extends ImportRowAggregateArgs> = {
+        [P in keyof T & keyof AggregateImportRow]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateImportRow[P]>
+      : GetScalarType<T[P], AggregateImportRow[P]>
+  }
+
+
+
+
+  export type ImportRowGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportRowWhereInput
+    orderBy?: ImportRowOrderByWithAggregationInput | ImportRowOrderByWithAggregationInput[]
+    by: ImportRowScalarFieldEnum[] | ImportRowScalarFieldEnum
+    having?: ImportRowScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ImportRowCountAggregateInputType | true
+    _avg?: ImportRowAvgAggregateInputType
+    _sum?: ImportRowSumAggregateInputType
+    _min?: ImportRowMinAggregateInputType
+    _max?: ImportRowMaxAggregateInputType
+  }
+
+  export type ImportRowGroupByOutputType = {
+    id: string
+    batchId: string
+    rowNumber: number
+    rawData: JsonValue
+    mappedData: JsonValue | null
+    normalizedData: JsonValue | null
+    status: string
+    fingerprint: string | null
+    importedTransactionId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ImportRowCountAggregateOutputType | null
+    _avg: ImportRowAvgAggregateOutputType | null
+    _sum: ImportRowSumAggregateOutputType | null
+    _min: ImportRowMinAggregateOutputType | null
+    _max: ImportRowMaxAggregateOutputType | null
+  }
+
+  type GetImportRowGroupByPayload<T extends ImportRowGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ImportRowGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ImportRowGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ImportRowGroupByOutputType[P]>
+            : GetScalarType<T[P], ImportRowGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ImportRowSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    batchId?: boolean
+    rowNumber?: boolean
+    rawData?: boolean
+    mappedData?: boolean
+    normalizedData?: boolean
+    status?: boolean
+    fingerprint?: boolean
+    importedTransactionId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+    errors?: boolean | ImportRow$errorsArgs<ExtArgs>
+    _count?: boolean | ImportRowCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["importRow"]>
+
+  export type ImportRowSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    batchId?: boolean
+    rowNumber?: boolean
+    rawData?: boolean
+    mappedData?: boolean
+    normalizedData?: boolean
+    status?: boolean
+    fingerprint?: boolean
+    importedTransactionId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["importRow"]>
+
+  export type ImportRowSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    batchId?: boolean
+    rowNumber?: boolean
+    rawData?: boolean
+    mappedData?: boolean
+    normalizedData?: boolean
+    status?: boolean
+    fingerprint?: boolean
+    importedTransactionId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["importRow"]>
+
+  export type ImportRowSelectScalar = {
+    id?: boolean
+    batchId?: boolean
+    rowNumber?: boolean
+    rawData?: boolean
+    mappedData?: boolean
+    normalizedData?: boolean
+    status?: boolean
+    fingerprint?: boolean
+    importedTransactionId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ImportRowOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "batchId" | "rowNumber" | "rawData" | "mappedData" | "normalizedData" | "status" | "fingerprint" | "importedTransactionId" | "createdAt" | "updatedAt", ExtArgs["result"]["importRow"]>
+  export type ImportRowInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+    errors?: boolean | ImportRow$errorsArgs<ExtArgs>
+    _count?: boolean | ImportRowCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ImportRowIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+  }
+  export type ImportRowIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+  }
+
+  export type $ImportRowPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ImportRow"
+    objects: {
+      batch: Prisma.$ImportBatchPayload<ExtArgs>
+      errors: Prisma.$ImportErrorPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      batchId: string
+      rowNumber: number
+      rawData: Prisma.JsonValue
+      mappedData: Prisma.JsonValue | null
+      normalizedData: Prisma.JsonValue | null
+      status: string
+      fingerprint: string | null
+      importedTransactionId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["importRow"]>
+    composites: {}
+  }
+
+  type ImportRowGetPayload<S extends boolean | null | undefined | ImportRowDefaultArgs> = $Result.GetResult<Prisma.$ImportRowPayload, S>
+
+  type ImportRowCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ImportRowFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ImportRowCountAggregateInputType | true
+    }
+
+  export interface ImportRowDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ImportRow'], meta: { name: 'ImportRow' } }
+    /**
+     * Find zero or one ImportRow that matches the filter.
+     * @param {ImportRowFindUniqueArgs} args - Arguments to find a ImportRow
+     * @example
+     * // Get one ImportRow
+     * const importRow = await prisma.importRow.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ImportRowFindUniqueArgs>(args: SelectSubset<T, ImportRowFindUniqueArgs<ExtArgs>>): Prisma__ImportRowClient<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ImportRow that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ImportRowFindUniqueOrThrowArgs} args - Arguments to find a ImportRow
+     * @example
+     * // Get one ImportRow
+     * const importRow = await prisma.importRow.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ImportRowFindUniqueOrThrowArgs>(args: SelectSubset<T, ImportRowFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ImportRowClient<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ImportRow that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportRowFindFirstArgs} args - Arguments to find a ImportRow
+     * @example
+     * // Get one ImportRow
+     * const importRow = await prisma.importRow.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ImportRowFindFirstArgs>(args?: SelectSubset<T, ImportRowFindFirstArgs<ExtArgs>>): Prisma__ImportRowClient<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ImportRow that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportRowFindFirstOrThrowArgs} args - Arguments to find a ImportRow
+     * @example
+     * // Get one ImportRow
+     * const importRow = await prisma.importRow.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ImportRowFindFirstOrThrowArgs>(args?: SelectSubset<T, ImportRowFindFirstOrThrowArgs<ExtArgs>>): Prisma__ImportRowClient<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ImportRows that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportRowFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ImportRows
+     * const importRows = await prisma.importRow.findMany()
+     * 
+     * // Get first 10 ImportRows
+     * const importRows = await prisma.importRow.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const importRowWithIdOnly = await prisma.importRow.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ImportRowFindManyArgs>(args?: SelectSubset<T, ImportRowFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ImportRow.
+     * @param {ImportRowCreateArgs} args - Arguments to create a ImportRow.
+     * @example
+     * // Create one ImportRow
+     * const ImportRow = await prisma.importRow.create({
+     *   data: {
+     *     // ... data to create a ImportRow
+     *   }
+     * })
+     * 
+     */
+    create<T extends ImportRowCreateArgs>(args: SelectSubset<T, ImportRowCreateArgs<ExtArgs>>): Prisma__ImportRowClient<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ImportRows.
+     * @param {ImportRowCreateManyArgs} args - Arguments to create many ImportRows.
+     * @example
+     * // Create many ImportRows
+     * const importRow = await prisma.importRow.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ImportRowCreateManyArgs>(args?: SelectSubset<T, ImportRowCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ImportRows and returns the data saved in the database.
+     * @param {ImportRowCreateManyAndReturnArgs} args - Arguments to create many ImportRows.
+     * @example
+     * // Create many ImportRows
+     * const importRow = await prisma.importRow.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ImportRows and only return the `id`
+     * const importRowWithIdOnly = await prisma.importRow.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ImportRowCreateManyAndReturnArgs>(args?: SelectSubset<T, ImportRowCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ImportRow.
+     * @param {ImportRowDeleteArgs} args - Arguments to delete one ImportRow.
+     * @example
+     * // Delete one ImportRow
+     * const ImportRow = await prisma.importRow.delete({
+     *   where: {
+     *     // ... filter to delete one ImportRow
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ImportRowDeleteArgs>(args: SelectSubset<T, ImportRowDeleteArgs<ExtArgs>>): Prisma__ImportRowClient<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ImportRow.
+     * @param {ImportRowUpdateArgs} args - Arguments to update one ImportRow.
+     * @example
+     * // Update one ImportRow
+     * const importRow = await prisma.importRow.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ImportRowUpdateArgs>(args: SelectSubset<T, ImportRowUpdateArgs<ExtArgs>>): Prisma__ImportRowClient<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ImportRows.
+     * @param {ImportRowDeleteManyArgs} args - Arguments to filter ImportRows to delete.
+     * @example
+     * // Delete a few ImportRows
+     * const { count } = await prisma.importRow.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ImportRowDeleteManyArgs>(args?: SelectSubset<T, ImportRowDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ImportRows.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportRowUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ImportRows
+     * const importRow = await prisma.importRow.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ImportRowUpdateManyArgs>(args: SelectSubset<T, ImportRowUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ImportRows and returns the data updated in the database.
+     * @param {ImportRowUpdateManyAndReturnArgs} args - Arguments to update many ImportRows.
+     * @example
+     * // Update many ImportRows
+     * const importRow = await prisma.importRow.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ImportRows and only return the `id`
+     * const importRowWithIdOnly = await prisma.importRow.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ImportRowUpdateManyAndReturnArgs>(args: SelectSubset<T, ImportRowUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ImportRow.
+     * @param {ImportRowUpsertArgs} args - Arguments to update or create a ImportRow.
+     * @example
+     * // Update or create a ImportRow
+     * const importRow = await prisma.importRow.upsert({
+     *   create: {
+     *     // ... data to create a ImportRow
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ImportRow we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ImportRowUpsertArgs>(args: SelectSubset<T, ImportRowUpsertArgs<ExtArgs>>): Prisma__ImportRowClient<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ImportRows.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportRowCountArgs} args - Arguments to filter ImportRows to count.
+     * @example
+     * // Count the number of ImportRows
+     * const count = await prisma.importRow.count({
+     *   where: {
+     *     // ... the filter for the ImportRows we want to count
+     *   }
+     * })
+    **/
+    count<T extends ImportRowCountArgs>(
+      args?: Subset<T, ImportRowCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ImportRowCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ImportRow.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportRowAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ImportRowAggregateArgs>(args: Subset<T, ImportRowAggregateArgs>): Prisma.PrismaPromise<GetImportRowAggregateType<T>>
+
+    /**
+     * Group by ImportRow.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportRowGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ImportRowGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ImportRowGroupByArgs['orderBy'] }
+        : { orderBy?: ImportRowGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ImportRowGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetImportRowGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ImportRow model
+   */
+  readonly fields: ImportRowFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ImportRow.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ImportRowClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    batch<T extends ImportBatchDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ImportBatchDefaultArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    errors<T extends ImportRow$errorsArgs<ExtArgs> = {}>(args?: Subset<T, ImportRow$errorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ImportRow model
+   */
+  interface ImportRowFieldRefs {
+    readonly id: FieldRef<"ImportRow", 'String'>
+    readonly batchId: FieldRef<"ImportRow", 'String'>
+    readonly rowNumber: FieldRef<"ImportRow", 'Int'>
+    readonly rawData: FieldRef<"ImportRow", 'Json'>
+    readonly mappedData: FieldRef<"ImportRow", 'Json'>
+    readonly normalizedData: FieldRef<"ImportRow", 'Json'>
+    readonly status: FieldRef<"ImportRow", 'String'>
+    readonly fingerprint: FieldRef<"ImportRow", 'String'>
+    readonly importedTransactionId: FieldRef<"ImportRow", 'String'>
+    readonly createdAt: FieldRef<"ImportRow", 'DateTime'>
+    readonly updatedAt: FieldRef<"ImportRow", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ImportRow findUnique
+   */
+  export type ImportRowFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportRow to fetch.
+     */
+    where: ImportRowWhereUniqueInput
+  }
+
+  /**
+   * ImportRow findUniqueOrThrow
+   */
+  export type ImportRowFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportRow to fetch.
+     */
+    where: ImportRowWhereUniqueInput
+  }
+
+  /**
+   * ImportRow findFirst
+   */
+  export type ImportRowFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportRow to fetch.
+     */
+    where?: ImportRowWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportRows to fetch.
+     */
+    orderBy?: ImportRowOrderByWithRelationInput | ImportRowOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ImportRows.
+     */
+    cursor?: ImportRowWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportRows from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportRows.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ImportRows.
+     */
+    distinct?: ImportRowScalarFieldEnum | ImportRowScalarFieldEnum[]
+  }
+
+  /**
+   * ImportRow findFirstOrThrow
+   */
+  export type ImportRowFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportRow to fetch.
+     */
+    where?: ImportRowWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportRows to fetch.
+     */
+    orderBy?: ImportRowOrderByWithRelationInput | ImportRowOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ImportRows.
+     */
+    cursor?: ImportRowWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportRows from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportRows.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ImportRows.
+     */
+    distinct?: ImportRowScalarFieldEnum | ImportRowScalarFieldEnum[]
+  }
+
+  /**
+   * ImportRow findMany
+   */
+  export type ImportRowFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportRows to fetch.
+     */
+    where?: ImportRowWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportRows to fetch.
+     */
+    orderBy?: ImportRowOrderByWithRelationInput | ImportRowOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ImportRows.
+     */
+    cursor?: ImportRowWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportRows from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportRows.
+     */
+    skip?: number
+    distinct?: ImportRowScalarFieldEnum | ImportRowScalarFieldEnum[]
+  }
+
+  /**
+   * ImportRow create
+   */
+  export type ImportRowCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ImportRow.
+     */
+    data: XOR<ImportRowCreateInput, ImportRowUncheckedCreateInput>
+  }
+
+  /**
+   * ImportRow createMany
+   */
+  export type ImportRowCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ImportRows.
+     */
+    data: ImportRowCreateManyInput | ImportRowCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ImportRow createManyAndReturn
+   */
+  export type ImportRowCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * The data used to create many ImportRows.
+     */
+    data: ImportRowCreateManyInput | ImportRowCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ImportRow update
+   */
+  export type ImportRowUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ImportRow.
+     */
+    data: XOR<ImportRowUpdateInput, ImportRowUncheckedUpdateInput>
+    /**
+     * Choose, which ImportRow to update.
+     */
+    where: ImportRowWhereUniqueInput
+  }
+
+  /**
+   * ImportRow updateMany
+   */
+  export type ImportRowUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ImportRows.
+     */
+    data: XOR<ImportRowUpdateManyMutationInput, ImportRowUncheckedUpdateManyInput>
+    /**
+     * Filter which ImportRows to update
+     */
+    where?: ImportRowWhereInput
+    /**
+     * Limit how many ImportRows to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ImportRow updateManyAndReturn
+   */
+  export type ImportRowUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * The data used to update ImportRows.
+     */
+    data: XOR<ImportRowUpdateManyMutationInput, ImportRowUncheckedUpdateManyInput>
+    /**
+     * Filter which ImportRows to update
+     */
+    where?: ImportRowWhereInput
+    /**
+     * Limit how many ImportRows to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ImportRow upsert
+   */
+  export type ImportRowUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ImportRow to update in case it exists.
+     */
+    where: ImportRowWhereUniqueInput
+    /**
+     * In case the ImportRow found by the `where` argument doesn't exist, create a new ImportRow with this data.
+     */
+    create: XOR<ImportRowCreateInput, ImportRowUncheckedCreateInput>
+    /**
+     * In case the ImportRow was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ImportRowUpdateInput, ImportRowUncheckedUpdateInput>
+  }
+
+  /**
+   * ImportRow delete
+   */
+  export type ImportRowDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    /**
+     * Filter which ImportRow to delete.
+     */
+    where: ImportRowWhereUniqueInput
+  }
+
+  /**
+   * ImportRow deleteMany
+   */
+  export type ImportRowDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ImportRows to delete
+     */
+    where?: ImportRowWhereInput
+    /**
+     * Limit how many ImportRows to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ImportRow.errors
+   */
+  export type ImportRow$errorsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    where?: ImportErrorWhereInput
+    orderBy?: ImportErrorOrderByWithRelationInput | ImportErrorOrderByWithRelationInput[]
+    cursor?: ImportErrorWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImportErrorScalarFieldEnum | ImportErrorScalarFieldEnum[]
+  }
+
+  /**
+   * ImportRow without action
+   */
+  export type ImportRowDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ImportFieldMapping
+   */
+
+  export type AggregateImportFieldMapping = {
+    _count: ImportFieldMappingCountAggregateOutputType | null
+    _min: ImportFieldMappingMinAggregateOutputType | null
+    _max: ImportFieldMappingMaxAggregateOutputType | null
+  }
+
+  export type ImportFieldMappingMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    batchId: string | null
+    source: $Enums.ImportSource | null
+    name: string | null
+    description: string | null
+    dateFormat: string | null
+    amountConvention: string | null
+    decimalSeparator: string | null
+    thousandSeparator: string | null
+    encoding: string | null
+    hasHeader: boolean | null
+    isDefault: boolean | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ImportFieldMappingMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    batchId: string | null
+    source: $Enums.ImportSource | null
+    name: string | null
+    description: string | null
+    dateFormat: string | null
+    amountConvention: string | null
+    decimalSeparator: string | null
+    thousandSeparator: string | null
+    encoding: string | null
+    hasHeader: boolean | null
+    isDefault: boolean | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ImportFieldMappingCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    batchId: number
+    source: number
+    name: number
+    description: number
+    dateFormat: number
+    amountConvention: number
+    decimalSeparator: number
+    thousandSeparator: number
+    encoding: number
+    hasHeader: number
+    columnMap: number
+    isDefault: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ImportFieldMappingMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    batchId?: true
+    source?: true
+    name?: true
+    description?: true
+    dateFormat?: true
+    amountConvention?: true
+    decimalSeparator?: true
+    thousandSeparator?: true
+    encoding?: true
+    hasHeader?: true
+    isDefault?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ImportFieldMappingMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    batchId?: true
+    source?: true
+    name?: true
+    description?: true
+    dateFormat?: true
+    amountConvention?: true
+    decimalSeparator?: true
+    thousandSeparator?: true
+    encoding?: true
+    hasHeader?: true
+    isDefault?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ImportFieldMappingCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    batchId?: true
+    source?: true
+    name?: true
+    description?: true
+    dateFormat?: true
+    amountConvention?: true
+    decimalSeparator?: true
+    thousandSeparator?: true
+    encoding?: true
+    hasHeader?: true
+    columnMap?: true
+    isDefault?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ImportFieldMappingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ImportFieldMapping to aggregate.
+     */
+    where?: ImportFieldMappingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportFieldMappings to fetch.
+     */
+    orderBy?: ImportFieldMappingOrderByWithRelationInput | ImportFieldMappingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ImportFieldMappingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportFieldMappings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportFieldMappings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ImportFieldMappings
+    **/
+    _count?: true | ImportFieldMappingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ImportFieldMappingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ImportFieldMappingMaxAggregateInputType
+  }
+
+  export type GetImportFieldMappingAggregateType<T extends ImportFieldMappingAggregateArgs> = {
+        [P in keyof T & keyof AggregateImportFieldMapping]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateImportFieldMapping[P]>
+      : GetScalarType<T[P], AggregateImportFieldMapping[P]>
+  }
+
+
+
+
+  export type ImportFieldMappingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportFieldMappingWhereInput
+    orderBy?: ImportFieldMappingOrderByWithAggregationInput | ImportFieldMappingOrderByWithAggregationInput[]
+    by: ImportFieldMappingScalarFieldEnum[] | ImportFieldMappingScalarFieldEnum
+    having?: ImportFieldMappingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ImportFieldMappingCountAggregateInputType | true
+    _min?: ImportFieldMappingMinAggregateInputType
+    _max?: ImportFieldMappingMaxAggregateInputType
+  }
+
+  export type ImportFieldMappingGroupByOutputType = {
+    id: string
+    organizationId: string
+    batchId: string | null
+    source: $Enums.ImportSource
+    name: string
+    description: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator: string
+    thousandSeparator: string
+    encoding: string
+    hasHeader: boolean
+    columnMap: JsonValue
+    isDefault: boolean
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ImportFieldMappingCountAggregateOutputType | null
+    _min: ImportFieldMappingMinAggregateOutputType | null
+    _max: ImportFieldMappingMaxAggregateOutputType | null
+  }
+
+  type GetImportFieldMappingGroupByPayload<T extends ImportFieldMappingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ImportFieldMappingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ImportFieldMappingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ImportFieldMappingGroupByOutputType[P]>
+            : GetScalarType<T[P], ImportFieldMappingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ImportFieldMappingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    batchId?: boolean
+    source?: boolean
+    name?: boolean
+    description?: boolean
+    dateFormat?: boolean
+    amountConvention?: boolean
+    decimalSeparator?: boolean
+    thousandSeparator?: boolean
+    encoding?: boolean
+    hasHeader?: boolean
+    columnMap?: boolean
+    isDefault?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    batch?: boolean | ImportFieldMapping$batchArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["importFieldMapping"]>
+
+  export type ImportFieldMappingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    batchId?: boolean
+    source?: boolean
+    name?: boolean
+    description?: boolean
+    dateFormat?: boolean
+    amountConvention?: boolean
+    decimalSeparator?: boolean
+    thousandSeparator?: boolean
+    encoding?: boolean
+    hasHeader?: boolean
+    columnMap?: boolean
+    isDefault?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    batch?: boolean | ImportFieldMapping$batchArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["importFieldMapping"]>
+
+  export type ImportFieldMappingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    batchId?: boolean
+    source?: boolean
+    name?: boolean
+    description?: boolean
+    dateFormat?: boolean
+    amountConvention?: boolean
+    decimalSeparator?: boolean
+    thousandSeparator?: boolean
+    encoding?: boolean
+    hasHeader?: boolean
+    columnMap?: boolean
+    isDefault?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    batch?: boolean | ImportFieldMapping$batchArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["importFieldMapping"]>
+
+  export type ImportFieldMappingSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    batchId?: boolean
+    source?: boolean
+    name?: boolean
+    description?: boolean
+    dateFormat?: boolean
+    amountConvention?: boolean
+    decimalSeparator?: boolean
+    thousandSeparator?: boolean
+    encoding?: boolean
+    hasHeader?: boolean
+    columnMap?: boolean
+    isDefault?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ImportFieldMappingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "batchId" | "source" | "name" | "description" | "dateFormat" | "amountConvention" | "decimalSeparator" | "thousandSeparator" | "encoding" | "hasHeader" | "columnMap" | "isDefault" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["importFieldMapping"]>
+  export type ImportFieldMappingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    batch?: boolean | ImportFieldMapping$batchArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ImportFieldMappingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    batch?: boolean | ImportFieldMapping$batchArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ImportFieldMappingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    batch?: boolean | ImportFieldMapping$batchArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ImportFieldMappingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ImportFieldMapping"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      batch: Prisma.$ImportBatchPayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      batchId: string | null
+      source: $Enums.ImportSource
+      name: string
+      description: string | null
+      dateFormat: string
+      amountConvention: string
+      decimalSeparator: string
+      thousandSeparator: string
+      encoding: string
+      hasHeader: boolean
+      columnMap: Prisma.JsonValue
+      isDefault: boolean
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["importFieldMapping"]>
+    composites: {}
+  }
+
+  type ImportFieldMappingGetPayload<S extends boolean | null | undefined | ImportFieldMappingDefaultArgs> = $Result.GetResult<Prisma.$ImportFieldMappingPayload, S>
+
+  type ImportFieldMappingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ImportFieldMappingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ImportFieldMappingCountAggregateInputType | true
+    }
+
+  export interface ImportFieldMappingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ImportFieldMapping'], meta: { name: 'ImportFieldMapping' } }
+    /**
+     * Find zero or one ImportFieldMapping that matches the filter.
+     * @param {ImportFieldMappingFindUniqueArgs} args - Arguments to find a ImportFieldMapping
+     * @example
+     * // Get one ImportFieldMapping
+     * const importFieldMapping = await prisma.importFieldMapping.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ImportFieldMappingFindUniqueArgs>(args: SelectSubset<T, ImportFieldMappingFindUniqueArgs<ExtArgs>>): Prisma__ImportFieldMappingClient<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ImportFieldMapping that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ImportFieldMappingFindUniqueOrThrowArgs} args - Arguments to find a ImportFieldMapping
+     * @example
+     * // Get one ImportFieldMapping
+     * const importFieldMapping = await prisma.importFieldMapping.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ImportFieldMappingFindUniqueOrThrowArgs>(args: SelectSubset<T, ImportFieldMappingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ImportFieldMappingClient<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ImportFieldMapping that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportFieldMappingFindFirstArgs} args - Arguments to find a ImportFieldMapping
+     * @example
+     * // Get one ImportFieldMapping
+     * const importFieldMapping = await prisma.importFieldMapping.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ImportFieldMappingFindFirstArgs>(args?: SelectSubset<T, ImportFieldMappingFindFirstArgs<ExtArgs>>): Prisma__ImportFieldMappingClient<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ImportFieldMapping that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportFieldMappingFindFirstOrThrowArgs} args - Arguments to find a ImportFieldMapping
+     * @example
+     * // Get one ImportFieldMapping
+     * const importFieldMapping = await prisma.importFieldMapping.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ImportFieldMappingFindFirstOrThrowArgs>(args?: SelectSubset<T, ImportFieldMappingFindFirstOrThrowArgs<ExtArgs>>): Prisma__ImportFieldMappingClient<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ImportFieldMappings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportFieldMappingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ImportFieldMappings
+     * const importFieldMappings = await prisma.importFieldMapping.findMany()
+     * 
+     * // Get first 10 ImportFieldMappings
+     * const importFieldMappings = await prisma.importFieldMapping.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const importFieldMappingWithIdOnly = await prisma.importFieldMapping.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ImportFieldMappingFindManyArgs>(args?: SelectSubset<T, ImportFieldMappingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ImportFieldMapping.
+     * @param {ImportFieldMappingCreateArgs} args - Arguments to create a ImportFieldMapping.
+     * @example
+     * // Create one ImportFieldMapping
+     * const ImportFieldMapping = await prisma.importFieldMapping.create({
+     *   data: {
+     *     // ... data to create a ImportFieldMapping
+     *   }
+     * })
+     * 
+     */
+    create<T extends ImportFieldMappingCreateArgs>(args: SelectSubset<T, ImportFieldMappingCreateArgs<ExtArgs>>): Prisma__ImportFieldMappingClient<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ImportFieldMappings.
+     * @param {ImportFieldMappingCreateManyArgs} args - Arguments to create many ImportFieldMappings.
+     * @example
+     * // Create many ImportFieldMappings
+     * const importFieldMapping = await prisma.importFieldMapping.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ImportFieldMappingCreateManyArgs>(args?: SelectSubset<T, ImportFieldMappingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ImportFieldMappings and returns the data saved in the database.
+     * @param {ImportFieldMappingCreateManyAndReturnArgs} args - Arguments to create many ImportFieldMappings.
+     * @example
+     * // Create many ImportFieldMappings
+     * const importFieldMapping = await prisma.importFieldMapping.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ImportFieldMappings and only return the `id`
+     * const importFieldMappingWithIdOnly = await prisma.importFieldMapping.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ImportFieldMappingCreateManyAndReturnArgs>(args?: SelectSubset<T, ImportFieldMappingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ImportFieldMapping.
+     * @param {ImportFieldMappingDeleteArgs} args - Arguments to delete one ImportFieldMapping.
+     * @example
+     * // Delete one ImportFieldMapping
+     * const ImportFieldMapping = await prisma.importFieldMapping.delete({
+     *   where: {
+     *     // ... filter to delete one ImportFieldMapping
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ImportFieldMappingDeleteArgs>(args: SelectSubset<T, ImportFieldMappingDeleteArgs<ExtArgs>>): Prisma__ImportFieldMappingClient<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ImportFieldMapping.
+     * @param {ImportFieldMappingUpdateArgs} args - Arguments to update one ImportFieldMapping.
+     * @example
+     * // Update one ImportFieldMapping
+     * const importFieldMapping = await prisma.importFieldMapping.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ImportFieldMappingUpdateArgs>(args: SelectSubset<T, ImportFieldMappingUpdateArgs<ExtArgs>>): Prisma__ImportFieldMappingClient<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ImportFieldMappings.
+     * @param {ImportFieldMappingDeleteManyArgs} args - Arguments to filter ImportFieldMappings to delete.
+     * @example
+     * // Delete a few ImportFieldMappings
+     * const { count } = await prisma.importFieldMapping.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ImportFieldMappingDeleteManyArgs>(args?: SelectSubset<T, ImportFieldMappingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ImportFieldMappings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportFieldMappingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ImportFieldMappings
+     * const importFieldMapping = await prisma.importFieldMapping.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ImportFieldMappingUpdateManyArgs>(args: SelectSubset<T, ImportFieldMappingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ImportFieldMappings and returns the data updated in the database.
+     * @param {ImportFieldMappingUpdateManyAndReturnArgs} args - Arguments to update many ImportFieldMappings.
+     * @example
+     * // Update many ImportFieldMappings
+     * const importFieldMapping = await prisma.importFieldMapping.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ImportFieldMappings and only return the `id`
+     * const importFieldMappingWithIdOnly = await prisma.importFieldMapping.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ImportFieldMappingUpdateManyAndReturnArgs>(args: SelectSubset<T, ImportFieldMappingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ImportFieldMapping.
+     * @param {ImportFieldMappingUpsertArgs} args - Arguments to update or create a ImportFieldMapping.
+     * @example
+     * // Update or create a ImportFieldMapping
+     * const importFieldMapping = await prisma.importFieldMapping.upsert({
+     *   create: {
+     *     // ... data to create a ImportFieldMapping
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ImportFieldMapping we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ImportFieldMappingUpsertArgs>(args: SelectSubset<T, ImportFieldMappingUpsertArgs<ExtArgs>>): Prisma__ImportFieldMappingClient<$Result.GetResult<Prisma.$ImportFieldMappingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ImportFieldMappings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportFieldMappingCountArgs} args - Arguments to filter ImportFieldMappings to count.
+     * @example
+     * // Count the number of ImportFieldMappings
+     * const count = await prisma.importFieldMapping.count({
+     *   where: {
+     *     // ... the filter for the ImportFieldMappings we want to count
+     *   }
+     * })
+    **/
+    count<T extends ImportFieldMappingCountArgs>(
+      args?: Subset<T, ImportFieldMappingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ImportFieldMappingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ImportFieldMapping.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportFieldMappingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ImportFieldMappingAggregateArgs>(args: Subset<T, ImportFieldMappingAggregateArgs>): Prisma.PrismaPromise<GetImportFieldMappingAggregateType<T>>
+
+    /**
+     * Group by ImportFieldMapping.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportFieldMappingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ImportFieldMappingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ImportFieldMappingGroupByArgs['orderBy'] }
+        : { orderBy?: ImportFieldMappingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ImportFieldMappingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetImportFieldMappingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ImportFieldMapping model
+   */
+  readonly fields: ImportFieldMappingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ImportFieldMapping.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ImportFieldMappingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    batch<T extends ImportFieldMapping$batchArgs<ExtArgs> = {}>(args?: Subset<T, ImportFieldMapping$batchArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ImportFieldMapping model
+   */
+  interface ImportFieldMappingFieldRefs {
+    readonly id: FieldRef<"ImportFieldMapping", 'String'>
+    readonly organizationId: FieldRef<"ImportFieldMapping", 'String'>
+    readonly batchId: FieldRef<"ImportFieldMapping", 'String'>
+    readonly source: FieldRef<"ImportFieldMapping", 'ImportSource'>
+    readonly name: FieldRef<"ImportFieldMapping", 'String'>
+    readonly description: FieldRef<"ImportFieldMapping", 'String'>
+    readonly dateFormat: FieldRef<"ImportFieldMapping", 'String'>
+    readonly amountConvention: FieldRef<"ImportFieldMapping", 'String'>
+    readonly decimalSeparator: FieldRef<"ImportFieldMapping", 'String'>
+    readonly thousandSeparator: FieldRef<"ImportFieldMapping", 'String'>
+    readonly encoding: FieldRef<"ImportFieldMapping", 'String'>
+    readonly hasHeader: FieldRef<"ImportFieldMapping", 'Boolean'>
+    readonly columnMap: FieldRef<"ImportFieldMapping", 'Json'>
+    readonly isDefault: FieldRef<"ImportFieldMapping", 'Boolean'>
+    readonly createdById: FieldRef<"ImportFieldMapping", 'String'>
+    readonly createdAt: FieldRef<"ImportFieldMapping", 'DateTime'>
+    readonly updatedAt: FieldRef<"ImportFieldMapping", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ImportFieldMapping findUnique
+   */
+  export type ImportFieldMappingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportFieldMapping to fetch.
+     */
+    where: ImportFieldMappingWhereUniqueInput
+  }
+
+  /**
+   * ImportFieldMapping findUniqueOrThrow
+   */
+  export type ImportFieldMappingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportFieldMapping to fetch.
+     */
+    where: ImportFieldMappingWhereUniqueInput
+  }
+
+  /**
+   * ImportFieldMapping findFirst
+   */
+  export type ImportFieldMappingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportFieldMapping to fetch.
+     */
+    where?: ImportFieldMappingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportFieldMappings to fetch.
+     */
+    orderBy?: ImportFieldMappingOrderByWithRelationInput | ImportFieldMappingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ImportFieldMappings.
+     */
+    cursor?: ImportFieldMappingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportFieldMappings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportFieldMappings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ImportFieldMappings.
+     */
+    distinct?: ImportFieldMappingScalarFieldEnum | ImportFieldMappingScalarFieldEnum[]
+  }
+
+  /**
+   * ImportFieldMapping findFirstOrThrow
+   */
+  export type ImportFieldMappingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportFieldMapping to fetch.
+     */
+    where?: ImportFieldMappingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportFieldMappings to fetch.
+     */
+    orderBy?: ImportFieldMappingOrderByWithRelationInput | ImportFieldMappingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ImportFieldMappings.
+     */
+    cursor?: ImportFieldMappingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportFieldMappings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportFieldMappings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ImportFieldMappings.
+     */
+    distinct?: ImportFieldMappingScalarFieldEnum | ImportFieldMappingScalarFieldEnum[]
+  }
+
+  /**
+   * ImportFieldMapping findMany
+   */
+  export type ImportFieldMappingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportFieldMappings to fetch.
+     */
+    where?: ImportFieldMappingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportFieldMappings to fetch.
+     */
+    orderBy?: ImportFieldMappingOrderByWithRelationInput | ImportFieldMappingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ImportFieldMappings.
+     */
+    cursor?: ImportFieldMappingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportFieldMappings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportFieldMappings.
+     */
+    skip?: number
+    distinct?: ImportFieldMappingScalarFieldEnum | ImportFieldMappingScalarFieldEnum[]
+  }
+
+  /**
+   * ImportFieldMapping create
+   */
+  export type ImportFieldMappingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ImportFieldMapping.
+     */
+    data: XOR<ImportFieldMappingCreateInput, ImportFieldMappingUncheckedCreateInput>
+  }
+
+  /**
+   * ImportFieldMapping createMany
+   */
+  export type ImportFieldMappingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ImportFieldMappings.
+     */
+    data: ImportFieldMappingCreateManyInput | ImportFieldMappingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ImportFieldMapping createManyAndReturn
+   */
+  export type ImportFieldMappingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * The data used to create many ImportFieldMappings.
+     */
+    data: ImportFieldMappingCreateManyInput | ImportFieldMappingCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ImportFieldMapping update
+   */
+  export type ImportFieldMappingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ImportFieldMapping.
+     */
+    data: XOR<ImportFieldMappingUpdateInput, ImportFieldMappingUncheckedUpdateInput>
+    /**
+     * Choose, which ImportFieldMapping to update.
+     */
+    where: ImportFieldMappingWhereUniqueInput
+  }
+
+  /**
+   * ImportFieldMapping updateMany
+   */
+  export type ImportFieldMappingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ImportFieldMappings.
+     */
+    data: XOR<ImportFieldMappingUpdateManyMutationInput, ImportFieldMappingUncheckedUpdateManyInput>
+    /**
+     * Filter which ImportFieldMappings to update
+     */
+    where?: ImportFieldMappingWhereInput
+    /**
+     * Limit how many ImportFieldMappings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ImportFieldMapping updateManyAndReturn
+   */
+  export type ImportFieldMappingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * The data used to update ImportFieldMappings.
+     */
+    data: XOR<ImportFieldMappingUpdateManyMutationInput, ImportFieldMappingUncheckedUpdateManyInput>
+    /**
+     * Filter which ImportFieldMappings to update
+     */
+    where?: ImportFieldMappingWhereInput
+    /**
+     * Limit how many ImportFieldMappings to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ImportFieldMapping upsert
+   */
+  export type ImportFieldMappingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ImportFieldMapping to update in case it exists.
+     */
+    where: ImportFieldMappingWhereUniqueInput
+    /**
+     * In case the ImportFieldMapping found by the `where` argument doesn't exist, create a new ImportFieldMapping with this data.
+     */
+    create: XOR<ImportFieldMappingCreateInput, ImportFieldMappingUncheckedCreateInput>
+    /**
+     * In case the ImportFieldMapping was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ImportFieldMappingUpdateInput, ImportFieldMappingUncheckedUpdateInput>
+  }
+
+  /**
+   * ImportFieldMapping delete
+   */
+  export type ImportFieldMappingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+    /**
+     * Filter which ImportFieldMapping to delete.
+     */
+    where: ImportFieldMappingWhereUniqueInput
+  }
+
+  /**
+   * ImportFieldMapping deleteMany
+   */
+  export type ImportFieldMappingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ImportFieldMappings to delete
+     */
+    where?: ImportFieldMappingWhereInput
+    /**
+     * Limit how many ImportFieldMappings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ImportFieldMapping.batch
+   */
+  export type ImportFieldMapping$batchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportBatch
+     */
+    select?: ImportBatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportBatch
+     */
+    omit?: ImportBatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportBatchInclude<ExtArgs> | null
+    where?: ImportBatchWhereInput
+  }
+
+  /**
+   * ImportFieldMapping without action
+   */
+  export type ImportFieldMappingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportFieldMapping
+     */
+    select?: ImportFieldMappingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportFieldMapping
+     */
+    omit?: ImportFieldMappingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportFieldMappingInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ImportError
+   */
+
+  export type AggregateImportError = {
+    _count: ImportErrorCountAggregateOutputType | null
+    _avg: ImportErrorAvgAggregateOutputType | null
+    _sum: ImportErrorSumAggregateOutputType | null
+    _min: ImportErrorMinAggregateOutputType | null
+    _max: ImportErrorMaxAggregateOutputType | null
+  }
+
+  export type ImportErrorAvgAggregateOutputType = {
+    rowNumber: number | null
+  }
+
+  export type ImportErrorSumAggregateOutputType = {
+    rowNumber: number | null
+  }
+
+  export type ImportErrorMinAggregateOutputType = {
+    id: string | null
+    batchId: string | null
+    rowId: string | null
+    rowNumber: number | null
+    type: $Enums.ImportErrorType | null
+    field: string | null
+    message: string | null
+    severity: string | null
+    resolved: boolean | null
+    resolvedById: string | null
+    resolvedAt: Date | null
+    resolutionNote: string | null
+    createdAt: Date | null
+  }
+
+  export type ImportErrorMaxAggregateOutputType = {
+    id: string | null
+    batchId: string | null
+    rowId: string | null
+    rowNumber: number | null
+    type: $Enums.ImportErrorType | null
+    field: string | null
+    message: string | null
+    severity: string | null
+    resolved: boolean | null
+    resolvedById: string | null
+    resolvedAt: Date | null
+    resolutionNote: string | null
+    createdAt: Date | null
+  }
+
+  export type ImportErrorCountAggregateOutputType = {
+    id: number
+    batchId: number
+    rowId: number
+    rowNumber: number
+    type: number
+    field: number
+    originalValue: number
+    message: number
+    severity: number
+    resolved: number
+    resolvedById: number
+    resolvedAt: number
+    resolutionNote: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ImportErrorAvgAggregateInputType = {
+    rowNumber?: true
+  }
+
+  export type ImportErrorSumAggregateInputType = {
+    rowNumber?: true
+  }
+
+  export type ImportErrorMinAggregateInputType = {
+    id?: true
+    batchId?: true
+    rowId?: true
+    rowNumber?: true
+    type?: true
+    field?: true
+    message?: true
+    severity?: true
+    resolved?: true
+    resolvedById?: true
+    resolvedAt?: true
+    resolutionNote?: true
+    createdAt?: true
+  }
+
+  export type ImportErrorMaxAggregateInputType = {
+    id?: true
+    batchId?: true
+    rowId?: true
+    rowNumber?: true
+    type?: true
+    field?: true
+    message?: true
+    severity?: true
+    resolved?: true
+    resolvedById?: true
+    resolvedAt?: true
+    resolutionNote?: true
+    createdAt?: true
+  }
+
+  export type ImportErrorCountAggregateInputType = {
+    id?: true
+    batchId?: true
+    rowId?: true
+    rowNumber?: true
+    type?: true
+    field?: true
+    originalValue?: true
+    message?: true
+    severity?: true
+    resolved?: true
+    resolvedById?: true
+    resolvedAt?: true
+    resolutionNote?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ImportErrorAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ImportError to aggregate.
+     */
+    where?: ImportErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportErrors to fetch.
+     */
+    orderBy?: ImportErrorOrderByWithRelationInput | ImportErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ImportErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportErrors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportErrors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ImportErrors
+    **/
+    _count?: true | ImportErrorCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ImportErrorAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ImportErrorSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ImportErrorMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ImportErrorMaxAggregateInputType
+  }
+
+  export type GetImportErrorAggregateType<T extends ImportErrorAggregateArgs> = {
+        [P in keyof T & keyof AggregateImportError]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateImportError[P]>
+      : GetScalarType<T[P], AggregateImportError[P]>
+  }
+
+
+
+
+  export type ImportErrorGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImportErrorWhereInput
+    orderBy?: ImportErrorOrderByWithAggregationInput | ImportErrorOrderByWithAggregationInput[]
+    by: ImportErrorScalarFieldEnum[] | ImportErrorScalarFieldEnum
+    having?: ImportErrorScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ImportErrorCountAggregateInputType | true
+    _avg?: ImportErrorAvgAggregateInputType
+    _sum?: ImportErrorSumAggregateInputType
+    _min?: ImportErrorMinAggregateInputType
+    _max?: ImportErrorMaxAggregateInputType
+  }
+
+  export type ImportErrorGroupByOutputType = {
+    id: string
+    batchId: string
+    rowId: string | null
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field: string | null
+    originalValue: JsonValue | null
+    message: string
+    severity: string
+    resolved: boolean
+    resolvedById: string | null
+    resolvedAt: Date | null
+    resolutionNote: string | null
+    createdAt: Date
+    _count: ImportErrorCountAggregateOutputType | null
+    _avg: ImportErrorAvgAggregateOutputType | null
+    _sum: ImportErrorSumAggregateOutputType | null
+    _min: ImportErrorMinAggregateOutputType | null
+    _max: ImportErrorMaxAggregateOutputType | null
+  }
+
+  type GetImportErrorGroupByPayload<T extends ImportErrorGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ImportErrorGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ImportErrorGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ImportErrorGroupByOutputType[P]>
+            : GetScalarType<T[P], ImportErrorGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ImportErrorSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    batchId?: boolean
+    rowId?: boolean
+    rowNumber?: boolean
+    type?: boolean
+    field?: boolean
+    originalValue?: boolean
+    message?: boolean
+    severity?: boolean
+    resolved?: boolean
+    resolvedById?: boolean
+    resolvedAt?: boolean
+    resolutionNote?: boolean
+    createdAt?: boolean
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+    row?: boolean | ImportError$rowArgs<ExtArgs>
+    resolvedBy?: boolean | ImportError$resolvedByArgs<ExtArgs>
+  }, ExtArgs["result"]["importError"]>
+
+  export type ImportErrorSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    batchId?: boolean
+    rowId?: boolean
+    rowNumber?: boolean
+    type?: boolean
+    field?: boolean
+    originalValue?: boolean
+    message?: boolean
+    severity?: boolean
+    resolved?: boolean
+    resolvedById?: boolean
+    resolvedAt?: boolean
+    resolutionNote?: boolean
+    createdAt?: boolean
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+    row?: boolean | ImportError$rowArgs<ExtArgs>
+    resolvedBy?: boolean | ImportError$resolvedByArgs<ExtArgs>
+  }, ExtArgs["result"]["importError"]>
+
+  export type ImportErrorSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    batchId?: boolean
+    rowId?: boolean
+    rowNumber?: boolean
+    type?: boolean
+    field?: boolean
+    originalValue?: boolean
+    message?: boolean
+    severity?: boolean
+    resolved?: boolean
+    resolvedById?: boolean
+    resolvedAt?: boolean
+    resolutionNote?: boolean
+    createdAt?: boolean
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+    row?: boolean | ImportError$rowArgs<ExtArgs>
+    resolvedBy?: boolean | ImportError$resolvedByArgs<ExtArgs>
+  }, ExtArgs["result"]["importError"]>
+
+  export type ImportErrorSelectScalar = {
+    id?: boolean
+    batchId?: boolean
+    rowId?: boolean
+    rowNumber?: boolean
+    type?: boolean
+    field?: boolean
+    originalValue?: boolean
+    message?: boolean
+    severity?: boolean
+    resolved?: boolean
+    resolvedById?: boolean
+    resolvedAt?: boolean
+    resolutionNote?: boolean
+    createdAt?: boolean
+  }
+
+  export type ImportErrorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "batchId" | "rowId" | "rowNumber" | "type" | "field" | "originalValue" | "message" | "severity" | "resolved" | "resolvedById" | "resolvedAt" | "resolutionNote" | "createdAt", ExtArgs["result"]["importError"]>
+  export type ImportErrorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+    row?: boolean | ImportError$rowArgs<ExtArgs>
+    resolvedBy?: boolean | ImportError$resolvedByArgs<ExtArgs>
+  }
+  export type ImportErrorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+    row?: boolean | ImportError$rowArgs<ExtArgs>
+    resolvedBy?: boolean | ImportError$resolvedByArgs<ExtArgs>
+  }
+  export type ImportErrorIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    batch?: boolean | ImportBatchDefaultArgs<ExtArgs>
+    row?: boolean | ImportError$rowArgs<ExtArgs>
+    resolvedBy?: boolean | ImportError$resolvedByArgs<ExtArgs>
+  }
+
+  export type $ImportErrorPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ImportError"
+    objects: {
+      batch: Prisma.$ImportBatchPayload<ExtArgs>
+      row: Prisma.$ImportRowPayload<ExtArgs> | null
+      resolvedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      batchId: string
+      rowId: string | null
+      rowNumber: number
+      type: $Enums.ImportErrorType
+      field: string | null
+      originalValue: Prisma.JsonValue | null
+      message: string
+      severity: string
+      resolved: boolean
+      resolvedById: string | null
+      resolvedAt: Date | null
+      resolutionNote: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["importError"]>
+    composites: {}
+  }
+
+  type ImportErrorGetPayload<S extends boolean | null | undefined | ImportErrorDefaultArgs> = $Result.GetResult<Prisma.$ImportErrorPayload, S>
+
+  type ImportErrorCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ImportErrorFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ImportErrorCountAggregateInputType | true
+    }
+
+  export interface ImportErrorDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ImportError'], meta: { name: 'ImportError' } }
+    /**
+     * Find zero or one ImportError that matches the filter.
+     * @param {ImportErrorFindUniqueArgs} args - Arguments to find a ImportError
+     * @example
+     * // Get one ImportError
+     * const importError = await prisma.importError.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ImportErrorFindUniqueArgs>(args: SelectSubset<T, ImportErrorFindUniqueArgs<ExtArgs>>): Prisma__ImportErrorClient<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ImportError that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ImportErrorFindUniqueOrThrowArgs} args - Arguments to find a ImportError
+     * @example
+     * // Get one ImportError
+     * const importError = await prisma.importError.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ImportErrorFindUniqueOrThrowArgs>(args: SelectSubset<T, ImportErrorFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ImportErrorClient<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ImportError that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportErrorFindFirstArgs} args - Arguments to find a ImportError
+     * @example
+     * // Get one ImportError
+     * const importError = await prisma.importError.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ImportErrorFindFirstArgs>(args?: SelectSubset<T, ImportErrorFindFirstArgs<ExtArgs>>): Prisma__ImportErrorClient<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ImportError that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportErrorFindFirstOrThrowArgs} args - Arguments to find a ImportError
+     * @example
+     * // Get one ImportError
+     * const importError = await prisma.importError.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ImportErrorFindFirstOrThrowArgs>(args?: SelectSubset<T, ImportErrorFindFirstOrThrowArgs<ExtArgs>>): Prisma__ImportErrorClient<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ImportErrors that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportErrorFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ImportErrors
+     * const importErrors = await prisma.importError.findMany()
+     * 
+     * // Get first 10 ImportErrors
+     * const importErrors = await prisma.importError.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const importErrorWithIdOnly = await prisma.importError.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ImportErrorFindManyArgs>(args?: SelectSubset<T, ImportErrorFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ImportError.
+     * @param {ImportErrorCreateArgs} args - Arguments to create a ImportError.
+     * @example
+     * // Create one ImportError
+     * const ImportError = await prisma.importError.create({
+     *   data: {
+     *     // ... data to create a ImportError
+     *   }
+     * })
+     * 
+     */
+    create<T extends ImportErrorCreateArgs>(args: SelectSubset<T, ImportErrorCreateArgs<ExtArgs>>): Prisma__ImportErrorClient<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ImportErrors.
+     * @param {ImportErrorCreateManyArgs} args - Arguments to create many ImportErrors.
+     * @example
+     * // Create many ImportErrors
+     * const importError = await prisma.importError.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ImportErrorCreateManyArgs>(args?: SelectSubset<T, ImportErrorCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ImportErrors and returns the data saved in the database.
+     * @param {ImportErrorCreateManyAndReturnArgs} args - Arguments to create many ImportErrors.
+     * @example
+     * // Create many ImportErrors
+     * const importError = await prisma.importError.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ImportErrors and only return the `id`
+     * const importErrorWithIdOnly = await prisma.importError.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ImportErrorCreateManyAndReturnArgs>(args?: SelectSubset<T, ImportErrorCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ImportError.
+     * @param {ImportErrorDeleteArgs} args - Arguments to delete one ImportError.
+     * @example
+     * // Delete one ImportError
+     * const ImportError = await prisma.importError.delete({
+     *   where: {
+     *     // ... filter to delete one ImportError
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ImportErrorDeleteArgs>(args: SelectSubset<T, ImportErrorDeleteArgs<ExtArgs>>): Prisma__ImportErrorClient<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ImportError.
+     * @param {ImportErrorUpdateArgs} args - Arguments to update one ImportError.
+     * @example
+     * // Update one ImportError
+     * const importError = await prisma.importError.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ImportErrorUpdateArgs>(args: SelectSubset<T, ImportErrorUpdateArgs<ExtArgs>>): Prisma__ImportErrorClient<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ImportErrors.
+     * @param {ImportErrorDeleteManyArgs} args - Arguments to filter ImportErrors to delete.
+     * @example
+     * // Delete a few ImportErrors
+     * const { count } = await prisma.importError.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ImportErrorDeleteManyArgs>(args?: SelectSubset<T, ImportErrorDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ImportErrors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportErrorUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ImportErrors
+     * const importError = await prisma.importError.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ImportErrorUpdateManyArgs>(args: SelectSubset<T, ImportErrorUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ImportErrors and returns the data updated in the database.
+     * @param {ImportErrorUpdateManyAndReturnArgs} args - Arguments to update many ImportErrors.
+     * @example
+     * // Update many ImportErrors
+     * const importError = await prisma.importError.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ImportErrors and only return the `id`
+     * const importErrorWithIdOnly = await prisma.importError.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ImportErrorUpdateManyAndReturnArgs>(args: SelectSubset<T, ImportErrorUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ImportError.
+     * @param {ImportErrorUpsertArgs} args - Arguments to update or create a ImportError.
+     * @example
+     * // Update or create a ImportError
+     * const importError = await prisma.importError.upsert({
+     *   create: {
+     *     // ... data to create a ImportError
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ImportError we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ImportErrorUpsertArgs>(args: SelectSubset<T, ImportErrorUpsertArgs<ExtArgs>>): Prisma__ImportErrorClient<$Result.GetResult<Prisma.$ImportErrorPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ImportErrors.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportErrorCountArgs} args - Arguments to filter ImportErrors to count.
+     * @example
+     * // Count the number of ImportErrors
+     * const count = await prisma.importError.count({
+     *   where: {
+     *     // ... the filter for the ImportErrors we want to count
+     *   }
+     * })
+    **/
+    count<T extends ImportErrorCountArgs>(
+      args?: Subset<T, ImportErrorCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ImportErrorCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ImportError.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportErrorAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ImportErrorAggregateArgs>(args: Subset<T, ImportErrorAggregateArgs>): Prisma.PrismaPromise<GetImportErrorAggregateType<T>>
+
+    /**
+     * Group by ImportError.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ImportErrorGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ImportErrorGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ImportErrorGroupByArgs['orderBy'] }
+        : { orderBy?: ImportErrorGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ImportErrorGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetImportErrorGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ImportError model
+   */
+  readonly fields: ImportErrorFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ImportError.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ImportErrorClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    batch<T extends ImportBatchDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ImportBatchDefaultArgs<ExtArgs>>): Prisma__ImportBatchClient<$Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    row<T extends ImportError$rowArgs<ExtArgs> = {}>(args?: Subset<T, ImportError$rowArgs<ExtArgs>>): Prisma__ImportRowClient<$Result.GetResult<Prisma.$ImportRowPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    resolvedBy<T extends ImportError$resolvedByArgs<ExtArgs> = {}>(args?: Subset<T, ImportError$resolvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ImportError model
+   */
+  interface ImportErrorFieldRefs {
+    readonly id: FieldRef<"ImportError", 'String'>
+    readonly batchId: FieldRef<"ImportError", 'String'>
+    readonly rowId: FieldRef<"ImportError", 'String'>
+    readonly rowNumber: FieldRef<"ImportError", 'Int'>
+    readonly type: FieldRef<"ImportError", 'ImportErrorType'>
+    readonly field: FieldRef<"ImportError", 'String'>
+    readonly originalValue: FieldRef<"ImportError", 'Json'>
+    readonly message: FieldRef<"ImportError", 'String'>
+    readonly severity: FieldRef<"ImportError", 'String'>
+    readonly resolved: FieldRef<"ImportError", 'Boolean'>
+    readonly resolvedById: FieldRef<"ImportError", 'String'>
+    readonly resolvedAt: FieldRef<"ImportError", 'DateTime'>
+    readonly resolutionNote: FieldRef<"ImportError", 'String'>
+    readonly createdAt: FieldRef<"ImportError", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ImportError findUnique
+   */
+  export type ImportErrorFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportError to fetch.
+     */
+    where: ImportErrorWhereUniqueInput
+  }
+
+  /**
+   * ImportError findUniqueOrThrow
+   */
+  export type ImportErrorFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportError to fetch.
+     */
+    where: ImportErrorWhereUniqueInput
+  }
+
+  /**
+   * ImportError findFirst
+   */
+  export type ImportErrorFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportError to fetch.
+     */
+    where?: ImportErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportErrors to fetch.
+     */
+    orderBy?: ImportErrorOrderByWithRelationInput | ImportErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ImportErrors.
+     */
+    cursor?: ImportErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportErrors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportErrors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ImportErrors.
+     */
+    distinct?: ImportErrorScalarFieldEnum | ImportErrorScalarFieldEnum[]
+  }
+
+  /**
+   * ImportError findFirstOrThrow
+   */
+  export type ImportErrorFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportError to fetch.
+     */
+    where?: ImportErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportErrors to fetch.
+     */
+    orderBy?: ImportErrorOrderByWithRelationInput | ImportErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ImportErrors.
+     */
+    cursor?: ImportErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportErrors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportErrors.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ImportErrors.
+     */
+    distinct?: ImportErrorScalarFieldEnum | ImportErrorScalarFieldEnum[]
+  }
+
+  /**
+   * ImportError findMany
+   */
+  export type ImportErrorFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    /**
+     * Filter, which ImportErrors to fetch.
+     */
+    where?: ImportErrorWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ImportErrors to fetch.
+     */
+    orderBy?: ImportErrorOrderByWithRelationInput | ImportErrorOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ImportErrors.
+     */
+    cursor?: ImportErrorWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ImportErrors from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ImportErrors.
+     */
+    skip?: number
+    distinct?: ImportErrorScalarFieldEnum | ImportErrorScalarFieldEnum[]
+  }
+
+  /**
+   * ImportError create
+   */
+  export type ImportErrorCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ImportError.
+     */
+    data: XOR<ImportErrorCreateInput, ImportErrorUncheckedCreateInput>
+  }
+
+  /**
+   * ImportError createMany
+   */
+  export type ImportErrorCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ImportErrors.
+     */
+    data: ImportErrorCreateManyInput | ImportErrorCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ImportError createManyAndReturn
+   */
+  export type ImportErrorCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * The data used to create many ImportErrors.
+     */
+    data: ImportErrorCreateManyInput | ImportErrorCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ImportError update
+   */
+  export type ImportErrorUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ImportError.
+     */
+    data: XOR<ImportErrorUpdateInput, ImportErrorUncheckedUpdateInput>
+    /**
+     * Choose, which ImportError to update.
+     */
+    where: ImportErrorWhereUniqueInput
+  }
+
+  /**
+   * ImportError updateMany
+   */
+  export type ImportErrorUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ImportErrors.
+     */
+    data: XOR<ImportErrorUpdateManyMutationInput, ImportErrorUncheckedUpdateManyInput>
+    /**
+     * Filter which ImportErrors to update
+     */
+    where?: ImportErrorWhereInput
+    /**
+     * Limit how many ImportErrors to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ImportError updateManyAndReturn
+   */
+  export type ImportErrorUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * The data used to update ImportErrors.
+     */
+    data: XOR<ImportErrorUpdateManyMutationInput, ImportErrorUncheckedUpdateManyInput>
+    /**
+     * Filter which ImportErrors to update
+     */
+    where?: ImportErrorWhereInput
+    /**
+     * Limit how many ImportErrors to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ImportError upsert
+   */
+  export type ImportErrorUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ImportError to update in case it exists.
+     */
+    where: ImportErrorWhereUniqueInput
+    /**
+     * In case the ImportError found by the `where` argument doesn't exist, create a new ImportError with this data.
+     */
+    create: XOR<ImportErrorCreateInput, ImportErrorUncheckedCreateInput>
+    /**
+     * In case the ImportError was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ImportErrorUpdateInput, ImportErrorUncheckedUpdateInput>
+  }
+
+  /**
+   * ImportError delete
+   */
+  export type ImportErrorDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+    /**
+     * Filter which ImportError to delete.
+     */
+    where: ImportErrorWhereUniqueInput
+  }
+
+  /**
+   * ImportError deleteMany
+   */
+  export type ImportErrorDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ImportErrors to delete
+     */
+    where?: ImportErrorWhereInput
+    /**
+     * Limit how many ImportErrors to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ImportError.row
+   */
+  export type ImportError$rowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportRow
+     */
+    select?: ImportRowSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportRow
+     */
+    omit?: ImportRowOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportRowInclude<ExtArgs> | null
+    where?: ImportRowWhereInput
+  }
+
+  /**
+   * ImportError.resolvedBy
+   */
+  export type ImportError$resolvedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * ImportError without action
+   */
+  export type ImportErrorDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ImportError
+     */
+    select?: ImportErrorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ImportError
+     */
+    omit?: ImportErrorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImportErrorInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model IdempotencyKey
    */
 
@@ -76113,6 +82275,97 @@ export namespace Prisma {
   export type SecurityEventScalarFieldEnum = (typeof SecurityEventScalarFieldEnum)[keyof typeof SecurityEventScalarFieldEnum]
 
 
+  export const ImportBatchScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    code: 'code',
+    source: 'source',
+    fileName: 'fileName',
+    fileHash: 'fileHash',
+    fileSize: 'fileSize',
+    mimeType: 'mimeType',
+    status: 'status',
+    totalRows: 'totalRows',
+    validRows: 'validRows',
+    errorRows: 'errorRows',
+    duplicateRows: 'duplicateRows',
+    uploadedById: 'uploadedById',
+    mappedById: 'mappedById',
+    validatedById: 'validatedById',
+    approvedById: 'approvedById',
+    importedById: 'importedById',
+    rolledBackById: 'rolledBackById',
+    approvedAt: 'approvedAt',
+    importedAt: 'importedAt',
+    rolledBackAt: 'rolledBackAt',
+    errorSummary: 'errorSummary',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ImportBatchScalarFieldEnum = (typeof ImportBatchScalarFieldEnum)[keyof typeof ImportBatchScalarFieldEnum]
+
+
+  export const ImportRowScalarFieldEnum: {
+    id: 'id',
+    batchId: 'batchId',
+    rowNumber: 'rowNumber',
+    rawData: 'rawData',
+    mappedData: 'mappedData',
+    normalizedData: 'normalizedData',
+    status: 'status',
+    fingerprint: 'fingerprint',
+    importedTransactionId: 'importedTransactionId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ImportRowScalarFieldEnum = (typeof ImportRowScalarFieldEnum)[keyof typeof ImportRowScalarFieldEnum]
+
+
+  export const ImportFieldMappingScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    batchId: 'batchId',
+    source: 'source',
+    name: 'name',
+    description: 'description',
+    dateFormat: 'dateFormat',
+    amountConvention: 'amountConvention',
+    decimalSeparator: 'decimalSeparator',
+    thousandSeparator: 'thousandSeparator',
+    encoding: 'encoding',
+    hasHeader: 'hasHeader',
+    columnMap: 'columnMap',
+    isDefault: 'isDefault',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ImportFieldMappingScalarFieldEnum = (typeof ImportFieldMappingScalarFieldEnum)[keyof typeof ImportFieldMappingScalarFieldEnum]
+
+
+  export const ImportErrorScalarFieldEnum: {
+    id: 'id',
+    batchId: 'batchId',
+    rowId: 'rowId',
+    rowNumber: 'rowNumber',
+    type: 'type',
+    field: 'field',
+    originalValue: 'originalValue',
+    message: 'message',
+    severity: 'severity',
+    resolved: 'resolved',
+    resolvedById: 'resolvedById',
+    resolvedAt: 'resolvedAt',
+    resolutionNote: 'resolutionNote',
+    createdAt: 'createdAt'
+  };
+
+  export type ImportErrorScalarFieldEnum = (typeof ImportErrorScalarFieldEnum)[keyof typeof ImportErrorScalarFieldEnum]
+
+
   export const IdempotencyKeyScalarFieldEnum: {
     id: 'id',
     key: 'key',
@@ -77039,6 +83292,48 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ImportSource'
+   */
+  export type EnumImportSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportSource'>
+    
+
+
+  /**
+   * Reference to a field of type 'ImportSource[]'
+   */
+  export type ListEnumImportSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportSource[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ImportBatchStatus'
+   */
+  export type EnumImportBatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportBatchStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ImportBatchStatus[]'
+   */
+  export type ListEnumImportBatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportBatchStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ImportErrorType'
+   */
+  export type EnumImportErrorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportErrorType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ImportErrorType[]'
+   */
+  export type ListEnumImportErrorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportErrorType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'IdempotencyKeyStatus'
    */
   export type EnumIdempotencyKeyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IdempotencyKeyStatus'>
@@ -77202,6 +83497,14 @@ export namespace Prisma {
     transfersApproved?: TransferListRelationFilter
     transfersProcessed?: TransferListRelationFilter
     transfersReversed?: TransferListRelationFilter
+    importBatchesUploaded?: ImportBatchListRelationFilter
+    importBatchesMapped?: ImportBatchListRelationFilter
+    importBatchesValidated?: ImportBatchListRelationFilter
+    importBatchesApproved?: ImportBatchListRelationFilter
+    importBatchesImported?: ImportBatchListRelationFilter
+    importBatchesRolledBack?: ImportBatchListRelationFilter
+    importFieldMappingsCreated?: ImportFieldMappingListRelationFilter
+    importErrorsResolved?: ImportErrorListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -77278,6 +83581,14 @@ export namespace Prisma {
     transfersApproved?: TransferOrderByRelationAggregateInput
     transfersProcessed?: TransferOrderByRelationAggregateInput
     transfersReversed?: TransferOrderByRelationAggregateInput
+    importBatchesUploaded?: ImportBatchOrderByRelationAggregateInput
+    importBatchesMapped?: ImportBatchOrderByRelationAggregateInput
+    importBatchesValidated?: ImportBatchOrderByRelationAggregateInput
+    importBatchesApproved?: ImportBatchOrderByRelationAggregateInput
+    importBatchesImported?: ImportBatchOrderByRelationAggregateInput
+    importBatchesRolledBack?: ImportBatchOrderByRelationAggregateInput
+    importFieldMappingsCreated?: ImportFieldMappingOrderByRelationAggregateInput
+    importErrorsResolved?: ImportErrorOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -77357,6 +83668,14 @@ export namespace Prisma {
     transfersApproved?: TransferListRelationFilter
     transfersProcessed?: TransferListRelationFilter
     transfersReversed?: TransferListRelationFilter
+    importBatchesUploaded?: ImportBatchListRelationFilter
+    importBatchesMapped?: ImportBatchListRelationFilter
+    importBatchesValidated?: ImportBatchListRelationFilter
+    importBatchesApproved?: ImportBatchListRelationFilter
+    importBatchesImported?: ImportBatchListRelationFilter
+    importBatchesRolledBack?: ImportBatchListRelationFilter
+    importFieldMappingsCreated?: ImportFieldMappingListRelationFilter
+    importErrorsResolved?: ImportErrorListRelationFilter
   }, "id" | "emailNormalized" | "passwordResetToken">
 
   export type UserOrderByWithAggregationInput = {
@@ -79214,6 +85533,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountListRelationFilter
     paymentSchedules?: PaymentScheduleListRelationFilter
     transfers?: TransferListRelationFilter
+    importBatches?: ImportBatchListRelationFilter
+    importFieldMappings?: ImportFieldMappingListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -79258,6 +85579,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountOrderByRelationAggregateInput
     paymentSchedules?: PaymentScheduleOrderByRelationAggregateInput
     transfers?: TransferOrderByRelationAggregateInput
+    importBatches?: ImportBatchOrderByRelationAggregateInput
+    importFieldMappings?: ImportFieldMappingOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -79305,6 +85628,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountListRelationFilter
     paymentSchedules?: PaymentScheduleListRelationFilter
     transfers?: TransferListRelationFilter
+    importBatches?: ImportBatchListRelationFilter
+    importFieldMappings?: ImportFieldMappingListRelationFilter
   }, "id" | "code">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -82590,6 +88915,512 @@ export namespace Prisma {
     occurredAt?: DateTimeWithAggregatesFilter<"SecurityEvent"> | Date | string
   }
 
+  export type ImportBatchWhereInput = {
+    AND?: ImportBatchWhereInput | ImportBatchWhereInput[]
+    OR?: ImportBatchWhereInput[]
+    NOT?: ImportBatchWhereInput | ImportBatchWhereInput[]
+    id?: StringFilter<"ImportBatch"> | string
+    organizationId?: StringFilter<"ImportBatch"> | string
+    code?: StringFilter<"ImportBatch"> | string
+    source?: EnumImportSourceFilter<"ImportBatch"> | $Enums.ImportSource
+    fileName?: StringFilter<"ImportBatch"> | string
+    fileHash?: StringFilter<"ImportBatch"> | string
+    fileSize?: IntFilter<"ImportBatch"> | number
+    mimeType?: StringFilter<"ImportBatch"> | string
+    status?: EnumImportBatchStatusFilter<"ImportBatch"> | $Enums.ImportBatchStatus
+    totalRows?: IntFilter<"ImportBatch"> | number
+    validRows?: IntFilter<"ImportBatch"> | number
+    errorRows?: IntFilter<"ImportBatch"> | number
+    duplicateRows?: IntFilter<"ImportBatch"> | number
+    uploadedById?: StringFilter<"ImportBatch"> | string
+    mappedById?: StringNullableFilter<"ImportBatch"> | string | null
+    validatedById?: StringNullableFilter<"ImportBatch"> | string | null
+    approvedById?: StringNullableFilter<"ImportBatch"> | string | null
+    importedById?: StringNullableFilter<"ImportBatch"> | string | null
+    rolledBackById?: StringNullableFilter<"ImportBatch"> | string | null
+    approvedAt?: DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+    importedAt?: DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+    rolledBackAt?: DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+    errorSummary?: JsonNullableFilter<"ImportBatch">
+    createdAt?: DateTimeFilter<"ImportBatch"> | Date | string
+    updatedAt?: DateTimeFilter<"ImportBatch"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    uploadedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    mappedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    validatedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    importedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    rolledBackBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    rows?: ImportRowListRelationFilter
+    fieldMappings?: ImportFieldMappingListRelationFilter
+    errors?: ImportErrorListRelationFilter
+  }
+
+  export type ImportBatchOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    source?: SortOrder
+    fileName?: SortOrder
+    fileHash?: SortOrder
+    fileSize?: SortOrder
+    mimeType?: SortOrder
+    status?: SortOrder
+    totalRows?: SortOrder
+    validRows?: SortOrder
+    errorRows?: SortOrder
+    duplicateRows?: SortOrder
+    uploadedById?: SortOrder
+    mappedById?: SortOrderInput | SortOrder
+    validatedById?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    importedById?: SortOrderInput | SortOrder
+    rolledBackById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    importedAt?: SortOrderInput | SortOrder
+    rolledBackAt?: SortOrderInput | SortOrder
+    errorSummary?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    uploadedBy?: UserOrderByWithRelationInput
+    mappedBy?: UserOrderByWithRelationInput
+    validatedBy?: UserOrderByWithRelationInput
+    approvedBy?: UserOrderByWithRelationInput
+    importedBy?: UserOrderByWithRelationInput
+    rolledBackBy?: UserOrderByWithRelationInput
+    rows?: ImportRowOrderByRelationAggregateInput
+    fieldMappings?: ImportFieldMappingOrderByRelationAggregateInput
+    errors?: ImportErrorOrderByRelationAggregateInput
+  }
+
+  export type ImportBatchWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_code?: ImportBatchOrganizationIdCodeCompoundUniqueInput
+    organizationId_fileHash?: ImportBatchOrganizationIdFileHashCompoundUniqueInput
+    AND?: ImportBatchWhereInput | ImportBatchWhereInput[]
+    OR?: ImportBatchWhereInput[]
+    NOT?: ImportBatchWhereInput | ImportBatchWhereInput[]
+    organizationId?: StringFilter<"ImportBatch"> | string
+    code?: StringFilter<"ImportBatch"> | string
+    source?: EnumImportSourceFilter<"ImportBatch"> | $Enums.ImportSource
+    fileName?: StringFilter<"ImportBatch"> | string
+    fileHash?: StringFilter<"ImportBatch"> | string
+    fileSize?: IntFilter<"ImportBatch"> | number
+    mimeType?: StringFilter<"ImportBatch"> | string
+    status?: EnumImportBatchStatusFilter<"ImportBatch"> | $Enums.ImportBatchStatus
+    totalRows?: IntFilter<"ImportBatch"> | number
+    validRows?: IntFilter<"ImportBatch"> | number
+    errorRows?: IntFilter<"ImportBatch"> | number
+    duplicateRows?: IntFilter<"ImportBatch"> | number
+    uploadedById?: StringFilter<"ImportBatch"> | string
+    mappedById?: StringNullableFilter<"ImportBatch"> | string | null
+    validatedById?: StringNullableFilter<"ImportBatch"> | string | null
+    approvedById?: StringNullableFilter<"ImportBatch"> | string | null
+    importedById?: StringNullableFilter<"ImportBatch"> | string | null
+    rolledBackById?: StringNullableFilter<"ImportBatch"> | string | null
+    approvedAt?: DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+    importedAt?: DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+    rolledBackAt?: DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+    errorSummary?: JsonNullableFilter<"ImportBatch">
+    createdAt?: DateTimeFilter<"ImportBatch"> | Date | string
+    updatedAt?: DateTimeFilter<"ImportBatch"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    uploadedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    mappedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    validatedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    importedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    rolledBackBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    rows?: ImportRowListRelationFilter
+    fieldMappings?: ImportFieldMappingListRelationFilter
+    errors?: ImportErrorListRelationFilter
+  }, "id" | "organizationId_code" | "organizationId_fileHash">
+
+  export type ImportBatchOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    source?: SortOrder
+    fileName?: SortOrder
+    fileHash?: SortOrder
+    fileSize?: SortOrder
+    mimeType?: SortOrder
+    status?: SortOrder
+    totalRows?: SortOrder
+    validRows?: SortOrder
+    errorRows?: SortOrder
+    duplicateRows?: SortOrder
+    uploadedById?: SortOrder
+    mappedById?: SortOrderInput | SortOrder
+    validatedById?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    importedById?: SortOrderInput | SortOrder
+    rolledBackById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    importedAt?: SortOrderInput | SortOrder
+    rolledBackAt?: SortOrderInput | SortOrder
+    errorSummary?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ImportBatchCountOrderByAggregateInput
+    _avg?: ImportBatchAvgOrderByAggregateInput
+    _max?: ImportBatchMaxOrderByAggregateInput
+    _min?: ImportBatchMinOrderByAggregateInput
+    _sum?: ImportBatchSumOrderByAggregateInput
+  }
+
+  export type ImportBatchScalarWhereWithAggregatesInput = {
+    AND?: ImportBatchScalarWhereWithAggregatesInput | ImportBatchScalarWhereWithAggregatesInput[]
+    OR?: ImportBatchScalarWhereWithAggregatesInput[]
+    NOT?: ImportBatchScalarWhereWithAggregatesInput | ImportBatchScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ImportBatch"> | string
+    organizationId?: StringWithAggregatesFilter<"ImportBatch"> | string
+    code?: StringWithAggregatesFilter<"ImportBatch"> | string
+    source?: EnumImportSourceWithAggregatesFilter<"ImportBatch"> | $Enums.ImportSource
+    fileName?: StringWithAggregatesFilter<"ImportBatch"> | string
+    fileHash?: StringWithAggregatesFilter<"ImportBatch"> | string
+    fileSize?: IntWithAggregatesFilter<"ImportBatch"> | number
+    mimeType?: StringWithAggregatesFilter<"ImportBatch"> | string
+    status?: EnumImportBatchStatusWithAggregatesFilter<"ImportBatch"> | $Enums.ImportBatchStatus
+    totalRows?: IntWithAggregatesFilter<"ImportBatch"> | number
+    validRows?: IntWithAggregatesFilter<"ImportBatch"> | number
+    errorRows?: IntWithAggregatesFilter<"ImportBatch"> | number
+    duplicateRows?: IntWithAggregatesFilter<"ImportBatch"> | number
+    uploadedById?: StringWithAggregatesFilter<"ImportBatch"> | string
+    mappedById?: StringNullableWithAggregatesFilter<"ImportBatch"> | string | null
+    validatedById?: StringNullableWithAggregatesFilter<"ImportBatch"> | string | null
+    approvedById?: StringNullableWithAggregatesFilter<"ImportBatch"> | string | null
+    importedById?: StringNullableWithAggregatesFilter<"ImportBatch"> | string | null
+    rolledBackById?: StringNullableWithAggregatesFilter<"ImportBatch"> | string | null
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"ImportBatch"> | Date | string | null
+    importedAt?: DateTimeNullableWithAggregatesFilter<"ImportBatch"> | Date | string | null
+    rolledBackAt?: DateTimeNullableWithAggregatesFilter<"ImportBatch"> | Date | string | null
+    errorSummary?: JsonNullableWithAggregatesFilter<"ImportBatch">
+    createdAt?: DateTimeWithAggregatesFilter<"ImportBatch"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ImportBatch"> | Date | string
+  }
+
+  export type ImportRowWhereInput = {
+    AND?: ImportRowWhereInput | ImportRowWhereInput[]
+    OR?: ImportRowWhereInput[]
+    NOT?: ImportRowWhereInput | ImportRowWhereInput[]
+    id?: StringFilter<"ImportRow"> | string
+    batchId?: StringFilter<"ImportRow"> | string
+    rowNumber?: IntFilter<"ImportRow"> | number
+    rawData?: JsonFilter<"ImportRow">
+    mappedData?: JsonNullableFilter<"ImportRow">
+    normalizedData?: JsonNullableFilter<"ImportRow">
+    status?: StringFilter<"ImportRow"> | string
+    fingerprint?: StringNullableFilter<"ImportRow"> | string | null
+    importedTransactionId?: StringNullableFilter<"ImportRow"> | string | null
+    createdAt?: DateTimeFilter<"ImportRow"> | Date | string
+    updatedAt?: DateTimeFilter<"ImportRow"> | Date | string
+    batch?: XOR<ImportBatchScalarRelationFilter, ImportBatchWhereInput>
+    errors?: ImportErrorListRelationFilter
+  }
+
+  export type ImportRowOrderByWithRelationInput = {
+    id?: SortOrder
+    batchId?: SortOrder
+    rowNumber?: SortOrder
+    rawData?: SortOrder
+    mappedData?: SortOrderInput | SortOrder
+    normalizedData?: SortOrderInput | SortOrder
+    status?: SortOrder
+    fingerprint?: SortOrderInput | SortOrder
+    importedTransactionId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    batch?: ImportBatchOrderByWithRelationInput
+    errors?: ImportErrorOrderByRelationAggregateInput
+  }
+
+  export type ImportRowWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ImportRowWhereInput | ImportRowWhereInput[]
+    OR?: ImportRowWhereInput[]
+    NOT?: ImportRowWhereInput | ImportRowWhereInput[]
+    batchId?: StringFilter<"ImportRow"> | string
+    rowNumber?: IntFilter<"ImportRow"> | number
+    rawData?: JsonFilter<"ImportRow">
+    mappedData?: JsonNullableFilter<"ImportRow">
+    normalizedData?: JsonNullableFilter<"ImportRow">
+    status?: StringFilter<"ImportRow"> | string
+    fingerprint?: StringNullableFilter<"ImportRow"> | string | null
+    importedTransactionId?: StringNullableFilter<"ImportRow"> | string | null
+    createdAt?: DateTimeFilter<"ImportRow"> | Date | string
+    updatedAt?: DateTimeFilter<"ImportRow"> | Date | string
+    batch?: XOR<ImportBatchScalarRelationFilter, ImportBatchWhereInput>
+    errors?: ImportErrorListRelationFilter
+  }, "id">
+
+  export type ImportRowOrderByWithAggregationInput = {
+    id?: SortOrder
+    batchId?: SortOrder
+    rowNumber?: SortOrder
+    rawData?: SortOrder
+    mappedData?: SortOrderInput | SortOrder
+    normalizedData?: SortOrderInput | SortOrder
+    status?: SortOrder
+    fingerprint?: SortOrderInput | SortOrder
+    importedTransactionId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ImportRowCountOrderByAggregateInput
+    _avg?: ImportRowAvgOrderByAggregateInput
+    _max?: ImportRowMaxOrderByAggregateInput
+    _min?: ImportRowMinOrderByAggregateInput
+    _sum?: ImportRowSumOrderByAggregateInput
+  }
+
+  export type ImportRowScalarWhereWithAggregatesInput = {
+    AND?: ImportRowScalarWhereWithAggregatesInput | ImportRowScalarWhereWithAggregatesInput[]
+    OR?: ImportRowScalarWhereWithAggregatesInput[]
+    NOT?: ImportRowScalarWhereWithAggregatesInput | ImportRowScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ImportRow"> | string
+    batchId?: StringWithAggregatesFilter<"ImportRow"> | string
+    rowNumber?: IntWithAggregatesFilter<"ImportRow"> | number
+    rawData?: JsonWithAggregatesFilter<"ImportRow">
+    mappedData?: JsonNullableWithAggregatesFilter<"ImportRow">
+    normalizedData?: JsonNullableWithAggregatesFilter<"ImportRow">
+    status?: StringWithAggregatesFilter<"ImportRow"> | string
+    fingerprint?: StringNullableWithAggregatesFilter<"ImportRow"> | string | null
+    importedTransactionId?: StringNullableWithAggregatesFilter<"ImportRow"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ImportRow"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ImportRow"> | Date | string
+  }
+
+  export type ImportFieldMappingWhereInput = {
+    AND?: ImportFieldMappingWhereInput | ImportFieldMappingWhereInput[]
+    OR?: ImportFieldMappingWhereInput[]
+    NOT?: ImportFieldMappingWhereInput | ImportFieldMappingWhereInput[]
+    id?: StringFilter<"ImportFieldMapping"> | string
+    organizationId?: StringFilter<"ImportFieldMapping"> | string
+    batchId?: StringNullableFilter<"ImportFieldMapping"> | string | null
+    source?: EnumImportSourceFilter<"ImportFieldMapping"> | $Enums.ImportSource
+    name?: StringFilter<"ImportFieldMapping"> | string
+    description?: StringNullableFilter<"ImportFieldMapping"> | string | null
+    dateFormat?: StringFilter<"ImportFieldMapping"> | string
+    amountConvention?: StringFilter<"ImportFieldMapping"> | string
+    decimalSeparator?: StringFilter<"ImportFieldMapping"> | string
+    thousandSeparator?: StringFilter<"ImportFieldMapping"> | string
+    encoding?: StringFilter<"ImportFieldMapping"> | string
+    hasHeader?: BoolFilter<"ImportFieldMapping"> | boolean
+    columnMap?: JsonFilter<"ImportFieldMapping">
+    isDefault?: BoolFilter<"ImportFieldMapping"> | boolean
+    createdById?: StringFilter<"ImportFieldMapping"> | string
+    createdAt?: DateTimeFilter<"ImportFieldMapping"> | Date | string
+    updatedAt?: DateTimeFilter<"ImportFieldMapping"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    batch?: XOR<ImportBatchNullableScalarRelationFilter, ImportBatchWhereInput> | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ImportFieldMappingOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    batchId?: SortOrderInput | SortOrder
+    source?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    dateFormat?: SortOrder
+    amountConvention?: SortOrder
+    decimalSeparator?: SortOrder
+    thousandSeparator?: SortOrder
+    encoding?: SortOrder
+    hasHeader?: SortOrder
+    columnMap?: SortOrder
+    isDefault?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    batch?: ImportBatchOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+  }
+
+  export type ImportFieldMappingWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_source_name?: ImportFieldMappingOrganizationIdSourceNameCompoundUniqueInput
+    AND?: ImportFieldMappingWhereInput | ImportFieldMappingWhereInput[]
+    OR?: ImportFieldMappingWhereInput[]
+    NOT?: ImportFieldMappingWhereInput | ImportFieldMappingWhereInput[]
+    organizationId?: StringFilter<"ImportFieldMapping"> | string
+    batchId?: StringNullableFilter<"ImportFieldMapping"> | string | null
+    source?: EnumImportSourceFilter<"ImportFieldMapping"> | $Enums.ImportSource
+    name?: StringFilter<"ImportFieldMapping"> | string
+    description?: StringNullableFilter<"ImportFieldMapping"> | string | null
+    dateFormat?: StringFilter<"ImportFieldMapping"> | string
+    amountConvention?: StringFilter<"ImportFieldMapping"> | string
+    decimalSeparator?: StringFilter<"ImportFieldMapping"> | string
+    thousandSeparator?: StringFilter<"ImportFieldMapping"> | string
+    encoding?: StringFilter<"ImportFieldMapping"> | string
+    hasHeader?: BoolFilter<"ImportFieldMapping"> | boolean
+    columnMap?: JsonFilter<"ImportFieldMapping">
+    isDefault?: BoolFilter<"ImportFieldMapping"> | boolean
+    createdById?: StringFilter<"ImportFieldMapping"> | string
+    createdAt?: DateTimeFilter<"ImportFieldMapping"> | Date | string
+    updatedAt?: DateTimeFilter<"ImportFieldMapping"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    batch?: XOR<ImportBatchNullableScalarRelationFilter, ImportBatchWhereInput> | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "organizationId_source_name">
+
+  export type ImportFieldMappingOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    batchId?: SortOrderInput | SortOrder
+    source?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    dateFormat?: SortOrder
+    amountConvention?: SortOrder
+    decimalSeparator?: SortOrder
+    thousandSeparator?: SortOrder
+    encoding?: SortOrder
+    hasHeader?: SortOrder
+    columnMap?: SortOrder
+    isDefault?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ImportFieldMappingCountOrderByAggregateInput
+    _max?: ImportFieldMappingMaxOrderByAggregateInput
+    _min?: ImportFieldMappingMinOrderByAggregateInput
+  }
+
+  export type ImportFieldMappingScalarWhereWithAggregatesInput = {
+    AND?: ImportFieldMappingScalarWhereWithAggregatesInput | ImportFieldMappingScalarWhereWithAggregatesInput[]
+    OR?: ImportFieldMappingScalarWhereWithAggregatesInput[]
+    NOT?: ImportFieldMappingScalarWhereWithAggregatesInput | ImportFieldMappingScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ImportFieldMapping"> | string
+    organizationId?: StringWithAggregatesFilter<"ImportFieldMapping"> | string
+    batchId?: StringNullableWithAggregatesFilter<"ImportFieldMapping"> | string | null
+    source?: EnumImportSourceWithAggregatesFilter<"ImportFieldMapping"> | $Enums.ImportSource
+    name?: StringWithAggregatesFilter<"ImportFieldMapping"> | string
+    description?: StringNullableWithAggregatesFilter<"ImportFieldMapping"> | string | null
+    dateFormat?: StringWithAggregatesFilter<"ImportFieldMapping"> | string
+    amountConvention?: StringWithAggregatesFilter<"ImportFieldMapping"> | string
+    decimalSeparator?: StringWithAggregatesFilter<"ImportFieldMapping"> | string
+    thousandSeparator?: StringWithAggregatesFilter<"ImportFieldMapping"> | string
+    encoding?: StringWithAggregatesFilter<"ImportFieldMapping"> | string
+    hasHeader?: BoolWithAggregatesFilter<"ImportFieldMapping"> | boolean
+    columnMap?: JsonWithAggregatesFilter<"ImportFieldMapping">
+    isDefault?: BoolWithAggregatesFilter<"ImportFieldMapping"> | boolean
+    createdById?: StringWithAggregatesFilter<"ImportFieldMapping"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ImportFieldMapping"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ImportFieldMapping"> | Date | string
+  }
+
+  export type ImportErrorWhereInput = {
+    AND?: ImportErrorWhereInput | ImportErrorWhereInput[]
+    OR?: ImportErrorWhereInput[]
+    NOT?: ImportErrorWhereInput | ImportErrorWhereInput[]
+    id?: StringFilter<"ImportError"> | string
+    batchId?: StringFilter<"ImportError"> | string
+    rowId?: StringNullableFilter<"ImportError"> | string | null
+    rowNumber?: IntFilter<"ImportError"> | number
+    type?: EnumImportErrorTypeFilter<"ImportError"> | $Enums.ImportErrorType
+    field?: StringNullableFilter<"ImportError"> | string | null
+    originalValue?: JsonNullableFilter<"ImportError">
+    message?: StringFilter<"ImportError"> | string
+    severity?: StringFilter<"ImportError"> | string
+    resolved?: BoolFilter<"ImportError"> | boolean
+    resolvedById?: StringNullableFilter<"ImportError"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"ImportError"> | Date | string | null
+    resolutionNote?: StringNullableFilter<"ImportError"> | string | null
+    createdAt?: DateTimeFilter<"ImportError"> | Date | string
+    batch?: XOR<ImportBatchScalarRelationFilter, ImportBatchWhereInput>
+    row?: XOR<ImportRowNullableScalarRelationFilter, ImportRowWhereInput> | null
+    resolvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type ImportErrorOrderByWithRelationInput = {
+    id?: SortOrder
+    batchId?: SortOrder
+    rowId?: SortOrderInput | SortOrder
+    rowNumber?: SortOrder
+    type?: SortOrder
+    field?: SortOrderInput | SortOrder
+    originalValue?: SortOrderInput | SortOrder
+    message?: SortOrder
+    severity?: SortOrder
+    resolved?: SortOrder
+    resolvedById?: SortOrderInput | SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    resolutionNote?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    batch?: ImportBatchOrderByWithRelationInput
+    row?: ImportRowOrderByWithRelationInput
+    resolvedBy?: UserOrderByWithRelationInput
+  }
+
+  export type ImportErrorWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ImportErrorWhereInput | ImportErrorWhereInput[]
+    OR?: ImportErrorWhereInput[]
+    NOT?: ImportErrorWhereInput | ImportErrorWhereInput[]
+    batchId?: StringFilter<"ImportError"> | string
+    rowId?: StringNullableFilter<"ImportError"> | string | null
+    rowNumber?: IntFilter<"ImportError"> | number
+    type?: EnumImportErrorTypeFilter<"ImportError"> | $Enums.ImportErrorType
+    field?: StringNullableFilter<"ImportError"> | string | null
+    originalValue?: JsonNullableFilter<"ImportError">
+    message?: StringFilter<"ImportError"> | string
+    severity?: StringFilter<"ImportError"> | string
+    resolved?: BoolFilter<"ImportError"> | boolean
+    resolvedById?: StringNullableFilter<"ImportError"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"ImportError"> | Date | string | null
+    resolutionNote?: StringNullableFilter<"ImportError"> | string | null
+    createdAt?: DateTimeFilter<"ImportError"> | Date | string
+    batch?: XOR<ImportBatchScalarRelationFilter, ImportBatchWhereInput>
+    row?: XOR<ImportRowNullableScalarRelationFilter, ImportRowWhereInput> | null
+    resolvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type ImportErrorOrderByWithAggregationInput = {
+    id?: SortOrder
+    batchId?: SortOrder
+    rowId?: SortOrderInput | SortOrder
+    rowNumber?: SortOrder
+    type?: SortOrder
+    field?: SortOrderInput | SortOrder
+    originalValue?: SortOrderInput | SortOrder
+    message?: SortOrder
+    severity?: SortOrder
+    resolved?: SortOrder
+    resolvedById?: SortOrderInput | SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    resolutionNote?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ImportErrorCountOrderByAggregateInput
+    _avg?: ImportErrorAvgOrderByAggregateInput
+    _max?: ImportErrorMaxOrderByAggregateInput
+    _min?: ImportErrorMinOrderByAggregateInput
+    _sum?: ImportErrorSumOrderByAggregateInput
+  }
+
+  export type ImportErrorScalarWhereWithAggregatesInput = {
+    AND?: ImportErrorScalarWhereWithAggregatesInput | ImportErrorScalarWhereWithAggregatesInput[]
+    OR?: ImportErrorScalarWhereWithAggregatesInput[]
+    NOT?: ImportErrorScalarWhereWithAggregatesInput | ImportErrorScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ImportError"> | string
+    batchId?: StringWithAggregatesFilter<"ImportError"> | string
+    rowId?: StringNullableWithAggregatesFilter<"ImportError"> | string | null
+    rowNumber?: IntWithAggregatesFilter<"ImportError"> | number
+    type?: EnumImportErrorTypeWithAggregatesFilter<"ImportError"> | $Enums.ImportErrorType
+    field?: StringNullableWithAggregatesFilter<"ImportError"> | string | null
+    originalValue?: JsonNullableWithAggregatesFilter<"ImportError">
+    message?: StringWithAggregatesFilter<"ImportError"> | string
+    severity?: StringWithAggregatesFilter<"ImportError"> | string
+    resolved?: BoolWithAggregatesFilter<"ImportError"> | boolean
+    resolvedById?: StringNullableWithAggregatesFilter<"ImportError"> | string | null
+    resolvedAt?: DateTimeNullableWithAggregatesFilter<"ImportError"> | Date | string | null
+    resolutionNote?: StringNullableWithAggregatesFilter<"ImportError"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ImportError"> | Date | string
+  }
+
   export type IdempotencyKeyWhereInput = {
     AND?: IdempotencyKeyWhereInput | IdempotencyKeyWhereInput[]
     OR?: IdempotencyKeyWhereInput[]
@@ -82927,6 +89758,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -82999,6 +89838,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUpdateInput = {
@@ -83071,6 +89918,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -83143,6 +89998,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -85204,6 +92067,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -85248,6 +92113,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -85292,6 +92159,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -85336,6 +92205,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -88876,6 +95747,561 @@ export namespace Prisma {
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ImportBatchCreateInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportBatchesInput
+    uploadedBy: UserCreateNestedOneWithoutImportBatchesUploadedInput
+    mappedBy?: UserCreateNestedOneWithoutImportBatchesMappedInput
+    validatedBy?: UserCreateNestedOneWithoutImportBatchesValidatedInput
+    approvedBy?: UserCreateNestedOneWithoutImportBatchesApprovedInput
+    importedBy?: UserCreateNestedOneWithoutImportBatchesImportedInput
+    rolledBackBy?: UserCreateNestedOneWithoutImportBatchesRolledBackInput
+    rows?: ImportRowCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rows?: ImportRowUncheckedCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput
+    mappedBy?: UserUpdateOneWithoutImportBatchesMappedNestedInput
+    validatedBy?: UserUpdateOneWithoutImportBatchesValidatedNestedInput
+    approvedBy?: UserUpdateOneWithoutImportBatchesApprovedNestedInput
+    importedBy?: UserUpdateOneWithoutImportBatchesImportedNestedInput
+    rolledBackBy?: UserUpdateOneWithoutImportBatchesRolledBackNestedInput
+    rows?: ImportRowUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rows?: ImportRowUncheckedUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchCreateManyInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportBatchUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportBatchUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportRowCreateInput = {
+    id?: string
+    rowNumber: number
+    rawData: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    fingerprint?: string | null
+    importedTransactionId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    batch: ImportBatchCreateNestedOneWithoutRowsInput
+    errors?: ImportErrorCreateNestedManyWithoutRowInput
+  }
+
+  export type ImportRowUncheckedCreateInput = {
+    id?: string
+    batchId: string
+    rowNumber: number
+    rawData: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    fingerprint?: string | null
+    importedTransactionId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutRowInput
+  }
+
+  export type ImportRowUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    rawData?: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    fingerprint?: NullableStringFieldUpdateOperationsInput | string | null
+    importedTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    batch?: ImportBatchUpdateOneRequiredWithoutRowsNestedInput
+    errors?: ImportErrorUpdateManyWithoutRowNestedInput
+  }
+
+  export type ImportRowUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    rawData?: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    fingerprint?: NullableStringFieldUpdateOperationsInput | string | null
+    importedTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errors?: ImportErrorUncheckedUpdateManyWithoutRowNestedInput
+  }
+
+  export type ImportRowCreateManyInput = {
+    id?: string
+    batchId: string
+    rowNumber: number
+    rawData: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    fingerprint?: string | null
+    importedTransactionId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportRowUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    rawData?: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    fingerprint?: NullableStringFieldUpdateOperationsInput | string | null
+    importedTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportRowUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    rawData?: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    fingerprint?: NullableStringFieldUpdateOperationsInput | string | null
+    importedTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportFieldMappingCreateInput = {
+    id?: string
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportFieldMappingsInput
+    batch?: ImportBatchCreateNestedOneWithoutFieldMappingsInput
+    createdBy: UserCreateNestedOneWithoutImportFieldMappingsCreatedInput
+  }
+
+  export type ImportFieldMappingUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    batchId?: string | null
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportFieldMappingUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportFieldMappingsNestedInput
+    batch?: ImportBatchUpdateOneWithoutFieldMappingsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutImportFieldMappingsCreatedNestedInput
+  }
+
+  export type ImportFieldMappingUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportFieldMappingCreateManyInput = {
+    id?: string
+    organizationId: string
+    batchId?: string | null
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportFieldMappingUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportFieldMappingUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportErrorCreateInput = {
+    id?: string
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+    batch: ImportBatchCreateNestedOneWithoutErrorsInput
+    row?: ImportRowCreateNestedOneWithoutErrorsInput
+    resolvedBy?: UserCreateNestedOneWithoutImportErrorsResolvedInput
+  }
+
+  export type ImportErrorUncheckedCreateInput = {
+    id?: string
+    batchId: string
+    rowId?: string | null
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ImportErrorUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    batch?: ImportBatchUpdateOneRequiredWithoutErrorsNestedInput
+    row?: ImportRowUpdateOneWithoutErrorsNestedInput
+    resolvedBy?: UserUpdateOneWithoutImportErrorsResolvedNestedInput
+  }
+
+  export type ImportErrorUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: StringFieldUpdateOperationsInput | string
+    rowId?: NullableStringFieldUpdateOperationsInput | string | null
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportErrorCreateManyInput = {
+    id?: string
+    batchId: string
+    rowId?: string | null
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ImportErrorUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportErrorUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: StringFieldUpdateOperationsInput | string
+    rowId?: NullableStringFieldUpdateOperationsInput | string | null
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IdempotencyKeyCreateInput = {
     id?: string
     key: string
@@ -89401,6 +96827,24 @@ export namespace Prisma {
     none?: TransferWhereInput
   }
 
+  export type ImportBatchListRelationFilter = {
+    every?: ImportBatchWhereInput
+    some?: ImportBatchWhereInput
+    none?: ImportBatchWhereInput
+  }
+
+  export type ImportFieldMappingListRelationFilter = {
+    every?: ImportFieldMappingWhereInput
+    some?: ImportFieldMappingWhereInput
+    none?: ImportFieldMappingWhereInput
+  }
+
+  export type ImportErrorListRelationFilter = {
+    every?: ImportErrorWhereInput
+    some?: ImportErrorWhereInput
+    none?: ImportErrorWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -89479,6 +96923,18 @@ export namespace Prisma {
   }
 
   export type TransferOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ImportBatchOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ImportFieldMappingOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ImportErrorOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -93816,6 +101272,355 @@ export namespace Prisma {
     _max?: NestedEnumAuditEntityTypeNullableFilter<$PrismaModel>
   }
 
+  export type EnumImportSourceFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportSource | EnumImportSourceFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportSource[] | ListEnumImportSourceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportSource[] | ListEnumImportSourceFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportSourceFilter<$PrismaModel> | $Enums.ImportSource
+  }
+
+  export type EnumImportBatchStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportBatchStatus | EnumImportBatchStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportBatchStatus[] | ListEnumImportBatchStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportBatchStatus[] | ListEnumImportBatchStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportBatchStatusFilter<$PrismaModel> | $Enums.ImportBatchStatus
+  }
+
+  export type ImportRowListRelationFilter = {
+    every?: ImportRowWhereInput
+    some?: ImportRowWhereInput
+    none?: ImportRowWhereInput
+  }
+
+  export type ImportRowOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ImportBatchOrganizationIdCodeCompoundUniqueInput = {
+    organizationId: string
+    code: string
+  }
+
+  export type ImportBatchOrganizationIdFileHashCompoundUniqueInput = {
+    organizationId: string
+    fileHash: string
+  }
+
+  export type ImportBatchCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    source?: SortOrder
+    fileName?: SortOrder
+    fileHash?: SortOrder
+    fileSize?: SortOrder
+    mimeType?: SortOrder
+    status?: SortOrder
+    totalRows?: SortOrder
+    validRows?: SortOrder
+    errorRows?: SortOrder
+    duplicateRows?: SortOrder
+    uploadedById?: SortOrder
+    mappedById?: SortOrder
+    validatedById?: SortOrder
+    approvedById?: SortOrder
+    importedById?: SortOrder
+    rolledBackById?: SortOrder
+    approvedAt?: SortOrder
+    importedAt?: SortOrder
+    rolledBackAt?: SortOrder
+    errorSummary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ImportBatchAvgOrderByAggregateInput = {
+    fileSize?: SortOrder
+    totalRows?: SortOrder
+    validRows?: SortOrder
+    errorRows?: SortOrder
+    duplicateRows?: SortOrder
+  }
+
+  export type ImportBatchMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    source?: SortOrder
+    fileName?: SortOrder
+    fileHash?: SortOrder
+    fileSize?: SortOrder
+    mimeType?: SortOrder
+    status?: SortOrder
+    totalRows?: SortOrder
+    validRows?: SortOrder
+    errorRows?: SortOrder
+    duplicateRows?: SortOrder
+    uploadedById?: SortOrder
+    mappedById?: SortOrder
+    validatedById?: SortOrder
+    approvedById?: SortOrder
+    importedById?: SortOrder
+    rolledBackById?: SortOrder
+    approvedAt?: SortOrder
+    importedAt?: SortOrder
+    rolledBackAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ImportBatchMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    code?: SortOrder
+    source?: SortOrder
+    fileName?: SortOrder
+    fileHash?: SortOrder
+    fileSize?: SortOrder
+    mimeType?: SortOrder
+    status?: SortOrder
+    totalRows?: SortOrder
+    validRows?: SortOrder
+    errorRows?: SortOrder
+    duplicateRows?: SortOrder
+    uploadedById?: SortOrder
+    mappedById?: SortOrder
+    validatedById?: SortOrder
+    approvedById?: SortOrder
+    importedById?: SortOrder
+    rolledBackById?: SortOrder
+    approvedAt?: SortOrder
+    importedAt?: SortOrder
+    rolledBackAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ImportBatchSumOrderByAggregateInput = {
+    fileSize?: SortOrder
+    totalRows?: SortOrder
+    validRows?: SortOrder
+    errorRows?: SortOrder
+    duplicateRows?: SortOrder
+  }
+
+  export type EnumImportSourceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportSource | EnumImportSourceFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportSource[] | ListEnumImportSourceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportSource[] | ListEnumImportSourceFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportSourceWithAggregatesFilter<$PrismaModel> | $Enums.ImportSource
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumImportSourceFilter<$PrismaModel>
+    _max?: NestedEnumImportSourceFilter<$PrismaModel>
+  }
+
+  export type EnumImportBatchStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportBatchStatus | EnumImportBatchStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportBatchStatus[] | ListEnumImportBatchStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportBatchStatus[] | ListEnumImportBatchStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportBatchStatusWithAggregatesFilter<$PrismaModel> | $Enums.ImportBatchStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumImportBatchStatusFilter<$PrismaModel>
+    _max?: NestedEnumImportBatchStatusFilter<$PrismaModel>
+  }
+
+  export type ImportBatchScalarRelationFilter = {
+    is?: ImportBatchWhereInput
+    isNot?: ImportBatchWhereInput
+  }
+
+  export type ImportRowCountOrderByAggregateInput = {
+    id?: SortOrder
+    batchId?: SortOrder
+    rowNumber?: SortOrder
+    rawData?: SortOrder
+    mappedData?: SortOrder
+    normalizedData?: SortOrder
+    status?: SortOrder
+    fingerprint?: SortOrder
+    importedTransactionId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ImportRowAvgOrderByAggregateInput = {
+    rowNumber?: SortOrder
+  }
+
+  export type ImportRowMaxOrderByAggregateInput = {
+    id?: SortOrder
+    batchId?: SortOrder
+    rowNumber?: SortOrder
+    status?: SortOrder
+    fingerprint?: SortOrder
+    importedTransactionId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ImportRowMinOrderByAggregateInput = {
+    id?: SortOrder
+    batchId?: SortOrder
+    rowNumber?: SortOrder
+    status?: SortOrder
+    fingerprint?: SortOrder
+    importedTransactionId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ImportRowSumOrderByAggregateInput = {
+    rowNumber?: SortOrder
+  }
+
+  export type ImportBatchNullableScalarRelationFilter = {
+    is?: ImportBatchWhereInput | null
+    isNot?: ImportBatchWhereInput | null
+  }
+
+  export type ImportFieldMappingOrganizationIdSourceNameCompoundUniqueInput = {
+    organizationId: string
+    source: $Enums.ImportSource
+    name: string
+  }
+
+  export type ImportFieldMappingCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    batchId?: SortOrder
+    source?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    dateFormat?: SortOrder
+    amountConvention?: SortOrder
+    decimalSeparator?: SortOrder
+    thousandSeparator?: SortOrder
+    encoding?: SortOrder
+    hasHeader?: SortOrder
+    columnMap?: SortOrder
+    isDefault?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ImportFieldMappingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    batchId?: SortOrder
+    source?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    dateFormat?: SortOrder
+    amountConvention?: SortOrder
+    decimalSeparator?: SortOrder
+    thousandSeparator?: SortOrder
+    encoding?: SortOrder
+    hasHeader?: SortOrder
+    isDefault?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ImportFieldMappingMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    batchId?: SortOrder
+    source?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    dateFormat?: SortOrder
+    amountConvention?: SortOrder
+    decimalSeparator?: SortOrder
+    thousandSeparator?: SortOrder
+    encoding?: SortOrder
+    hasHeader?: SortOrder
+    isDefault?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumImportErrorTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportErrorType | EnumImportErrorTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportErrorType[] | ListEnumImportErrorTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportErrorType[] | ListEnumImportErrorTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportErrorTypeFilter<$PrismaModel> | $Enums.ImportErrorType
+  }
+
+  export type ImportRowNullableScalarRelationFilter = {
+    is?: ImportRowWhereInput | null
+    isNot?: ImportRowWhereInput | null
+  }
+
+  export type ImportErrorCountOrderByAggregateInput = {
+    id?: SortOrder
+    batchId?: SortOrder
+    rowId?: SortOrder
+    rowNumber?: SortOrder
+    type?: SortOrder
+    field?: SortOrder
+    originalValue?: SortOrder
+    message?: SortOrder
+    severity?: SortOrder
+    resolved?: SortOrder
+    resolvedById?: SortOrder
+    resolvedAt?: SortOrder
+    resolutionNote?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ImportErrorAvgOrderByAggregateInput = {
+    rowNumber?: SortOrder
+  }
+
+  export type ImportErrorMaxOrderByAggregateInput = {
+    id?: SortOrder
+    batchId?: SortOrder
+    rowId?: SortOrder
+    rowNumber?: SortOrder
+    type?: SortOrder
+    field?: SortOrder
+    message?: SortOrder
+    severity?: SortOrder
+    resolved?: SortOrder
+    resolvedById?: SortOrder
+    resolvedAt?: SortOrder
+    resolutionNote?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ImportErrorMinOrderByAggregateInput = {
+    id?: SortOrder
+    batchId?: SortOrder
+    rowId?: SortOrder
+    rowNumber?: SortOrder
+    type?: SortOrder
+    field?: SortOrder
+    message?: SortOrder
+    severity?: SortOrder
+    resolved?: SortOrder
+    resolvedById?: SortOrder
+    resolvedAt?: SortOrder
+    resolutionNote?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ImportErrorSumOrderByAggregateInput = {
+    rowNumber?: SortOrder
+  }
+
+  export type EnumImportErrorTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportErrorType | EnumImportErrorTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportErrorType[] | ListEnumImportErrorTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportErrorType[] | ListEnumImportErrorTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportErrorTypeWithAggregatesFilter<$PrismaModel> | $Enums.ImportErrorType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumImportErrorTypeFilter<$PrismaModel>
+    _max?: NestedEnumImportErrorTypeFilter<$PrismaModel>
+  }
+
   export type EnumIdempotencyKeyStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.IdempotencyKeyStatus | EnumIdempotencyKeyStatusFieldRefInput<$PrismaModel>
     in?: $Enums.IdempotencyKeyStatus[] | ListEnumIdempotencyKeyStatusFieldRefInput<$PrismaModel>
@@ -94336,6 +102141,62 @@ export namespace Prisma {
     connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
   }
 
+  export type ImportBatchCreateNestedManyWithoutUploadedByInput = {
+    create?: XOR<ImportBatchCreateWithoutUploadedByInput, ImportBatchUncheckedCreateWithoutUploadedByInput> | ImportBatchCreateWithoutUploadedByInput[] | ImportBatchUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutUploadedByInput | ImportBatchCreateOrConnectWithoutUploadedByInput[]
+    createMany?: ImportBatchCreateManyUploadedByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportBatchCreateNestedManyWithoutMappedByInput = {
+    create?: XOR<ImportBatchCreateWithoutMappedByInput, ImportBatchUncheckedCreateWithoutMappedByInput> | ImportBatchCreateWithoutMappedByInput[] | ImportBatchUncheckedCreateWithoutMappedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutMappedByInput | ImportBatchCreateOrConnectWithoutMappedByInput[]
+    createMany?: ImportBatchCreateManyMappedByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportBatchCreateNestedManyWithoutValidatedByInput = {
+    create?: XOR<ImportBatchCreateWithoutValidatedByInput, ImportBatchUncheckedCreateWithoutValidatedByInput> | ImportBatchCreateWithoutValidatedByInput[] | ImportBatchUncheckedCreateWithoutValidatedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutValidatedByInput | ImportBatchCreateOrConnectWithoutValidatedByInput[]
+    createMany?: ImportBatchCreateManyValidatedByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportBatchCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<ImportBatchCreateWithoutApprovedByInput, ImportBatchUncheckedCreateWithoutApprovedByInput> | ImportBatchCreateWithoutApprovedByInput[] | ImportBatchUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutApprovedByInput | ImportBatchCreateOrConnectWithoutApprovedByInput[]
+    createMany?: ImportBatchCreateManyApprovedByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportBatchCreateNestedManyWithoutImportedByInput = {
+    create?: XOR<ImportBatchCreateWithoutImportedByInput, ImportBatchUncheckedCreateWithoutImportedByInput> | ImportBatchCreateWithoutImportedByInput[] | ImportBatchUncheckedCreateWithoutImportedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutImportedByInput | ImportBatchCreateOrConnectWithoutImportedByInput[]
+    createMany?: ImportBatchCreateManyImportedByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportBatchCreateNestedManyWithoutRolledBackByInput = {
+    create?: XOR<ImportBatchCreateWithoutRolledBackByInput, ImportBatchUncheckedCreateWithoutRolledBackByInput> | ImportBatchCreateWithoutRolledBackByInput[] | ImportBatchUncheckedCreateWithoutRolledBackByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutRolledBackByInput | ImportBatchCreateOrConnectWithoutRolledBackByInput[]
+    createMany?: ImportBatchCreateManyRolledBackByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportFieldMappingCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutCreatedByInput, ImportFieldMappingUncheckedCreateWithoutCreatedByInput> | ImportFieldMappingCreateWithoutCreatedByInput[] | ImportFieldMappingUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutCreatedByInput | ImportFieldMappingCreateOrConnectWithoutCreatedByInput[]
+    createMany?: ImportFieldMappingCreateManyCreatedByInputEnvelope
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+  }
+
+  export type ImportErrorCreateNestedManyWithoutResolvedByInput = {
+    create?: XOR<ImportErrorCreateWithoutResolvedByInput, ImportErrorUncheckedCreateWithoutResolvedByInput> | ImportErrorCreateWithoutResolvedByInput[] | ImportErrorUncheckedCreateWithoutResolvedByInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutResolvedByInput | ImportErrorCreateOrConnectWithoutResolvedByInput[]
+    createMany?: ImportErrorCreateManyResolvedByInputEnvelope
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -94586,6 +102447,62 @@ export namespace Prisma {
     connectOrCreate?: TransferCreateOrConnectWithoutReversedByInput | TransferCreateOrConnectWithoutReversedByInput[]
     createMany?: TransferCreateManyReversedByInputEnvelope
     connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput = {
+    create?: XOR<ImportBatchCreateWithoutUploadedByInput, ImportBatchUncheckedCreateWithoutUploadedByInput> | ImportBatchCreateWithoutUploadedByInput[] | ImportBatchUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutUploadedByInput | ImportBatchCreateOrConnectWithoutUploadedByInput[]
+    createMany?: ImportBatchCreateManyUploadedByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportBatchUncheckedCreateNestedManyWithoutMappedByInput = {
+    create?: XOR<ImportBatchCreateWithoutMappedByInput, ImportBatchUncheckedCreateWithoutMappedByInput> | ImportBatchCreateWithoutMappedByInput[] | ImportBatchUncheckedCreateWithoutMappedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutMappedByInput | ImportBatchCreateOrConnectWithoutMappedByInput[]
+    createMany?: ImportBatchCreateManyMappedByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput = {
+    create?: XOR<ImportBatchCreateWithoutValidatedByInput, ImportBatchUncheckedCreateWithoutValidatedByInput> | ImportBatchCreateWithoutValidatedByInput[] | ImportBatchUncheckedCreateWithoutValidatedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutValidatedByInput | ImportBatchCreateOrConnectWithoutValidatedByInput[]
+    createMany?: ImportBatchCreateManyValidatedByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<ImportBatchCreateWithoutApprovedByInput, ImportBatchUncheckedCreateWithoutApprovedByInput> | ImportBatchCreateWithoutApprovedByInput[] | ImportBatchUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutApprovedByInput | ImportBatchCreateOrConnectWithoutApprovedByInput[]
+    createMany?: ImportBatchCreateManyApprovedByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportBatchUncheckedCreateNestedManyWithoutImportedByInput = {
+    create?: XOR<ImportBatchCreateWithoutImportedByInput, ImportBatchUncheckedCreateWithoutImportedByInput> | ImportBatchCreateWithoutImportedByInput[] | ImportBatchUncheckedCreateWithoutImportedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutImportedByInput | ImportBatchCreateOrConnectWithoutImportedByInput[]
+    createMany?: ImportBatchCreateManyImportedByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput = {
+    create?: XOR<ImportBatchCreateWithoutRolledBackByInput, ImportBatchUncheckedCreateWithoutRolledBackByInput> | ImportBatchCreateWithoutRolledBackByInput[] | ImportBatchUncheckedCreateWithoutRolledBackByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutRolledBackByInput | ImportBatchCreateOrConnectWithoutRolledBackByInput[]
+    createMany?: ImportBatchCreateManyRolledBackByInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutCreatedByInput, ImportFieldMappingUncheckedCreateWithoutCreatedByInput> | ImportFieldMappingCreateWithoutCreatedByInput[] | ImportFieldMappingUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutCreatedByInput | ImportFieldMappingCreateOrConnectWithoutCreatedByInput[]
+    createMany?: ImportFieldMappingCreateManyCreatedByInputEnvelope
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+  }
+
+  export type ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput = {
+    create?: XOR<ImportErrorCreateWithoutResolvedByInput, ImportErrorUncheckedCreateWithoutResolvedByInput> | ImportErrorCreateWithoutResolvedByInput[] | ImportErrorUncheckedCreateWithoutResolvedByInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutResolvedByInput | ImportErrorCreateOrConnectWithoutResolvedByInput[]
+    createMany?: ImportErrorCreateManyResolvedByInputEnvelope
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -95173,6 +103090,118 @@ export namespace Prisma {
     deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
   }
 
+  export type ImportBatchUpdateManyWithoutUploadedByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutUploadedByInput, ImportBatchUncheckedCreateWithoutUploadedByInput> | ImportBatchCreateWithoutUploadedByInput[] | ImportBatchUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutUploadedByInput | ImportBatchCreateOrConnectWithoutUploadedByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutUploadedByInput | ImportBatchUpsertWithWhereUniqueWithoutUploadedByInput[]
+    createMany?: ImportBatchCreateManyUploadedByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutUploadedByInput | ImportBatchUpdateWithWhereUniqueWithoutUploadedByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutUploadedByInput | ImportBatchUpdateManyWithWhereWithoutUploadedByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportBatchUpdateManyWithoutMappedByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutMappedByInput, ImportBatchUncheckedCreateWithoutMappedByInput> | ImportBatchCreateWithoutMappedByInput[] | ImportBatchUncheckedCreateWithoutMappedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutMappedByInput | ImportBatchCreateOrConnectWithoutMappedByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutMappedByInput | ImportBatchUpsertWithWhereUniqueWithoutMappedByInput[]
+    createMany?: ImportBatchCreateManyMappedByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutMappedByInput | ImportBatchUpdateWithWhereUniqueWithoutMappedByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutMappedByInput | ImportBatchUpdateManyWithWhereWithoutMappedByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportBatchUpdateManyWithoutValidatedByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutValidatedByInput, ImportBatchUncheckedCreateWithoutValidatedByInput> | ImportBatchCreateWithoutValidatedByInput[] | ImportBatchUncheckedCreateWithoutValidatedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutValidatedByInput | ImportBatchCreateOrConnectWithoutValidatedByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutValidatedByInput | ImportBatchUpsertWithWhereUniqueWithoutValidatedByInput[]
+    createMany?: ImportBatchCreateManyValidatedByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutValidatedByInput | ImportBatchUpdateWithWhereUniqueWithoutValidatedByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutValidatedByInput | ImportBatchUpdateManyWithWhereWithoutValidatedByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportBatchUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutApprovedByInput, ImportBatchUncheckedCreateWithoutApprovedByInput> | ImportBatchCreateWithoutApprovedByInput[] | ImportBatchUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutApprovedByInput | ImportBatchCreateOrConnectWithoutApprovedByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutApprovedByInput | ImportBatchUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: ImportBatchCreateManyApprovedByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutApprovedByInput | ImportBatchUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutApprovedByInput | ImportBatchUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportBatchUpdateManyWithoutImportedByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutImportedByInput, ImportBatchUncheckedCreateWithoutImportedByInput> | ImportBatchCreateWithoutImportedByInput[] | ImportBatchUncheckedCreateWithoutImportedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutImportedByInput | ImportBatchCreateOrConnectWithoutImportedByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutImportedByInput | ImportBatchUpsertWithWhereUniqueWithoutImportedByInput[]
+    createMany?: ImportBatchCreateManyImportedByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutImportedByInput | ImportBatchUpdateWithWhereUniqueWithoutImportedByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutImportedByInput | ImportBatchUpdateManyWithWhereWithoutImportedByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportBatchUpdateManyWithoutRolledBackByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutRolledBackByInput, ImportBatchUncheckedCreateWithoutRolledBackByInput> | ImportBatchCreateWithoutRolledBackByInput[] | ImportBatchUncheckedCreateWithoutRolledBackByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutRolledBackByInput | ImportBatchCreateOrConnectWithoutRolledBackByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutRolledBackByInput | ImportBatchUpsertWithWhereUniqueWithoutRolledBackByInput[]
+    createMany?: ImportBatchCreateManyRolledBackByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutRolledBackByInput | ImportBatchUpdateWithWhereUniqueWithoutRolledBackByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutRolledBackByInput | ImportBatchUpdateManyWithWhereWithoutRolledBackByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportFieldMappingUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutCreatedByInput, ImportFieldMappingUncheckedCreateWithoutCreatedByInput> | ImportFieldMappingCreateWithoutCreatedByInput[] | ImportFieldMappingUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutCreatedByInput | ImportFieldMappingCreateOrConnectWithoutCreatedByInput[]
+    upsert?: ImportFieldMappingUpsertWithWhereUniqueWithoutCreatedByInput | ImportFieldMappingUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: ImportFieldMappingCreateManyCreatedByInputEnvelope
+    set?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    disconnect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    delete?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    update?: ImportFieldMappingUpdateWithWhereUniqueWithoutCreatedByInput | ImportFieldMappingUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: ImportFieldMappingUpdateManyWithWhereWithoutCreatedByInput | ImportFieldMappingUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: ImportFieldMappingScalarWhereInput | ImportFieldMappingScalarWhereInput[]
+  }
+
+  export type ImportErrorUpdateManyWithoutResolvedByNestedInput = {
+    create?: XOR<ImportErrorCreateWithoutResolvedByInput, ImportErrorUncheckedCreateWithoutResolvedByInput> | ImportErrorCreateWithoutResolvedByInput[] | ImportErrorUncheckedCreateWithoutResolvedByInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutResolvedByInput | ImportErrorCreateOrConnectWithoutResolvedByInput[]
+    upsert?: ImportErrorUpsertWithWhereUniqueWithoutResolvedByInput | ImportErrorUpsertWithWhereUniqueWithoutResolvedByInput[]
+    createMany?: ImportErrorCreateManyResolvedByInputEnvelope
+    set?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    disconnect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    delete?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    update?: ImportErrorUpdateWithWhereUniqueWithoutResolvedByInput | ImportErrorUpdateWithWhereUniqueWithoutResolvedByInput[]
+    updateMany?: ImportErrorUpdateManyWithWhereWithoutResolvedByInput | ImportErrorUpdateManyWithWhereWithoutResolvedByInput[]
+    deleteMany?: ImportErrorScalarWhereInput | ImportErrorScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -95675,6 +103704,118 @@ export namespace Prisma {
     update?: TransferUpdateWithWhereUniqueWithoutReversedByInput | TransferUpdateWithWhereUniqueWithoutReversedByInput[]
     updateMany?: TransferUpdateManyWithWhereWithoutReversedByInput | TransferUpdateManyWithWhereWithoutReversedByInput[]
     deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutUploadedByInput, ImportBatchUncheckedCreateWithoutUploadedByInput> | ImportBatchCreateWithoutUploadedByInput[] | ImportBatchUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutUploadedByInput | ImportBatchCreateOrConnectWithoutUploadedByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutUploadedByInput | ImportBatchUpsertWithWhereUniqueWithoutUploadedByInput[]
+    createMany?: ImportBatchCreateManyUploadedByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutUploadedByInput | ImportBatchUpdateWithWhereUniqueWithoutUploadedByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutUploadedByInput | ImportBatchUpdateManyWithWhereWithoutUploadedByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutMappedByInput, ImportBatchUncheckedCreateWithoutMappedByInput> | ImportBatchCreateWithoutMappedByInput[] | ImportBatchUncheckedCreateWithoutMappedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutMappedByInput | ImportBatchCreateOrConnectWithoutMappedByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutMappedByInput | ImportBatchUpsertWithWhereUniqueWithoutMappedByInput[]
+    createMany?: ImportBatchCreateManyMappedByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutMappedByInput | ImportBatchUpdateWithWhereUniqueWithoutMappedByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutMappedByInput | ImportBatchUpdateManyWithWhereWithoutMappedByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutValidatedByInput, ImportBatchUncheckedCreateWithoutValidatedByInput> | ImportBatchCreateWithoutValidatedByInput[] | ImportBatchUncheckedCreateWithoutValidatedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutValidatedByInput | ImportBatchCreateOrConnectWithoutValidatedByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutValidatedByInput | ImportBatchUpsertWithWhereUniqueWithoutValidatedByInput[]
+    createMany?: ImportBatchCreateManyValidatedByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutValidatedByInput | ImportBatchUpdateWithWhereUniqueWithoutValidatedByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutValidatedByInput | ImportBatchUpdateManyWithWhereWithoutValidatedByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutApprovedByInput, ImportBatchUncheckedCreateWithoutApprovedByInput> | ImportBatchCreateWithoutApprovedByInput[] | ImportBatchUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutApprovedByInput | ImportBatchCreateOrConnectWithoutApprovedByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutApprovedByInput | ImportBatchUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: ImportBatchCreateManyApprovedByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutApprovedByInput | ImportBatchUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutApprovedByInput | ImportBatchUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutImportedByInput, ImportBatchUncheckedCreateWithoutImportedByInput> | ImportBatchCreateWithoutImportedByInput[] | ImportBatchUncheckedCreateWithoutImportedByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutImportedByInput | ImportBatchCreateOrConnectWithoutImportedByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutImportedByInput | ImportBatchUpsertWithWhereUniqueWithoutImportedByInput[]
+    createMany?: ImportBatchCreateManyImportedByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutImportedByInput | ImportBatchUpdateWithWhereUniqueWithoutImportedByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutImportedByInput | ImportBatchUpdateManyWithWhereWithoutImportedByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutRolledBackByInput, ImportBatchUncheckedCreateWithoutRolledBackByInput> | ImportBatchCreateWithoutRolledBackByInput[] | ImportBatchUncheckedCreateWithoutRolledBackByInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutRolledBackByInput | ImportBatchCreateOrConnectWithoutRolledBackByInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutRolledBackByInput | ImportBatchUpsertWithWhereUniqueWithoutRolledBackByInput[]
+    createMany?: ImportBatchCreateManyRolledBackByInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutRolledBackByInput | ImportBatchUpdateWithWhereUniqueWithoutRolledBackByInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutRolledBackByInput | ImportBatchUpdateManyWithWhereWithoutRolledBackByInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutCreatedByInput, ImportFieldMappingUncheckedCreateWithoutCreatedByInput> | ImportFieldMappingCreateWithoutCreatedByInput[] | ImportFieldMappingUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutCreatedByInput | ImportFieldMappingCreateOrConnectWithoutCreatedByInput[]
+    upsert?: ImportFieldMappingUpsertWithWhereUniqueWithoutCreatedByInput | ImportFieldMappingUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: ImportFieldMappingCreateManyCreatedByInputEnvelope
+    set?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    disconnect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    delete?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    update?: ImportFieldMappingUpdateWithWhereUniqueWithoutCreatedByInput | ImportFieldMappingUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: ImportFieldMappingUpdateManyWithWhereWithoutCreatedByInput | ImportFieldMappingUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: ImportFieldMappingScalarWhereInput | ImportFieldMappingScalarWhereInput[]
+  }
+
+  export type ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput = {
+    create?: XOR<ImportErrorCreateWithoutResolvedByInput, ImportErrorUncheckedCreateWithoutResolvedByInput> | ImportErrorCreateWithoutResolvedByInput[] | ImportErrorUncheckedCreateWithoutResolvedByInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutResolvedByInput | ImportErrorCreateOrConnectWithoutResolvedByInput[]
+    upsert?: ImportErrorUpsertWithWhereUniqueWithoutResolvedByInput | ImportErrorUpsertWithWhereUniqueWithoutResolvedByInput[]
+    createMany?: ImportErrorCreateManyResolvedByInputEnvelope
+    set?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    disconnect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    delete?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    update?: ImportErrorUpdateWithWhereUniqueWithoutResolvedByInput | ImportErrorUpdateWithWhereUniqueWithoutResolvedByInput[]
+    updateMany?: ImportErrorUpdateManyWithWhereWithoutResolvedByInput | ImportErrorUpdateManyWithWhereWithoutResolvedByInput[]
+    deleteMany?: ImportErrorScalarWhereInput | ImportErrorScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutMfaDevicesInput = {
@@ -97110,6 +105251,20 @@ export namespace Prisma {
     connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
   }
 
+  export type ImportBatchCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ImportBatchCreateWithoutOrganizationInput, ImportBatchUncheckedCreateWithoutOrganizationInput> | ImportBatchCreateWithoutOrganizationInput[] | ImportBatchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutOrganizationInput | ImportBatchCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ImportBatchCreateManyOrganizationInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportFieldMappingCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutOrganizationInput, ImportFieldMappingUncheckedCreateWithoutOrganizationInput> | ImportFieldMappingCreateWithoutOrganizationInput[] | ImportFieldMappingUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutOrganizationInput | ImportFieldMappingCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ImportFieldMappingCreateManyOrganizationInputEnvelope
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -97276,6 +105431,20 @@ export namespace Prisma {
     connectOrCreate?: TransferCreateOrConnectWithoutOrganizationInput | TransferCreateOrConnectWithoutOrganizationInput[]
     createMany?: TransferCreateManyOrganizationInputEnvelope
     connect?: TransferWhereUniqueInput | TransferWhereUniqueInput[]
+  }
+
+  export type ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ImportBatchCreateWithoutOrganizationInput, ImportBatchUncheckedCreateWithoutOrganizationInput> | ImportBatchCreateWithoutOrganizationInput[] | ImportBatchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutOrganizationInput | ImportBatchCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ImportBatchCreateManyOrganizationInputEnvelope
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+  }
+
+  export type ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutOrganizationInput, ImportFieldMappingUncheckedCreateWithoutOrganizationInput> | ImportFieldMappingCreateWithoutOrganizationInput[] | ImportFieldMappingUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutOrganizationInput | ImportFieldMappingCreateOrConnectWithoutOrganizationInput[]
+    createMany?: ImportFieldMappingCreateManyOrganizationInputEnvelope
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
   }
 
   export type EnumOrganizationTypeFieldUpdateOperationsInput = {
@@ -97622,6 +105791,34 @@ export namespace Prisma {
     deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
   }
 
+  export type ImportBatchUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutOrganizationInput, ImportBatchUncheckedCreateWithoutOrganizationInput> | ImportBatchCreateWithoutOrganizationInput[] | ImportBatchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutOrganizationInput | ImportBatchCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutOrganizationInput | ImportBatchUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ImportBatchCreateManyOrganizationInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutOrganizationInput | ImportBatchUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutOrganizationInput | ImportBatchUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportFieldMappingUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutOrganizationInput, ImportFieldMappingUncheckedCreateWithoutOrganizationInput> | ImportFieldMappingCreateWithoutOrganizationInput[] | ImportFieldMappingUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutOrganizationInput | ImportFieldMappingCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ImportFieldMappingUpsertWithWhereUniqueWithoutOrganizationInput | ImportFieldMappingUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ImportFieldMappingCreateManyOrganizationInputEnvelope
+    set?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    disconnect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    delete?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    update?: ImportFieldMappingUpdateWithWhereUniqueWithoutOrganizationInput | ImportFieldMappingUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ImportFieldMappingUpdateManyWithWhereWithoutOrganizationInput | ImportFieldMappingUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ImportFieldMappingScalarWhereInput | ImportFieldMappingScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -97956,6 +106153,34 @@ export namespace Prisma {
     update?: TransferUpdateWithWhereUniqueWithoutOrganizationInput | TransferUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: TransferUpdateManyWithWhereWithoutOrganizationInput | TransferUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: TransferScalarWhereInput | TransferScalarWhereInput[]
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutOrganizationInput, ImportBatchUncheckedCreateWithoutOrganizationInput> | ImportBatchCreateWithoutOrganizationInput[] | ImportBatchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutOrganizationInput | ImportBatchCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ImportBatchUpsertWithWhereUniqueWithoutOrganizationInput | ImportBatchUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ImportBatchCreateManyOrganizationInputEnvelope
+    set?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    disconnect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    delete?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    connect?: ImportBatchWhereUniqueInput | ImportBatchWhereUniqueInput[]
+    update?: ImportBatchUpdateWithWhereUniqueWithoutOrganizationInput | ImportBatchUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ImportBatchUpdateManyWithWhereWithoutOrganizationInput | ImportBatchUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+  }
+
+  export type ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutOrganizationInput, ImportFieldMappingUncheckedCreateWithoutOrganizationInput> | ImportFieldMappingCreateWithoutOrganizationInput[] | ImportFieldMappingUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutOrganizationInput | ImportFieldMappingCreateOrConnectWithoutOrganizationInput[]
+    upsert?: ImportFieldMappingUpsertWithWhereUniqueWithoutOrganizationInput | ImportFieldMappingUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: ImportFieldMappingCreateManyOrganizationInputEnvelope
+    set?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    disconnect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    delete?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    update?: ImportFieldMappingUpdateWithWhereUniqueWithoutOrganizationInput | ImportFieldMappingUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: ImportFieldMappingUpdateManyWithWhereWithoutOrganizationInput | ImportFieldMappingUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: ImportFieldMappingScalarWhereInput | ImportFieldMappingScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutLocationsInput = {
@@ -101845,6 +110070,398 @@ export namespace Prisma {
     update?: XOR<XOR<AuditLogUpdateToOneWithWhereWithoutSecurityEventsInput, AuditLogUpdateWithoutSecurityEventsInput>, AuditLogUncheckedUpdateWithoutSecurityEventsInput>
   }
 
+  export type OrganizationCreateNestedOneWithoutImportBatchesInput = {
+    create?: XOR<OrganizationCreateWithoutImportBatchesInput, OrganizationUncheckedCreateWithoutImportBatchesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutImportBatchesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutImportBatchesUploadedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesUploadedInput, UserUncheckedCreateWithoutImportBatchesUploadedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesUploadedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutImportBatchesMappedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesMappedInput, UserUncheckedCreateWithoutImportBatchesMappedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesMappedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutImportBatchesValidatedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesValidatedInput, UserUncheckedCreateWithoutImportBatchesValidatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesValidatedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutImportBatchesApprovedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesApprovedInput, UserUncheckedCreateWithoutImportBatchesApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesApprovedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutImportBatchesImportedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesImportedInput, UserUncheckedCreateWithoutImportBatchesImportedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesImportedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutImportBatchesRolledBackInput = {
+    create?: XOR<UserCreateWithoutImportBatchesRolledBackInput, UserUncheckedCreateWithoutImportBatchesRolledBackInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesRolledBackInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ImportRowCreateNestedManyWithoutBatchInput = {
+    create?: XOR<ImportRowCreateWithoutBatchInput, ImportRowUncheckedCreateWithoutBatchInput> | ImportRowCreateWithoutBatchInput[] | ImportRowUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportRowCreateOrConnectWithoutBatchInput | ImportRowCreateOrConnectWithoutBatchInput[]
+    createMany?: ImportRowCreateManyBatchInputEnvelope
+    connect?: ImportRowWhereUniqueInput | ImportRowWhereUniqueInput[]
+  }
+
+  export type ImportFieldMappingCreateNestedManyWithoutBatchInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutBatchInput, ImportFieldMappingUncheckedCreateWithoutBatchInput> | ImportFieldMappingCreateWithoutBatchInput[] | ImportFieldMappingUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutBatchInput | ImportFieldMappingCreateOrConnectWithoutBatchInput[]
+    createMany?: ImportFieldMappingCreateManyBatchInputEnvelope
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+  }
+
+  export type ImportErrorCreateNestedManyWithoutBatchInput = {
+    create?: XOR<ImportErrorCreateWithoutBatchInput, ImportErrorUncheckedCreateWithoutBatchInput> | ImportErrorCreateWithoutBatchInput[] | ImportErrorUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutBatchInput | ImportErrorCreateOrConnectWithoutBatchInput[]
+    createMany?: ImportErrorCreateManyBatchInputEnvelope
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+  }
+
+  export type ImportRowUncheckedCreateNestedManyWithoutBatchInput = {
+    create?: XOR<ImportRowCreateWithoutBatchInput, ImportRowUncheckedCreateWithoutBatchInput> | ImportRowCreateWithoutBatchInput[] | ImportRowUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportRowCreateOrConnectWithoutBatchInput | ImportRowCreateOrConnectWithoutBatchInput[]
+    createMany?: ImportRowCreateManyBatchInputEnvelope
+    connect?: ImportRowWhereUniqueInput | ImportRowWhereUniqueInput[]
+  }
+
+  export type ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutBatchInput, ImportFieldMappingUncheckedCreateWithoutBatchInput> | ImportFieldMappingCreateWithoutBatchInput[] | ImportFieldMappingUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutBatchInput | ImportFieldMappingCreateOrConnectWithoutBatchInput[]
+    createMany?: ImportFieldMappingCreateManyBatchInputEnvelope
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+  }
+
+  export type ImportErrorUncheckedCreateNestedManyWithoutBatchInput = {
+    create?: XOR<ImportErrorCreateWithoutBatchInput, ImportErrorUncheckedCreateWithoutBatchInput> | ImportErrorCreateWithoutBatchInput[] | ImportErrorUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutBatchInput | ImportErrorCreateOrConnectWithoutBatchInput[]
+    createMany?: ImportErrorCreateManyBatchInputEnvelope
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+  }
+
+  export type EnumImportSourceFieldUpdateOperationsInput = {
+    set?: $Enums.ImportSource
+  }
+
+  export type EnumImportBatchStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ImportBatchStatus
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutImportBatchesInput, OrganizationUncheckedCreateWithoutImportBatchesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutImportBatchesInput
+    upsert?: OrganizationUpsertWithoutImportBatchesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutImportBatchesInput, OrganizationUpdateWithoutImportBatchesInput>, OrganizationUncheckedUpdateWithoutImportBatchesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesUploadedInput, UserUncheckedCreateWithoutImportBatchesUploadedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesUploadedInput
+    upsert?: UserUpsertWithoutImportBatchesUploadedInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutImportBatchesUploadedInput, UserUpdateWithoutImportBatchesUploadedInput>, UserUncheckedUpdateWithoutImportBatchesUploadedInput>
+  }
+
+  export type UserUpdateOneWithoutImportBatchesMappedNestedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesMappedInput, UserUncheckedCreateWithoutImportBatchesMappedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesMappedInput
+    upsert?: UserUpsertWithoutImportBatchesMappedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutImportBatchesMappedInput, UserUpdateWithoutImportBatchesMappedInput>, UserUncheckedUpdateWithoutImportBatchesMappedInput>
+  }
+
+  export type UserUpdateOneWithoutImportBatchesValidatedNestedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesValidatedInput, UserUncheckedCreateWithoutImportBatchesValidatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesValidatedInput
+    upsert?: UserUpsertWithoutImportBatchesValidatedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutImportBatchesValidatedInput, UserUpdateWithoutImportBatchesValidatedInput>, UserUncheckedUpdateWithoutImportBatchesValidatedInput>
+  }
+
+  export type UserUpdateOneWithoutImportBatchesApprovedNestedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesApprovedInput, UserUncheckedCreateWithoutImportBatchesApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesApprovedInput
+    upsert?: UserUpsertWithoutImportBatchesApprovedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutImportBatchesApprovedInput, UserUpdateWithoutImportBatchesApprovedInput>, UserUncheckedUpdateWithoutImportBatchesApprovedInput>
+  }
+
+  export type UserUpdateOneWithoutImportBatchesImportedNestedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesImportedInput, UserUncheckedCreateWithoutImportBatchesImportedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesImportedInput
+    upsert?: UserUpsertWithoutImportBatchesImportedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutImportBatchesImportedInput, UserUpdateWithoutImportBatchesImportedInput>, UserUncheckedUpdateWithoutImportBatchesImportedInput>
+  }
+
+  export type UserUpdateOneWithoutImportBatchesRolledBackNestedInput = {
+    create?: XOR<UserCreateWithoutImportBatchesRolledBackInput, UserUncheckedCreateWithoutImportBatchesRolledBackInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportBatchesRolledBackInput
+    upsert?: UserUpsertWithoutImportBatchesRolledBackInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutImportBatchesRolledBackInput, UserUpdateWithoutImportBatchesRolledBackInput>, UserUncheckedUpdateWithoutImportBatchesRolledBackInput>
+  }
+
+  export type ImportRowUpdateManyWithoutBatchNestedInput = {
+    create?: XOR<ImportRowCreateWithoutBatchInput, ImportRowUncheckedCreateWithoutBatchInput> | ImportRowCreateWithoutBatchInput[] | ImportRowUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportRowCreateOrConnectWithoutBatchInput | ImportRowCreateOrConnectWithoutBatchInput[]
+    upsert?: ImportRowUpsertWithWhereUniqueWithoutBatchInput | ImportRowUpsertWithWhereUniqueWithoutBatchInput[]
+    createMany?: ImportRowCreateManyBatchInputEnvelope
+    set?: ImportRowWhereUniqueInput | ImportRowWhereUniqueInput[]
+    disconnect?: ImportRowWhereUniqueInput | ImportRowWhereUniqueInput[]
+    delete?: ImportRowWhereUniqueInput | ImportRowWhereUniqueInput[]
+    connect?: ImportRowWhereUniqueInput | ImportRowWhereUniqueInput[]
+    update?: ImportRowUpdateWithWhereUniqueWithoutBatchInput | ImportRowUpdateWithWhereUniqueWithoutBatchInput[]
+    updateMany?: ImportRowUpdateManyWithWhereWithoutBatchInput | ImportRowUpdateManyWithWhereWithoutBatchInput[]
+    deleteMany?: ImportRowScalarWhereInput | ImportRowScalarWhereInput[]
+  }
+
+  export type ImportFieldMappingUpdateManyWithoutBatchNestedInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutBatchInput, ImportFieldMappingUncheckedCreateWithoutBatchInput> | ImportFieldMappingCreateWithoutBatchInput[] | ImportFieldMappingUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutBatchInput | ImportFieldMappingCreateOrConnectWithoutBatchInput[]
+    upsert?: ImportFieldMappingUpsertWithWhereUniqueWithoutBatchInput | ImportFieldMappingUpsertWithWhereUniqueWithoutBatchInput[]
+    createMany?: ImportFieldMappingCreateManyBatchInputEnvelope
+    set?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    disconnect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    delete?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    update?: ImportFieldMappingUpdateWithWhereUniqueWithoutBatchInput | ImportFieldMappingUpdateWithWhereUniqueWithoutBatchInput[]
+    updateMany?: ImportFieldMappingUpdateManyWithWhereWithoutBatchInput | ImportFieldMappingUpdateManyWithWhereWithoutBatchInput[]
+    deleteMany?: ImportFieldMappingScalarWhereInput | ImportFieldMappingScalarWhereInput[]
+  }
+
+  export type ImportErrorUpdateManyWithoutBatchNestedInput = {
+    create?: XOR<ImportErrorCreateWithoutBatchInput, ImportErrorUncheckedCreateWithoutBatchInput> | ImportErrorCreateWithoutBatchInput[] | ImportErrorUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutBatchInput | ImportErrorCreateOrConnectWithoutBatchInput[]
+    upsert?: ImportErrorUpsertWithWhereUniqueWithoutBatchInput | ImportErrorUpsertWithWhereUniqueWithoutBatchInput[]
+    createMany?: ImportErrorCreateManyBatchInputEnvelope
+    set?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    disconnect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    delete?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    update?: ImportErrorUpdateWithWhereUniqueWithoutBatchInput | ImportErrorUpdateWithWhereUniqueWithoutBatchInput[]
+    updateMany?: ImportErrorUpdateManyWithWhereWithoutBatchInput | ImportErrorUpdateManyWithWhereWithoutBatchInput[]
+    deleteMany?: ImportErrorScalarWhereInput | ImportErrorScalarWhereInput[]
+  }
+
+  export type ImportRowUncheckedUpdateManyWithoutBatchNestedInput = {
+    create?: XOR<ImportRowCreateWithoutBatchInput, ImportRowUncheckedCreateWithoutBatchInput> | ImportRowCreateWithoutBatchInput[] | ImportRowUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportRowCreateOrConnectWithoutBatchInput | ImportRowCreateOrConnectWithoutBatchInput[]
+    upsert?: ImportRowUpsertWithWhereUniqueWithoutBatchInput | ImportRowUpsertWithWhereUniqueWithoutBatchInput[]
+    createMany?: ImportRowCreateManyBatchInputEnvelope
+    set?: ImportRowWhereUniqueInput | ImportRowWhereUniqueInput[]
+    disconnect?: ImportRowWhereUniqueInput | ImportRowWhereUniqueInput[]
+    delete?: ImportRowWhereUniqueInput | ImportRowWhereUniqueInput[]
+    connect?: ImportRowWhereUniqueInput | ImportRowWhereUniqueInput[]
+    update?: ImportRowUpdateWithWhereUniqueWithoutBatchInput | ImportRowUpdateWithWhereUniqueWithoutBatchInput[]
+    updateMany?: ImportRowUpdateManyWithWhereWithoutBatchInput | ImportRowUpdateManyWithWhereWithoutBatchInput[]
+    deleteMany?: ImportRowScalarWhereInput | ImportRowScalarWhereInput[]
+  }
+
+  export type ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput = {
+    create?: XOR<ImportFieldMappingCreateWithoutBatchInput, ImportFieldMappingUncheckedCreateWithoutBatchInput> | ImportFieldMappingCreateWithoutBatchInput[] | ImportFieldMappingUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportFieldMappingCreateOrConnectWithoutBatchInput | ImportFieldMappingCreateOrConnectWithoutBatchInput[]
+    upsert?: ImportFieldMappingUpsertWithWhereUniqueWithoutBatchInput | ImportFieldMappingUpsertWithWhereUniqueWithoutBatchInput[]
+    createMany?: ImportFieldMappingCreateManyBatchInputEnvelope
+    set?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    disconnect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    delete?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    connect?: ImportFieldMappingWhereUniqueInput | ImportFieldMappingWhereUniqueInput[]
+    update?: ImportFieldMappingUpdateWithWhereUniqueWithoutBatchInput | ImportFieldMappingUpdateWithWhereUniqueWithoutBatchInput[]
+    updateMany?: ImportFieldMappingUpdateManyWithWhereWithoutBatchInput | ImportFieldMappingUpdateManyWithWhereWithoutBatchInput[]
+    deleteMany?: ImportFieldMappingScalarWhereInput | ImportFieldMappingScalarWhereInput[]
+  }
+
+  export type ImportErrorUncheckedUpdateManyWithoutBatchNestedInput = {
+    create?: XOR<ImportErrorCreateWithoutBatchInput, ImportErrorUncheckedCreateWithoutBatchInput> | ImportErrorCreateWithoutBatchInput[] | ImportErrorUncheckedCreateWithoutBatchInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutBatchInput | ImportErrorCreateOrConnectWithoutBatchInput[]
+    upsert?: ImportErrorUpsertWithWhereUniqueWithoutBatchInput | ImportErrorUpsertWithWhereUniqueWithoutBatchInput[]
+    createMany?: ImportErrorCreateManyBatchInputEnvelope
+    set?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    disconnect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    delete?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    update?: ImportErrorUpdateWithWhereUniqueWithoutBatchInput | ImportErrorUpdateWithWhereUniqueWithoutBatchInput[]
+    updateMany?: ImportErrorUpdateManyWithWhereWithoutBatchInput | ImportErrorUpdateManyWithWhereWithoutBatchInput[]
+    deleteMany?: ImportErrorScalarWhereInput | ImportErrorScalarWhereInput[]
+  }
+
+  export type ImportBatchCreateNestedOneWithoutRowsInput = {
+    create?: XOR<ImportBatchCreateWithoutRowsInput, ImportBatchUncheckedCreateWithoutRowsInput>
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutRowsInput
+    connect?: ImportBatchWhereUniqueInput
+  }
+
+  export type ImportErrorCreateNestedManyWithoutRowInput = {
+    create?: XOR<ImportErrorCreateWithoutRowInput, ImportErrorUncheckedCreateWithoutRowInput> | ImportErrorCreateWithoutRowInput[] | ImportErrorUncheckedCreateWithoutRowInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutRowInput | ImportErrorCreateOrConnectWithoutRowInput[]
+    createMany?: ImportErrorCreateManyRowInputEnvelope
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+  }
+
+  export type ImportErrorUncheckedCreateNestedManyWithoutRowInput = {
+    create?: XOR<ImportErrorCreateWithoutRowInput, ImportErrorUncheckedCreateWithoutRowInput> | ImportErrorCreateWithoutRowInput[] | ImportErrorUncheckedCreateWithoutRowInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutRowInput | ImportErrorCreateOrConnectWithoutRowInput[]
+    createMany?: ImportErrorCreateManyRowInputEnvelope
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+  }
+
+  export type ImportBatchUpdateOneRequiredWithoutRowsNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutRowsInput, ImportBatchUncheckedCreateWithoutRowsInput>
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutRowsInput
+    upsert?: ImportBatchUpsertWithoutRowsInput
+    connect?: ImportBatchWhereUniqueInput
+    update?: XOR<XOR<ImportBatchUpdateToOneWithWhereWithoutRowsInput, ImportBatchUpdateWithoutRowsInput>, ImportBatchUncheckedUpdateWithoutRowsInput>
+  }
+
+  export type ImportErrorUpdateManyWithoutRowNestedInput = {
+    create?: XOR<ImportErrorCreateWithoutRowInput, ImportErrorUncheckedCreateWithoutRowInput> | ImportErrorCreateWithoutRowInput[] | ImportErrorUncheckedCreateWithoutRowInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutRowInput | ImportErrorCreateOrConnectWithoutRowInput[]
+    upsert?: ImportErrorUpsertWithWhereUniqueWithoutRowInput | ImportErrorUpsertWithWhereUniqueWithoutRowInput[]
+    createMany?: ImportErrorCreateManyRowInputEnvelope
+    set?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    disconnect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    delete?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    update?: ImportErrorUpdateWithWhereUniqueWithoutRowInput | ImportErrorUpdateWithWhereUniqueWithoutRowInput[]
+    updateMany?: ImportErrorUpdateManyWithWhereWithoutRowInput | ImportErrorUpdateManyWithWhereWithoutRowInput[]
+    deleteMany?: ImportErrorScalarWhereInput | ImportErrorScalarWhereInput[]
+  }
+
+  export type ImportErrorUncheckedUpdateManyWithoutRowNestedInput = {
+    create?: XOR<ImportErrorCreateWithoutRowInput, ImportErrorUncheckedCreateWithoutRowInput> | ImportErrorCreateWithoutRowInput[] | ImportErrorUncheckedCreateWithoutRowInput[]
+    connectOrCreate?: ImportErrorCreateOrConnectWithoutRowInput | ImportErrorCreateOrConnectWithoutRowInput[]
+    upsert?: ImportErrorUpsertWithWhereUniqueWithoutRowInput | ImportErrorUpsertWithWhereUniqueWithoutRowInput[]
+    createMany?: ImportErrorCreateManyRowInputEnvelope
+    set?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    disconnect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    delete?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    connect?: ImportErrorWhereUniqueInput | ImportErrorWhereUniqueInput[]
+    update?: ImportErrorUpdateWithWhereUniqueWithoutRowInput | ImportErrorUpdateWithWhereUniqueWithoutRowInput[]
+    updateMany?: ImportErrorUpdateManyWithWhereWithoutRowInput | ImportErrorUpdateManyWithWhereWithoutRowInput[]
+    deleteMany?: ImportErrorScalarWhereInput | ImportErrorScalarWhereInput[]
+  }
+
+  export type OrganizationCreateNestedOneWithoutImportFieldMappingsInput = {
+    create?: XOR<OrganizationCreateWithoutImportFieldMappingsInput, OrganizationUncheckedCreateWithoutImportFieldMappingsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutImportFieldMappingsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type ImportBatchCreateNestedOneWithoutFieldMappingsInput = {
+    create?: XOR<ImportBatchCreateWithoutFieldMappingsInput, ImportBatchUncheckedCreateWithoutFieldMappingsInput>
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutFieldMappingsInput
+    connect?: ImportBatchWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutImportFieldMappingsCreatedInput = {
+    create?: XOR<UserCreateWithoutImportFieldMappingsCreatedInput, UserUncheckedCreateWithoutImportFieldMappingsCreatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportFieldMappingsCreatedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutImportFieldMappingsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutImportFieldMappingsInput, OrganizationUncheckedCreateWithoutImportFieldMappingsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutImportFieldMappingsInput
+    upsert?: OrganizationUpsertWithoutImportFieldMappingsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutImportFieldMappingsInput, OrganizationUpdateWithoutImportFieldMappingsInput>, OrganizationUncheckedUpdateWithoutImportFieldMappingsInput>
+  }
+
+  export type ImportBatchUpdateOneWithoutFieldMappingsNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutFieldMappingsInput, ImportBatchUncheckedCreateWithoutFieldMappingsInput>
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutFieldMappingsInput
+    upsert?: ImportBatchUpsertWithoutFieldMappingsInput
+    disconnect?: ImportBatchWhereInput | boolean
+    delete?: ImportBatchWhereInput | boolean
+    connect?: ImportBatchWhereUniqueInput
+    update?: XOR<XOR<ImportBatchUpdateToOneWithWhereWithoutFieldMappingsInput, ImportBatchUpdateWithoutFieldMappingsInput>, ImportBatchUncheckedUpdateWithoutFieldMappingsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutImportFieldMappingsCreatedNestedInput = {
+    create?: XOR<UserCreateWithoutImportFieldMappingsCreatedInput, UserUncheckedCreateWithoutImportFieldMappingsCreatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportFieldMappingsCreatedInput
+    upsert?: UserUpsertWithoutImportFieldMappingsCreatedInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutImportFieldMappingsCreatedInput, UserUpdateWithoutImportFieldMappingsCreatedInput>, UserUncheckedUpdateWithoutImportFieldMappingsCreatedInput>
+  }
+
+  export type ImportBatchCreateNestedOneWithoutErrorsInput = {
+    create?: XOR<ImportBatchCreateWithoutErrorsInput, ImportBatchUncheckedCreateWithoutErrorsInput>
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutErrorsInput
+    connect?: ImportBatchWhereUniqueInput
+  }
+
+  export type ImportRowCreateNestedOneWithoutErrorsInput = {
+    create?: XOR<ImportRowCreateWithoutErrorsInput, ImportRowUncheckedCreateWithoutErrorsInput>
+    connectOrCreate?: ImportRowCreateOrConnectWithoutErrorsInput
+    connect?: ImportRowWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutImportErrorsResolvedInput = {
+    create?: XOR<UserCreateWithoutImportErrorsResolvedInput, UserUncheckedCreateWithoutImportErrorsResolvedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportErrorsResolvedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumImportErrorTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ImportErrorType
+  }
+
+  export type ImportBatchUpdateOneRequiredWithoutErrorsNestedInput = {
+    create?: XOR<ImportBatchCreateWithoutErrorsInput, ImportBatchUncheckedCreateWithoutErrorsInput>
+    connectOrCreate?: ImportBatchCreateOrConnectWithoutErrorsInput
+    upsert?: ImportBatchUpsertWithoutErrorsInput
+    connect?: ImportBatchWhereUniqueInput
+    update?: XOR<XOR<ImportBatchUpdateToOneWithWhereWithoutErrorsInput, ImportBatchUpdateWithoutErrorsInput>, ImportBatchUncheckedUpdateWithoutErrorsInput>
+  }
+
+  export type ImportRowUpdateOneWithoutErrorsNestedInput = {
+    create?: XOR<ImportRowCreateWithoutErrorsInput, ImportRowUncheckedCreateWithoutErrorsInput>
+    connectOrCreate?: ImportRowCreateOrConnectWithoutErrorsInput
+    upsert?: ImportRowUpsertWithoutErrorsInput
+    disconnect?: ImportRowWhereInput | boolean
+    delete?: ImportRowWhereInput | boolean
+    connect?: ImportRowWhereUniqueInput
+    update?: XOR<XOR<ImportRowUpdateToOneWithWhereWithoutErrorsInput, ImportRowUpdateWithoutErrorsInput>, ImportRowUncheckedUpdateWithoutErrorsInput>
+  }
+
+  export type UserUpdateOneWithoutImportErrorsResolvedNestedInput = {
+    create?: XOR<UserCreateWithoutImportErrorsResolvedInput, UserUncheckedCreateWithoutImportErrorsResolvedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutImportErrorsResolvedInput
+    upsert?: UserUpsertWithoutImportErrorsResolvedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutImportErrorsResolvedInput, UserUpdateWithoutImportErrorsResolvedInput>, UserUncheckedUpdateWithoutImportErrorsResolvedInput>
+  }
+
   export type EnumIdempotencyKeyStatusFieldUpdateOperationsInput = {
     set?: $Enums.IdempotencyKeyStatus
   }
@@ -103149,6 +111766,57 @@ export namespace Prisma {
     _max?: NestedEnumAuditEntityTypeNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumImportSourceFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportSource | EnumImportSourceFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportSource[] | ListEnumImportSourceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportSource[] | ListEnumImportSourceFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportSourceFilter<$PrismaModel> | $Enums.ImportSource
+  }
+
+  export type NestedEnumImportBatchStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportBatchStatus | EnumImportBatchStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportBatchStatus[] | ListEnumImportBatchStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportBatchStatus[] | ListEnumImportBatchStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportBatchStatusFilter<$PrismaModel> | $Enums.ImportBatchStatus
+  }
+
+  export type NestedEnumImportSourceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportSource | EnumImportSourceFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportSource[] | ListEnumImportSourceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportSource[] | ListEnumImportSourceFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportSourceWithAggregatesFilter<$PrismaModel> | $Enums.ImportSource
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumImportSourceFilter<$PrismaModel>
+    _max?: NestedEnumImportSourceFilter<$PrismaModel>
+  }
+
+  export type NestedEnumImportBatchStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportBatchStatus | EnumImportBatchStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportBatchStatus[] | ListEnumImportBatchStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportBatchStatus[] | ListEnumImportBatchStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportBatchStatusWithAggregatesFilter<$PrismaModel> | $Enums.ImportBatchStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumImportBatchStatusFilter<$PrismaModel>
+    _max?: NestedEnumImportBatchStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumImportErrorTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportErrorType | EnumImportErrorTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportErrorType[] | ListEnumImportErrorTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportErrorType[] | ListEnumImportErrorTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportErrorTypeFilter<$PrismaModel> | $Enums.ImportErrorType
+  }
+
+  export type NestedEnumImportErrorTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ImportErrorType | EnumImportErrorTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ImportErrorType[] | ListEnumImportErrorTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ImportErrorType[] | ListEnumImportErrorTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumImportErrorTypeWithAggregatesFilter<$PrismaModel> | $Enums.ImportErrorType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumImportErrorTypeFilter<$PrismaModel>
+    _max?: NestedEnumImportErrorTypeFilter<$PrismaModel>
+  }
+
   export type NestedEnumIdempotencyKeyStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.IdempotencyKeyStatus | EnumIdempotencyKeyStatusFieldRefInput<$PrismaModel>
     in?: $Enums.IdempotencyKeyStatus[] | ListEnumIdempotencyKeyStatusFieldRefInput<$PrismaModel>
@@ -103387,6 +112055,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedUsersInput = {
@@ -103458,6 +112134,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedUsersInput = {
@@ -103534,6 +112218,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedUsersInput = {
@@ -103605,6 +112297,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedUsersInput = {
@@ -104051,6 +112751,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedByInput = {
@@ -104122,6 +112830,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedByInput = {
@@ -104203,6 +112919,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedByInput = {
@@ -104274,6 +112998,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedByInput = {
@@ -105730,6 +114462,516 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ImportBatchCreateWithoutUploadedByInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportBatchesInput
+    mappedBy?: UserCreateNestedOneWithoutImportBatchesMappedInput
+    validatedBy?: UserCreateNestedOneWithoutImportBatchesValidatedInput
+    approvedBy?: UserCreateNestedOneWithoutImportBatchesApprovedInput
+    importedBy?: UserCreateNestedOneWithoutImportBatchesImportedInput
+    rolledBackBy?: UserCreateNestedOneWithoutImportBatchesRolledBackInput
+    rows?: ImportRowCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateWithoutUploadedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rows?: ImportRowUncheckedCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchCreateOrConnectWithoutUploadedByInput = {
+    where: ImportBatchWhereUniqueInput
+    create: XOR<ImportBatchCreateWithoutUploadedByInput, ImportBatchUncheckedCreateWithoutUploadedByInput>
+  }
+
+  export type ImportBatchCreateManyUploadedByInputEnvelope = {
+    data: ImportBatchCreateManyUploadedByInput | ImportBatchCreateManyUploadedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportBatchCreateWithoutMappedByInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportBatchesInput
+    uploadedBy: UserCreateNestedOneWithoutImportBatchesUploadedInput
+    validatedBy?: UserCreateNestedOneWithoutImportBatchesValidatedInput
+    approvedBy?: UserCreateNestedOneWithoutImportBatchesApprovedInput
+    importedBy?: UserCreateNestedOneWithoutImportBatchesImportedInput
+    rolledBackBy?: UserCreateNestedOneWithoutImportBatchesRolledBackInput
+    rows?: ImportRowCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateWithoutMappedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rows?: ImportRowUncheckedCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchCreateOrConnectWithoutMappedByInput = {
+    where: ImportBatchWhereUniqueInput
+    create: XOR<ImportBatchCreateWithoutMappedByInput, ImportBatchUncheckedCreateWithoutMappedByInput>
+  }
+
+  export type ImportBatchCreateManyMappedByInputEnvelope = {
+    data: ImportBatchCreateManyMappedByInput | ImportBatchCreateManyMappedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportBatchCreateWithoutValidatedByInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportBatchesInput
+    uploadedBy: UserCreateNestedOneWithoutImportBatchesUploadedInput
+    mappedBy?: UserCreateNestedOneWithoutImportBatchesMappedInput
+    approvedBy?: UserCreateNestedOneWithoutImportBatchesApprovedInput
+    importedBy?: UserCreateNestedOneWithoutImportBatchesImportedInput
+    rolledBackBy?: UserCreateNestedOneWithoutImportBatchesRolledBackInput
+    rows?: ImportRowCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateWithoutValidatedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rows?: ImportRowUncheckedCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchCreateOrConnectWithoutValidatedByInput = {
+    where: ImportBatchWhereUniqueInput
+    create: XOR<ImportBatchCreateWithoutValidatedByInput, ImportBatchUncheckedCreateWithoutValidatedByInput>
+  }
+
+  export type ImportBatchCreateManyValidatedByInputEnvelope = {
+    data: ImportBatchCreateManyValidatedByInput | ImportBatchCreateManyValidatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportBatchCreateWithoutApprovedByInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportBatchesInput
+    uploadedBy: UserCreateNestedOneWithoutImportBatchesUploadedInput
+    mappedBy?: UserCreateNestedOneWithoutImportBatchesMappedInput
+    validatedBy?: UserCreateNestedOneWithoutImportBatchesValidatedInput
+    importedBy?: UserCreateNestedOneWithoutImportBatchesImportedInput
+    rolledBackBy?: UserCreateNestedOneWithoutImportBatchesRolledBackInput
+    rows?: ImportRowCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateWithoutApprovedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rows?: ImportRowUncheckedCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchCreateOrConnectWithoutApprovedByInput = {
+    where: ImportBatchWhereUniqueInput
+    create: XOR<ImportBatchCreateWithoutApprovedByInput, ImportBatchUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type ImportBatchCreateManyApprovedByInputEnvelope = {
+    data: ImportBatchCreateManyApprovedByInput | ImportBatchCreateManyApprovedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportBatchCreateWithoutImportedByInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportBatchesInput
+    uploadedBy: UserCreateNestedOneWithoutImportBatchesUploadedInput
+    mappedBy?: UserCreateNestedOneWithoutImportBatchesMappedInput
+    validatedBy?: UserCreateNestedOneWithoutImportBatchesValidatedInput
+    approvedBy?: UserCreateNestedOneWithoutImportBatchesApprovedInput
+    rolledBackBy?: UserCreateNestedOneWithoutImportBatchesRolledBackInput
+    rows?: ImportRowCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateWithoutImportedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rows?: ImportRowUncheckedCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchCreateOrConnectWithoutImportedByInput = {
+    where: ImportBatchWhereUniqueInput
+    create: XOR<ImportBatchCreateWithoutImportedByInput, ImportBatchUncheckedCreateWithoutImportedByInput>
+  }
+
+  export type ImportBatchCreateManyImportedByInputEnvelope = {
+    data: ImportBatchCreateManyImportedByInput | ImportBatchCreateManyImportedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportBatchCreateWithoutRolledBackByInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportBatchesInput
+    uploadedBy: UserCreateNestedOneWithoutImportBatchesUploadedInput
+    mappedBy?: UserCreateNestedOneWithoutImportBatchesMappedInput
+    validatedBy?: UserCreateNestedOneWithoutImportBatchesValidatedInput
+    approvedBy?: UserCreateNestedOneWithoutImportBatchesApprovedInput
+    importedBy?: UserCreateNestedOneWithoutImportBatchesImportedInput
+    rows?: ImportRowCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateWithoutRolledBackByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rows?: ImportRowUncheckedCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchCreateOrConnectWithoutRolledBackByInput = {
+    where: ImportBatchWhereUniqueInput
+    create: XOR<ImportBatchCreateWithoutRolledBackByInput, ImportBatchUncheckedCreateWithoutRolledBackByInput>
+  }
+
+  export type ImportBatchCreateManyRolledBackByInputEnvelope = {
+    data: ImportBatchCreateManyRolledBackByInput | ImportBatchCreateManyRolledBackByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportFieldMappingCreateWithoutCreatedByInput = {
+    id?: string
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportFieldMappingsInput
+    batch?: ImportBatchCreateNestedOneWithoutFieldMappingsInput
+  }
+
+  export type ImportFieldMappingUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    organizationId: string
+    batchId?: string | null
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportFieldMappingCreateOrConnectWithoutCreatedByInput = {
+    where: ImportFieldMappingWhereUniqueInput
+    create: XOR<ImportFieldMappingCreateWithoutCreatedByInput, ImportFieldMappingUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ImportFieldMappingCreateManyCreatedByInputEnvelope = {
+    data: ImportFieldMappingCreateManyCreatedByInput | ImportFieldMappingCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportErrorCreateWithoutResolvedByInput = {
+    id?: string
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+    batch: ImportBatchCreateNestedOneWithoutErrorsInput
+    row?: ImportRowCreateNestedOneWithoutErrorsInput
+  }
+
+  export type ImportErrorUncheckedCreateWithoutResolvedByInput = {
+    id?: string
+    batchId: string
+    rowId?: string | null
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ImportErrorCreateOrConnectWithoutResolvedByInput = {
+    where: ImportErrorWhereUniqueInput
+    create: XOR<ImportErrorCreateWithoutResolvedByInput, ImportErrorUncheckedCreateWithoutResolvedByInput>
+  }
+
+  export type ImportErrorCreateManyResolvedByInputEnvelope = {
+    data: ImportErrorCreateManyResolvedByInput | ImportErrorCreateManyResolvedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type LocationUpsertWithoutUsersInput = {
     update: XOR<LocationUpdateWithoutUsersInput, LocationUncheckedUpdateWithoutUsersInput>
     create: XOR<LocationCreateWithoutUsersInput, LocationUncheckedCreateWithoutUsersInput>
@@ -105906,6 +115148,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedUsersInput = {
@@ -105977,6 +115227,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutUpdatedUsersInput = {
@@ -106059,6 +115317,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedUsersInput = {
@@ -106130,6 +115396,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutUserInput = {
@@ -107121,6 +116395,208 @@ export namespace Prisma {
     data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutReversedByInput>
   }
 
+  export type ImportBatchUpsertWithWhereUniqueWithoutUploadedByInput = {
+    where: ImportBatchWhereUniqueInput
+    update: XOR<ImportBatchUpdateWithoutUploadedByInput, ImportBatchUncheckedUpdateWithoutUploadedByInput>
+    create: XOR<ImportBatchCreateWithoutUploadedByInput, ImportBatchUncheckedCreateWithoutUploadedByInput>
+  }
+
+  export type ImportBatchUpdateWithWhereUniqueWithoutUploadedByInput = {
+    where: ImportBatchWhereUniqueInput
+    data: XOR<ImportBatchUpdateWithoutUploadedByInput, ImportBatchUncheckedUpdateWithoutUploadedByInput>
+  }
+
+  export type ImportBatchUpdateManyWithWhereWithoutUploadedByInput = {
+    where: ImportBatchScalarWhereInput
+    data: XOR<ImportBatchUpdateManyMutationInput, ImportBatchUncheckedUpdateManyWithoutUploadedByInput>
+  }
+
+  export type ImportBatchScalarWhereInput = {
+    AND?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+    OR?: ImportBatchScalarWhereInput[]
+    NOT?: ImportBatchScalarWhereInput | ImportBatchScalarWhereInput[]
+    id?: StringFilter<"ImportBatch"> | string
+    organizationId?: StringFilter<"ImportBatch"> | string
+    code?: StringFilter<"ImportBatch"> | string
+    source?: EnumImportSourceFilter<"ImportBatch"> | $Enums.ImportSource
+    fileName?: StringFilter<"ImportBatch"> | string
+    fileHash?: StringFilter<"ImportBatch"> | string
+    fileSize?: IntFilter<"ImportBatch"> | number
+    mimeType?: StringFilter<"ImportBatch"> | string
+    status?: EnumImportBatchStatusFilter<"ImportBatch"> | $Enums.ImportBatchStatus
+    totalRows?: IntFilter<"ImportBatch"> | number
+    validRows?: IntFilter<"ImportBatch"> | number
+    errorRows?: IntFilter<"ImportBatch"> | number
+    duplicateRows?: IntFilter<"ImportBatch"> | number
+    uploadedById?: StringFilter<"ImportBatch"> | string
+    mappedById?: StringNullableFilter<"ImportBatch"> | string | null
+    validatedById?: StringNullableFilter<"ImportBatch"> | string | null
+    approvedById?: StringNullableFilter<"ImportBatch"> | string | null
+    importedById?: StringNullableFilter<"ImportBatch"> | string | null
+    rolledBackById?: StringNullableFilter<"ImportBatch"> | string | null
+    approvedAt?: DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+    importedAt?: DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+    rolledBackAt?: DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+    errorSummary?: JsonNullableFilter<"ImportBatch">
+    createdAt?: DateTimeFilter<"ImportBatch"> | Date | string
+    updatedAt?: DateTimeFilter<"ImportBatch"> | Date | string
+  }
+
+  export type ImportBatchUpsertWithWhereUniqueWithoutMappedByInput = {
+    where: ImportBatchWhereUniqueInput
+    update: XOR<ImportBatchUpdateWithoutMappedByInput, ImportBatchUncheckedUpdateWithoutMappedByInput>
+    create: XOR<ImportBatchCreateWithoutMappedByInput, ImportBatchUncheckedCreateWithoutMappedByInput>
+  }
+
+  export type ImportBatchUpdateWithWhereUniqueWithoutMappedByInput = {
+    where: ImportBatchWhereUniqueInput
+    data: XOR<ImportBatchUpdateWithoutMappedByInput, ImportBatchUncheckedUpdateWithoutMappedByInput>
+  }
+
+  export type ImportBatchUpdateManyWithWhereWithoutMappedByInput = {
+    where: ImportBatchScalarWhereInput
+    data: XOR<ImportBatchUpdateManyMutationInput, ImportBatchUncheckedUpdateManyWithoutMappedByInput>
+  }
+
+  export type ImportBatchUpsertWithWhereUniqueWithoutValidatedByInput = {
+    where: ImportBatchWhereUniqueInput
+    update: XOR<ImportBatchUpdateWithoutValidatedByInput, ImportBatchUncheckedUpdateWithoutValidatedByInput>
+    create: XOR<ImportBatchCreateWithoutValidatedByInput, ImportBatchUncheckedCreateWithoutValidatedByInput>
+  }
+
+  export type ImportBatchUpdateWithWhereUniqueWithoutValidatedByInput = {
+    where: ImportBatchWhereUniqueInput
+    data: XOR<ImportBatchUpdateWithoutValidatedByInput, ImportBatchUncheckedUpdateWithoutValidatedByInput>
+  }
+
+  export type ImportBatchUpdateManyWithWhereWithoutValidatedByInput = {
+    where: ImportBatchScalarWhereInput
+    data: XOR<ImportBatchUpdateManyMutationInput, ImportBatchUncheckedUpdateManyWithoutValidatedByInput>
+  }
+
+  export type ImportBatchUpsertWithWhereUniqueWithoutApprovedByInput = {
+    where: ImportBatchWhereUniqueInput
+    update: XOR<ImportBatchUpdateWithoutApprovedByInput, ImportBatchUncheckedUpdateWithoutApprovedByInput>
+    create: XOR<ImportBatchCreateWithoutApprovedByInput, ImportBatchUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type ImportBatchUpdateWithWhereUniqueWithoutApprovedByInput = {
+    where: ImportBatchWhereUniqueInput
+    data: XOR<ImportBatchUpdateWithoutApprovedByInput, ImportBatchUncheckedUpdateWithoutApprovedByInput>
+  }
+
+  export type ImportBatchUpdateManyWithWhereWithoutApprovedByInput = {
+    where: ImportBatchScalarWhereInput
+    data: XOR<ImportBatchUpdateManyMutationInput, ImportBatchUncheckedUpdateManyWithoutApprovedByInput>
+  }
+
+  export type ImportBatchUpsertWithWhereUniqueWithoutImportedByInput = {
+    where: ImportBatchWhereUniqueInput
+    update: XOR<ImportBatchUpdateWithoutImportedByInput, ImportBatchUncheckedUpdateWithoutImportedByInput>
+    create: XOR<ImportBatchCreateWithoutImportedByInput, ImportBatchUncheckedCreateWithoutImportedByInput>
+  }
+
+  export type ImportBatchUpdateWithWhereUniqueWithoutImportedByInput = {
+    where: ImportBatchWhereUniqueInput
+    data: XOR<ImportBatchUpdateWithoutImportedByInput, ImportBatchUncheckedUpdateWithoutImportedByInput>
+  }
+
+  export type ImportBatchUpdateManyWithWhereWithoutImportedByInput = {
+    where: ImportBatchScalarWhereInput
+    data: XOR<ImportBatchUpdateManyMutationInput, ImportBatchUncheckedUpdateManyWithoutImportedByInput>
+  }
+
+  export type ImportBatchUpsertWithWhereUniqueWithoutRolledBackByInput = {
+    where: ImportBatchWhereUniqueInput
+    update: XOR<ImportBatchUpdateWithoutRolledBackByInput, ImportBatchUncheckedUpdateWithoutRolledBackByInput>
+    create: XOR<ImportBatchCreateWithoutRolledBackByInput, ImportBatchUncheckedCreateWithoutRolledBackByInput>
+  }
+
+  export type ImportBatchUpdateWithWhereUniqueWithoutRolledBackByInput = {
+    where: ImportBatchWhereUniqueInput
+    data: XOR<ImportBatchUpdateWithoutRolledBackByInput, ImportBatchUncheckedUpdateWithoutRolledBackByInput>
+  }
+
+  export type ImportBatchUpdateManyWithWhereWithoutRolledBackByInput = {
+    where: ImportBatchScalarWhereInput
+    data: XOR<ImportBatchUpdateManyMutationInput, ImportBatchUncheckedUpdateManyWithoutRolledBackByInput>
+  }
+
+  export type ImportFieldMappingUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: ImportFieldMappingWhereUniqueInput
+    update: XOR<ImportFieldMappingUpdateWithoutCreatedByInput, ImportFieldMappingUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<ImportFieldMappingCreateWithoutCreatedByInput, ImportFieldMappingUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ImportFieldMappingUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: ImportFieldMappingWhereUniqueInput
+    data: XOR<ImportFieldMappingUpdateWithoutCreatedByInput, ImportFieldMappingUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type ImportFieldMappingUpdateManyWithWhereWithoutCreatedByInput = {
+    where: ImportFieldMappingScalarWhereInput
+    data: XOR<ImportFieldMappingUpdateManyMutationInput, ImportFieldMappingUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type ImportFieldMappingScalarWhereInput = {
+    AND?: ImportFieldMappingScalarWhereInput | ImportFieldMappingScalarWhereInput[]
+    OR?: ImportFieldMappingScalarWhereInput[]
+    NOT?: ImportFieldMappingScalarWhereInput | ImportFieldMappingScalarWhereInput[]
+    id?: StringFilter<"ImportFieldMapping"> | string
+    organizationId?: StringFilter<"ImportFieldMapping"> | string
+    batchId?: StringNullableFilter<"ImportFieldMapping"> | string | null
+    source?: EnumImportSourceFilter<"ImportFieldMapping"> | $Enums.ImportSource
+    name?: StringFilter<"ImportFieldMapping"> | string
+    description?: StringNullableFilter<"ImportFieldMapping"> | string | null
+    dateFormat?: StringFilter<"ImportFieldMapping"> | string
+    amountConvention?: StringFilter<"ImportFieldMapping"> | string
+    decimalSeparator?: StringFilter<"ImportFieldMapping"> | string
+    thousandSeparator?: StringFilter<"ImportFieldMapping"> | string
+    encoding?: StringFilter<"ImportFieldMapping"> | string
+    hasHeader?: BoolFilter<"ImportFieldMapping"> | boolean
+    columnMap?: JsonFilter<"ImportFieldMapping">
+    isDefault?: BoolFilter<"ImportFieldMapping"> | boolean
+    createdById?: StringFilter<"ImportFieldMapping"> | string
+    createdAt?: DateTimeFilter<"ImportFieldMapping"> | Date | string
+    updatedAt?: DateTimeFilter<"ImportFieldMapping"> | Date | string
+  }
+
+  export type ImportErrorUpsertWithWhereUniqueWithoutResolvedByInput = {
+    where: ImportErrorWhereUniqueInput
+    update: XOR<ImportErrorUpdateWithoutResolvedByInput, ImportErrorUncheckedUpdateWithoutResolvedByInput>
+    create: XOR<ImportErrorCreateWithoutResolvedByInput, ImportErrorUncheckedCreateWithoutResolvedByInput>
+  }
+
+  export type ImportErrorUpdateWithWhereUniqueWithoutResolvedByInput = {
+    where: ImportErrorWhereUniqueInput
+    data: XOR<ImportErrorUpdateWithoutResolvedByInput, ImportErrorUncheckedUpdateWithoutResolvedByInput>
+  }
+
+  export type ImportErrorUpdateManyWithWhereWithoutResolvedByInput = {
+    where: ImportErrorScalarWhereInput
+    data: XOR<ImportErrorUpdateManyMutationInput, ImportErrorUncheckedUpdateManyWithoutResolvedByInput>
+  }
+
+  export type ImportErrorScalarWhereInput = {
+    AND?: ImportErrorScalarWhereInput | ImportErrorScalarWhereInput[]
+    OR?: ImportErrorScalarWhereInput[]
+    NOT?: ImportErrorScalarWhereInput | ImportErrorScalarWhereInput[]
+    id?: StringFilter<"ImportError"> | string
+    batchId?: StringFilter<"ImportError"> | string
+    rowId?: StringNullableFilter<"ImportError"> | string | null
+    rowNumber?: IntFilter<"ImportError"> | number
+    type?: EnumImportErrorTypeFilter<"ImportError"> | $Enums.ImportErrorType
+    field?: StringNullableFilter<"ImportError"> | string | null
+    originalValue?: JsonNullableFilter<"ImportError">
+    message?: StringFilter<"ImportError"> | string
+    severity?: StringFilter<"ImportError"> | string
+    resolved?: BoolFilter<"ImportError"> | boolean
+    resolvedById?: StringNullableFilter<"ImportError"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"ImportError"> | Date | string | null
+    resolutionNote?: StringNullableFilter<"ImportError"> | string | null
+    createdAt?: DateTimeFilter<"ImportError"> | Date | string
+  }
+
   export type UserCreateWithoutMfaDevicesInput = {
     id?: string
     email: string
@@ -107190,6 +116666,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutMfaDevicesInput = {
@@ -107261,6 +116745,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutMfaDevicesInput = {
@@ -107348,6 +116840,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMfaDevicesInput = {
@@ -107419,6 +116919,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -107490,6 +116998,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -107561,6 +117077,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -107648,6 +117172,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -107719,6 +117251,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserCreateWithoutLoginHistoryInput = {
@@ -107790,6 +117330,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutLoginHistoryInput = {
@@ -107861,6 +117409,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutLoginHistoryInput = {
@@ -107948,6 +117504,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLoginHistoryInput = {
@@ -108019,6 +117583,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type RolePermissionCreateWithoutRoleInput = {
@@ -108721,6 +118293,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -108792,6 +118372,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -108930,6 +118518,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -109001,6 +118597,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type RoleUpsertWithoutUserRolesInput = {
@@ -109293,6 +118897,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsGrantedInput = {
@@ -109364,6 +118976,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsGrantedInput = {
@@ -109440,6 +119060,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsReceivedInput = {
@@ -109511,6 +119139,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsReceivedInput = {
@@ -109649,6 +119285,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsGrantedInput = {
@@ -109720,6 +119364,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutDelegationsReceivedInput = {
@@ -109802,6 +119454,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsReceivedInput = {
@@ -109873,6 +119533,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type RoleUpsertWithoutDelegationsInput = {
@@ -110084,6 +119752,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutAccessReviewItemsInput = {
@@ -110155,6 +119831,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutAccessReviewItemsInput = {
@@ -110332,6 +120016,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccessReviewItemsInput = {
@@ -110403,6 +120095,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type RoleUpsertWithoutAccessReviewItemsInput = {
@@ -110503,6 +120203,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutApprovalPoliciesInput = {
@@ -110546,6 +120248,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutApprovalPoliciesInput = {
@@ -110699,6 +120403,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutApprovalPoliciesInput = {
@@ -110742,6 +120448,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ApprovalPolicyStepUpsertWithWhereUniqueWithoutPolicyInput = {
@@ -110931,6 +120639,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -111002,6 +120718,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -111187,6 +120911,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -111258,6 +120990,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type OrganizationCreateWithoutApprovalRequestsInput = {
@@ -111301,6 +121041,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutApprovalRequestsInput = {
@@ -111344,6 +121086,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutApprovalRequestsInput = {
@@ -111455,6 +121199,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalRequestsSubmittedInput = {
@@ -111526,6 +121278,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalRequestsSubmittedInput = {
@@ -111602,6 +121362,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalRequestsDecidedInput = {
@@ -111673,6 +121441,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalRequestsDecidedInput = {
@@ -111848,6 +121624,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutApprovalRequestsInput = {
@@ -111891,6 +121669,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ApprovalPolicyUpsertWithoutRequestsInput = {
@@ -112014,6 +121794,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalRequestsSubmittedInput = {
@@ -112085,6 +121873,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutApprovalRequestsDecidedInput = {
@@ -112167,6 +121963,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalRequestsDecidedInput = {
@@ -112238,6 +122042,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type ApprovalStepInstanceUpsertWithWhereUniqueWithoutRequestInput = {
@@ -112451,6 +122263,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -112522,6 +122342,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -112598,6 +122426,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalStepInstancesDecidedInput = {
@@ -112669,6 +122505,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalStepInstancesDecidedInput = {
@@ -112896,6 +122740,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -112967,6 +122819,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutApprovalStepInstancesDecidedInput = {
@@ -113049,6 +122909,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalStepInstancesDecidedInput = {
@@ -113120,6 +122988,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type ApprovalDecisionRecordUpsertWithWhereUniqueWithoutStepInstanceInput = {
@@ -113291,6 +123167,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalDecisionRecordsInput = {
@@ -113362,6 +123246,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalDecisionRecordsInput = {
@@ -113545,6 +123437,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalDecisionRecordsInput = {
@@ -113616,6 +123516,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserCreateWithoutSodWaiversAsUserInput = {
@@ -113687,6 +123595,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutSodWaiversAsUserInput = {
@@ -113758,6 +123674,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutSodWaiversAsUserInput = {
@@ -113834,6 +123758,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutSodWaiversRecordedByInput = {
@@ -113905,6 +123837,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutSodWaiversRecordedByInput = {
@@ -114024,6 +123964,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutSodWaiversReviewedByInput = {
@@ -114095,6 +124043,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutSodWaiversReviewedByInput = {
@@ -114182,6 +124138,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSodWaiversAsUserInput = {
@@ -114253,6 +124217,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutSodWaiversRecordedByInput = {
@@ -114335,6 +124307,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSodWaiversRecordedByInput = {
@@ -114406,6 +124386,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type ApprovalRequestUpsertWithoutSodWaiversInput = {
@@ -114537,6 +124525,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSodWaiversReviewedByInput = {
@@ -114608,6 +124604,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type OrganizationMembershipCreateWithoutOrganizationInput = {
@@ -115700,6 +125704,124 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ImportBatchCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    uploadedBy: UserCreateNestedOneWithoutImportBatchesUploadedInput
+    mappedBy?: UserCreateNestedOneWithoutImportBatchesMappedInput
+    validatedBy?: UserCreateNestedOneWithoutImportBatchesValidatedInput
+    approvedBy?: UserCreateNestedOneWithoutImportBatchesApprovedInput
+    importedBy?: UserCreateNestedOneWithoutImportBatchesImportedInput
+    rolledBackBy?: UserCreateNestedOneWithoutImportBatchesRolledBackInput
+    rows?: ImportRowCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rows?: ImportRowUncheckedCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchCreateOrConnectWithoutOrganizationInput = {
+    where: ImportBatchWhereUniqueInput
+    create: XOR<ImportBatchCreateWithoutOrganizationInput, ImportBatchUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ImportBatchCreateManyOrganizationInputEnvelope = {
+    data: ImportBatchCreateManyOrganizationInput | ImportBatchCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportFieldMappingCreateWithoutOrganizationInput = {
+    id?: string
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    batch?: ImportBatchCreateNestedOneWithoutFieldMappingsInput
+    createdBy: UserCreateNestedOneWithoutImportFieldMappingsCreatedInput
+  }
+
+  export type ImportFieldMappingUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    batchId?: string | null
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportFieldMappingCreateOrConnectWithoutOrganizationInput = {
+    where: ImportFieldMappingWhereUniqueInput
+    create: XOR<ImportFieldMappingCreateWithoutOrganizationInput, ImportFieldMappingUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ImportFieldMappingCreateManyOrganizationInputEnvelope = {
+    data: ImportFieldMappingCreateManyOrganizationInput | ImportFieldMappingCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: OrganizationMembershipWhereUniqueInput
     update: XOR<OrganizationMembershipUpdateWithoutOrganizationInput, OrganizationMembershipUncheckedUpdateWithoutOrganizationInput>
@@ -116404,6 +126526,38 @@ export namespace Prisma {
     data: XOR<TransferUpdateManyMutationInput, TransferUncheckedUpdateManyWithoutOrganizationInput>
   }
 
+  export type ImportBatchUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ImportBatchWhereUniqueInput
+    update: XOR<ImportBatchUpdateWithoutOrganizationInput, ImportBatchUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ImportBatchCreateWithoutOrganizationInput, ImportBatchUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ImportBatchUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ImportBatchWhereUniqueInput
+    data: XOR<ImportBatchUpdateWithoutOrganizationInput, ImportBatchUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ImportBatchUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ImportBatchScalarWhereInput
+    data: XOR<ImportBatchUpdateManyMutationInput, ImportBatchUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type ImportFieldMappingUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: ImportFieldMappingWhereUniqueInput
+    update: XOR<ImportFieldMappingUpdateWithoutOrganizationInput, ImportFieldMappingUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<ImportFieldMappingCreateWithoutOrganizationInput, ImportFieldMappingUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type ImportFieldMappingUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: ImportFieldMappingWhereUniqueInput
+    data: XOR<ImportFieldMappingUpdateWithoutOrganizationInput, ImportFieldMappingUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type ImportFieldMappingUpdateManyWithWhereWithoutOrganizationInput = {
+    where: ImportFieldMappingScalarWhereInput
+    data: XOR<ImportFieldMappingUpdateManyMutationInput, ImportFieldMappingUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
   export type OrganizationCreateWithoutLocationsInput = {
     id?: string
     code: string
@@ -116445,6 +126599,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -116488,6 +126644,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -116667,6 +126825,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutPrimaryLocationInput = {
@@ -116738,6 +126904,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutPrimaryLocationInput = {
@@ -116990,6 +127164,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -117033,6 +127209,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type LocationUpsertWithoutChildrenInput = {
@@ -117211,6 +127389,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -117254,6 +127434,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -117405,6 +127587,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutHomeDepartmentInput = {
@@ -117476,6 +127666,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutHomeDepartmentInput = {
@@ -117710,6 +127908,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -117753,6 +127953,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutChildrenInput = {
@@ -117917,6 +128119,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCostCentresInput = {
@@ -117960,6 +128164,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCostCentresInput = {
@@ -118188,6 +128394,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCostCentresInput = {
@@ -118231,6 +128439,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutCostCentresInput = {
@@ -118347,6 +128557,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProjectsInput = {
@@ -118390,6 +128602,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProjectsInput = {
@@ -118583,6 +128797,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProjectsInput = {
@@ -118626,6 +128842,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutProjectInput = {
@@ -118701,6 +128919,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFundingSourcesInput = {
@@ -118744,6 +128964,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFundingSourcesInput = {
@@ -118991,6 +129213,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFundingSourcesInput = {
@@ -119034,6 +129258,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput = {
@@ -119125,6 +129351,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTreasuryAccountsInput = {
@@ -119168,6 +129396,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTreasuryAccountsInput = {
@@ -119727,6 +129957,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTreasuryAccountsInput = {
@@ -119770,6 +130002,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CurrencyUpsertWithoutTreasuryAccountsInput = {
@@ -120111,6 +130345,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutPaymentSchedulesInput = {
@@ -120154,6 +130390,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutPaymentSchedulesInput = {
@@ -120313,6 +130551,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutPaymentSchedulesInput = {
@@ -120356,6 +130596,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TreasuryAccountUpsertWithoutPaymentSchedulesInput = {
@@ -120511,6 +130753,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTransfersInput = {
@@ -120554,6 +130798,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTransfersInput = {
@@ -120830,6 +131076,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutTransfersSubmittedInput = {
@@ -120901,6 +131155,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutTransfersSubmittedInput = {
@@ -120977,6 +131239,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutTransfersApprovedInput = {
@@ -121048,6 +131318,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutTransfersApprovedInput = {
@@ -121124,6 +131402,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutTransfersProcessedInput = {
@@ -121195,6 +131481,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutTransfersProcessedInput = {
@@ -121271,6 +131565,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutTransfersReversedInput = {
@@ -121342,6 +131644,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutTransfersReversedInput = {
@@ -121572,6 +131882,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTransfersInput = {
@@ -121615,6 +131927,8 @@ export namespace Prisma {
     approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TreasuryAccountUpsertWithoutTransfersAsSourceInput = {
@@ -121921,6 +132235,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransfersSubmittedInput = {
@@ -121992,6 +132314,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutTransfersApprovedInput = {
@@ -122074,6 +132404,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransfersApprovedInput = {
@@ -122145,6 +132483,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutTransfersProcessedInput = {
@@ -122227,6 +132573,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransfersProcessedInput = {
@@ -122298,6 +132652,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutTransfersReversedInput = {
@@ -122380,6 +132742,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransfersReversedInput = {
@@ -122451,6 +132821,14 @@ export namespace Prisma {
     transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type ReversalReasonCodeUpsertWithoutTransfersInput = {
@@ -123624,6 +134002,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput = {
@@ -123667,6 +134047,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMasterDataChangeRequestsInput = {
@@ -123743,6 +134125,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsRequestedInput = {
@@ -123814,6 +134204,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsRequestedInput = {
@@ -123890,6 +134288,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsApprovedInput = {
@@ -123961,6 +134367,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsApprovedInput = {
@@ -124054,6 +134468,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput = {
@@ -124097,6 +134513,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsRequestedInput = {
@@ -124179,6 +134597,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsRequestedInput = {
@@ -124250,6 +134676,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsApprovedInput = {
@@ -124332,6 +134766,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsApprovedInput = {
@@ -124403,6 +134845,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput = {
@@ -124562,6 +135012,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReasonCodesInput = {
@@ -124605,6 +135057,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReasonCodesInput = {
@@ -124664,6 +135118,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReasonCodesInput = {
@@ -124707,6 +135163,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutProductsServicesInput = {
@@ -124750,6 +135208,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProductsServicesInput = {
@@ -124793,6 +135253,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProductsServicesInput = {
@@ -124903,6 +135365,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProductsServicesInput = {
@@ -124946,6 +135410,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CurrencyUpsertWithoutProductsServicesInput = {
@@ -125046,6 +135512,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountsInput = {
@@ -125089,6 +135557,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountsInput = {
@@ -125555,6 +136025,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountsInput = {
@@ -125598,6 +136070,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutChildrenInput = {
@@ -125816,6 +136290,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFinancialPeriodsInput = {
@@ -125859,6 +136335,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFinancialPeriodsInput = {
@@ -126064,6 +136542,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFinancialPeriodsInput = {
@@ -126107,6 +136587,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OpeningBalanceUpsertWithWhereUniqueWithoutPeriodInput = {
@@ -126198,6 +136680,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutOpeningBalancesInput = {
@@ -126241,6 +136725,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutOpeningBalancesInput = {
@@ -126451,6 +136937,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutOpeningBalancesInput = {
@@ -126494,6 +136982,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutOpeningBalancesInput = {
@@ -126706,6 +137196,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountBalanceSnapshotsInput = {
@@ -126749,6 +137241,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountBalanceSnapshotsInput = {
@@ -126959,6 +137453,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountBalanceSnapshotsInput = {
@@ -127002,6 +137498,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutAccountBalanceSnapshotsInput = {
@@ -127214,6 +137712,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalEntriesInput = {
@@ -127257,6 +137757,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalEntriesInput = {
@@ -127774,6 +138276,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesSubmittedInput = {
@@ -127845,6 +138355,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesSubmittedInput = {
@@ -127921,6 +138439,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesApprovedInput = {
@@ -127992,6 +138518,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesApprovedInput = {
@@ -128068,6 +138602,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesPostedInput = {
@@ -128139,6 +138681,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesPostedInput = {
@@ -128215,6 +138765,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesReversedInput = {
@@ -128286,6 +138844,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesReversedInput = {
@@ -128527,6 +139093,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalEntriesInput = {
@@ -128570,6 +139138,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type FinancialPeriodUpsertWithoutJournalEntriesInput = {
@@ -129007,6 +139577,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesSubmittedInput = {
@@ -129078,6 +139656,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesApprovedInput = {
@@ -129160,6 +139746,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesApprovedInput = {
@@ -129231,6 +139825,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesPostedInput = {
@@ -129313,6 +139915,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesPostedInput = {
@@ -129384,6 +139994,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesReversedInput = {
@@ -129466,6 +140084,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesReversedInput = {
@@ -129537,6 +140163,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutEntryInput = {
@@ -129628,6 +140262,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalLinesInput = {
@@ -129671,6 +140307,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalLinesInput = {
@@ -130143,6 +140781,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalLinesInput = {
@@ -130186,6 +140826,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithoutLinesInput = {
@@ -130696,6 +141338,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReversalReasonCodesInput = {
@@ -130739,6 +141383,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReversalReasonCodesInput = {
@@ -131022,6 +141668,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReversalReasonCodesInput = {
@@ -131065,6 +141713,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput = {
@@ -131156,6 +141806,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTransactionsInput = {
@@ -131199,6 +141851,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTransactionsInput = {
@@ -131619,6 +142273,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsCreatedInput = {
@@ -131690,6 +142352,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsCreatedInput = {
@@ -131766,6 +142436,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsSubmittedInput = {
@@ -131837,6 +142515,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsSubmittedInput = {
@@ -131913,6 +142599,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsApprovedInput = {
@@ -131984,6 +142678,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsApprovedInput = {
@@ -132060,6 +142762,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsPostedInput = {
@@ -132131,6 +142841,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsPostedInput = {
@@ -132207,6 +142925,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsReversedInput = {
@@ -132278,6 +143004,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsReversedInput = {
@@ -132607,6 +143341,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTransactionsInput = {
@@ -132650,6 +143386,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutTransactionsInput = {
@@ -133124,6 +143862,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsCreatedInput = {
@@ -133195,6 +143941,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsSubmittedInput = {
@@ -133277,6 +144031,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsSubmittedInput = {
@@ -133348,6 +144110,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsApprovedInput = {
@@ -133430,6 +144200,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsApprovedInput = {
@@ -133501,6 +144279,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsPostedInput = {
@@ -133583,6 +144369,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsPostedInput = {
@@ -133654,6 +144448,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsReversedInput = {
@@ -133736,6 +144538,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsReversedInput = {
@@ -133807,6 +144617,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type ReversalReasonCodeUpsertWithoutTransactionsInput = {
@@ -134006,6 +144824,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetsInput = {
@@ -134049,6 +144869,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetsInput = {
@@ -134136,6 +144958,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetsInput = {
@@ -134179,6 +145003,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetLineUpsertWithWhereUniqueWithoutBudgetInput = {
@@ -134238,6 +145064,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetLinesInput = {
@@ -134281,6 +145109,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetLinesInput = {
@@ -134430,6 +145260,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetLinesInput = {
@@ -134473,6 +145305,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutLinesInput = {
@@ -134618,6 +145452,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
     transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -134661,6 +145497,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
     paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
     transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -134737,6 +145575,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutOrganizationMembershipsInput = {
@@ -134808,6 +145654,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutOrganizationMembershipsInput = {
@@ -134867,6 +145721,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -134910,6 +145766,8 @@ export namespace Prisma {
     treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
     paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
     transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganizationMembershipsInput = {
@@ -134992,6 +145850,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganizationMembershipsInput = {
@@ -135063,6 +145929,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type SecurityEventCreateWithoutAuditLogInput = {
@@ -135287,6 +146161,3785 @@ export namespace Prisma {
     recordedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OrganizationCreateWithoutImportBatchesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutImportBatchesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutImportBatchesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutImportBatchesInput, OrganizationUncheckedCreateWithoutImportBatchesInput>
+  }
+
+  export type UserCreateWithoutImportBatchesUploadedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserUncheckedCreateWithoutImportBatchesUploadedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserCreateOrConnectWithoutImportBatchesUploadedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutImportBatchesUploadedInput, UserUncheckedCreateWithoutImportBatchesUploadedInput>
+  }
+
+  export type UserCreateWithoutImportBatchesMappedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserUncheckedCreateWithoutImportBatchesMappedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserCreateOrConnectWithoutImportBatchesMappedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutImportBatchesMappedInput, UserUncheckedCreateWithoutImportBatchesMappedInput>
+  }
+
+  export type UserCreateWithoutImportBatchesValidatedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserUncheckedCreateWithoutImportBatchesValidatedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserCreateOrConnectWithoutImportBatchesValidatedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutImportBatchesValidatedInput, UserUncheckedCreateWithoutImportBatchesValidatedInput>
+  }
+
+  export type UserCreateWithoutImportBatchesApprovedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserUncheckedCreateWithoutImportBatchesApprovedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserCreateOrConnectWithoutImportBatchesApprovedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutImportBatchesApprovedInput, UserUncheckedCreateWithoutImportBatchesApprovedInput>
+  }
+
+  export type UserCreateWithoutImportBatchesImportedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserUncheckedCreateWithoutImportBatchesImportedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserCreateOrConnectWithoutImportBatchesImportedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutImportBatchesImportedInput, UserUncheckedCreateWithoutImportBatchesImportedInput>
+  }
+
+  export type UserCreateWithoutImportBatchesRolledBackInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserUncheckedCreateWithoutImportBatchesRolledBackInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserCreateOrConnectWithoutImportBatchesRolledBackInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutImportBatchesRolledBackInput, UserUncheckedCreateWithoutImportBatchesRolledBackInput>
+  }
+
+  export type ImportRowCreateWithoutBatchInput = {
+    id?: string
+    rowNumber: number
+    rawData: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    fingerprint?: string | null
+    importedTransactionId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    errors?: ImportErrorCreateNestedManyWithoutRowInput
+  }
+
+  export type ImportRowUncheckedCreateWithoutBatchInput = {
+    id?: string
+    rowNumber: number
+    rawData: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    fingerprint?: string | null
+    importedTransactionId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutRowInput
+  }
+
+  export type ImportRowCreateOrConnectWithoutBatchInput = {
+    where: ImportRowWhereUniqueInput
+    create: XOR<ImportRowCreateWithoutBatchInput, ImportRowUncheckedCreateWithoutBatchInput>
+  }
+
+  export type ImportRowCreateManyBatchInputEnvelope = {
+    data: ImportRowCreateManyBatchInput | ImportRowCreateManyBatchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportFieldMappingCreateWithoutBatchInput = {
+    id?: string
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportFieldMappingsInput
+    createdBy: UserCreateNestedOneWithoutImportFieldMappingsCreatedInput
+  }
+
+  export type ImportFieldMappingUncheckedCreateWithoutBatchInput = {
+    id?: string
+    organizationId: string
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportFieldMappingCreateOrConnectWithoutBatchInput = {
+    where: ImportFieldMappingWhereUniqueInput
+    create: XOR<ImportFieldMappingCreateWithoutBatchInput, ImportFieldMappingUncheckedCreateWithoutBatchInput>
+  }
+
+  export type ImportFieldMappingCreateManyBatchInputEnvelope = {
+    data: ImportFieldMappingCreateManyBatchInput | ImportFieldMappingCreateManyBatchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportErrorCreateWithoutBatchInput = {
+    id?: string
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+    row?: ImportRowCreateNestedOneWithoutErrorsInput
+    resolvedBy?: UserCreateNestedOneWithoutImportErrorsResolvedInput
+  }
+
+  export type ImportErrorUncheckedCreateWithoutBatchInput = {
+    id?: string
+    rowId?: string | null
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ImportErrorCreateOrConnectWithoutBatchInput = {
+    where: ImportErrorWhereUniqueInput
+    create: XOR<ImportErrorCreateWithoutBatchInput, ImportErrorUncheckedCreateWithoutBatchInput>
+  }
+
+  export type ImportErrorCreateManyBatchInputEnvelope = {
+    data: ImportErrorCreateManyBatchInput | ImportErrorCreateManyBatchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganizationUpsertWithoutImportBatchesInput = {
+    update: XOR<OrganizationUpdateWithoutImportBatchesInput, OrganizationUncheckedUpdateWithoutImportBatchesInput>
+    create: XOR<OrganizationCreateWithoutImportBatchesInput, OrganizationUncheckedCreateWithoutImportBatchesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutImportBatchesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutImportBatchesInput, OrganizationUncheckedUpdateWithoutImportBatchesInput>
+  }
+
+  export type OrganizationUpdateWithoutImportBatchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutImportBatchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type UserUpsertWithoutImportBatchesUploadedInput = {
+    update: XOR<UserUpdateWithoutImportBatchesUploadedInput, UserUncheckedUpdateWithoutImportBatchesUploadedInput>
+    create: XOR<UserCreateWithoutImportBatchesUploadedInput, UserUncheckedCreateWithoutImportBatchesUploadedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutImportBatchesUploadedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutImportBatchesUploadedInput, UserUncheckedUpdateWithoutImportBatchesUploadedInput>
+  }
+
+  export type UserUpdateWithoutImportBatchesUploadedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutImportBatchesUploadedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUpsertWithoutImportBatchesMappedInput = {
+    update: XOR<UserUpdateWithoutImportBatchesMappedInput, UserUncheckedUpdateWithoutImportBatchesMappedInput>
+    create: XOR<UserCreateWithoutImportBatchesMappedInput, UserUncheckedCreateWithoutImportBatchesMappedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutImportBatchesMappedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutImportBatchesMappedInput, UserUncheckedUpdateWithoutImportBatchesMappedInput>
+  }
+
+  export type UserUpdateWithoutImportBatchesMappedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutImportBatchesMappedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUpsertWithoutImportBatchesValidatedInput = {
+    update: XOR<UserUpdateWithoutImportBatchesValidatedInput, UserUncheckedUpdateWithoutImportBatchesValidatedInput>
+    create: XOR<UserCreateWithoutImportBatchesValidatedInput, UserUncheckedCreateWithoutImportBatchesValidatedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutImportBatchesValidatedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutImportBatchesValidatedInput, UserUncheckedUpdateWithoutImportBatchesValidatedInput>
+  }
+
+  export type UserUpdateWithoutImportBatchesValidatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutImportBatchesValidatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUpsertWithoutImportBatchesApprovedInput = {
+    update: XOR<UserUpdateWithoutImportBatchesApprovedInput, UserUncheckedUpdateWithoutImportBatchesApprovedInput>
+    create: XOR<UserCreateWithoutImportBatchesApprovedInput, UserUncheckedCreateWithoutImportBatchesApprovedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutImportBatchesApprovedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutImportBatchesApprovedInput, UserUncheckedUpdateWithoutImportBatchesApprovedInput>
+  }
+
+  export type UserUpdateWithoutImportBatchesApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutImportBatchesApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUpsertWithoutImportBatchesImportedInput = {
+    update: XOR<UserUpdateWithoutImportBatchesImportedInput, UserUncheckedUpdateWithoutImportBatchesImportedInput>
+    create: XOR<UserCreateWithoutImportBatchesImportedInput, UserUncheckedCreateWithoutImportBatchesImportedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutImportBatchesImportedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutImportBatchesImportedInput, UserUncheckedUpdateWithoutImportBatchesImportedInput>
+  }
+
+  export type UserUpdateWithoutImportBatchesImportedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutImportBatchesImportedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUpsertWithoutImportBatchesRolledBackInput = {
+    update: XOR<UserUpdateWithoutImportBatchesRolledBackInput, UserUncheckedUpdateWithoutImportBatchesRolledBackInput>
+    create: XOR<UserCreateWithoutImportBatchesRolledBackInput, UserUncheckedCreateWithoutImportBatchesRolledBackInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutImportBatchesRolledBackInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutImportBatchesRolledBackInput, UserUncheckedUpdateWithoutImportBatchesRolledBackInput>
+  }
+
+  export type UserUpdateWithoutImportBatchesRolledBackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutImportBatchesRolledBackInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type ImportRowUpsertWithWhereUniqueWithoutBatchInput = {
+    where: ImportRowWhereUniqueInput
+    update: XOR<ImportRowUpdateWithoutBatchInput, ImportRowUncheckedUpdateWithoutBatchInput>
+    create: XOR<ImportRowCreateWithoutBatchInput, ImportRowUncheckedCreateWithoutBatchInput>
+  }
+
+  export type ImportRowUpdateWithWhereUniqueWithoutBatchInput = {
+    where: ImportRowWhereUniqueInput
+    data: XOR<ImportRowUpdateWithoutBatchInput, ImportRowUncheckedUpdateWithoutBatchInput>
+  }
+
+  export type ImportRowUpdateManyWithWhereWithoutBatchInput = {
+    where: ImportRowScalarWhereInput
+    data: XOR<ImportRowUpdateManyMutationInput, ImportRowUncheckedUpdateManyWithoutBatchInput>
+  }
+
+  export type ImportRowScalarWhereInput = {
+    AND?: ImportRowScalarWhereInput | ImportRowScalarWhereInput[]
+    OR?: ImportRowScalarWhereInput[]
+    NOT?: ImportRowScalarWhereInput | ImportRowScalarWhereInput[]
+    id?: StringFilter<"ImportRow"> | string
+    batchId?: StringFilter<"ImportRow"> | string
+    rowNumber?: IntFilter<"ImportRow"> | number
+    rawData?: JsonFilter<"ImportRow">
+    mappedData?: JsonNullableFilter<"ImportRow">
+    normalizedData?: JsonNullableFilter<"ImportRow">
+    status?: StringFilter<"ImportRow"> | string
+    fingerprint?: StringNullableFilter<"ImportRow"> | string | null
+    importedTransactionId?: StringNullableFilter<"ImportRow"> | string | null
+    createdAt?: DateTimeFilter<"ImportRow"> | Date | string
+    updatedAt?: DateTimeFilter<"ImportRow"> | Date | string
+  }
+
+  export type ImportFieldMappingUpsertWithWhereUniqueWithoutBatchInput = {
+    where: ImportFieldMappingWhereUniqueInput
+    update: XOR<ImportFieldMappingUpdateWithoutBatchInput, ImportFieldMappingUncheckedUpdateWithoutBatchInput>
+    create: XOR<ImportFieldMappingCreateWithoutBatchInput, ImportFieldMappingUncheckedCreateWithoutBatchInput>
+  }
+
+  export type ImportFieldMappingUpdateWithWhereUniqueWithoutBatchInput = {
+    where: ImportFieldMappingWhereUniqueInput
+    data: XOR<ImportFieldMappingUpdateWithoutBatchInput, ImportFieldMappingUncheckedUpdateWithoutBatchInput>
+  }
+
+  export type ImportFieldMappingUpdateManyWithWhereWithoutBatchInput = {
+    where: ImportFieldMappingScalarWhereInput
+    data: XOR<ImportFieldMappingUpdateManyMutationInput, ImportFieldMappingUncheckedUpdateManyWithoutBatchInput>
+  }
+
+  export type ImportErrorUpsertWithWhereUniqueWithoutBatchInput = {
+    where: ImportErrorWhereUniqueInput
+    update: XOR<ImportErrorUpdateWithoutBatchInput, ImportErrorUncheckedUpdateWithoutBatchInput>
+    create: XOR<ImportErrorCreateWithoutBatchInput, ImportErrorUncheckedCreateWithoutBatchInput>
+  }
+
+  export type ImportErrorUpdateWithWhereUniqueWithoutBatchInput = {
+    where: ImportErrorWhereUniqueInput
+    data: XOR<ImportErrorUpdateWithoutBatchInput, ImportErrorUncheckedUpdateWithoutBatchInput>
+  }
+
+  export type ImportErrorUpdateManyWithWhereWithoutBatchInput = {
+    where: ImportErrorScalarWhereInput
+    data: XOR<ImportErrorUpdateManyMutationInput, ImportErrorUncheckedUpdateManyWithoutBatchInput>
+  }
+
+  export type ImportBatchCreateWithoutRowsInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportBatchesInput
+    uploadedBy: UserCreateNestedOneWithoutImportBatchesUploadedInput
+    mappedBy?: UserCreateNestedOneWithoutImportBatchesMappedInput
+    validatedBy?: UserCreateNestedOneWithoutImportBatchesValidatedInput
+    approvedBy?: UserCreateNestedOneWithoutImportBatchesApprovedInput
+    importedBy?: UserCreateNestedOneWithoutImportBatchesImportedInput
+    rolledBackBy?: UserCreateNestedOneWithoutImportBatchesRolledBackInput
+    fieldMappings?: ImportFieldMappingCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateWithoutRowsInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    fieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchCreateOrConnectWithoutRowsInput = {
+    where: ImportBatchWhereUniqueInput
+    create: XOR<ImportBatchCreateWithoutRowsInput, ImportBatchUncheckedCreateWithoutRowsInput>
+  }
+
+  export type ImportErrorCreateWithoutRowInput = {
+    id?: string
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+    batch: ImportBatchCreateNestedOneWithoutErrorsInput
+    resolvedBy?: UserCreateNestedOneWithoutImportErrorsResolvedInput
+  }
+
+  export type ImportErrorUncheckedCreateWithoutRowInput = {
+    id?: string
+    batchId: string
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ImportErrorCreateOrConnectWithoutRowInput = {
+    where: ImportErrorWhereUniqueInput
+    create: XOR<ImportErrorCreateWithoutRowInput, ImportErrorUncheckedCreateWithoutRowInput>
+  }
+
+  export type ImportErrorCreateManyRowInputEnvelope = {
+    data: ImportErrorCreateManyRowInput | ImportErrorCreateManyRowInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImportBatchUpsertWithoutRowsInput = {
+    update: XOR<ImportBatchUpdateWithoutRowsInput, ImportBatchUncheckedUpdateWithoutRowsInput>
+    create: XOR<ImportBatchCreateWithoutRowsInput, ImportBatchUncheckedCreateWithoutRowsInput>
+    where?: ImportBatchWhereInput
+  }
+
+  export type ImportBatchUpdateToOneWithWhereWithoutRowsInput = {
+    where?: ImportBatchWhereInput
+    data: XOR<ImportBatchUpdateWithoutRowsInput, ImportBatchUncheckedUpdateWithoutRowsInput>
+  }
+
+  export type ImportBatchUpdateWithoutRowsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput
+    mappedBy?: UserUpdateOneWithoutImportBatchesMappedNestedInput
+    validatedBy?: UserUpdateOneWithoutImportBatchesValidatedNestedInput
+    approvedBy?: UserUpdateOneWithoutImportBatchesApprovedNestedInput
+    importedBy?: UserUpdateOneWithoutImportBatchesImportedNestedInput
+    rolledBackBy?: UserUpdateOneWithoutImportBatchesRolledBackNestedInput
+    fieldMappings?: ImportFieldMappingUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateWithoutRowsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportErrorUpsertWithWhereUniqueWithoutRowInput = {
+    where: ImportErrorWhereUniqueInput
+    update: XOR<ImportErrorUpdateWithoutRowInput, ImportErrorUncheckedUpdateWithoutRowInput>
+    create: XOR<ImportErrorCreateWithoutRowInput, ImportErrorUncheckedCreateWithoutRowInput>
+  }
+
+  export type ImportErrorUpdateWithWhereUniqueWithoutRowInput = {
+    where: ImportErrorWhereUniqueInput
+    data: XOR<ImportErrorUpdateWithoutRowInput, ImportErrorUncheckedUpdateWithoutRowInput>
+  }
+
+  export type ImportErrorUpdateManyWithWhereWithoutRowInput = {
+    where: ImportErrorScalarWhereInput
+    data: XOR<ImportErrorUpdateManyMutationInput, ImportErrorUncheckedUpdateManyWithoutRowInput>
+  }
+
+  export type OrganizationCreateWithoutImportFieldMappingsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutImportFieldMappingsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutImportFieldMappingsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutImportFieldMappingsInput, OrganizationUncheckedCreateWithoutImportFieldMappingsInput>
+  }
+
+  export type ImportBatchCreateWithoutFieldMappingsInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportBatchesInput
+    uploadedBy: UserCreateNestedOneWithoutImportBatchesUploadedInput
+    mappedBy?: UserCreateNestedOneWithoutImportBatchesMappedInput
+    validatedBy?: UserCreateNestedOneWithoutImportBatchesValidatedInput
+    approvedBy?: UserCreateNestedOneWithoutImportBatchesApprovedInput
+    importedBy?: UserCreateNestedOneWithoutImportBatchesImportedInput
+    rolledBackBy?: UserCreateNestedOneWithoutImportBatchesRolledBackInput
+    rows?: ImportRowCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateWithoutFieldMappingsInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rows?: ImportRowUncheckedCreateNestedManyWithoutBatchInput
+    errors?: ImportErrorUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchCreateOrConnectWithoutFieldMappingsInput = {
+    where: ImportBatchWhereUniqueInput
+    create: XOR<ImportBatchCreateWithoutFieldMappingsInput, ImportBatchUncheckedCreateWithoutFieldMappingsInput>
+  }
+
+  export type UserCreateWithoutImportFieldMappingsCreatedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserUncheckedCreateWithoutImportFieldMappingsCreatedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
+  }
+
+  export type UserCreateOrConnectWithoutImportFieldMappingsCreatedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutImportFieldMappingsCreatedInput, UserUncheckedCreateWithoutImportFieldMappingsCreatedInput>
+  }
+
+  export type OrganizationUpsertWithoutImportFieldMappingsInput = {
+    update: XOR<OrganizationUpdateWithoutImportFieldMappingsInput, OrganizationUncheckedUpdateWithoutImportFieldMappingsInput>
+    create: XOR<OrganizationCreateWithoutImportFieldMappingsInput, OrganizationUncheckedCreateWithoutImportFieldMappingsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutImportFieldMappingsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutImportFieldMappingsInput, OrganizationUncheckedUpdateWithoutImportFieldMappingsInput>
+  }
+
+  export type OrganizationUpdateWithoutImportFieldMappingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutImportFieldMappingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type ImportBatchUpsertWithoutFieldMappingsInput = {
+    update: XOR<ImportBatchUpdateWithoutFieldMappingsInput, ImportBatchUncheckedUpdateWithoutFieldMappingsInput>
+    create: XOR<ImportBatchCreateWithoutFieldMappingsInput, ImportBatchUncheckedCreateWithoutFieldMappingsInput>
+    where?: ImportBatchWhereInput
+  }
+
+  export type ImportBatchUpdateToOneWithWhereWithoutFieldMappingsInput = {
+    where?: ImportBatchWhereInput
+    data: XOR<ImportBatchUpdateWithoutFieldMappingsInput, ImportBatchUncheckedUpdateWithoutFieldMappingsInput>
+  }
+
+  export type ImportBatchUpdateWithoutFieldMappingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput
+    mappedBy?: UserUpdateOneWithoutImportBatchesMappedNestedInput
+    validatedBy?: UserUpdateOneWithoutImportBatchesValidatedNestedInput
+    approvedBy?: UserUpdateOneWithoutImportBatchesApprovedNestedInput
+    importedBy?: UserUpdateOneWithoutImportBatchesImportedNestedInput
+    rolledBackBy?: UserUpdateOneWithoutImportBatchesRolledBackNestedInput
+    rows?: ImportRowUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateWithoutFieldMappingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rows?: ImportRowUncheckedUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type UserUpsertWithoutImportFieldMappingsCreatedInput = {
+    update: XOR<UserUpdateWithoutImportFieldMappingsCreatedInput, UserUncheckedUpdateWithoutImportFieldMappingsCreatedInput>
+    create: XOR<UserCreateWithoutImportFieldMappingsCreatedInput, UserUncheckedCreateWithoutImportFieldMappingsCreatedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutImportFieldMappingsCreatedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutImportFieldMappingsCreatedInput, UserUncheckedUpdateWithoutImportFieldMappingsCreatedInput>
+  }
+
+  export type UserUpdateWithoutImportFieldMappingsCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutImportFieldMappingsCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
+  }
+
+  export type ImportBatchCreateWithoutErrorsInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutImportBatchesInput
+    uploadedBy: UserCreateNestedOneWithoutImportBatchesUploadedInput
+    mappedBy?: UserCreateNestedOneWithoutImportBatchesMappedInput
+    validatedBy?: UserCreateNestedOneWithoutImportBatchesValidatedInput
+    approvedBy?: UserCreateNestedOneWithoutImportBatchesApprovedInput
+    importedBy?: UserCreateNestedOneWithoutImportBatchesImportedInput
+    rolledBackBy?: UserCreateNestedOneWithoutImportBatchesRolledBackInput
+    rows?: ImportRowCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchUncheckedCreateWithoutErrorsInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rows?: ImportRowUncheckedCreateNestedManyWithoutBatchInput
+    fieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutBatchInput
+  }
+
+  export type ImportBatchCreateOrConnectWithoutErrorsInput = {
+    where: ImportBatchWhereUniqueInput
+    create: XOR<ImportBatchCreateWithoutErrorsInput, ImportBatchUncheckedCreateWithoutErrorsInput>
+  }
+
+  export type ImportRowCreateWithoutErrorsInput = {
+    id?: string
+    rowNumber: number
+    rawData: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    fingerprint?: string | null
+    importedTransactionId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    batch: ImportBatchCreateNestedOneWithoutRowsInput
+  }
+
+  export type ImportRowUncheckedCreateWithoutErrorsInput = {
+    id?: string
+    batchId: string
+    rowNumber: number
+    rawData: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    fingerprint?: string | null
+    importedTransactionId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportRowCreateOrConnectWithoutErrorsInput = {
+    where: ImportRowWhereUniqueInput
+    create: XOR<ImportRowCreateWithoutErrorsInput, ImportRowUncheckedCreateWithoutErrorsInput>
+  }
+
+  export type UserCreateWithoutImportErrorsResolvedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutImportErrorsResolvedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutImportErrorsResolvedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutImportErrorsResolvedInput, UserUncheckedCreateWithoutImportErrorsResolvedInput>
+  }
+
+  export type ImportBatchUpsertWithoutErrorsInput = {
+    update: XOR<ImportBatchUpdateWithoutErrorsInput, ImportBatchUncheckedUpdateWithoutErrorsInput>
+    create: XOR<ImportBatchCreateWithoutErrorsInput, ImportBatchUncheckedCreateWithoutErrorsInput>
+    where?: ImportBatchWhereInput
+  }
+
+  export type ImportBatchUpdateToOneWithWhereWithoutErrorsInput = {
+    where?: ImportBatchWhereInput
+    data: XOR<ImportBatchUpdateWithoutErrorsInput, ImportBatchUncheckedUpdateWithoutErrorsInput>
+  }
+
+  export type ImportBatchUpdateWithoutErrorsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput
+    mappedBy?: UserUpdateOneWithoutImportBatchesMappedNestedInput
+    validatedBy?: UserUpdateOneWithoutImportBatchesValidatedNestedInput
+    approvedBy?: UserUpdateOneWithoutImportBatchesApprovedNestedInput
+    importedBy?: UserUpdateOneWithoutImportBatchesImportedNestedInput
+    rolledBackBy?: UserUpdateOneWithoutImportBatchesRolledBackNestedInput
+    rows?: ImportRowUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateWithoutErrorsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rows?: ImportRowUncheckedUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportRowUpsertWithoutErrorsInput = {
+    update: XOR<ImportRowUpdateWithoutErrorsInput, ImportRowUncheckedUpdateWithoutErrorsInput>
+    create: XOR<ImportRowCreateWithoutErrorsInput, ImportRowUncheckedCreateWithoutErrorsInput>
+    where?: ImportRowWhereInput
+  }
+
+  export type ImportRowUpdateToOneWithWhereWithoutErrorsInput = {
+    where?: ImportRowWhereInput
+    data: XOR<ImportRowUpdateWithoutErrorsInput, ImportRowUncheckedUpdateWithoutErrorsInput>
+  }
+
+  export type ImportRowUpdateWithoutErrorsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    rawData?: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    fingerprint?: NullableStringFieldUpdateOperationsInput | string | null
+    importedTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    batch?: ImportBatchUpdateOneRequiredWithoutRowsNestedInput
+  }
+
+  export type ImportRowUncheckedUpdateWithoutErrorsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    rawData?: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    fingerprint?: NullableStringFieldUpdateOperationsInput | string | null
+    importedTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutImportErrorsResolvedInput = {
+    update: XOR<UserUpdateWithoutImportErrorsResolvedInput, UserUncheckedUpdateWithoutImportErrorsResolvedInput>
+    create: XOR<UserCreateWithoutImportErrorsResolvedInput, UserUncheckedCreateWithoutImportErrorsResolvedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutImportErrorsResolvedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutImportErrorsResolvedInput, UserUncheckedUpdateWithoutImportErrorsResolvedInput>
+  }
+
+  export type UserUpdateWithoutImportErrorsResolvedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutImportErrorsResolvedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
   export type UserCreateWithoutNotificationsInput = {
     id?: string
     email: string
@@ -135356,6 +150009,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -135427,6 +150088,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -135514,6 +150183,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -135585,6 +150262,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserCreateWithoutNotificationPreferencesInput = {
@@ -135656,6 +150341,14 @@ export namespace Prisma {
     transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationPreferencesInput = {
@@ -135727,6 +150420,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
     transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
     transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationPreferencesInput = {
@@ -135814,6 +150515,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationPreferencesInput = {
@@ -135885,6 +150594,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type OrganizationMembershipCreateManyUserInput = {
@@ -136654,6 +151371,203 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type ImportBatchCreateManyUploadedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportBatchCreateManyMappedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportBatchCreateManyValidatedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportBatchCreateManyApprovedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportBatchCreateManyImportedByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportBatchCreateManyRolledBackByInput = {
+    id?: string
+    organizationId: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportFieldMappingCreateManyCreatedByInput = {
+    id?: string
+    organizationId: string
+    batchId?: string | null
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportErrorCreateManyResolvedByInput = {
+    id?: string
+    batchId: string
+    rowId?: string | null
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+  }
+
   export type OrganizationMembershipUpdateWithoutUserInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -137128,6 +152042,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedByInput = {
@@ -137199,6 +152121,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCreatedByInput = {
@@ -137305,6 +152235,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedByInput = {
@@ -137376,6 +152314,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutUpdatedByInput = {
@@ -139179,6 +154125,633 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ImportBatchUpdateWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput
+    mappedBy?: UserUpdateOneWithoutImportBatchesMappedNestedInput
+    validatedBy?: UserUpdateOneWithoutImportBatchesValidatedNestedInput
+    approvedBy?: UserUpdateOneWithoutImportBatchesApprovedNestedInput
+    importedBy?: UserUpdateOneWithoutImportBatchesImportedNestedInput
+    rolledBackBy?: UserUpdateOneWithoutImportBatchesRolledBackNestedInput
+    rows?: ImportRowUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rows?: ImportRowUncheckedUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportBatchUpdateWithoutMappedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput
+    validatedBy?: UserUpdateOneWithoutImportBatchesValidatedNestedInput
+    approvedBy?: UserUpdateOneWithoutImportBatchesApprovedNestedInput
+    importedBy?: UserUpdateOneWithoutImportBatchesImportedNestedInput
+    rolledBackBy?: UserUpdateOneWithoutImportBatchesRolledBackNestedInput
+    rows?: ImportRowUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateWithoutMappedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rows?: ImportRowUncheckedUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutMappedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportBatchUpdateWithoutValidatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput
+    mappedBy?: UserUpdateOneWithoutImportBatchesMappedNestedInput
+    approvedBy?: UserUpdateOneWithoutImportBatchesApprovedNestedInput
+    importedBy?: UserUpdateOneWithoutImportBatchesImportedNestedInput
+    rolledBackBy?: UserUpdateOneWithoutImportBatchesRolledBackNestedInput
+    rows?: ImportRowUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateWithoutValidatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rows?: ImportRowUncheckedUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutValidatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportBatchUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput
+    mappedBy?: UserUpdateOneWithoutImportBatchesMappedNestedInput
+    validatedBy?: UserUpdateOneWithoutImportBatchesValidatedNestedInput
+    importedBy?: UserUpdateOneWithoutImportBatchesImportedNestedInput
+    rolledBackBy?: UserUpdateOneWithoutImportBatchesRolledBackNestedInput
+    rows?: ImportRowUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rows?: ImportRowUncheckedUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportBatchUpdateWithoutImportedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput
+    mappedBy?: UserUpdateOneWithoutImportBatchesMappedNestedInput
+    validatedBy?: UserUpdateOneWithoutImportBatchesValidatedNestedInput
+    approvedBy?: UserUpdateOneWithoutImportBatchesApprovedNestedInput
+    rolledBackBy?: UserUpdateOneWithoutImportBatchesRolledBackNestedInput
+    rows?: ImportRowUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateWithoutImportedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rows?: ImportRowUncheckedUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutImportedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportBatchUpdateWithoutRolledBackByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportBatchesNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput
+    mappedBy?: UserUpdateOneWithoutImportBatchesMappedNestedInput
+    validatedBy?: UserUpdateOneWithoutImportBatchesValidatedNestedInput
+    approvedBy?: UserUpdateOneWithoutImportBatchesApprovedNestedInput
+    importedBy?: UserUpdateOneWithoutImportBatchesImportedNestedInput
+    rows?: ImportRowUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateWithoutRolledBackByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rows?: ImportRowUncheckedUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutRolledBackByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportFieldMappingUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportFieldMappingsNestedInput
+    batch?: ImportBatchUpdateOneWithoutFieldMappingsNestedInput
+  }
+
+  export type ImportFieldMappingUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportFieldMappingUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportErrorUpdateWithoutResolvedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    batch?: ImportBatchUpdateOneRequiredWithoutErrorsNestedInput
+    row?: ImportRowUpdateOneWithoutErrorsNestedInput
+  }
+
+  export type ImportErrorUncheckedUpdateWithoutResolvedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: StringFieldUpdateOperationsInput | string
+    rowId?: NullableStringFieldUpdateOperationsInput | string | null
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportErrorUncheckedUpdateManyWithoutResolvedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: StringFieldUpdateOperationsInput | string
+    rowId?: NullableStringFieldUpdateOperationsInput | string | null
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type RolePermissionCreateManyRoleInput = {
     permissionId: string
     conditions?: NullableJsonNullValueInput | InputJsonValue
@@ -140377,6 +155950,52 @@ export namespace Prisma {
     reversalReasonId?: string | null
     journalEntryId?: string | null
     reversalJournalEntryId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportBatchCreateManyOrganizationInput = {
+    id?: string
+    code: string
+    source: $Enums.ImportSource
+    fileName: string
+    fileHash: string
+    fileSize: number
+    mimeType: string
+    status?: $Enums.ImportBatchStatus
+    totalRows?: number
+    validRows?: number
+    errorRows?: number
+    duplicateRows?: number
+    uploadedById: string
+    mappedById?: string | null
+    validatedById?: string | null
+    approvedById?: string | null
+    importedById?: string | null
+    rolledBackById?: string | null
+    approvedAt?: Date | string | null
+    importedAt?: Date | string | null
+    rolledBackAt?: Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportFieldMappingCreateManyOrganizationInput = {
+    id?: string
+    batchId?: string | null
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdById: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -141607,6 +157226,150 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ImportBatchUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    uploadedBy?: UserUpdateOneRequiredWithoutImportBatchesUploadedNestedInput
+    mappedBy?: UserUpdateOneWithoutImportBatchesMappedNestedInput
+    validatedBy?: UserUpdateOneWithoutImportBatchesValidatedNestedInput
+    approvedBy?: UserUpdateOneWithoutImportBatchesApprovedNestedInput
+    importedBy?: UserUpdateOneWithoutImportBatchesImportedNestedInput
+    rolledBackBy?: UserUpdateOneWithoutImportBatchesRolledBackNestedInput
+    rows?: ImportRowUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rows?: ImportRowUncheckedUpdateManyWithoutBatchNestedInput
+    fieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutBatchNestedInput
+    errors?: ImportErrorUncheckedUpdateManyWithoutBatchNestedInput
+  }
+
+  export type ImportBatchUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileHash?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    status?: EnumImportBatchStatusFieldUpdateOperationsInput | $Enums.ImportBatchStatus
+    totalRows?: IntFieldUpdateOperationsInput | number
+    validRows?: IntFieldUpdateOperationsInput | number
+    errorRows?: IntFieldUpdateOperationsInput | number
+    duplicateRows?: IntFieldUpdateOperationsInput | number
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    mappedById?: NullableStringFieldUpdateOperationsInput | string | null
+    validatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    importedById?: NullableStringFieldUpdateOperationsInput | string | null
+    rolledBackById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    importedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rolledBackAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorSummary?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportFieldMappingUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    batch?: ImportBatchUpdateOneWithoutFieldMappingsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutImportFieldMappingsCreatedNestedInput
+  }
+
+  export type ImportFieldMappingUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportFieldMappingUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LocationCreateManyParentInput = {
     id?: string
     organizationId: string
@@ -141861,6 +157624,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPrimaryLocationInput = {
@@ -141932,6 +157703,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutPrimaryLocationInput = {
@@ -142419,6 +158198,14 @@ export namespace Prisma {
     transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHomeDepartmentInput = {
@@ -142490,6 +158277,14 @@ export namespace Prisma {
     transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
     transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
     transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutHomeDepartmentInput = {
@@ -146917,6 +162712,264 @@ export namespace Prisma {
     acknowledgementNote?: NullableStringFieldUpdateOperationsInput | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     occurredAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportRowCreateManyBatchInput = {
+    id?: string
+    rowNumber: number
+    rawData: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: string
+    fingerprint?: string | null
+    importedTransactionId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportFieldMappingCreateManyBatchInput = {
+    id?: string
+    organizationId: string
+    source: $Enums.ImportSource
+    name: string
+    description?: string | null
+    dateFormat: string
+    amountConvention: string
+    decimalSeparator?: string
+    thousandSeparator?: string
+    encoding?: string
+    hasHeader?: boolean
+    columnMap: JsonNullValueInput | InputJsonValue
+    isDefault?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ImportErrorCreateManyBatchInput = {
+    id?: string
+    rowId?: string | null
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ImportRowUpdateWithoutBatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    rawData?: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    fingerprint?: NullableStringFieldUpdateOperationsInput | string | null
+    importedTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errors?: ImportErrorUpdateManyWithoutRowNestedInput
+  }
+
+  export type ImportRowUncheckedUpdateWithoutBatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    rawData?: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    fingerprint?: NullableStringFieldUpdateOperationsInput | string | null
+    importedTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errors?: ImportErrorUncheckedUpdateManyWithoutRowNestedInput
+  }
+
+  export type ImportRowUncheckedUpdateManyWithoutBatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    rawData?: JsonNullValueInput | InputJsonValue
+    mappedData?: NullableJsonNullValueInput | InputJsonValue
+    normalizedData?: NullableJsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    fingerprint?: NullableStringFieldUpdateOperationsInput | string | null
+    importedTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportFieldMappingUpdateWithoutBatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutImportFieldMappingsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutImportFieldMappingsCreatedNestedInput
+  }
+
+  export type ImportFieldMappingUncheckedUpdateWithoutBatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportFieldMappingUncheckedUpdateManyWithoutBatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    source?: EnumImportSourceFieldUpdateOperationsInput | $Enums.ImportSource
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    amountConvention?: StringFieldUpdateOperationsInput | string
+    decimalSeparator?: StringFieldUpdateOperationsInput | string
+    thousandSeparator?: StringFieldUpdateOperationsInput | string
+    encoding?: StringFieldUpdateOperationsInput | string
+    hasHeader?: BoolFieldUpdateOperationsInput | boolean
+    columnMap?: JsonNullValueInput | InputJsonValue
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportErrorUpdateWithoutBatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    row?: ImportRowUpdateOneWithoutErrorsNestedInput
+    resolvedBy?: UserUpdateOneWithoutImportErrorsResolvedNestedInput
+  }
+
+  export type ImportErrorUncheckedUpdateWithoutBatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowId?: NullableStringFieldUpdateOperationsInput | string | null
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportErrorUncheckedUpdateManyWithoutBatchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowId?: NullableStringFieldUpdateOperationsInput | string | null
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportErrorCreateManyRowInput = {
+    id?: string
+    batchId: string
+    rowNumber: number
+    type: $Enums.ImportErrorType
+    field?: string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message: string
+    severity?: string
+    resolved?: boolean
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    resolutionNote?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ImportErrorUpdateWithoutRowInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    batch?: ImportBatchUpdateOneRequiredWithoutErrorsNestedInput
+    resolvedBy?: UserUpdateOneWithoutImportErrorsResolvedNestedInput
+  }
+
+  export type ImportErrorUncheckedUpdateWithoutRowInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImportErrorUncheckedUpdateManyWithoutRowInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    batchId?: StringFieldUpdateOperationsInput | string
+    rowNumber?: IntFieldUpdateOperationsInput | number
+    type?: EnumImportErrorTypeFieldUpdateOperationsInput | $Enums.ImportErrorType
+    field?: NullableStringFieldUpdateOperationsInput | string | null
+    originalValue?: NullableJsonNullValueInput | InputJsonValue
+    message?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    resolved?: BoolFieldUpdateOperationsInput | boolean
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolutionNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

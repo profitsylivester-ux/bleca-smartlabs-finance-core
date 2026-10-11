@@ -924,6 +924,85 @@ exports.Prisma.SecurityEventScalarFieldEnum = {
   occurredAt: 'occurredAt'
 };
 
+exports.Prisma.ImportBatchScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  source: 'source',
+  fileName: 'fileName',
+  fileHash: 'fileHash',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  status: 'status',
+  totalRows: 'totalRows',
+  validRows: 'validRows',
+  errorRows: 'errorRows',
+  duplicateRows: 'duplicateRows',
+  uploadedById: 'uploadedById',
+  mappedById: 'mappedById',
+  validatedById: 'validatedById',
+  approvedById: 'approvedById',
+  importedById: 'importedById',
+  rolledBackById: 'rolledBackById',
+  approvedAt: 'approvedAt',
+  importedAt: 'importedAt',
+  rolledBackAt: 'rolledBackAt',
+  errorSummary: 'errorSummary',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ImportRowScalarFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  rowNumber: 'rowNumber',
+  rawData: 'rawData',
+  mappedData: 'mappedData',
+  normalizedData: 'normalizedData',
+  status: 'status',
+  fingerprint: 'fingerprint',
+  importedTransactionId: 'importedTransactionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ImportFieldMappingScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  batchId: 'batchId',
+  source: 'source',
+  name: 'name',
+  description: 'description',
+  dateFormat: 'dateFormat',
+  amountConvention: 'amountConvention',
+  decimalSeparator: 'decimalSeparator',
+  thousandSeparator: 'thousandSeparator',
+  encoding: 'encoding',
+  hasHeader: 'hasHeader',
+  columnMap: 'columnMap',
+  isDefault: 'isDefault',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ImportErrorScalarFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  rowId: 'rowId',
+  rowNumber: 'rowNumber',
+  type: 'type',
+  field: 'field',
+  originalValue: 'originalValue',
+  message: 'message',
+  severity: 'severity',
+  resolved: 'resolved',
+  resolvedById: 'resolvedById',
+  resolvedAt: 'resolvedAt',
+  resolutionNote: 'resolutionNote',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.IdempotencyKeyScalarFieldEnum = {
   id: 'id',
   key: 'key',
@@ -1331,7 +1410,11 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   SOD_WAIVER: 'SOD_WAIVER',
   TREASURY_ACCOUNT: 'TREASURY_ACCOUNT',
   PAYMENT_SCHEDULE: 'PAYMENT_SCHEDULE',
-  TRANSFER: 'TRANSFER'
+  TRANSFER: 'TRANSFER',
+  IMPORT_BATCH: 'IMPORT_BATCH',
+  IMPORT_ROW: 'IMPORT_ROW',
+  IMPORT_FIELD_MAPPING: 'IMPORT_FIELD_MAPPING',
+  IMPORT_ERROR: 'IMPORT_ERROR'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -1569,7 +1652,15 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   APPROVAL_STEP_DECIDED: 'APPROVAL_STEP_DECIDED',
   APPROVAL_DECISION_RECORDED: 'APPROVAL_DECISION_RECORDED',
   SOD_WAIVER_GRANTED: 'SOD_WAIVER_GRANTED',
-  SOD_WAIVER_REJECTED: 'SOD_WAIVER_REJECTED'
+  SOD_WAIVER_REJECTED: 'SOD_WAIVER_REJECTED',
+  IMPORT_UPLOADED: 'IMPORT_UPLOADED',
+  IMPORT_MAPPING_SAVED: 'IMPORT_MAPPING_SAVED',
+  IMPORT_VALIDATED: 'IMPORT_VALIDATED',
+  IMPORT_APPROVED: 'IMPORT_APPROVED',
+  IMPORT_EXECUTED: 'IMPORT_EXECUTED',
+  IMPORT_ROLLED_BACK: 'IMPORT_ROLLED_BACK',
+  IMPORT_ROW_ERROR: 'IMPORT_ROW_ERROR',
+  IMPORT_ERROR_RESOLVED: 'IMPORT_ERROR_RESOLVED'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -1622,6 +1713,36 @@ exports.SecurityEventSeverity = exports.$Enums.SecurityEventSeverity = {
   MEDIUM: 'MEDIUM',
   HIGH: 'HIGH',
   CRITICAL: 'CRITICAL'
+};
+
+exports.ImportSource = exports.$Enums.ImportSource = {
+  EXCEL: 'EXCEL',
+  CSV: 'CSV',
+  API: 'API',
+  MANUAL: 'MANUAL'
+};
+
+exports.ImportBatchStatus = exports.$Enums.ImportBatchStatus = {
+  UPLOADED: 'UPLOADED',
+  MAPPING: 'MAPPING',
+  VALIDATING: 'VALIDATING',
+  PREVIEW: 'PREVIEW',
+  AWAITING_APPROVAL: 'AWAITING_APPROVAL',
+  APPROVED: 'APPROVED',
+  IMPORTING: 'IMPORTING',
+  COMPLETED: 'COMPLETED',
+  PARTIALLY_COMPLETED: 'PARTIALLY_COMPLETED',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK'
+};
+
+exports.ImportErrorType = exports.$Enums.ImportErrorType = {
+  VALIDATION: 'VALIDATION',
+  DUPLICATE: 'DUPLICATE',
+  MAPPING: 'MAPPING',
+  PERMISSION: 'PERMISSION',
+  SYSTEM: 'SYSTEM',
+  PARSE: 'PARSE'
 };
 
 exports.IdempotencyKeyStatus = exports.$Enums.IdempotencyKeyStatus = {
@@ -1712,6 +1833,10 @@ exports.Prisma.ModelName = {
   AuditChainHead: 'AuditChainHead',
   AuditChainCheckpoint: 'AuditChainCheckpoint',
   SecurityEvent: 'SecurityEvent',
+  ImportBatch: 'ImportBatch',
+  ImportRow: 'ImportRow',
+  ImportFieldMapping: 'ImportFieldMapping',
+  ImportError: 'ImportError',
   IdempotencyKey: 'IdempotencyKey',
   Notification: 'Notification',
   NotificationPreference: 'NotificationPreference'
