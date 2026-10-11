@@ -58,3 +58,22 @@ export function shortId(id: string | null | undefined, length = 8): string {
   if (!id) return '-';
   return id.length <= length ? id : `${id.slice(0, length)}...`;
 }
+
+/** Formats a date as a relative time (e.g., "2 hours ago"). */
+export function formatRelative(value: Date | string | null | undefined): string {
+  if (!value) return '-';
+  const d = typeof value === 'string' ? new Date(value) : value;
+  if (Number.isNaN(d.getTime())) return '-';
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
+
+  if (diffSec < 60) return 'just now';
+  if (diffMin < 60) return `${diffMin}m ago`;
+  if (diffHour < 24) return `${diffHour}h ago`;
+  if (diffDay < 7) return `${diffDay}d ago`;
+  return formatDate(d);
+}

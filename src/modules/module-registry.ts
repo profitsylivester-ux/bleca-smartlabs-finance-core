@@ -133,10 +133,10 @@ export const MODULES: ModuleDefinition[] = [
   },
   {
     key: 'APPROVALS',
-    path: null,
+    path: '/approvals',
     label: 'Approvals',
     description: 'Configurable approval engine with CEO final authority.',
-    availability: 'PLANNED',
+    availability: 'AVAILABLE',
     milestone: 'M6',
     icon: 'check-square',
     group: 'accounting',

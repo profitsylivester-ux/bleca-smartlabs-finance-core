@@ -27,7 +27,9 @@ export async function selectPolicy(
     orderBy: { priority: 'asc' },
   });
 
+  console.log('[DEBUG selectPolicy] Found policies:', policies.length, 'for orgId:', context.organizationId, 'entityType:', entityType);
   for (const policy of policies) {
+    console.log('[DEBUG selectPolicy] Checking policy:', policy.id, policy.name, 'steps:', policy.steps.length);
     const conditionResults = await evaluateConditions(
       policy.steps.map((s) => ({
         conditionOperator: s.conditionOperator,
@@ -37,11 +39,14 @@ export async function selectPolicy(
       tx
     );
 
+    console.log('[DEBUG selectPolicy] Condition results:', Array.from(conditionResults.entries()));
+
     const applicableSteps = policy.steps.filter((step, index) => {
       const conditionMet = conditionResults.get(index) ?? false;
       return conditionMet;
     });
 
+    console.log('[DEBUG selectPolicy] Applicable steps:', applicableSteps.length);
     if (applicableSteps.length > 0) {
       const snapshot = buildPolicySnapshot(policy, applicableSteps, conditionResults);
       return { policy, snapshot };

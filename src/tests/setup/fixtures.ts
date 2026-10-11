@@ -1,4 +1,5 @@
 import type { PrismaClient } from '@/generated/prisma/client';
+import { Prisma } from '@/generated/prisma/client';
 import { PERMISSIONS, ROLES, ORG, AUTH_POLICY, PROJECTS, FUNDING_SOURCES, CURRENCIES, REASON_CODES, PRODUCTS_SERVICES, CHART_OF_ACCOUNTS_PDF7, type AccountSeed } from '../../../prisma/seed-data';
 
 /**
@@ -77,6 +78,12 @@ export async function seedTestFixtures(prisma: PrismaClient): Promise<void> {
     },
     update: {},
   });
+
+  const orgAfterUpsert = await prisma.organization.findUniqueOrThrow({ where: { code: ORG.code } });
+  console.log('[DEBUG fixtures] Organization after upsert:', orgAfterUpsert.id, orgAfterUpsert.code);
+
+  const orgAfterQuery = await prisma.organization.findFirstOrThrow({ where: { code: ORG.code } });
+  console.log('[DEBUG fixtures] Organization after query:', orgAfterQuery.id, orgAfterQuery.code);
 
   const org = await prisma.organization.findUniqueOrThrow({ where: { code: ORG.code } });
 
@@ -187,6 +194,91 @@ export async function seedTestFixtures(prisma: PrismaClient): Promise<void> {
     });
 
     accountsByCode.set(acc.code, created);
+  }
+
+  // Seed Approval Policy (Q2: CEO final approval for every amount)
+  const ceoRole = await prisma.role.findUniqueOrThrow({
+    where: { code: 'CEO' },
+    select: { id: true },
+  });
+
+  console.log('[DEBUG fixtures] org.id for approval policy:', org.id);
+  const existingPolicy = await prisma.approvalPolicy.findFirst({
+    where: { organizationId: org.id, entityType: 'TRANSACTION' },
+    include: { steps: true },
+  });
+
+  if (existingPolicy) {
+    await prisma.approvalPolicyStep.deleteMany({ where: { policyId: existingPolicy.id } });
+    await prisma.approvalPolicyStep.createMany({
+      data: [
+        {
+          policyId: existingPolicy.id,
+          stepOrder: 1,
+          name: 'CEO Approval',
+          type: 'APPROVAL',
+          assigneeType: 'ROLE',
+          assigneeRoleId: ceoRole.id,
+          resolutionMode: 'ANY',
+          conditionOperator: 'AMOUNT_GREATER_THAN',
+          conditionValue: { amount: 0, currency: 'TZS' } as Prisma.InputJsonValue,
+          isRequired: true,
+          isFinalApprover: true,
+        },
+        {
+          policyId: existingPolicy.id,
+          stepOrder: 2,
+          name: 'CEO Sign-Off',
+          type: 'SIGN_OFF',
+          assigneeType: 'ROLE',
+          assigneeRoleId: ceoRole.id,
+          resolutionMode: 'ANY',
+          conditionOperator: 'ALWAYS',
+          conditionValue: Prisma.JsonNull,
+          isRequired: true,
+          isFinalApprover: true,
+        },
+      ],
+    });
+  } else {
+    await prisma.approvalPolicy.create({
+      data: {
+        organizationId: org.id,
+        name: 'CEO Final Approval',
+        description: 'All financial actions route to CEO for final approval (Q2: every amount).',
+        entityType: 'TRANSACTION',
+        isActive: true,
+        priority: 100,
+        steps: {
+          create: [
+            {
+              stepOrder: 1,
+              name: 'CEO Approval',
+              type: 'APPROVAL',
+              assigneeType: 'ROLE',
+              assigneeRoleId: ceoRole.id,
+              resolutionMode: 'ANY',
+              conditionOperator: 'AMOUNT_GREATER_THAN',
+              conditionValue: { amount: 0, currency: 'TZS' } as Prisma.InputJsonValue,
+              isRequired: true,
+              isFinalApprover: true,
+            },
+            {
+              stepOrder: 2,
+              name: 'CEO Sign-Off',
+              type: 'SIGN_OFF',
+              assigneeType: 'ROLE',
+              assigneeRoleId: ceoRole.id,
+              resolutionMode: 'ANY',
+              conditionOperator: 'ALWAYS',
+              conditionValue: Prisma.JsonNull,
+              isRequired: true,
+              isFinalApprover: true,
+            },
+          ],
+        },
+      },
+    });
   }
 
   // Create financial periods for 2025 fiscal year
@@ -304,7 +396,14 @@ export async function resetTestData(prisma: PrismaClient): Promise<void> {
       access_review_items,
       access_reviews,
       delegations,
+      approval_decision_records,
+      approval_step_instances,
+      approval_requests,
+      approval_policy_steps,
+      approval_policies,
+      sod_waivers,
       user_roles,
+      roles,
       organization_memberships,
       users,
       exchange_rates,

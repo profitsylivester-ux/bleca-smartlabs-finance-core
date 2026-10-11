@@ -41,7 +41,7 @@ describe('module registry', () => {
   it('gives every available module a path and a milestone', () => {
     for (const builtModule of availableModules()) {
       expect(builtModule.path, `${builtModule.key} has no path`).not.toBeNull();
-      expect(['M1', 'M4'].includes(builtModule.milestone!)).toBe(true);
+      expect(['M1', 'M4', 'M6'].includes(builtModule.milestone!)).toBe(true);
     }
   });
 
