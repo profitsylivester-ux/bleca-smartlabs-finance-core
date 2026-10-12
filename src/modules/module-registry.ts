@@ -211,10 +211,10 @@ export const MODULES: ModuleDefinition[] = [
   },
   {
     key: 'TAX_COMPLIANCE',
-    path: null,
+    path: '/tax-compliance/rules',
     label: 'Tax & Compliance',
     description: 'Configurable rules with accountant sign-off. No hardcoded values.',
-    availability: 'PLANNED',
+    availability: 'AVAILABLE',
     milestone: 'M13',
     icon: 'landmark',
     group: 'system',

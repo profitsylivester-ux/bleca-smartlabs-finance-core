@@ -909,6 +909,8 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   taxAmount: 'taxAmount',
   totalAmount: 'totalAmount',
   taxInvoiceNumber: 'taxInvoiceNumber',
+  taxInvoiceValid: 'taxInvoiceValid',
+  taxRulesApplied: 'taxRulesApplied',
   isTaxInvoice: 'isTaxInvoice',
   journalEntryId: 'journalEntryId',
   reversalJournalEntryId: 'reversalJournalEntryId',
@@ -1784,6 +1786,110 @@ exports.Prisma.LegalHoldScalarFieldEnum = {
   releaseReason: 'releaseReason'
 };
 
+exports.Prisma.TaxRuleScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  type: 'type',
+  jurisdiction: 'jurisdiction',
+  ratePercent: 'ratePercent',
+  isInclusive: 'isInclusive',
+  calculationBasis: 'calculationBasis',
+  appliesWhenOrganizationRegistered: 'appliesWhenOrganizationRegistered',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  isActive: 'isActive',
+  payableAccountId: 'payableAccountId',
+  receivableAccountId: 'receivableAccountId',
+  roundingMode: 'roundingMode',
+  minTaxableAmount: 'minTaxableAmount',
+  exemptionThreshold: 'exemptionThreshold',
+  verifiedByProfessionalOn: 'verifiedByProfessionalOn',
+  verifiedByProfessionalName: 'verifiedByProfessionalName',
+  verificationReference: 'verificationReference',
+  isVerified: 'isVerified',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TaxObligationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  taxRuleId: 'taxRuleId',
+  period: 'period',
+  direction: 'direction',
+  status: 'status',
+  filingDueDate: 'filingDueDate',
+  filedAt: 'filedAt',
+  taxableAmount: 'taxableAmount',
+  taxAmount: 'taxAmount',
+  currencyCode: 'currencyCode',
+  description: 'description',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TaxPaymentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  obligationId: 'obligationId',
+  paidAt: 'paidAt',
+  amount: 'amount',
+  currencyCode: 'currencyCode',
+  reference: 'reference',
+  documentId: 'documentId',
+  journalEntryId: 'journalEntryId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CredentialScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  type: 'type',
+  title: 'title',
+  issuingAuthority: 'issuingAuthority',
+  registrationNumber: 'registrationNumber',
+  issuedDate: 'issuedDate',
+  expiryDate: 'expiryDate',
+  responsibleUserId: 'responsibleUserId',
+  cost: 'cost',
+  currencyCode: 'currencyCode',
+  status: 'status',
+  renewalReminderDays: 'renewalReminderDays',
+  documentId: 'documentId',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ComplianceDocumentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  documentId: 'documentId',
+  credentialId: 'credentialId',
+  obligationId: 'obligationId',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.TaxInvoiceSequenceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  prefix: 'prefix',
+  suffix: 'suffix',
+  padding: 'padding',
+  nextNumber: 'nextNumber',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2185,7 +2291,13 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   DOCUMENT_LINK: 'DOCUMENT_LINK',
   DOCUMENT_TAG: 'DOCUMENT_TAG',
   RETENTION_POLICY: 'RETENTION_POLICY',
-  LEGAL_HOLD: 'LEGAL_HOLD'
+  LEGAL_HOLD: 'LEGAL_HOLD',
+  TAX_RULE: 'TAX_RULE',
+  TAX_OBLIGATION: 'TAX_OBLIGATION',
+  TAX_PAYMENT: 'TAX_PAYMENT',
+  TAX_INVOICE: 'TAX_INVOICE',
+  CREDENTIAL: 'CREDENTIAL',
+  COMPLIANCE_DOCUMENT: 'COMPLIANCE_DOCUMENT'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -2724,7 +2836,23 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   CREDIT_NOTE_APPLIED: 'CREDIT_NOTE_APPLIED',
   DEBIT_NOTE_CREATED: 'DEBIT_NOTE_CREATED',
   DEBIT_NOTE_APPLIED: 'DEBIT_NOTE_APPLIED',
-  INVOICE_REMINDER_CREATED: 'INVOICE_REMINDER_CREATED'
+  INVOICE_REMINDER_CREATED: 'INVOICE_REMINDER_CREATED',
+  TAX_RULE_CREATED: 'TAX_RULE_CREATED',
+  TAX_RULE_UPDATED: 'TAX_RULE_UPDATED',
+  TAX_RULE_DEACTIVATED: 'TAX_RULE_DEACTIVATED',
+  TAX_OBLIGATION_CREATED: 'TAX_OBLIGATION_CREATED',
+  TAX_OBLIGATION_UPDATED: 'TAX_OBLIGATION_UPDATED',
+  TAX_OBLIGATION_FILED: 'TAX_OBLIGATION_FILED',
+  TAX_OBLIGATION_PAID: 'TAX_OBLIGATION_PAID',
+  TAX_PAYMENT_CREATED: 'TAX_PAYMENT_CREATED',
+  TAX_PAYMENT_UPDATED: 'TAX_PAYMENT_UPDATED',
+  TAX_PAYMENT_DELETED: 'TAX_PAYMENT_DELETED',
+  TAX_INVOICE_ISSUED: 'TAX_INVOICE_ISSUED',
+  CREDENTIAL_CREATED: 'CREDENTIAL_CREATED',
+  CREDENTIAL_UPDATED: 'CREDENTIAL_UPDATED',
+  CREDENTIAL_DELETED: 'CREDENTIAL_DELETED',
+  COMPLIANCE_DOCUMENT_LINKED: 'COMPLIANCE_DOCUMENT_LINKED',
+  COMPLIANCE_DOCUMENT_UNLINKED: 'COMPLIANCE_DOCUMENT_UNLINKED'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -2883,6 +3011,7 @@ exports.NotificationCategory = exports.$Enums.NotificationCategory = {
   SECURITY_ALERT: 'SECURITY_ALERT',
   ACCESS_REVIEW: 'ACCESS_REVIEW',
   DOCUMENT_EXPIRY: 'DOCUMENT_EXPIRY',
+  COMPLIANCE_EXPIRY: 'COMPLIANCE_EXPIRY',
   SYSTEM: 'SYSTEM',
   ACCOUNT: 'ACCOUNT'
 };
@@ -2955,6 +3084,68 @@ exports.RetentionAction = exports.$Enums.RetentionAction = {
   ARCHIVE: 'ARCHIVE',
   DELETE: 'DELETE',
   RETAIN_FOREVER: 'RETAIN_FOREVER'
+};
+
+exports.TaxRuleType = exports.$Enums.TaxRuleType = {
+  VAT: 'VAT',
+  WITHHOLDING: 'WITHHOLDING',
+  INCOME_TAX: 'INCOME_TAX',
+  TURNOVER_TAX: 'TURNOVER_TAX',
+  FILING_FEE: 'FILING_FEE',
+  STAMP_DUTY: 'STAMP_DUTY',
+  OTHER: 'OTHER'
+};
+
+exports.TaxCalculationBasis = exports.$Enums.TaxCalculationBasis = {
+  EXCLUSIVE: 'EXCLUSIVE',
+  INCLUSIVE: 'INCLUSIVE',
+  NOT_APPLICABLE: 'NOT_APPLICABLE'
+};
+
+exports.TaxRoundingMode = exports.$Enums.TaxRoundingMode = {
+  HALF_UP: 'HALF_UP',
+  HALF_DOWN: 'HALF_DOWN',
+  HALF_EVEN: 'HALF_EVEN',
+  UP: 'UP',
+  DOWN: 'DOWN'
+};
+
+exports.TaxObligationDirection = exports.$Enums.TaxObligationDirection = {
+  OUTPUT: 'OUTPUT',
+  INPUT: 'INPUT',
+  WITHHELD: 'WITHHELD',
+  PAYABLE: 'PAYABLE'
+};
+
+exports.TaxObligationStatus = exports.$Enums.TaxObligationStatus = {
+  PENDING: 'PENDING',
+  FILED: 'FILED',
+  PAID: 'PAID',
+  OVERDUE: 'OVERDUE',
+  EXEMPT: 'EXEMPT',
+  NOT_APPLICABLE: 'NOT_APPLICABLE'
+};
+
+exports.CredentialType = exports.$Enums.CredentialType = {
+  REGISTRATION: 'REGISTRATION',
+  TIN_CERTIFICATE: 'TIN_CERTIFICATE',
+  LICENCE: 'LICENCE',
+  PERMIT: 'PERMIT',
+  CERTIFICATION: 'CERTIFICATION',
+  MEMBERSHIP: 'MEMBERSHIP',
+  DOMAIN: 'DOMAIN',
+  INSURANCE: 'INSURANCE',
+  SOFTWARE_SUBSCRIPTION: 'SOFTWARE_SUBSCRIPTION',
+  OTHER: 'OTHER'
+};
+
+exports.CredentialStatus = exports.$Enums.CredentialStatus = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+  EXPIRING_SOON: 'EXPIRING_SOON',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED',
+  NOT_APPLICABLE: 'NOT_APPLICABLE'
 };
 
 exports.Prisma.ModelName = {
@@ -3055,7 +3246,13 @@ exports.Prisma.ModelName = {
   DocumentTagLink: 'DocumentTagLink',
   DocumentLink: 'DocumentLink',
   RetentionPolicy: 'RetentionPolicy',
-  LegalHold: 'LegalHold'
+  LegalHold: 'LegalHold',
+  TaxRule: 'TaxRule',
+  TaxObligation: 'TaxObligation',
+  TaxPayment: 'TaxPayment',
+  Credential: 'Credential',
+  ComplianceDocument: 'ComplianceDocument',
+  TaxInvoiceSequence: 'TaxInvoiceSequence'
 };
 
 /**

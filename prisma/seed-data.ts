@@ -178,10 +178,34 @@ export const PERMISSIONS: PermissionSeed[] = [
   },
   {
     module: 'TAX_COMPLIANCE',
+    action: 'CREATE',
+    description: 'Record tax obligations, payments, credentials and compliance documents',
+  },
+  {
+    module: 'TAX_COMPLIANCE',
+    action: 'EDIT',
+    description: 'File obligations, record payments and maintain credentials',
+  },
+  {
+    module: 'TAX_COMPLIANCE',
+    action: 'SUBMIT',
+    description: 'Submit tax filings for approval',
+  },
+  {
+    module: 'TAX_COMPLIANCE',
+    action: 'ADMINISTER',
+    description: 'Remove tax records where permitted',
+  },
+  {
+    module: 'TAX_COMPLIANCE',
     action: 'APPROVE',
     description: 'Record accountant sign-off on tax rules',
   },
   { module: 'REPORTS', action: 'CONFIGURE', description: 'Manage the report registry' },
+  { module: 'TAX_COMPLIANCE', action: 'CREATE', description: 'Record tax obligations, payments, credentials and compliance links' },
+  { module: 'TAX_COMPLIANCE', action: 'EDIT', description: 'File obligations, record payments and maintain credentials' },
+  { module: 'TAX_COMPLIANCE', action: 'SUBMIT', description: 'File a tax obligation' },
+  { module: 'TAX_COMPLIANCE', action: 'ADMINISTER', description: 'Remove tax and credential records where permitted' },
 
   // ---- Governance -----------------------------------------------------------
   { module: 'AUDIT_TRAIL', action: 'VIEW', description: 'Query the audit trail' },

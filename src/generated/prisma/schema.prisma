@@ -198,6 +198,68 @@ enum RegistrationStatus {
   REGISTERED
 }
 
+enum TaxRuleType {
+  VAT
+  WITHHOLDING
+  INCOME_TAX
+  TURNOVER_TAX
+  FILING_FEE
+  STAMP_DUTY
+  OTHER
+}
+
+enum TaxCalculationBasis {
+  EXCLUSIVE
+  INCLUSIVE
+  NOT_APPLICABLE
+}
+
+enum TaxRoundingMode {
+  HALF_UP
+  HALF_DOWN
+  HALF_EVEN
+  UP
+  DOWN
+}
+
+enum TaxObligationDirection {
+  OUTPUT
+  INPUT
+  WITHHELD
+  PAYABLE
+}
+
+enum TaxObligationStatus {
+  PENDING
+  FILED
+  PAID
+  OVERDUE
+  EXEMPT
+  NOT_APPLICABLE
+}
+
+enum CredentialType {
+  REGISTRATION
+  TIN_CERTIFICATE
+  LICENCE
+  PERMIT
+  CERTIFICATION
+  MEMBERSHIP
+  DOMAIN
+  INSURANCE
+  SOFTWARE_SUBSCRIPTION
+  OTHER
+}
+
+enum CredentialStatus {
+  PENDING
+  ACTIVE
+  EXPIRING_SOON
+  EXPIRED
+  REVOKED
+  NOT_APPLICABLE
+}
+
 /// PDF 2: university facilities with permission; PERMITTED_USE for third-party
 /// locations without ownership.
 enum LocationType {
@@ -871,6 +933,22 @@ enum AuditAction {
   DEBIT_NOTE_CREATED
   DEBIT_NOTE_APPLIED
   INVOICE_REMINDER_CREATED
+  TAX_RULE_CREATED
+  TAX_RULE_UPDATED
+  TAX_RULE_DEACTIVATED
+  TAX_OBLIGATION_CREATED
+  TAX_OBLIGATION_UPDATED
+  TAX_OBLIGATION_FILED
+  TAX_OBLIGATION_PAID
+  TAX_PAYMENT_CREATED
+  TAX_PAYMENT_UPDATED
+  TAX_PAYMENT_DELETED
+  TAX_INVOICE_ISSUED
+  CREDENTIAL_CREATED
+  CREDENTIAL_UPDATED
+  CREDENTIAL_DELETED
+  COMPLIANCE_DOCUMENT_LINKED
+  COMPLIANCE_DOCUMENT_UNLINKED
 }
 
 enum AuditEntityType {
@@ -949,6 +1027,12 @@ enum AuditEntityType {
   DOCUMENT_TAG
   RETENTION_POLICY
   LEGAL_HOLD
+  TAX_RULE
+  TAX_OBLIGATION
+  TAX_PAYMENT
+  TAX_INVOICE
+  CREDENTIAL
+  COMPLIANCE_DOCUMENT
 }
 
 enum AuditResult {
@@ -1030,6 +1114,7 @@ enum NotificationCategory {
   SECURITY_ALERT
   ACCESS_REVIEW
   DOCUMENT_EXPIRY
+  COMPLIANCE_EXPIRY
   SYSTEM
   ACCOUNT
 }
@@ -1214,6 +1299,7 @@ model User {
   delegationsReceived              Delegation[]              @relation("DelegationGrantee")
   accessReviewItems                AccessReviewItem[]
   notifications                    Notification[]
+  responsibleCredentials           Credential[]              @relation("CredentialResponsibleUser")
   notificationPreferences          NotificationPreference[]
   createdUsers                     User[]                    @relation("UserCreatedBy")
   updatedUsers                     User[]                    @relation("UserUpdatedBy")
@@ -1805,6 +1891,12 @@ model Organization {
   budgetRevisions                  BudgetRevision[]
   budgetTransfers                  BudgetTransfer[]
   budgetScenarios                  BudgetScenario[]
+  taxRules                         TaxRule[]
+  taxObligations                   TaxObligation[]
+  taxPayments                      TaxPayment[]
+  credentials                      Credential[]
+  complianceDocuments              ComplianceDocument[]
+  taxInvoiceSequence               TaxInvoiceSequence?
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -2555,6 +2647,8 @@ model Invoice {
   taxAmount              Decimal              @default(0) @map("tax_amount") @db.Decimal(20, 6)
   totalAmount            Decimal              @map("total_amount") @db.Decimal(20, 6)
   taxInvoiceNumber       String?              @map("tax_invoice_number")
+  taxInvoiceValid        Boolean              @default(false) @map("tax_invoice_valid")
+  taxRulesApplied        Json?                @map("tax_rules_applied")
   isTaxInvoice           Boolean              @default(false) @map("is_tax_invoice")
   journalEntryId         String?              @unique @map("journal_entry_id")
   reversalJournalEntryId String?              @unique @map("reversal_journal_entry_id")
@@ -2829,6 +2923,8 @@ model Account {
   transactions              Transaction[]
   treasuryAccounts          TreasuryAccount[]
   reconciliationAdjustments ReconciliationAdjustment[]
+  payableTaxRules           TaxRule[]                  @relation("TaxRulePayableAccount")
+  receivableTaxRules        TaxRule[]                  @relation("TaxRuleReceivableAccount")
 
   @@unique([organizationId, code])
   @@index([parentId])
@@ -2956,6 +3052,7 @@ model JournalEntry {
   reversalTransfers         Transfer[]                 @relation("TransferReversalJournalEntry")
   reconciliationMatches     ReconciliationMatch[]      @relation("ReconciliationMatchJournalEntry")
   reconciliationAdjustments ReconciliationAdjustment[] @relation("ReconciliationAdjustmentJournalEntry")
+  taxPayments               TaxPayment[]
 
   @@unique([organizationId, number])
   @@index([periodId, status])
@@ -4055,7 +4152,10 @@ model Document {
   versions               DocumentVersion[]
   tags                   DocumentTagLink[]
   links                  DocumentLink[]
-  supportingTransactions Transaction[]     @relation("TransactionSupportingDocument")
+  supportingTransactions Transaction[]        @relation("TransactionSupportingDocument")
+  linkedTaxPayments      TaxPayment[]
+  credentialDocuments    Credential[]
+  complianceLinks        ComplianceDocument[]
 
   @@unique([organizationId, checksum])
   @@unique([organizationId, storageKey])
@@ -4180,4 +4280,157 @@ model LegalHold {
 
   @@index([organizationId, entityType, entityId, releasedAt])
   @@map("legal_holds")
+}
+
+// M13 tax and compliance records keep jurisdictional behaviour in rows, never in source code.
+model TaxRule {
+  id                                String              @id @default(cuid())
+  organizationId                    String              @map("organization_id")
+  organization                      Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code                              String
+  name                              String
+  type                              TaxRuleType
+  jurisdiction                      String
+  ratePercent                       Decimal?            @map("rate_percent") @db.Decimal(9, 6)
+  isInclusive                       Boolean             @default(false) @map("is_inclusive")
+  calculationBasis                  TaxCalculationBasis @map("calculation_basis")
+  appliesWhenOrganizationRegistered Boolean             @default(true) @map("applies_when_organization_registered")
+  effectiveFrom                     DateTime            @map("effective_from") @db.Date
+  effectiveTo                       DateTime?           @map("effective_to") @db.Date
+  isActive                          Boolean             @default(true) @map("is_active")
+  payableAccountId                  String?             @map("payable_account_id")
+  payableAccount                    Account?            @relation("TaxRulePayableAccount", fields: [payableAccountId], references: [id], onDelete: Restrict)
+  receivableAccountId               String?             @map("receivable_account_id")
+  receivableAccount                 Account?            @relation("TaxRuleReceivableAccount", fields: [receivableAccountId], references: [id], onDelete: Restrict)
+  roundingMode                      TaxRoundingMode     @default(HALF_UP) @map("rounding_mode")
+  minTaxableAmount                  Decimal?            @map("min_taxable_amount") @db.Decimal(20, 6)
+  exemptionThreshold                Decimal?            @map("exemption_threshold") @db.Decimal(20, 6)
+  verifiedByProfessionalOn          DateTime?           @map("verified_by_professional_on") @db.Date
+  verifiedByProfessionalName        String?             @map("verified_by_professional_name")
+  verificationReference             String?             @map("verification_reference")
+  isVerified                        Boolean             @default(false) @map("is_verified")
+  notes                             String?             @db.Text
+  createdById                       String              @map("created_by_id")
+  createdAt                         DateTime            @default(now()) @map("created_at")
+  updatedAt                         DateTime            @updatedAt @map("updated_at")
+
+  obligations TaxObligation[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive, effectiveFrom, effectiveTo])
+  @@map("tax_rules")
+}
+
+model TaxObligation {
+  id             String                 @id @default(cuid())
+  organizationId String                 @map("organization_id")
+  organization   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  taxRuleId      String?                @map("tax_rule_id")
+  taxRule        TaxRule?               @relation(fields: [taxRuleId], references: [id], onDelete: SetNull)
+  period         String
+  direction      TaxObligationDirection
+  status         TaxObligationStatus    @default(PENDING)
+  filingDueDate  DateTime?              @map("filing_due_date") @db.Date
+  filedAt        DateTime?              @map("filed_at")
+  taxableAmount  Decimal                @map("taxable_amount") @db.Decimal(20, 6)
+  taxAmount      Decimal                @map("tax_amount") @db.Decimal(20, 6)
+  currencyCode   String                 @map("currency_code") @db.Char(3)
+  description    String?                @db.Text
+  createdById    String                 @map("created_by_id")
+  createdAt      DateTime               @default(now()) @map("created_at")
+  updatedAt      DateTime               @updatedAt @map("updated_at")
+
+  payments            TaxPayment[]
+  complianceDocuments ComplianceDocument[]
+
+  @@index([organizationId, status, filingDueDate])
+  @@index([organizationId, taxRuleId, period])
+  @@map("tax_obligations")
+}
+
+model TaxPayment {
+  id             String        @id @default(cuid())
+  organizationId String        @map("organization_id")
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  obligationId   String        @map("obligation_id")
+  obligation     TaxObligation @relation(fields: [obligationId], references: [id], onDelete: Restrict)
+  paidAt         DateTime      @map("paid_at")
+  amount         Decimal       @db.Decimal(20, 6)
+  currencyCode   String        @map("currency_code") @db.Char(3)
+  reference      String?
+  documentId     String?       @map("document_id")
+  document       Document?     @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  journalEntryId String?       @unique @map("journal_entry_id")
+  journalEntry   JournalEntry? @relation(fields: [journalEntryId], references: [id], onDelete: SetNull)
+  createdById    String        @map("created_by_id")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  @@index([organizationId, obligationId, paidAt])
+  @@map("tax_payments")
+}
+
+model Credential {
+  id                  String           @id @default(cuid())
+  organizationId      String           @map("organization_id")
+  organization        Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  type                CredentialType
+  title               String
+  issuingAuthority    String?          @map("issuing_authority")
+  registrationNumber  String?          @map("registration_number")
+  issuedDate          DateTime?        @map("issued_date") @db.Date
+  expiryDate          DateTime?        @map("expiry_date") @db.Date
+  responsibleUserId   String           @map("responsible_user_id")
+  responsibleUser     User             @relation("CredentialResponsibleUser", fields: [responsibleUserId], references: [id], onDelete: Restrict)
+  cost                Decimal?         @db.Decimal(20, 6)
+  currencyCode        String?          @map("currency_code") @db.Char(3)
+  status              CredentialStatus @default(ACTIVE)
+  renewalReminderDays Int              @default(30) @map("renewal_reminder_days")
+  documentId          String?          @map("document_id")
+  document            Document?        @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  notes               String?          @db.Text
+  createdById         String           @map("created_by_id")
+  createdAt           DateTime         @default(now()) @map("created_at")
+  updatedAt           DateTime         @updatedAt @map("updated_at")
+
+  complianceDocuments ComplianceDocument[]
+
+  @@index([organizationId, status, expiryDate])
+  @@index([responsibleUserId])
+  @@map("credentials")
+}
+
+model ComplianceDocument {
+  id             String         @id @default(cuid())
+  organizationId String         @map("organization_id")
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  documentId     String         @map("document_id")
+  document       Document       @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  credentialId   String?        @map("credential_id")
+  credential     Credential?    @relation(fields: [credentialId], references: [id], onDelete: Cascade)
+  obligationId   String?        @map("obligation_id")
+  obligation     TaxObligation? @relation(fields: [obligationId], references: [id], onDelete: Cascade)
+  notes          String?        @db.Text
+  createdById    String         @map("created_by_id")
+  createdAt      DateTime       @default(now()) @map("created_at")
+
+  @@index([organizationId, documentId])
+  @@index([organizationId, credentialId])
+  @@index([organizationId, obligationId])
+  @@map("compliance_documents")
+}
+
+/// Per-organization sequence state. Formatting is editable data and does not
+/// imply that a tax invoice is valid until a configured rule has been checked.
+model TaxInvoiceSequence {
+  id             String       @id @default(cuid())
+  organizationId String       @unique @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  prefix         String       @default("")
+  suffix         String       @default("")
+  padding        Int          @default(0)
+  nextNumber     Int          @default(1) @map("next_number")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  @@map("tax_invoice_sequences")
 }
