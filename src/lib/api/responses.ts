@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { KernelError } from '@/lib/kernel/errors';
 import { headers } from 'next/headers';
 import { randomUUID } from 'node:crypto';
@@ -27,6 +28,12 @@ export async function requestId(): Promise<string> {
 }
 
 export function apiError(error: unknown, reqId: string): NextResponse<ApiErrorBody> {
+  if (error instanceof z.ZodError) {
+    return apiError(
+      new KernelError('VALIDATION_ERROR', 'The request body is invalid.', { details: { issues: error.issues } }),
+      reqId,
+    );
+  }
   if (error instanceof KernelError) {
     return NextResponse.json(
       {

@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --project unit",
     "test:unit": "vitest run --project unit",
-    "test:integration": "vitest run --project integration",
+    "test:integration": "vitest run --configLoader runner --project integration",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "db:up": "docker compose up -d postgres",

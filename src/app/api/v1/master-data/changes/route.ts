@@ -19,6 +19,8 @@ const entityTypeSchema = z.enum([
   'FUNDING_SOURCE',
   'CURRENCY',
   'EXCHANGE_RATE',
+  'CUSTOMER',
+  'SUPPLIER',
 ]);
 
 const createSchema = z.object({
@@ -67,6 +69,8 @@ export async function POST(request: Request) {
         FUNDING_SOURCE: 'fundingSource',
         CURRENCY: 'currency',
         EXCHANGE_RATE: 'exchangeRate',
+        CUSTOMER: 'customer',
+        SUPPLIER: 'supplier',
       };
       const modelName = modelMap[body.entityType];
       if (modelName) {

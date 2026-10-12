@@ -136,6 +136,8 @@ export async function POST(
                 FUNDING_SOURCE: 'fundingSource',
                 CURRENCY: 'currency',
                 EXCHANGE_RATE: 'exchangeRate',
+                CUSTOMER: 'customer',
+                SUPPLIER: 'supplier',
               };
               const modelName = modelMap[changeRequest.entityType];
               if (modelName && changeRequest.entityId) {
@@ -165,7 +167,10 @@ export async function POST(
               }
 
               const versionNumber = await tx.masterDataVersion.count({
-                where: { changeRequestId: id },
+                where: {
+                  entityType: changeRequest.entityType,
+                  entityId: changeRequest.entityId ?? null,
+                },
               }) + 1;
 
               await tx.masterDataVersion.create({

@@ -660,6 +660,201 @@ exports.Prisma.ProductServiceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PartyScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  kind: 'kind',
+  displayName: 'displayName',
+  legalName: 'legalName',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  taxIdentifier: 'taxIdentifier',
+  registrationNumber: 'registrationNumber',
+  email: 'email',
+  phone: 'phone',
+  website: 'website',
+  isActive: 'isActive',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.CustomerScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  partyId: 'partyId',
+  status: 'status',
+  masterDataStatus: 'masterDataStatus',
+  paymentTermsDays: 'paymentTermsDays',
+  creditLimit: 'creditLimit',
+  currencyCode: 'currencyCode',
+  relationshipOwnerId: 'relationshipOwnerId',
+  riskLevel: 'riskLevel',
+  creditHoldReason: 'creditHoldReason',
+  creditHeldAt: 'creditHeldAt',
+  badDebtAmount: 'badDebtAmount',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.SupplierScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  partyId: 'partyId',
+  status: 'status',
+  masterDataStatus: 'masterDataStatus',
+  paymentTermsDays: 'paymentTermsDays',
+  paymentCurrencyCode: 'paymentCurrencyCode',
+  performanceRating: 'performanceRating',
+  deliveryRating: 'deliveryRating',
+  qualityRating: 'qualityRating',
+  riskLevel: 'riskLevel',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.ContactScalarFieldEnum = {
+  id: 'id',
+  partyId: 'partyId',
+  fullName: 'fullName',
+  title: 'title',
+  email: 'email',
+  phone: 'phone',
+  isPrimary: 'isPrimary',
+  isActive: 'isActive',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.PartyAddressScalarFieldEnum = {
+  id: 'id',
+  partyId: 'partyId',
+  type: 'type',
+  label: 'label',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  city: 'city',
+  region: 'region',
+  postalCode: 'postalCode',
+  countryCode: 'countryCode',
+  isPrimary: 'isPrimary',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.CommunicationLogScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  partyId: 'partyId',
+  channel: 'channel',
+  direction: 'direction',
+  subject: 'subject',
+  summary: 'summary',
+  contactedAt: 'contactedAt',
+  followUpAt: 'followUpAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SupplierBankDetailScalarFieldEnum = {
+  id: 'id',
+  supplierId: 'supplierId',
+  bankName: 'bankName',
+  accountHolderName: 'accountHolderName',
+  accountNumberEncrypted: 'accountNumberEncrypted',
+  accountNumberLast4: 'accountNumberLast4',
+  branchName: 'branchName',
+  swiftCode: 'swiftCode',
+  iban: 'iban',
+  currencyCode: 'currencyCode',
+  isPrimary: 'isPrimary',
+  isActive: 'isActive',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SupplierBankDetailChangeRequestScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  supplierId: 'supplierId',
+  currentBankDetailId: 'currentBankDetailId',
+  previousValues: 'previousValues',
+  proposedValues: 'proposedValues',
+  evidenceDocumentId: 'evidenceDocumentId',
+  status: 'status',
+  requestedById: 'requestedById',
+  verifierId: 'verifierId',
+  approverId: 'approverId',
+  rejectedById: 'rejectedById',
+  verificationNotes: 'verificationNotes',
+  decisionReason: 'decisionReason',
+  requestedAt: 'requestedAt',
+  verifiedAt: 'verifiedAt',
+  decidedAt: 'decidedAt',
+  appliedBankDetailId: 'appliedBankDetailId'
+};
+
+exports.Prisma.SupplierProductServiceScalarFieldEnum = {
+  id: 'id',
+  supplierId: 'supplierId',
+  productServiceId: 'productServiceId',
+  supplierItemCode: 'supplierItemCode',
+  unitPrice: 'unitPrice',
+  currencyCode: 'currencyCode',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SupplierTaxObligationLinkScalarFieldEnum = {
+  id: 'id',
+  supplierId: 'supplierId',
+  taxObligationId: 'taxObligationId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CustomerCreditHoldScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  status: 'status',
+  previousCustomerStatus: 'previousCustomerStatus',
+  reason: 'reason',
+  requestedById: 'requestedById',
+  heldAt: 'heldAt',
+  releaseReason: 'releaseReason',
+  releasedById: 'releasedById',
+  releasedAt: 'releasedAt'
+};
+
+exports.Prisma.CustomerReceivableScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  customerId: 'customerId',
+  invoiceId: 'invoiceId',
+  invoiceReference: 'invoiceReference',
+  sourceJournalEntryId: 'sourceJournalEntryId',
+  currencyCode: 'currencyCode',
+  originalAmount: 'originalAmount',
+  outstandingAmount: 'outstandingAmount',
+  issuedAt: 'issuedAt',
+  dueAt: 'dueAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AccountScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -1652,7 +1847,17 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   BUDGET_REVISION: 'BUDGET_REVISION',
   BUDGET_TRANSFER: 'BUDGET_TRANSFER',
   COMMITMENT: 'COMMITMENT',
-  BUDGET_SCENARIO: 'BUDGET_SCENARIO'
+  BUDGET_SCENARIO: 'BUDGET_SCENARIO',
+  PARTY: 'PARTY',
+  CUSTOMER: 'CUSTOMER',
+  SUPPLIER: 'SUPPLIER',
+  CONTACT: 'CONTACT',
+  PARTY_ADDRESS: 'PARTY_ADDRESS',
+  COMMUNICATION_LOG: 'COMMUNICATION_LOG',
+  SUPPLIER_BANK_DETAIL: 'SUPPLIER_BANK_DETAIL',
+  SUPPLIER_BANK_DETAIL_CHANGE_REQUEST: 'SUPPLIER_BANK_DETAIL_CHANGE_REQUEST',
+  CUSTOMER_CREDIT_HOLD: 'CUSTOMER_CREDIT_HOLD',
+  CUSTOMER_RECEIVABLE: 'CUSTOMER_RECEIVABLE'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -1662,6 +1867,85 @@ exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
   REJECTED: 'REJECTED',
   CANCELLED: 'CANCELLED',
   EXPIRED: 'EXPIRED'
+};
+
+exports.PartyKind = exports.$Enums.PartyKind = {
+  INDIVIDUAL: 'INDIVIDUAL',
+  COMPANY: 'COMPANY'
+};
+
+exports.CustomerStatus = exports.$Enums.CustomerStatus = {
+  PROSPECT: 'PROSPECT',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  CREDIT_HOLD: 'CREDIT_HOLD',
+  BLOCKED: 'BLOCKED'
+};
+
+exports.MasterDataStatus = exports.$Enums.MasterDataStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  ACTIVE: 'ACTIVE',
+  REJECTED: 'REJECTED',
+  INACTIVE: 'INACTIVE',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.PartyRiskLevel = exports.$Enums.PartyRiskLevel = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+};
+
+exports.SupplierStatus = exports.$Enums.SupplierStatus = {
+  PROSPECT: 'PROSPECT',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  BLOCKED: 'BLOCKED'
+};
+
+exports.PartyAddressType = exports.$Enums.PartyAddressType = {
+  REGISTERED: 'REGISTERED',
+  BILLING: 'BILLING',
+  SHIPPING: 'SHIPPING',
+  OTHER: 'OTHER'
+};
+
+exports.CommunicationChannel = exports.$Enums.CommunicationChannel = {
+  EMAIL: 'EMAIL',
+  PHONE: 'PHONE',
+  MEETING: 'MEETING',
+  LETTER: 'LETTER',
+  OTHER: 'OTHER'
+};
+
+exports.CommunicationDirection = exports.$Enums.CommunicationDirection = {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND',
+  INTERNAL: 'INTERNAL'
+};
+
+exports.BankDetailChangeStatus = exports.$Enums.BankDetailChangeStatus = {
+  PENDING: 'PENDING',
+  VERIFICATION_PENDING: 'VERIFICATION_PENDING',
+  APPROVAL_PENDING: 'APPROVAL_PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.CustomerCreditHoldStatus = exports.$Enums.CustomerCreditHoldStatus = {
+  ACTIVE: 'ACTIVE',
+  RELEASED: 'RELEASED'
+};
+
+exports.CustomerReceivableStatus = exports.$Enums.CustomerReceivableStatus = {
+  OPEN: 'OPEN',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  PAID: 'PAID',
+  WRITTEN_OFF: 'WRITTEN_OFF',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.AccountType = exports.$Enums.AccountType = {
@@ -1967,7 +2251,21 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   COMMITMENT_UPDATED: 'COMMITMENT_UPDATED',
   COMMITMENT_SETTLED: 'COMMITMENT_SETTLED',
   COMMITMENT_CANCELLED: 'COMMITMENT_CANCELLED',
-  BUDGET_SCENARIO_CREATED: 'BUDGET_SCENARIO_CREATED'
+  BUDGET_SCENARIO_CREATED: 'BUDGET_SCENARIO_CREATED',
+  CUSTOMER_CREATED: 'CUSTOMER_CREATED',
+  CUSTOMER_UPDATED: 'CUSTOMER_UPDATED',
+  CUSTOMER_DEACTIVATED: 'CUSTOMER_DEACTIVATED',
+  CUSTOMER_CREDIT_HOLD: 'CUSTOMER_CREDIT_HOLD',
+  CUSTOMER_CREDIT_HOLD_RELEASED: 'CUSTOMER_CREDIT_HOLD_RELEASED',
+  CUSTOMER_CREDIT_LIMIT_EXCEEDED: 'CUSTOMER_CREDIT_LIMIT_EXCEEDED',
+  SUPPLIER_CREATED: 'SUPPLIER_CREATED',
+  SUPPLIER_UPDATED: 'SUPPLIER_UPDATED',
+  SUPPLIER_DEACTIVATED: 'SUPPLIER_DEACTIVATED',
+  SUPPLIER_BANK_DETAIL_CHANGE_REQUESTED: 'SUPPLIER_BANK_DETAIL_CHANGE_REQUESTED',
+  SUPPLIER_BANK_DETAIL_CHANGE_VERIFIED: 'SUPPLIER_BANK_DETAIL_CHANGE_VERIFIED',
+  SUPPLIER_BANK_DETAIL_CHANGE_APPROVED: 'SUPPLIER_BANK_DETAIL_CHANGE_APPROVED',
+  SUPPLIER_BANK_DETAIL_CHANGE_REJECTED: 'SUPPLIER_BANK_DETAIL_CHANGE_REJECTED',
+  COMMUNICATION_LOG_CREATED: 'COMMUNICATION_LOG_CREATED'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -2188,6 +2486,18 @@ exports.Prisma.ModelName = {
   MasterDataVersion: 'MasterDataVersion',
   ReasonCode: 'ReasonCode',
   ProductService: 'ProductService',
+  Party: 'Party',
+  Customer: 'Customer',
+  Supplier: 'Supplier',
+  Contact: 'Contact',
+  PartyAddress: 'PartyAddress',
+  CommunicationLog: 'CommunicationLog',
+  SupplierBankDetail: 'SupplierBankDetail',
+  SupplierBankDetailChangeRequest: 'SupplierBankDetailChangeRequest',
+  SupplierProductService: 'SupplierProductService',
+  SupplierTaxObligationLink: 'SupplierTaxObligationLink',
+  CustomerCreditHold: 'CustomerCreditHold',
+  CustomerReceivable: 'CustomerReceivable',
   Account: 'Account',
   FinancialPeriod: 'FinancialPeriod',
   OpeningBalance: 'OpeningBalance',

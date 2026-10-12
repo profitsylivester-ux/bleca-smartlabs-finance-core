@@ -266,6 +266,77 @@ enum MasterDataChangeStatus {
   EXPIRED
 }
 
+/// Shared counterparty and credit-control classifications (M10).
+enum PartyKind {
+  INDIVIDUAL
+  COMPANY
+}
+
+enum CustomerStatus {
+  PROSPECT
+  ACTIVE
+  INACTIVE
+  CREDIT_HOLD
+  BLOCKED
+}
+
+enum SupplierStatus {
+  PROSPECT
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum PartyRiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum PartyAddressType {
+  REGISTERED
+  BILLING
+  SHIPPING
+  OTHER
+}
+
+enum CommunicationChannel {
+  EMAIL
+  PHONE
+  MEETING
+  LETTER
+  OTHER
+}
+
+enum CommunicationDirection {
+  INBOUND
+  OUTBOUND
+  INTERNAL
+}
+
+enum BankDetailChangeStatus {
+  PENDING
+  VERIFICATION_PENDING
+  APPROVAL_PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum CustomerReceivableStatus {
+  OPEN
+  PARTIALLY_PAID
+  PAID
+  WRITTEN_OFF
+  CANCELLED
+}
+
+enum CustomerCreditHoldStatus {
+  ACTIVE
+  RELEASED
+}
+
 /// Chart of Accounts enums.
 enum AccountType {
   ASSET
@@ -606,6 +677,20 @@ enum AuditAction {
   COMMITMENT_SETTLED
   COMMITMENT_CANCELLED
   BUDGET_SCENARIO_CREATED
+  CUSTOMER_CREATED
+  CUSTOMER_UPDATED
+  CUSTOMER_DEACTIVATED
+  CUSTOMER_CREDIT_HOLD
+  CUSTOMER_CREDIT_HOLD_RELEASED
+  CUSTOMER_CREDIT_LIMIT_EXCEEDED
+  SUPPLIER_CREATED
+  SUPPLIER_UPDATED
+  SUPPLIER_DEACTIVATED
+  SUPPLIER_BANK_DETAIL_CHANGE_REQUESTED
+  SUPPLIER_BANK_DETAIL_CHANGE_VERIFIED
+  SUPPLIER_BANK_DETAIL_CHANGE_APPROVED
+  SUPPLIER_BANK_DETAIL_CHANGE_REJECTED
+  COMMUNICATION_LOG_CREATED
 }
 
 enum AuditEntityType {
@@ -662,6 +747,16 @@ enum AuditEntityType {
   BUDGET_TRANSFER
   COMMITMENT
   BUDGET_SCENARIO
+  PARTY
+  CUSTOMER
+  SUPPLIER
+  CONTACT
+  PARTY_ADDRESS
+  COMMUNICATION_LOG
+  SUPPLIER_BANK_DETAIL
+  SUPPLIER_BANK_DETAIL_CHANGE_REQUEST
+  CUSTOMER_CREDIT_HOLD
+  CUSTOMER_RECEIVABLE
 }
 
 enum AuditResult {
@@ -1461,41 +1556,47 @@ model Organization {
   createdAt            DateTime           @default(now()) @map("created_at")
   updatedAt            DateTime           @updatedAt @map("updated_at")
 
-  memberships               OrganizationMembership[]
-  locations                 Location[]
-  departments               Department[]
-  costCentres               CostCentre[]
-  projects                  Project[]
-  fundingSources            FundingSource[]
-  masterDataChangeRequests  MasterDataChangeRequest[]
-  reasonCodes               ReasonCode[]
-  reversalReasonCodes       ReversalReasonCode[]
-  productsServices          ProductService[]
-  accounts                  Account[]
-  financialPeriods          FinancialPeriod[]
-  openingBalances           OpeningBalance[]
-  accountBalanceSnapshots   AccountBalanceSnapshot[]
-  journalEntries            JournalEntry[]
-  journalLines              JournalLine[]
-  transactions              Transaction[]
-  budgets                   Budget[]
-  budgetLines               BudgetLine[]
-  approvalPolicies          ApprovalPolicy[]
-  approvalRequests          ApprovalRequest[]
-  treasuryAccounts          TreasuryAccount[]
-  paymentSchedules          PaymentSchedule[]
-  transfers                 Transfer[]
-  importBatches             ImportBatch[]
-  importFieldMappings       ImportFieldMapping[]
-  matchingRules             MatchingRule[]
-  reconciliationSessions    ReconciliationSession[]
-  reconciliationMatches     ReconciliationMatch[]
-  reconciliationExceptions  ReconciliationException[]
-  reconciliationAdjustments ReconciliationAdjustment[]
-  commitments               Commitment[]
-  budgetRevisions           BudgetRevision[]
-  budgetTransfers           BudgetTransfer[]
-  budgetScenarios           BudgetScenario[]
+  memberships                      OrganizationMembership[]
+  locations                        Location[]
+  departments                      Department[]
+  costCentres                      CostCentre[]
+  projects                         Project[]
+  fundingSources                   FundingSource[]
+  masterDataChangeRequests         MasterDataChangeRequest[]
+  reasonCodes                      ReasonCode[]
+  reversalReasonCodes              ReversalReasonCode[]
+  productsServices                 ProductService[]
+  parties                          Party[]
+  customers                        Customer[]
+  suppliers                        Supplier[]
+  communicationLogs                CommunicationLog[]
+  supplierBankDetailChangeRequests SupplierBankDetailChangeRequest[]
+  customerReceivables              CustomerReceivable[]
+  accounts                         Account[]
+  financialPeriods                 FinancialPeriod[]
+  openingBalances                  OpeningBalance[]
+  accountBalanceSnapshots          AccountBalanceSnapshot[]
+  journalEntries                   JournalEntry[]
+  journalLines                     JournalLine[]
+  transactions                     Transaction[]
+  budgets                          Budget[]
+  budgetLines                      BudgetLine[]
+  approvalPolicies                 ApprovalPolicy[]
+  approvalRequests                 ApprovalRequest[]
+  treasuryAccounts                 TreasuryAccount[]
+  paymentSchedules                 PaymentSchedule[]
+  transfers                        Transfer[]
+  importBatches                    ImportBatch[]
+  importFieldMappings              ImportFieldMapping[]
+  matchingRules                    MatchingRule[]
+  reconciliationSessions           ReconciliationSession[]
+  reconciliationMatches            ReconciliationMatch[]
+  reconciliationExceptions         ReconciliationException[]
+  reconciliationAdjustments        ReconciliationAdjustment[]
+  commitments                      Commitment[]
+  budgetRevisions                  BudgetRevision[]
+  budgetTransfers                  BudgetTransfer[]
+  budgetScenarios                  BudgetScenario[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -1868,24 +1969,301 @@ model ReasonCode {
 
 /// Lightweight product/service catalogue for revenue linkage (PDF 62).
 model ProductService {
-  id             String       @id @default(cuid())
-  organizationId String       @map("organization_id")
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  id             String                   @id @default(cuid())
+  organizationId String                   @map("organization_id")
+  organization   Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   code           String
   name           String
   description    String?
   type           String // "PRODUCT" | "SERVICE"
   unit           String? // e.g., "HOUR", "DAY", "UNIT", "MONTH"
-  unitPrice      Decimal?     @map("unit_price") @db.Decimal(20, 6)
-  currencyCode   String?      @map("currency_code") @db.Char(3)
-  currency       Currency?    @relation(fields: [currencyCode], references: [code])
-  isActive       Boolean      @default(true) @map("is_active")
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
+  unitPrice      Decimal?                 @map("unit_price") @db.Decimal(20, 6)
+  currencyCode   String?                  @map("currency_code") @db.Char(3)
+  currency       Currency?                @relation(fields: [currencyCode], references: [code])
+  isActive       Boolean                  @default(true) @map("is_active")
+  supplierLinks  SupplierProductService[]
+  createdAt      DateTime                 @default(now()) @map("created_at")
+  updatedAt      DateTime                 @updatedAt @map("updated_at")
 
   @@unique([organizationId, code])
   @@index([type, isActive])
   @@map("products_services")
+}
+
+// ============================================================================
+// M10. PARTIES, CUSTOMER CREDIT & SUPPLIER PAYMENT SECURITY
+// ============================================================================
+
+/// Shared identity record for customer and supplier profiles.
+model Party {
+  id                 String       @id @default(cuid())
+  organizationId     String       @map("organization_id")
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  code               String
+  kind               PartyKind
+  displayName        String       @map("display_name")
+  legalName          String?      @map("legal_name")
+  firstName          String?      @map("first_name")
+  lastName           String?      @map("last_name")
+  taxIdentifier      String?      @map("tax_identifier")
+  registrationNumber String?      @map("registration_number")
+  email              String?
+  phone              String?
+  website            String?
+  isActive           Boolean      @default(true) @map("is_active")
+  createdById        String?      @map("created_by_id")
+  updatedById        String?      @map("updated_by_id")
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime     @updatedAt @map("updated_at")
+  deletedAt          DateTime?    @map("deleted_at")
+
+  customer       Customer?
+  supplier       Supplier?
+  contacts       Contact[]
+  addresses      PartyAddress[]
+  communications CommunicationLog[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, kind, displayName])
+  @@index([organizationId, deletedAt])
+  @@map("parties")
+}
+
+model Customer {
+  id                  String           @id @default(cuid())
+  organizationId      String           @map("organization_id")
+  organization        Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  partyId             String           @unique @map("party_id")
+  party               Party            @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  status              CustomerStatus   @default(PROSPECT)
+  masterDataStatus    MasterDataStatus @default(PENDING_APPROVAL) @map("master_data_status")
+  paymentTermsDays    Int              @default(30) @map("payment_terms_days")
+  creditLimit         Decimal          @default(0) @map("credit_limit") @db.Decimal(20, 6)
+  currencyCode        String           @default("TZS") @map("currency_code") @db.Char(3)
+  relationshipOwnerId String?          @map("relationship_owner_id")
+  riskLevel           PartyRiskLevel   @default(MEDIUM) @map("risk_level")
+  creditHoldReason    String?          @map("credit_hold_reason")
+  creditHeldAt        DateTime?        @map("credit_held_at")
+  badDebtAmount       Decimal          @default(0) @map("bad_debt_amount") @db.Decimal(20, 6)
+  createdById         String?          @map("created_by_id")
+  updatedById         String?          @map("updated_by_id")
+  createdAt           DateTime         @default(now()) @map("created_at")
+  updatedAt           DateTime         @updatedAt @map("updated_at")
+  deletedAt           DateTime?        @map("deleted_at")
+
+  creditHolds CustomerCreditHold[]
+  receivables CustomerReceivable[]
+
+  @@index([organizationId, status, masterDataStatus])
+  @@index([organizationId, relationshipOwnerId])
+  @@map("customers")
+}
+
+model Supplier {
+  id                  String           @id @default(cuid())
+  organizationId      String           @map("organization_id")
+  organization        Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  partyId             String           @unique @map("party_id")
+  party               Party            @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  status              SupplierStatus   @default(PROSPECT)
+  masterDataStatus    MasterDataStatus @default(PENDING_APPROVAL) @map("master_data_status")
+  paymentTermsDays    Int              @default(30) @map("payment_terms_days")
+  paymentCurrencyCode String?          @map("payment_currency_code") @db.Char(3)
+  performanceRating   Decimal?         @map("performance_rating") @db.Decimal(4, 2)
+  deliveryRating      Decimal?         @map("delivery_rating") @db.Decimal(4, 2)
+  qualityRating       Decimal?         @map("quality_rating") @db.Decimal(4, 2)
+  riskLevel           PartyRiskLevel   @default(MEDIUM) @map("risk_level")
+  createdById         String?          @map("created_by_id")
+  updatedById         String?          @map("updated_by_id")
+  createdAt           DateTime         @default(now()) @map("created_at")
+  updatedAt           DateTime         @updatedAt @map("updated_at")
+  deletedAt           DateTime?        @map("deleted_at")
+
+  bankDetails              SupplierBankDetail[]
+  bankDetailChangeRequests SupplierBankDetailChangeRequest[]
+  productsServices         SupplierProductService[]
+  taxObligations           SupplierTaxObligationLink[]
+
+  @@index([organizationId, status, masterDataStatus])
+  @@map("suppliers")
+}
+
+model Contact {
+  id        String    @id @default(cuid())
+  partyId   String    @map("party_id")
+  party     Party     @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  fullName  String    @map("full_name")
+  title     String?
+  email     String?
+  phone     String?
+  isPrimary Boolean   @default(false) @map("is_primary")
+  isActive  Boolean   @default(true) @map("is_active")
+  notes     String?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([partyId, isPrimary])
+  @@map("contacts")
+}
+
+model PartyAddress {
+  id           String           @id @default(cuid())
+  partyId      String           @map("party_id")
+  party        Party            @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  type         PartyAddressType
+  label        String?
+  addressLine1 String           @map("address_line_1")
+  addressLine2 String?          @map("address_line_2")
+  city         String?
+  region       String?
+  postalCode   String?          @map("postal_code")
+  countryCode  String           @map("country_code") @db.Char(2)
+  isPrimary    Boolean          @default(false) @map("is_primary")
+  isActive     Boolean          @default(true) @map("is_active")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+  deletedAt    DateTime?        @map("deleted_at")
+
+  @@index([partyId, type])
+  @@map("party_addresses")
+}
+
+model CommunicationLog {
+  id             String                 @id @default(cuid())
+  organizationId String                 @map("organization_id")
+  organization   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  partyId        String                 @map("party_id")
+  party          Party                  @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  channel        CommunicationChannel
+  direction      CommunicationDirection @default(OUTBOUND)
+  subject        String?
+  summary        String
+  contactedAt    DateTime               @default(now()) @map("contacted_at")
+  followUpAt     DateTime?              @map("follow_up_at")
+  createdById    String                 @map("created_by_id")
+  createdAt      DateTime               @default(now()) @map("created_at")
+
+  @@index([organizationId, partyId, contactedAt])
+  @@index([organizationId, followUpAt])
+  @@map("communication_logs")
+}
+
+model SupplierBankDetail {
+  id                     String    @id @default(cuid())
+  supplierId             String    @map("supplier_id")
+  supplier               Supplier  @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  bankName               String    @map("bank_name")
+  accountHolderName      String    @map("account_holder_name")
+  accountNumberEncrypted String    @map("account_number_encrypted")
+  accountNumberLast4     String    @map("account_number_last4") @db.VarChar(4)
+  branchName             String?   @map("branch_name")
+  swiftCode              String?   @map("swift_code")
+  iban                   String?   @map("iban")
+  currencyCode           String?   @map("currency_code") @db.Char(3)
+  isPrimary              Boolean   @default(false) @map("is_primary")
+  isActive               Boolean   @default(true) @map("is_active")
+  effectiveFrom          DateTime  @default(now()) @map("effective_from")
+  effectiveTo            DateTime? @map("effective_to")
+  createdAt              DateTime  @default(now()) @map("created_at")
+
+  @@index([supplierId, isActive, isPrimary])
+  @@map("supplier_bank_details")
+}
+
+model SupplierBankDetailChangeRequest {
+  id                  String                 @id @default(cuid())
+  organizationId      String                 @map("organization_id")
+  organization        Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  supplierId          String                 @map("supplier_id")
+  supplier            Supplier               @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  currentBankDetailId String?                @map("current_bank_detail_id")
+  previousValues      Json                   @map("previous_values")
+  proposedValues      Json                   @map("proposed_values")
+  evidenceDocumentId  String                 @map("evidence_document_id")
+  status              BankDetailChangeStatus @default(PENDING)
+  requestedById       String                 @map("requested_by_id")
+  verifierId          String?                @map("verifier_id")
+  approverId          String?                @map("approver_id")
+  rejectedById        String?                @map("rejected_by_id")
+  verificationNotes   String?                @map("verification_notes")
+  decisionReason      String?                @map("decision_reason")
+  requestedAt         DateTime               @default(now()) @map("requested_at")
+  verifiedAt          DateTime?              @map("verified_at")
+  decidedAt           DateTime?              @map("decided_at")
+  appliedBankDetailId String?                @map("applied_bank_detail_id")
+
+  @@index([organizationId, supplierId, status])
+  @@index([supplierId, requestedAt])
+  @@map("supplier_bank_detail_change_requests")
+}
+
+model SupplierProductService {
+  id               String         @id @default(cuid())
+  supplierId       String         @map("supplier_id")
+  supplier         Supplier       @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  productServiceId String         @map("product_service_id")
+  productService   ProductService @relation(fields: [productServiceId], references: [id], onDelete: Restrict)
+  supplierItemCode String?        @map("supplier_item_code")
+  unitPrice        Decimal?       @map("unit_price") @db.Decimal(20, 6)
+  currencyCode     String?        @map("currency_code") @db.Char(3)
+  createdAt        DateTime       @default(now()) @map("created_at")
+
+  @@unique([supplierId, productServiceId])
+  @@map("supplier_products_services")
+}
+
+/// M13 TaxObligation is not present yet; keep its future identifier as a link key.
+model SupplierTaxObligationLink {
+  id              String   @id @default(cuid())
+  supplierId      String   @map("supplier_id")
+  supplier        Supplier @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  taxObligationId String   @map("tax_obligation_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@unique([supplierId, taxObligationId])
+  @@map("supplier_tax_obligation_links")
+}
+
+model CustomerCreditHold {
+  id                     String                   @id @default(cuid())
+  customerId             String                   @map("customer_id")
+  customer               Customer                 @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  status                 CustomerCreditHoldStatus @default(ACTIVE)
+  previousCustomerStatus CustomerStatus           @map("previous_customer_status")
+  reason                 String
+  requestedById          String                   @map("requested_by_id")
+  heldAt                 DateTime                 @default(now()) @map("held_at")
+  releaseReason          String?                  @map("release_reason")
+  releasedById           String?                  @map("released_by_id")
+  releasedAt             DateTime?                @map("released_at")
+
+  @@index([customerId, status, heldAt])
+  @@map("customer_credit_holds")
+}
+
+/// M11 invoice posting writes one receivable per invoice for credit checks and aging.
+model CustomerReceivable {
+  id                   String                   @id @default(cuid())
+  organizationId       String                   @map("organization_id")
+  organization         Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customerId           String                   @map("customer_id")
+  customer             Customer                 @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  invoiceId            String?                  @map("invoice_id")
+  invoiceReference     String                   @map("invoice_reference")
+  sourceJournalEntryId String?                  @map("source_journal_entry_id")
+  currencyCode         String                   @map("currency_code") @db.Char(3)
+  originalAmount       Decimal                  @map("original_amount") @db.Decimal(20, 6)
+  outstandingAmount    Decimal                  @map("outstanding_amount") @db.Decimal(20, 6)
+  issuedAt             DateTime                 @map("issued_at")
+  dueAt                DateTime                 @map("due_at")
+  status               CustomerReceivableStatus @default(OPEN)
+  createdAt            DateTime                 @default(now()) @map("created_at")
+  updatedAt            DateTime                 @updatedAt @map("updated_at")
+
+  @@index([organizationId, customerId, status, dueAt])
+  @@index([organizationId, invoiceId])
+  @@map("customer_receivables")
 }
 
 /// Chart of Accounts — hierarchical, configurable per PDF §7.
