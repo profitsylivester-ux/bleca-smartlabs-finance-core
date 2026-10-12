@@ -199,10 +199,10 @@ export const MODULES: ModuleDefinition[] = [
   { key: 'DEBIT_NOTES', path: '/sales/debit-notes', label: 'Debit Notes', description: 'Approved invoice adjustments and additional charges.', availability: 'AVAILABLE', milestone: 'M11', icon: 'scroll-text', group: 'sales', requires: ['VIEW'], order: 350 },
   {
     key: 'DOCUMENTS',
-    path: null,
+    path: '/documents',
     label: 'Documents',
     description: 'Private storage, version history, retention and legal holds.',
-    availability: 'PLANNED',
+    availability: 'AVAILABLE',
     milestone: 'M12',
     icon: 'folder',
     group: 'documents',

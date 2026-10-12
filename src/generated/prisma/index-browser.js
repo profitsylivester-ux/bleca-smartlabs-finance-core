@@ -1681,6 +1681,109 @@ exports.Prisma.NotificationPreferenceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.DocumentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  title: 'title',
+  description: 'description',
+  category: 'category',
+  status: 'status',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  fileSize: 'fileSize',
+  checksum: 'checksum',
+  storageKey: 'storageKey',
+  currentVersion: 'currentVersion',
+  metadata: 'metadata',
+  ocrStatus: 'ocrStatus',
+  ocrText: 'ocrText',
+  ocrConfidence: 'ocrConfidence',
+  expiryDate: 'expiryDate',
+  renewalDueAt: 'renewalDueAt',
+  renewalOfId: 'renewalOfId',
+  approvalRequestId: 'approvalRequestId',
+  uploadedById: 'uploadedById',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DocumentVersionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  documentId: 'documentId',
+  version: 'version',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  fileSize: 'fileSize',
+  checksum: 'checksum',
+  storageKey: 'storageKey',
+  reason: 'reason',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.DocumentTagScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.DocumentTagLinkScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  documentId: 'documentId',
+  tagId: 'tagId',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.DocumentLinkScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  documentId: 'documentId',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  linkType: 'linkType',
+  isPrimary: 'isPrimary',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.RetentionPolicyScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  category: 'category',
+  retentionMonths: 'retentionMonths',
+  action: 'action',
+  legalBasis: 'legalBasis',
+  isActive: 'isActive',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LegalHoldScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  reason: 'reason',
+  heldById: 'heldById',
+  approvedById: 'approvedById',
+  placedAt: 'placedAt',
+  releasedAt: 'releasedAt',
+  releasedById: 'releasedById',
+  releaseReason: 'releaseReason'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2076,7 +2179,13 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   PAYMENT: 'PAYMENT',
   RECEIPT: 'RECEIPT',
   CREDIT_NOTE: 'CREDIT_NOTE',
-  DEBIT_NOTE: 'DEBIT_NOTE'
+  DEBIT_NOTE: 'DEBIT_NOTE',
+  DOCUMENT: 'DOCUMENT',
+  DOCUMENT_VERSION: 'DOCUMENT_VERSION',
+  DOCUMENT_LINK: 'DOCUMENT_LINK',
+  DOCUMENT_TAG: 'DOCUMENT_TAG',
+  RETENTION_POLICY: 'RETENTION_POLICY',
+  LEGAL_HOLD: 'LEGAL_HOLD'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -2501,6 +2610,12 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   EXPORT: 'EXPORT',
   DOCUMENT_UPLOADED: 'DOCUMENT_UPLOADED',
   DOCUMENT_DOWNLOADED: 'DOCUMENT_DOWNLOADED',
+  DOCUMENT_UPDATED: 'DOCUMENT_UPDATED',
+  DOCUMENT_DELETED: 'DOCUMENT_DELETED',
+  DOCUMENT_APPROVAL_SUBMITTED: 'DOCUMENT_APPROVAL_SUBMITTED',
+  LEGAL_HOLD_PLACED: 'LEGAL_HOLD_PLACED',
+  LEGAL_HOLD_RELEASED: 'LEGAL_HOLD_RELEASED',
+  RETENTION_POLICY_UPDATED: 'RETENTION_POLICY_UPDATED',
   REPORT_GENERATED: 'REPORT_GENERATED',
   SECURITY_EVENT: 'SECURITY_EVENT',
   RATE_LIMIT_TRIPPED: 'RATE_LIMIT_TRIPPED',
@@ -2767,6 +2882,7 @@ exports.NotificationCategory = exports.$Enums.NotificationCategory = {
   APPROVAL: 'APPROVAL',
   SECURITY_ALERT: 'SECURITY_ALERT',
   ACCESS_REVIEW: 'ACCESS_REVIEW',
+  DOCUMENT_EXPIRY: 'DOCUMENT_EXPIRY',
   SYSTEM: 'SYSTEM',
   ACCOUNT: 'ACCOUNT'
 };
@@ -2793,6 +2909,52 @@ exports.NotificationStatus = exports.$Enums.NotificationStatus = {
   READ: 'READ',
   ARCHIVED: 'ARCHIVED',
   SUPPRESSED: 'SUPPRESSED'
+};
+
+exports.DocumentCategory = exports.$Enums.DocumentCategory = {
+  RECEIPT: 'RECEIPT',
+  INVOICE: 'INVOICE',
+  QUOTATION: 'QUOTATION',
+  CONTRACT: 'CONTRACT',
+  GRANT_DOCUMENT: 'GRANT_DOCUMENT',
+  TAX_DOCUMENT: 'TAX_DOCUMENT',
+  COMPLIANCE_DOCUMENT: 'COMPLIANCE_DOCUMENT',
+  FINANCIAL_EVIDENCE: 'FINANCIAL_EVIDENCE',
+  ASSET_DOCUMENT: 'ASSET_DOCUMENT',
+  SUPPLIER_DOCUMENT: 'SUPPLIER_DOCUMENT',
+  CUSTOMER_DOCUMENT: 'CUSTOMER_DOCUMENT',
+  BANK_STATEMENT: 'BANK_STATEMENT',
+  RECONCILIATION_SUPPORT: 'RECONCILIATION_SUPPORT',
+  OTHER: 'OTHER'
+};
+
+exports.DocumentStatus = exports.$Enums.DocumentStatus = {
+  AVAILABLE: 'AVAILABLE',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.DocumentOcrStatus = exports.$Enums.DocumentOcrStatus = {
+  NOT_RUN: 'NOT_RUN',
+  QUEUED: 'QUEUED',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+exports.DocumentLinkType = exports.$Enums.DocumentLinkType = {
+  EVIDENCE: 'EVIDENCE',
+  SUPPORTING: 'SUPPORTING',
+  PRIMARY: 'PRIMARY',
+  CONTRACT: 'CONTRACT',
+  AMENDMENT: 'AMENDMENT'
+};
+
+exports.RetentionAction = exports.$Enums.RetentionAction = {
+  ARCHIVE: 'ARCHIVE',
+  DELETE: 'DELETE',
+  RETAIN_FOREVER: 'RETAIN_FOREVER'
 };
 
 exports.Prisma.ModelName = {
@@ -2886,7 +3048,14 @@ exports.Prisma.ModelName = {
   ReconciliationAdjustment: 'ReconciliationAdjustment',
   IdempotencyKey: 'IdempotencyKey',
   Notification: 'Notification',
-  NotificationPreference: 'NotificationPreference'
+  NotificationPreference: 'NotificationPreference',
+  Document: 'Document',
+  DocumentVersion: 'DocumentVersion',
+  DocumentTag: 'DocumentTag',
+  DocumentTagLink: 'DocumentTagLink',
+  DocumentLink: 'DocumentLink',
+  RetentionPolicy: 'RetentionPolicy',
+  LegalHold: 'LegalHold'
 };
 
 /**

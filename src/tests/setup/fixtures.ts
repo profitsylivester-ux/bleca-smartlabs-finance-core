@@ -256,7 +256,7 @@ export async function seedTestFixtures(prisma: PrismaClient): Promise<void> {
     });
   }
 
-  for (const entityType of ['QUOTATION', 'INVOICE', 'PAYMENT', 'CREDIT_NOTE', 'DEBIT_NOTE'] as const) {
+  for (const entityType of ['QUOTATION', 'INVOICE', 'PAYMENT', 'CREDIT_NOTE', 'DEBIT_NOTE', 'DOCUMENT'] as const) {
     const salesPolicy = await prisma.approvalPolicy.findFirst({
       where: { organizationId: org.id, entityType },
       select: { id: true },

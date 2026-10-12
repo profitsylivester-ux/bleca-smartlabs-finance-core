@@ -809,9 +809,53 @@ export class TransactionService {
           costCentreId: true,
           fundingSourceId: true,
           submittedById: true,
+          supportingDocumentId: true,
         },
       });
       if (!candidate) throw new NotFoundError('Transaction', id);
+      const account = candidate.accountId
+        ? await tx.account.findFirst({
+          where: { id: candidate.accountId, organizationId },
+          select: { requiresDocument: true },
+        })
+        : null;
+      const evidenceLink = candidate.supportingDocumentId ? null : await tx.documentLink.findFirst({
+        where: {
+          organizationId,
+          entityType: 'TRANSACTION',
+          entityId: id,
+          linkType: { in: ['EVIDENCE', 'SUPPORTING', 'PRIMARY'] },
+          deletedAt: null,
+          document: {
+            organizationId,
+            deletedAt: null,
+            status: { in: ['AVAILABLE', 'APPROVED'] },
+          },
+        },
+        select: { documentId: true },
+      });
+      const evidenceId = candidate.supportingDocumentId ?? evidenceLink?.documentId ?? null;
+      const evidence = evidenceId ? await tx.document.findFirst({
+          where: {
+            id: evidenceId,
+            organizationId,
+            deletedAt: null,
+            status: { in: ['AVAILABLE', 'APPROVED'] },
+          },
+          select: { id: true },
+        }) : null;
+      if (account?.requiresDocument && !evidence) {
+        throw new ValidationError('This account requires a supporting document before the transaction can be posted.', {
+          transactionId: id,
+          accountId: candidate.accountId,
+        });
+      }
+      if (candidate.supportingDocumentId && !evidence) {
+        throw new ValidationError('The supporting document is unavailable or has not been approved.', {
+          transactionId: id,
+          supportingDocumentId: candidate.supportingDocumentId,
+        });
+      }
       await assertBudgetPostingApproved(tx, candidate);
     }
 

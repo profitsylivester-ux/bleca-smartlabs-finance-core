@@ -311,7 +311,7 @@ async function seedSalesApprovalPolicies(orgId: string) {
     where: { code: 'CEO' },
     select: { id: true },
   });
-  const entityTypes = ['QUOTATION', 'INVOICE', 'PAYMENT', 'CREDIT_NOTE', 'DEBIT_NOTE'] as const;
+  const entityTypes = ['QUOTATION', 'INVOICE', 'PAYMENT', 'CREDIT_NOTE', 'DEBIT_NOTE', 'DOCUMENT'] as const;
 
   for (const entityType of entityTypes) {
     const existing = await prisma.approvalPolicy.findFirst({

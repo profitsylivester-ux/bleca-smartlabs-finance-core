@@ -79,6 +79,9 @@ const serverSchema = z.object({
   S3_SECRET_ACCESS_KEY: z.string().default(''),
   S3_FORCE_PATH_STYLE: boolish(true),
   STORAGE_LOCAL_ROOT: z.string().default('./.storage'),
+  DOCUMENT_MAX_FILE_BYTES: intish(15728640).pipe(z.number().positive()),
+  DOCUMENT_ALLOWED_MIME_TYPES: z.string().default('application/pdf,image/jpeg,image/png'),
+  DOCUMENT_SIGNED_URL_TTL_SECONDS: intish(300).pipe(z.number().min(30).max(900)),
 
   SEED_CEO_EMAIL: z.string().email().optional(),
   SEED_CEO_PASSWORD: z.string().optional(),

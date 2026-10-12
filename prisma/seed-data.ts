@@ -159,8 +159,12 @@ export const PERMISSIONS: PermissionSeed[] = [
   ...(['DOCUMENTS', 'MASTER_DATA', 'IMPORTS'] as ModuleKey[]).flatMap((module): PermissionSeed[] =>
     READ_EXPORT_CONFIG.map((action) => ({ module, action, description: `${action} ${module}` })),
   ),
+  { module: 'DOCUMENTS', action: 'CREATE', description: 'Upload documents and create retention policies' },
+  { module: 'DOCUMENTS', action: 'SUBMIT', description: 'Submit documents for approval' },
   { module: 'DOCUMENTS', action: 'EDIT', description: 'Classify, tag and version documents' },
   { module: 'DOCUMENTS', action: 'APPROVE', description: 'Approve documents for use as evidence' },
+  { module: 'DOCUMENTS', action: 'REJECT', description: 'Reject documents and release legal holds' },
+  { module: 'DOCUMENTS', action: 'ADMINISTER', description: 'Manage legal holds and document security' },
   { module: 'MASTER_DATA', action: 'APPROVE', description: 'Approve master data changes' },
   ...(
     ['TAX_COMPLIANCE', 'REPORTS', 'NOTIFICATIONS', 'SEARCH', 'ANOMALY_DETECTION'] as ModuleKey[]
@@ -226,6 +230,7 @@ const CEO_APPROVAL_MODULES: ModuleKey[] = [
   'DEBIT_NOTES',
   'BUDGETS',
   'COMMITMENTS',
+  'DOCUMENTS',
   'TREASURY_TRANSFERS',
 ];
 

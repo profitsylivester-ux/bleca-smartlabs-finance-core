@@ -163,6 +163,12 @@ export async function advanceRequest(
   if (decision === 'REJECTED' || decision === 'CANCELLED') {
     await updateBusinessDocumentDecision(tx, request, decision);
   }
+  if (request.entityType === 'DOCUMENT' && updatedRequest.status === 'APPROVED') {
+    await tx.document.update({
+      where: { id: request.entityId },
+      data: { status: 'APPROVED', approvedById: actor.userId, approvedAt: new Date() },
+    });
+  }
 
   await writeAuditEntry(
     tx,
@@ -402,6 +408,16 @@ async function updateBusinessDocumentDecision(
   decision: 'REJECTED' | 'CANCELLED',
 ): Promise<void> {
   const status = decision === 'REJECTED' ? 'REJECTED' : 'CANCELLED';
+  if (request.entityType === 'DOCUMENT') {
+    await tx.document.update({
+      where: { id: request.entityId },
+      data: {
+        status: decision === 'REJECTED' ? 'REJECTED' : 'AVAILABLE',
+        ...(decision === 'CANCELLED' ? { approvalRequestId: null } : {}),
+      },
+    });
+    return;
+  }
   if (request.entityType === 'QUOTATION') {
     await tx.quotation.update({ where: { id: request.entityId }, data: { status } });
   }
