@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db/prisma';
 import type { ConditionContext, ApprovalConditionOperator } from './types';
 import { Prisma } from '@/generated/prisma/client';
+import { evaluatePostingOverBudget } from '@/lib/budgets/availability';
 
 export async function evaluateCondition(
   operator: ApprovalConditionOperator,
@@ -121,43 +122,21 @@ async function evaluatePercentOfBudget(
 }
 
 async function evaluateOverBudget(context: ConditionContext, tx: Prisma.TransactionClient): Promise<boolean> {
-  if (!context.accountId || !context.projectId) {
+  if (!context.accountId || !context.currencyCode) {
     return false;
   }
-
-  const budgets = await tx.budget.findMany({
-    where: {
-      organizationId: context.organizationId,
-      status: 'ACTIVE',
-      startDate: { lte: new Date() },
-      endDate: { gte: new Date() },
-    },
-    select: { id: true },
+  const result = await evaluatePostingOverBudget(tx, {
+    organizationId: context.organizationId,
+    accountId: context.accountId,
+    amount: context.amount ?? 0,
+    currencyCode: context.currencyCode,
+    asOf: context.transactionDate,
+    projectId: context.projectId,
+    departmentId: context.departmentId,
+    fundingSourceId: context.fundingSourceId,
+    costCentreId: context.costCentreId,
   });
-
-  if (budgets.length === 0) {
-    return false;
-  }
-
-  const budgetIds = budgets.map((b) => b.id);
-
-  const budgetLines = await tx.budgetLine.findMany({
-    where: {
-      budgetId: { in: budgetIds },
-      accountId: context.accountId,
-    },
-    select: { amount: true },
-  });
-
-  if (budgetLines.length === 0) {
-    return false;
-  }
-
-  const totalBudget = budgetLines.reduce((sum, bl) => sum + Number(bl.amount), 0);
-  const committed = await getCommittedAmount(context, tx);
-  const projected = committed + (context.amount ?? 0);
-
-  return projected > totalBudget;
+  return result.overBudget;
 }
 
 async function evaluateNewCounterparty(context: ConditionContext, tx: Prisma.TransactionClient): Promise<boolean> {

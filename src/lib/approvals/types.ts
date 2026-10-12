@@ -41,6 +41,8 @@ export interface ConditionContext {
   costCentreId?: string | null;
   fundingSourceId?: string | null;
   accountId?: string | null;
+  transactionDate?: Date;
+  requiredCondition?: ApprovalConditionOperator;
   counterpartyId?: string | null;
   counterpartyBankDetailsChanged?: boolean;
   organizationId: string;

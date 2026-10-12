@@ -827,11 +827,28 @@ exports.Prisma.BudgetScalarFieldEnum = {
   organizationId: 'organizationId',
   code: 'code',
   name: 'name',
+  description: 'description',
   type: 'type',
   status: 'status',
   periodType: 'periodType',
   startDate: 'startDate',
   endDate: 'endDate',
+  departmentId: 'departmentId',
+  projectId: 'projectId',
+  fundingSourceId: 'fundingSourceId',
+  costCentreId: 'costCentreId',
+  activity: 'activity',
+  currencyCode: 'currencyCode',
+  approvedAmount: 'approvedAmount',
+  committedAmount: 'committedAmount',
+  actualAmount: 'actualAmount',
+  availableAmount: 'availableAmount',
+  isOverBudget: 'isOverBudget',
+  createdById: 'createdById',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  activatedAt: 'activatedAt',
+  closedAt: 'closedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -841,9 +858,96 @@ exports.Prisma.BudgetLineScalarFieldEnum = {
   organizationId: 'organizationId',
   budgetId: 'budgetId',
   accountId: 'accountId',
+  description: 'description',
   amount: 'amount',
+  phasing: 'phasing',
+  committedAmount: 'committedAmount',
+  actualAmount: 'actualAmount',
+  availableAmount: 'availableAmount',
+  isOverBudget: 'isOverBudget',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CommitmentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  budgetId: 'budgetId',
+  budgetLineId: 'budgetLineId',
+  accountId: 'accountId',
+  source: 'source',
+  sourceId: 'sourceId',
+  description: 'description',
+  amount: 'amount',
+  currencyCode: 'currencyCode',
+  status: 'status',
+  commitmentDate: 'commitmentDate',
+  expectedDate: 'expectedDate',
+  projectId: 'projectId',
+  departmentId: 'departmentId',
+  fundingSourceId: 'fundingSourceId',
+  settledAt: 'settledAt',
+  releasedAt: 'releasedAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BudgetRevisionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  budgetId: 'budgetId',
+  revisionNumber: 'revisionNumber',
+  reason: 'reason',
+  status: 'status',
+  createdById: 'createdById',
+  submittedAt: 'submittedAt',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  rejectedAt: 'rejectedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BudgetRevisionLineScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  revisionId: 'revisionId',
+  budgetLineId: 'budgetLineId',
+  accountId: 'accountId',
+  beforeAmount: 'beforeAmount',
+  afterAmount: 'afterAmount',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.BudgetTransferScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  budgetId: 'budgetId',
+  transferNumber: 'transferNumber',
+  fromLineId: 'fromLineId',
+  toLineId: 'toLineId',
+  amount: 'amount',
+  reason: 'reason',
+  status: 'status',
+  createdById: 'createdById',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  appliedAt: 'appliedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BudgetScenarioScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  budgetId: 'budgetId',
+  kind: 'kind',
+  name: 'name',
+  description: 'description',
+  adjustmentFactor: 'adjustmentFactor',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.OrganizationMembershipScalarFieldEnum = {
@@ -1542,7 +1646,13 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   RECONCILIATION_MATCH: 'RECONCILIATION_MATCH',
   RECONCILIATION_EXCEPTION: 'RECONCILIATION_EXCEPTION',
   RECONCILIATION_ADJUSTMENT: 'RECONCILIATION_ADJUSTMENT',
-  MATCHING_RULE: 'MATCHING_RULE'
+  MATCHING_RULE: 'MATCHING_RULE',
+  BUDGET: 'BUDGET',
+  BUDGET_LINE: 'BUDGET_LINE',
+  BUDGET_REVISION: 'BUDGET_REVISION',
+  BUDGET_TRANSFER: 'BUDGET_TRANSFER',
+  COMMITMENT: 'COMMITMENT',
+  BUDGET_SCENARIO: 'BUDGET_SCENARIO'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -1720,6 +1830,44 @@ exports.BudgetPeriodType = exports.$Enums.BudgetPeriodType = {
   ANNUAL: 'ANNUAL'
 };
 
+exports.CommitmentSource = exports.$Enums.CommitmentSource = {
+  INVOICE: 'INVOICE',
+  PURCHASE_COMMITMENT: 'PURCHASE_COMMITMENT',
+  CONTRACT: 'CONTRACT',
+  PAYMENT_SCHEDULE: 'PAYMENT_SCHEDULE',
+  MANUAL: 'MANUAL'
+};
+
+exports.CommitmentStatus = exports.$Enums.CommitmentStatus = {
+  OPEN: 'OPEN',
+  PARTIALLY_SETTLED: 'PARTIALLY_SETTLED',
+  SETTLED: 'SETTLED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED',
+  OVERDUE: 'OVERDUE'
+};
+
+exports.BudgetRevisionStatus = exports.$Enums.BudgetRevisionStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+exports.BudgetTransferStatus = exports.$Enums.BudgetTransferStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+exports.ScenarioKind = exports.$Enums.ScenarioKind = {
+  BEST_CASE: 'BEST_CASE',
+  EXPECTED_CASE: 'EXPECTED_CASE',
+  WORST_CASE: 'WORST_CASE',
+  CUSTOM: 'CUSTOM'
+};
+
 exports.AuditAction = exports.$Enums.AuditAction = {
   LOGIN: 'LOGIN',
   LOGOUT: 'LOGOUT',
@@ -1798,7 +1946,28 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   RECONCILIATION_ADJUSTMENT_APPROVED: 'RECONCILIATION_ADJUSTMENT_APPROVED',
   RECONCILIATION_ADJUSTMENT_POSTED: 'RECONCILIATION_ADJUSTMENT_POSTED',
   RECONCILIATION_APPROVED: 'RECONCILIATION_APPROVED',
-  RECONCILIATION_REOPENED: 'RECONCILIATION_REOPENED'
+  RECONCILIATION_REOPENED: 'RECONCILIATION_REOPENED',
+  BUDGET_CREATED: 'BUDGET_CREATED',
+  BUDGET_UPDATED: 'BUDGET_UPDATED',
+  BUDGET_SUBMITTED: 'BUDGET_SUBMITTED',
+  BUDGET_APPROVED: 'BUDGET_APPROVED',
+  BUDGET_REJECTED: 'BUDGET_REJECTED',
+  BUDGET_ACTIVATED: 'BUDGET_ACTIVATED',
+  BUDGET_CLOSED: 'BUDGET_CLOSED',
+  BUDGET_LINE_CREATED: 'BUDGET_LINE_CREATED',
+  BUDGET_LINE_UPDATED: 'BUDGET_LINE_UPDATED',
+  BUDGET_AVAILABILITY_RECOMPUTED: 'BUDGET_AVAILABILITY_RECOMPUTED',
+  BUDGET_REVISION_CREATED: 'BUDGET_REVISION_CREATED',
+  BUDGET_REVISION_APPROVED: 'BUDGET_REVISION_APPROVED',
+  BUDGET_REVISION_REJECTED: 'BUDGET_REVISION_REJECTED',
+  BUDGET_TRANSFER_CREATED: 'BUDGET_TRANSFER_CREATED',
+  BUDGET_TRANSFER_APPROVED: 'BUDGET_TRANSFER_APPROVED',
+  BUDGET_TRANSFER_REJECTED: 'BUDGET_TRANSFER_REJECTED',
+  COMMITMENT_CREATED: 'COMMITMENT_CREATED',
+  COMMITMENT_UPDATED: 'COMMITMENT_UPDATED',
+  COMMITMENT_SETTLED: 'COMMITMENT_SETTLED',
+  COMMITMENT_CANCELLED: 'COMMITMENT_CANCELLED',
+  BUDGET_SCENARIO_CREATED: 'BUDGET_SCENARIO_CREATED'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -2029,6 +2198,11 @@ exports.Prisma.ModelName = {
   Transaction: 'Transaction',
   Budget: 'Budget',
   BudgetLine: 'BudgetLine',
+  Commitment: 'Commitment',
+  BudgetRevision: 'BudgetRevision',
+  BudgetRevisionLine: 'BudgetRevisionLine',
+  BudgetTransfer: 'BudgetTransfer',
+  BudgetScenario: 'BudgetScenario',
   OrganizationMembership: 'OrganizationMembership',
   AuditLog: 'AuditLog',
   AuditChainHead: 'AuditChainHead',

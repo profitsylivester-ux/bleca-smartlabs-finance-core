@@ -46,6 +46,13 @@ export async function selectPolicy(
       return conditionMet;
     });
 
+    if (
+      context.requiredCondition
+      && !applicableSteps.some((step) => step.conditionOperator === context.requiredCondition)
+    ) {
+      continue;
+    }
+
     console.log('[DEBUG selectPolicy] Applicable steps:', applicableSteps.length);
     if (applicableSteps.length > 0) {
       const snapshot = buildPolicySnapshot(policy, applicableSteps, conditionResults);

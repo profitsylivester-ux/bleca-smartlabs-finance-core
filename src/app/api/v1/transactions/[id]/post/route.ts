@@ -7,8 +7,9 @@ import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
 import { runIdempotent } from '@/lib/api/idempotency';
 import { withAudit } from '@/lib/db/with-audit';
-import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
+import { ConflictError, NotFoundError, ValidationError } from '@/lib/kernel/errors';
 import { TransactionService, type TransactionRow } from '@/lib/transactions/service';
+import { ensureBudgetPostingApproval } from '@/lib/budgets/posting-guard';
 
 const service = new TransactionService();
 
@@ -36,13 +37,79 @@ export async function POST(
     const { id } = await params;
     const orgId = ctx.actor.organizationId!;
 
+    const candidate = await prisma.transaction.findFirst({
+      where: { id, organizationId: orgId },
+      select: {
+        id: true,
+        organizationId: true,
+        date: true,
+        amount: true,
+        currencyCode: true,
+        accountId: true,
+        projectId: true,
+        departmentId: true,
+        costCentreId: true,
+        fundingSourceId: true,
+        submittedById: true,
+      },
+    });
+    if (!candidate) throw new NotFoundError('Transaction', id);
+
+    const requestHeaders = await headers();
+    const budgetApproval = await withAudit(
+      {
+        organizationId: orgId,
+        actor: {
+          id: ctx.actor.userId,
+          name: ctx.actor.fullName,
+          roleCodes: ctx.actor.roleCodes,
+        },
+        ipAddress: requestHeaders.get('x-forwarded-for')?.split(',')[0]?.trim()
+          ?? requestHeaders.get('x-real-ip'),
+        userAgent: requestHeaders.get('user-agent'),
+        requestId: reqId,
+        sessionId: ctx.actor.sessionId,
+      },
+      async (tx) => ensureBudgetPostingApproval(tx, candidate, ctx.actor),
+    );
+
+    if (budgetApproval.overBudget && !budgetApproval.approved) {
+      return apiError(
+        new ConflictError(
+          'This transaction exceeds available budget. An OVER_BUDGET approval request was sent for approval.',
+          {
+            approvalRequestId: budgetApproval.approvalRequestId,
+            budgetId: budgetApproval.budgetId,
+            available: budgetApproval.available,
+            projected: budgetApproval.projected,
+          },
+        ),
+        reqId,
+      );
+    }
+
     const outcome = await runIdempotent<TransactionRow>({
       key,
       scope: `POST /api/v1/transactions/${id}/post`,
       actorId: ctx.actor.userId,
       body: {},
-      handler: async (tx) => {
-        const result = await service._doAction(tx, id, orgId, ctx.actor, 'POSTED');
+      handler: async () => {
+        const result = await withAudit(
+          {
+            organizationId: orgId,
+            actor: {
+              id: ctx.actor.userId,
+              name: ctx.actor.fullName,
+              roleCodes: ctx.actor.roleCodes,
+            },
+            ipAddress: requestHeaders.get('x-forwarded-for')?.split(',')[0]?.trim()
+              ?? requestHeaders.get('x-real-ip'),
+            userAgent: requestHeaders.get('user-agent'),
+            requestId: reqId,
+            sessionId: ctx.actor.sessionId,
+          },
+          async (tx) => service._doAction(tx, id, orgId, ctx.actor, 'POSTED'),
+        );
         return { status: 200, body: result };
       },
     });

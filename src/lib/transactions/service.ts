@@ -5,6 +5,8 @@ import { withAudit } from '@/lib/db/with-audit';
 import { ValidationError, NotFoundError } from '@/lib/kernel/errors';
 import { TransactionStateMachine, type TransactionStatus } from '@/lib/workflow/transaction-state-machine';
 import type { ActorContext } from '@/lib/kernel/context';
+import { assertBudgetPostingApproved } from '@/lib/budgets/posting-guard';
+import { recomputeAndAudit } from '@/lib/budgets/service';
 
 const STATE_MACHINE = new TransactionStateMachine();
 
@@ -792,6 +794,27 @@ export class TransactionService {
       throw new NotFoundError('Transaction', id);
     }
 
+    if (targetStatus === 'POSTED') {
+      const candidate = await tx.transaction.findFirst({
+        where: { id, organizationId },
+        select: {
+          id: true,
+          organizationId: true,
+          date: true,
+          amount: true,
+          currencyCode: true,
+          accountId: true,
+          projectId: true,
+          departmentId: true,
+          costCentreId: true,
+          fundingSourceId: true,
+          submittedById: true,
+        },
+      });
+      if (!candidate) throw new NotFoundError('Transaction', id);
+      await assertBudgetPostingApproved(tx, candidate);
+    }
+
     // Let the state machine handle legality check and audit writing
     const result = await STATE_MACHINE.transition(
       {
@@ -846,6 +869,33 @@ export class TransactionService {
         ...fullTx,
         amount: Number(fullTx.amount),
       }, actor, organizationId);
+
+      if (!fullTx.accountId) {
+        throw new ValidationError('Cannot post transaction without an account.', {
+          transactionId: fullTx.id,
+        });
+      }
+      const budgets = await tx.budget.findMany({
+        where: {
+          organizationId,
+          status: 'ACTIVE',
+          startDate: { lte: fullTx.date },
+          endDate: { gte: fullTx.date },
+          lines: { some: { accountId: fullTx.accountId } },
+        },
+        select: { id: true, projectId: true, departmentId: true, fundingSourceId: true, costCentreId: true },
+      });
+      for (const budget of budgets) {
+        if (budget.projectId && budget.projectId !== fullTx.projectId) continue;
+        if (budget.departmentId && budget.departmentId !== fullTx.departmentId) continue;
+        if (budget.fundingSourceId && budget.fundingSourceId !== fullTx.fundingSourceId) continue;
+        if (budget.costCentreId && budget.costCentreId !== fullTx.costCentreId) continue;
+        await recomputeAndAudit(tx, budget.id, {
+          id: actor.userId,
+          name: actor.fullName,
+          roleCodes: actor.roleCodes,
+        }, `transaction ${fullTx.id} posted`);
+      }
     }
 
     const updated = await tx.transaction.findFirst({

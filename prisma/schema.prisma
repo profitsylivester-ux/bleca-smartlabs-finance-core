@@ -386,6 +386,51 @@ enum BudgetPeriodType {
   ANNUAL
 }
 
+/// Commitment lifecycle (PDF §67). A commitment reserves budget; it is only
+/// released when settled, cancelled or expired.
+enum CommitmentStatus {
+  OPEN
+  PARTIALLY_SETTLED
+  SETTLED
+  CANCELLED
+  EXPIRED
+  OVERDUE
+}
+
+/// Where a commitment came from (PDF §67).
+enum CommitmentSource {
+  INVOICE
+  PURCHASE_COMMITMENT
+  CONTRACT
+  PAYMENT_SCHEDULE
+  MANUAL
+}
+
+/// Lightweight scenario planning (PDF §13). Non-destructive: a scenario never
+/// mutates a budget line.
+enum ScenarioKind {
+  BEST_CASE
+  EXPECTED_CASE
+  WORST_CASE
+  CUSTOM
+}
+
+/// Revision lifecycle. A revision is approval-gated and preserves before/after.
+enum BudgetRevisionStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+/// Transfer lifecycle between two budget lines of the same budget.
+enum BudgetTransferStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
 /// Journal Entry enums (M4).
 enum JournalEntryType {
   STANDARD
@@ -538,6 +583,29 @@ enum AuditAction {
   RECONCILIATION_ADJUSTMENT_POSTED
   RECONCILIATION_APPROVED
   RECONCILIATION_REOPENED
+  /// Budgets & commitments (M9). Each state change is its own action so the
+  /// trail can answer "who approved this revision" without parsing a changes blob.
+  BUDGET_CREATED
+  BUDGET_UPDATED
+  BUDGET_SUBMITTED
+  BUDGET_APPROVED
+  BUDGET_REJECTED
+  BUDGET_ACTIVATED
+  BUDGET_CLOSED
+  BUDGET_LINE_CREATED
+  BUDGET_LINE_UPDATED
+  BUDGET_AVAILABILITY_RECOMPUTED
+  BUDGET_REVISION_CREATED
+  BUDGET_REVISION_APPROVED
+  BUDGET_REVISION_REJECTED
+  BUDGET_TRANSFER_CREATED
+  BUDGET_TRANSFER_APPROVED
+  BUDGET_TRANSFER_REJECTED
+  COMMITMENT_CREATED
+  COMMITMENT_UPDATED
+  COMMITMENT_SETTLED
+  COMMITMENT_CANCELLED
+  BUDGET_SCENARIO_CREATED
 }
 
 enum AuditEntityType {
@@ -587,6 +655,13 @@ enum AuditEntityType {
   RECONCILIATION_EXCEPTION
   RECONCILIATION_ADJUSTMENT
   MATCHING_RULE
+  /// Budgets & commitments (M9).
+  BUDGET
+  BUDGET_LINE
+  BUDGET_REVISION
+  BUDGET_TRANSFER
+  COMMITMENT
+  BUDGET_SCENARIO
 }
 
 enum AuditResult {
@@ -886,6 +961,15 @@ model User {
   importBatchesRolledBack     ImportBatch[] @relation("ImportBatchRolledBackBy")
   importFieldMappingsCreated  ImportFieldMapping[] @relation("ImportFieldMappingCreatedBy")
   importErrorsResolved        ImportError[] @relation("ImportErrorResolvedBy")
+
+  budgetsCreated            Budget[]          @relation("BudgetCreatedBy")
+  budgetsApproved           Budget[]          @relation("BudgetApprovedBy")
+  commitmentsCreated        Commitment[]      @relation("CommitmentCreatedBy")
+  budgetRevisionsCreated    BudgetRevision[]  @relation("BudgetRevisionCreatedBy")
+  budgetRevisionsApproved   BudgetRevision[]  @relation("BudgetRevisionApprovedBy")
+  budgetTransfersCreated    BudgetTransfer[]  @relation("BudgetTransferCreatedBy")
+  budgetTransfersApproved   BudgetTransfer[]  @relation("BudgetTransferApprovedBy")
+  budgetScenariosCreated    BudgetScenario[]  @relation("BudgetScenarioCreatedBy")
 
   @@index([status, isActive])
   @@index([primaryLocationId])
@@ -1408,6 +1492,10 @@ model Organization {
   reconciliationMatches ReconciliationMatch[]
   reconciliationExceptions ReconciliationException[]
   reconciliationAdjustments ReconciliationAdjustment[]
+  commitments     Commitment[]
+  budgetRevisions BudgetRevision[]
+  budgetTransfers BudgetTransfer[]
+  budgetScenarios BudgetScenario[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -1461,6 +1549,8 @@ model Department {
   costCentres    CostCentre[]
   journalLines   JournalLine[]
   transactions   Transaction[]
+  budgets        Budget[]
+  commitments    Commitment[]
 
   @@unique([organizationId, code])
   @@index([parentId])
@@ -1482,6 +1572,7 @@ model CostCentre {
 
   journalLines JournalLine[]
   transactions Transaction[]
+  budgets       Budget[]
 
   @@unique([organizationId, code])
   @@index([departmentId])
@@ -1504,6 +1595,8 @@ model Project {
 
   journalLines JournalLine[]
   transactions Transaction[]
+  budgets       Budget[]
+  commitments   Commitment[]
 
   @@unique([organizationId, code])
   @@index([status, isActive])
@@ -1527,6 +1620,8 @@ model FundingSource {
   journalLines JournalLine[]
   transactions Transaction[]
   treasuryAccounts TreasuryAccount[]
+  budgets       Budget[]
+  commitments   Commitment[]
 
   @@unique([organizationId, code])
   @@index([type, isActive])
@@ -1680,6 +1775,8 @@ model Currency {
   paymentSchedules       PaymentSchedule[]
   transfers              Transfer[]
   transfersAsDestinationCurrency Transfer[] @relation("TransferDestinationCurrency")
+  budgets                Budget[]
+  commitments            Commitment[]
 
   @@map("currencies")
 }
@@ -1816,6 +1913,7 @@ model Account {
 
   openingBalances        OpeningBalance[]
   budgetLines            BudgetLine[]
+  commitments            Commitment[]
   journalLines           JournalLine[]
   accountBalanceSnapshots AccountBalanceSnapshot[]
   transactions           Transaction[]
@@ -2095,28 +2193,79 @@ model Transaction {
   @@map("transactions")
 }
 
-/// Minimal Budget for M3 account relation (expanded in M9).
+/// Budget (M9, PDF §13). A budget is scoped to exactly one level
+/// (company / department / project / funding-restricted / activity) via `type`
+/// plus the matching dimension column. Availability is recomputed on posting
+/// and on every commitment change:  Available = Approved − Commitments − Actual.
+///
+/// The committed/actual/available columns are a cache for list and detail views.
+/// They are never authoritative — `recomputeAvailability` derives them from the
+/// budget lines, open commitments and posted journal lines, so a stale cache can
+/// always be rebuilt and can never drift silently.
 model Budget {
   id             String          @id @default(cuid())
   organizationId String          @map("organization_id")
   organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   code           String
   name           String
+  description    String?
   type           BudgetLevel
   status         BudgetStatus    @default(DRAFT)
   periodType     BudgetPeriodType
   startDate      DateTime        @map("start_date")
   endDate        DateTime        @map("end_date")
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @updatedAt @map("updated_at")
 
-  lines          BudgetLine[]
+  /// The single dimension this budget is scoped to. Exactly one is non-null for
+  /// DEPARTMENT/PROJECT/FUNDING/ACTIVITY levels; all null for a COMPANY budget.
+  departmentId    String?  @map("department_id")
+  department      Department?  @relation(fields: [departmentId], references: [id])
+  projectId       String?  @map("project_id")
+  project         Project?     @relation(fields: [projectId], references: [id])
+  fundingSourceId String?  @map("funding_source_id")
+  fundingSource   FundingSource? @relation(fields: [fundingSourceId], references: [id])
+  costCentreId    String?  @map("cost_centre_id")
+  costCentre      CostCentre?  @relation(fields: [costCentreId], references: [id])
+  activity        String?  // free-text activity label for ACTIVITY-level budgets
+
+  currencyCode    String   @db.Char(3) @map("currency_code")
+  currency        Currency @relation(fields: [currencyCode], references: [code])
+
+  /// Cached roll-ups across lines (never authoritative — see class note).
+  approvedAmount  Decimal  @default(0) @db.Decimal(20, 6) @map("approved_amount")
+  committedAmount Decimal  @default(0) @db.Decimal(20, 6) @map("committed_amount")
+  actualAmount    Decimal  @default(0) @db.Decimal(20, 6) @map("actual_amount")
+  availableAmount Decimal  @default(0) @db.Decimal(20, 6) @map("available_amount")
+  isOverBudget    Boolean  @default(false) @map("is_over_budget")
+
+  createdById     String?  @map("created_by_id")
+  createdBy       User?    @relation("BudgetCreatedBy", fields: [createdById], references: [id])
+  approvedById    String?  @map("approved_by_id")
+  approvedBy      User?    @relation("BudgetApprovedBy", fields: [approvedById], references: [id])
+  approvedAt      DateTime? @map("approved_at")
+  activatedAt     DateTime? @map("activated_at")
+  closedAt        DateTime? @map("closed_at")
+
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  lines           BudgetLine[]
+  revisions       BudgetRevision[]
+  transfers       BudgetTransfer[]
+  commitments     Commitment[]
+  scenarios       BudgetScenario[]
 
   @@unique([organizationId, code])
+  @@index([status])
+  @@index([type, status])
+  @@index([projectId])
+  @@index([departmentId])
+  @@index([fundingSourceId])
   @@map("budgets")
 }
 
-/// Minimal BudgetLine for M3 account relation (expanded in M9).
+/// BudgetLine (M9). One account's approved amount within a budget, with optional
+/// monthly phasing. Committed/actual/available are caches recomputed by
+/// `recomputeAvailability`; the formula is Available = Approved − Commitments − Actual.
 model BudgetLine {
   id             String       @id @default(cuid())
   organizationId String       @map("organization_id")
@@ -2125,13 +2274,184 @@ model BudgetLine {
   budget         Budget       @relation(fields: [budgetId], references: [id], onDelete: Cascade)
   accountId      String       @map("account_id")
   account        Account      @relation(fields: [accountId], references: [id])
+  description    String?
   amount         Decimal      @db.Decimal(20, 6)
+  /// Optional monthly phasing for a MONTHLY budget: { "1": "1000", "2": "0", ... }.
+  /// Stored as JSON in base currency; validated to sum to `amount` by the service.
+  phasing        Json?
+
+  /// Cached availability figures (never authoritative — see Budget class note).
+  committedAmount Decimal  @default(0) @db.Decimal(20, 6) @map("committed_amount")
+  actualAmount    Decimal  @default(0) @db.Decimal(20, 6) @map("actual_amount")
+  availableAmount Decimal  @default(0) @db.Decimal(20, 6) @map("available_amount")
+  isOverBudget    Boolean  @default(false) @map("is_over_budget")
+
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  commitments    Commitment[]
+  revisionLines  BudgetRevisionLine[]
+  transfersFrom  BudgetTransfer[] @relation("TransferFromLine")
+  transfersTo    BudgetTransfer[] @relation("TransferToLine")
 
   @@unique([budgetId, accountId])
   @@index([accountId])
   @@map("budget_lines")
+}
+
+/// Commitment (M9, PDF §67). A commitment reserves budget ahead of actual spend
+/// (an invoice raised, a payment scheduled, a contract signed, a manual entry).
+/// `source` records where it came from and `sourceId` the originating document,
+/// so a commitment created from an invoice can be traced back and settled when
+/// the invoice is paid. Creating a commitment reserves budget; settling or
+/// cancelling it releases the reservation.
+model Commitment {
+  id             String           @id @default(cuid())
+  organizationId String           @map("organization_id")
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  budgetId       String?          @map("budget_id")
+  budget         Budget?          @relation(fields: [budgetId], references: [id])
+  budgetLineId   String?          @map("budget_line_id")
+  budgetLine     BudgetLine?      @relation(fields: [budgetLineId], references: [id])
+  accountId      String           @map("account_id")
+  account        Account          @relation(fields: [accountId], references: [id])
+
+  source         CommitmentSource
+  sourceId       String?          @map("source_id")
+  description    String?
+  amount         Decimal          @db.Decimal(20, 6)
+  currencyCode   String           @db.Char(3) @map("currency_code")
+  currency       Currency         @relation(fields: [currencyCode], references: [code])
+  status         CommitmentStatus @default(OPEN)
+  commitmentDate DateTime         @map("commitment_date")
+  expectedDate   DateTime?        @map("expected_date")
+
+  projectId      String?          @map("project_id")
+  project        Project?         @relation(fields: [projectId], references: [id])
+  departmentId   String?          @map("department_id")
+  department     Department?      @relation(fields: [departmentId], references: [id])
+  fundingSourceId String?         @map("funding_source_id")
+  fundingSource  FundingSource?   @relation(fields: [fundingSourceId], references: [id])
+
+  settledAt      DateTime?        @map("settled_at")
+  releasedAt     DateTime?        @map("released_at")
+  createdById    String?          @map("created_by_id")
+  createdBy      User?            @relation("CommitmentCreatedBy", fields: [createdById], references: [id])
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  @@index([budgetId, status])
+  @@index([budgetLineId, status])
+  @@index([status, expectedDate])
+  @@index([commitmentDate])
+  @@index([accountId])
+  @@index([source, sourceId])
+  @@map("commitments")
+}
+
+/// BudgetRevision (M9). Approval-gated; each revision carries line-level
+/// before/after snapshots so the full history of every change is preserved.
+model BudgetRevision {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  budgetId       String       @map("budget_id")
+  budget         Budget       @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  revisionNumber Int          @map("revision_number")
+  reason         String
+  status         BudgetRevisionStatus @default(DRAFT)
+
+  createdById    String?      @map("created_by_id")
+  createdBy      User?        @relation("BudgetRevisionCreatedBy", fields: [createdById], references: [id])
+  submittedAt    DateTime?    @map("submitted_at")
+  approvedById   String?      @map("approved_by_id")
+  approvedBy     User?        @relation("BudgetRevisionApprovedBy", fields: [approvedById], references: [id])
+  approvedAt     DateTime?    @map("approved_at")
+  rejectedAt     DateTime?    @map("rejected_at")
+
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  lines          BudgetRevisionLine[]
+
+  @@unique([budgetId, revisionNumber])
+  @@index([budgetId, status])
+  @@map("budget_revisions")
+}
+
+/// BudgetRevisionLine (M9). The before/after snapshot of one line within a
+/// revision. `beforeAmount` is captured at revision creation; `afterAmount` is
+/// what the line becomes once the revision is approved.
+model BudgetRevisionLine {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  revisionId     String       @map("revision_id")
+  revision       BudgetRevision @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+  budgetLineId   String       @map("budget_line_id")
+  budgetLine     BudgetLine   @relation(fields: [budgetLineId], references: [id], onDelete: Cascade)
+  accountId      String       @map("account_id")
+  beforeAmount   Decimal      @db.Decimal(20, 6) @map("before_amount")
+  afterAmount    Decimal      @db.Decimal(20, 6) @map("after_amount")
+
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  @@unique([revisionId, budgetLineId])
+  @@index([budgetLineId])
+  @@map("budget_revision_lines")
+}
+
+/// BudgetTransfer (M9). Moves an approved amount between two lines of the same
+/// budget. Approval-gated and audited; applying it decrements the from-line and
+/// increments the to-line, then recomputes availability on both.
+model BudgetTransfer {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  budgetId       String       @map("budget_id")
+  budget         Budget       @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  transferNumber Int          @map("transfer_number")
+  fromLineId     String       @map("from_line_id")
+  fromLine       BudgetLine   @relation("TransferFromLine", fields: [fromLineId], references: [id])
+  toLineId       String       @map("to_line_id")
+  toLine         BudgetLine   @relation("TransferToLine", fields: [toLineId], references: [id])
+  amount         Decimal      @db.Decimal(20, 6)
+  reason         String
+  status         BudgetTransferStatus @default(DRAFT)
+
+  createdById    String?      @map("created_by_id")
+  createdBy      User?        @relation("BudgetTransferCreatedBy", fields: [createdById], references: [id])
+  approvedById   String?      @map("approved_by_id")
+  approvedBy     User?        @relation("BudgetTransferApprovedBy", fields: [approvedById], references: [id])
+  approvedAt     DateTime?    @map("approved_at")
+  appliedAt      DateTime?    @map("applied_at")
+
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  @@unique([budgetId, transferNumber])
+  @@index([budgetId, status])
+  @@map("budget_transfers")
+}
+
+/// BudgetScenario (M9, PDF §13). Lightweight, non-destructive scenario planning
+/// (best / expected / worst case). A scenario stores an adjustment factor and a
+/// note; projecting it never mutates the underlying budget lines.
+model BudgetScenario {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  budgetId       String       @map("budget_id")
+  budget         Budget       @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  kind           ScenarioKind
+  name           String
+  description    String?
+  adjustmentFactor Decimal   @db.Decimal(20, 6) @map("adjustment_factor")
+  createdById    String?      @map("created_by_id")
+  createdBy      User?        @relation("BudgetScenarioCreatedBy", fields: [createdById], references: [id])
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  @@index([budgetId])
+  @@map("budget_scenarios")
 }
 
 model OrganizationMembership {

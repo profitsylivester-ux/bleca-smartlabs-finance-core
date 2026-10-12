@@ -169,10 +169,10 @@ export const MODULES: ModuleDefinition[] = [
   },
   {
     key: 'BUDGETS',
-    path: null,
+    path: '/budgets',
     label: 'Budgets & Commitments',
     description: 'Approved less commitments less actual, with over-budget approval.',
-    availability: 'PLANNED',
+    availability: 'AVAILABLE',
     milestone: 'M9',
     icon: 'target',
     group: 'accounting',
