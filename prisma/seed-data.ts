@@ -138,6 +138,7 @@ export const PERMISSIONS: PermissionSeed[] = [
       'PAYMENTS',
       'RECEIPTS',
       'CREDIT_NOTES',
+      'DEBIT_NOTES',
     ] as ModuleKey[]
   ).flatMap((module): PermissionSeed[] =>
     SALES_ACTIONS.map((action) => ({
@@ -217,10 +218,12 @@ export interface RoleSeed {
 const CEO_APPROVAL_MODULES: ModuleKey[] = [
   'TRANSACTIONS',
   'JOURNAL_ENTRIES',
+  'QUOTATIONS',
   'INVOICES',
   'PAYMENTS',
   'RECEIPTS',
   'CREDIT_NOTES',
+  'DEBIT_NOTES',
   'BUDGETS',
   'COMMITMENTS',
   'TREASURY_TRANSFERS',

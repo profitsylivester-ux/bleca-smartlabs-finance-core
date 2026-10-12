@@ -855,6 +855,218 @@ exports.Prisma.CustomerReceivableScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.QuotationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  customerId: 'customerId',
+  number: 'number',
+  status: 'status',
+  quoteDate: 'quoteDate',
+  validUntil: 'validUntil',
+  currencyCode: 'currencyCode',
+  reference: 'reference',
+  notes: 'notes',
+  subtotal: 'subtotal',
+  taxAmount: 'taxAmount',
+  totalAmount: 'totalAmount',
+  submittedById: 'submittedById',
+  submittedAt: 'submittedAt',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  sentAt: 'sentAt',
+  acceptedAt: 'acceptedAt',
+  convertedAt: 'convertedAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QuotationLineScalarFieldEnum = {
+  id: 'id',
+  quotationId: 'quotationId',
+  description: 'description',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  amount: 'amount',
+  invoicedQuantity: 'invoicedQuantity'
+};
+
+exports.Prisma.InvoiceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  direction: 'direction',
+  customerId: 'customerId',
+  supplierId: 'supplierId',
+  quotationId: 'quotationId',
+  number: 'number',
+  status: 'status',
+  invoiceDate: 'invoiceDate',
+  dueDate: 'dueDate',
+  currencyCode: 'currencyCode',
+  reference: 'reference',
+  notes: 'notes',
+  subtotal: 'subtotal',
+  taxAmount: 'taxAmount',
+  totalAmount: 'totalAmount',
+  taxInvoiceNumber: 'taxInvoiceNumber',
+  isTaxInvoice: 'isTaxInvoice',
+  journalEntryId: 'journalEntryId',
+  reversalJournalEntryId: 'reversalJournalEntryId',
+  submittedById: 'submittedById',
+  submittedAt: 'submittedAt',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  sentAt: 'sentAt',
+  cancelledAt: 'cancelledAt',
+  cancellationReason: 'cancellationReason',
+  recurrenceFrequency: 'recurrenceFrequency',
+  recurrenceNextAt: 'recurrenceNextAt',
+  recurrenceEndsAt: 'recurrenceEndsAt',
+  recurrenceTemplateId: 'recurrenceTemplateId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InvoiceLineScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  quotationLineId: 'quotationLineId',
+  description: 'description',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  amount: 'amount',
+  taxRate: 'taxRate',
+  taxAmount: 'taxAmount',
+  taxAccountId: 'taxAccountId',
+  accountId: 'accountId'
+};
+
+exports.Prisma.InvoiceReminderScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  invoiceId: 'invoiceId',
+  status: 'status',
+  recipient: 'recipient',
+  message: 'message',
+  scheduledAt: 'scheduledAt',
+  sentAt: 'sentAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.DocumentSequenceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  type: 'type',
+  lastNumber: 'lastNumber',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  direction: 'direction',
+  customerId: 'customerId',
+  supplierId: 'supplierId',
+  number: 'number',
+  status: 'status',
+  treasuryAccountId: 'treasuryAccountId',
+  currencyCode: 'currencyCode',
+  amount: 'amount',
+  unappliedAmount: 'unappliedAmount',
+  allocationMode: 'allocationMode',
+  onAccountAccountId: 'onAccountAccountId',
+  paymentDate: 'paymentDate',
+  reference: 'reference',
+  description: 'description',
+  journalEntryId: 'journalEntryId',
+  reversalJournalEntryId: 'reversalJournalEntryId',
+  submittedById: 'submittedById',
+  submittedAt: 'submittedAt',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  completedAt: 'completedAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentMethodLineScalarFieldEnum = {
+  id: 'id',
+  paymentId: 'paymentId',
+  method: 'method',
+  amount: 'amount',
+  reference: 'reference'
+};
+
+exports.Prisma.PaymentAllocationScalarFieldEnum = {
+  id: 'id',
+  paymentId: 'paymentId',
+  invoiceId: 'invoiceId',
+  amount: 'amount',
+  allocatedAt: 'allocatedAt'
+};
+
+exports.Prisma.ReceiptScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  paymentId: 'paymentId',
+  number: 'number',
+  status: 'status',
+  issuedAt: 'issuedAt',
+  supportingDocumentId: 'supportingDocumentId',
+  voidedAt: 'voidedAt',
+  voidReason: 'voidReason',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ReceiptLineScalarFieldEnum = {
+  id: 'id',
+  receiptId: 'receiptId',
+  invoiceId: 'invoiceId',
+  amount: 'amount'
+};
+
+exports.Prisma.CreditNoteScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  invoiceId: 'invoiceId',
+  number: 'number',
+  status: 'status',
+  reasonCode: 'reasonCode',
+  reason: 'reason',
+  amount: 'amount',
+  taxAmount: 'taxAmount',
+  journalEntryId: 'journalEntryId',
+  createdById: 'createdById',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  appliedAt: 'appliedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DebitNoteScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  invoiceId: 'invoiceId',
+  number: 'number',
+  status: 'status',
+  reasonCode: 'reasonCode',
+  reason: 'reason',
+  amount: 'amount',
+  taxAmount: 'taxAmount',
+  journalEntryId: 'journalEntryId',
+  createdById: 'createdById',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  appliedAt: 'appliedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AccountScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -1576,6 +1788,7 @@ exports.ModuleKey = exports.$Enums.ModuleKey = {
   PAYMENTS: 'PAYMENTS',
   RECEIPTS: 'RECEIPTS',
   CREDIT_NOTES: 'CREDIT_NOTES',
+  DEBIT_NOTES: 'DEBIT_NOTES',
   DOCUMENTS: 'DOCUMENTS',
   MASTER_DATA: 'MASTER_DATA',
   REPORTS: 'REPORTS',
@@ -1857,7 +2070,13 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   SUPPLIER_BANK_DETAIL: 'SUPPLIER_BANK_DETAIL',
   SUPPLIER_BANK_DETAIL_CHANGE_REQUEST: 'SUPPLIER_BANK_DETAIL_CHANGE_REQUEST',
   CUSTOMER_CREDIT_HOLD: 'CUSTOMER_CREDIT_HOLD',
-  CUSTOMER_RECEIVABLE: 'CUSTOMER_RECEIVABLE'
+  CUSTOMER_RECEIVABLE: 'CUSTOMER_RECEIVABLE',
+  QUOTATION: 'QUOTATION',
+  INVOICE: 'INVOICE',
+  PAYMENT: 'PAYMENT',
+  RECEIPT: 'RECEIPT',
+  CREDIT_NOTE: 'CREDIT_NOTE',
+  DEBIT_NOTE: 'DEBIT_NOTE'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -1946,6 +2165,114 @@ exports.CustomerReceivableStatus = exports.$Enums.CustomerReceivableStatus = {
   PAID: 'PAID',
   WRITTEN_OFF: 'WRITTEN_OFF',
   CANCELLED: 'CANCELLED'
+};
+
+exports.QuotationStatus = exports.$Enums.QuotationStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  SENT: 'SENT',
+  ACCEPTED: 'ACCEPTED',
+  EXPIRED: 'EXPIRED',
+  CONVERTED: 'CONVERTED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.InvoiceDirection = exports.$Enums.InvoiceDirection = {
+  RECEIVABLE: 'RECEIVABLE',
+  PAYABLE: 'PAYABLE'
+};
+
+exports.InvoiceStatus = exports.$Enums.InvoiceStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  SENT: 'SENT',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  PAID: 'PAID',
+  OVERDUE: 'OVERDUE',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.RecurrenceFrequency = exports.$Enums.RecurrenceFrequency = {
+  MONTHLY: 'MONTHLY',
+  QUARTERLY: 'QUARTERLY',
+  ANNUALLY: 'ANNUALLY'
+};
+
+exports.ReminderStatus = exports.$Enums.ReminderStatus = {
+  SCHEDULED: 'SCHEDULED',
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.DocumentSequenceType = exports.$Enums.DocumentSequenceType = {
+  QUOTATION: 'QUOTATION',
+  INVOICE: 'INVOICE',
+  PAYMENT: 'PAYMENT',
+  RECEIPT: 'RECEIPT',
+  CREDIT_NOTE: 'CREDIT_NOTE',
+  DEBIT_NOTE: 'DEBIT_NOTE'
+};
+
+exports.PaymentDirection = exports.$Enums.PaymentDirection = {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  COMPLETED: 'COMPLETED',
+  REVERSED: 'REVERSED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.PaymentAllocationMode = exports.$Enums.PaymentAllocationMode = {
+  MANUAL: 'MANUAL',
+  AUTOMATIC: 'AUTOMATIC',
+  FIFO: 'FIFO'
+};
+
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  CASH: 'CASH',
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  MOBILE_MONEY: 'MOBILE_MONEY',
+  PAYMENT_GATEWAY: 'PAYMENT_GATEWAY',
+  CHEQUE: 'CHEQUE',
+  CARD: 'CARD',
+  OTHER: 'OTHER'
+};
+
+exports.ReceiptStatus = exports.$Enums.ReceiptStatus = {
+  ISSUED: 'ISSUED',
+  VOIDED: 'VOIDED'
+};
+
+exports.AdjustmentNoteStatus = exports.$Enums.AdjustmentNoteStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.AdjustmentReasonCode = exports.$Enums.AdjustmentReasonCode = {
+  RETURN: 'RETURN',
+  PRICING_ADJUSTMENT: 'PRICING_ADJUSTMENT',
+  DAMAGED_GOODS: 'DAMAGED_GOODS',
+  DUPLICATE_BILLING: 'DUPLICATE_BILLING',
+  SERVICE_NOT_RENDERED: 'SERVICE_NOT_RENDERED',
+  TAX_ADJUSTMENT: 'TAX_ADJUSTMENT',
+  OVERCHARGE: 'OVERCHARGE',
+  UNDERCHARGE: 'UNDERCHARGE',
+  OTHER: 'OTHER'
 };
 
 exports.AccountType = exports.$Enums.AccountType = {
@@ -2060,6 +2387,8 @@ exports.JournalSource = exports.$Enums.JournalSource = {
   INVOICE: 'INVOICE',
   PAYMENT: 'PAYMENT',
   RECEIPT: 'RECEIPT',
+  CREDIT_NOTE: 'CREDIT_NOTE',
+  DEBIT_NOTE: 'DEBIT_NOTE',
   TRANSFER: 'TRANSFER',
   OPENING_BALANCE: 'OPENING_BALANCE',
   CLOSE: 'CLOSE',
@@ -2077,16 +2406,6 @@ exports.TransactionStatus = exports.$Enums.TransactionStatus = {
   ADJUSTED: 'ADJUSTED',
   REVERSED: 'REVERSED',
   CANCELLED: 'CANCELLED'
-};
-
-exports.PaymentMethod = exports.$Enums.PaymentMethod = {
-  CASH: 'CASH',
-  BANK_TRANSFER: 'BANK_TRANSFER',
-  MOBILE_MONEY: 'MOBILE_MONEY',
-  PAYMENT_GATEWAY: 'PAYMENT_GATEWAY',
-  CHEQUE: 'CHEQUE',
-  CARD: 'CARD',
-  OTHER: 'OTHER'
 };
 
 exports.BudgetLevel = exports.$Enums.BudgetLevel = {
@@ -2265,7 +2584,32 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   SUPPLIER_BANK_DETAIL_CHANGE_VERIFIED: 'SUPPLIER_BANK_DETAIL_CHANGE_VERIFIED',
   SUPPLIER_BANK_DETAIL_CHANGE_APPROVED: 'SUPPLIER_BANK_DETAIL_CHANGE_APPROVED',
   SUPPLIER_BANK_DETAIL_CHANGE_REJECTED: 'SUPPLIER_BANK_DETAIL_CHANGE_REJECTED',
-  COMMUNICATION_LOG_CREATED: 'COMMUNICATION_LOG_CREATED'
+  COMMUNICATION_LOG_CREATED: 'COMMUNICATION_LOG_CREATED',
+  QUOTATION_CREATED: 'QUOTATION_CREATED',
+  QUOTATION_SUBMITTED: 'QUOTATION_SUBMITTED',
+  QUOTATION_APPROVED: 'QUOTATION_APPROVED',
+  QUOTATION_SENT: 'QUOTATION_SENT',
+  QUOTATION_ACCEPTED: 'QUOTATION_ACCEPTED',
+  QUOTATION_EXPIRED: 'QUOTATION_EXPIRED',
+  QUOTATION_CONVERTED: 'QUOTATION_CONVERTED',
+  INVOICE_CREATED: 'INVOICE_CREATED',
+  INVOICE_SUBMITTED: 'INVOICE_SUBMITTED',
+  INVOICE_APPROVED: 'INVOICE_APPROVED',
+  INVOICE_SENT: 'INVOICE_SENT',
+  INVOICE_CANCELLED: 'INVOICE_CANCELLED',
+  PAYMENT_CREATED: 'PAYMENT_CREATED',
+  PAYMENT_SUBMITTED: 'PAYMENT_SUBMITTED',
+  PAYMENT_APPROVED: 'PAYMENT_APPROVED',
+  PAYMENT_COMPLETED: 'PAYMENT_COMPLETED',
+  PAYMENT_REVERSED: 'PAYMENT_REVERSED',
+  PAYMENT_ALLOCATED: 'PAYMENT_ALLOCATED',
+  RECEIPT_ISSUED: 'RECEIPT_ISSUED',
+  RECEIPT_VOIDED: 'RECEIPT_VOIDED',
+  CREDIT_NOTE_CREATED: 'CREDIT_NOTE_CREATED',
+  CREDIT_NOTE_APPLIED: 'CREDIT_NOTE_APPLIED',
+  DEBIT_NOTE_CREATED: 'DEBIT_NOTE_CREATED',
+  DEBIT_NOTE_APPLIED: 'DEBIT_NOTE_APPLIED',
+  INVOICE_REMINDER_CREATED: 'INVOICE_REMINDER_CREATED'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -2498,6 +2842,19 @@ exports.Prisma.ModelName = {
   SupplierTaxObligationLink: 'SupplierTaxObligationLink',
   CustomerCreditHold: 'CustomerCreditHold',
   CustomerReceivable: 'CustomerReceivable',
+  Quotation: 'Quotation',
+  QuotationLine: 'QuotationLine',
+  Invoice: 'Invoice',
+  InvoiceLine: 'InvoiceLine',
+  InvoiceReminder: 'InvoiceReminder',
+  DocumentSequence: 'DocumentSequence',
+  Payment: 'Payment',
+  PaymentMethodLine: 'PaymentMethodLine',
+  PaymentAllocation: 'PaymentAllocation',
+  Receipt: 'Receipt',
+  ReceiptLine: 'ReceiptLine',
+  CreditNote: 'CreditNote',
+  DebitNote: 'DebitNote',
   Account: 'Account',
   FinancialPeriod: 'FinancialPeriod',
   OpeningBalance: 'OpeningBalance',

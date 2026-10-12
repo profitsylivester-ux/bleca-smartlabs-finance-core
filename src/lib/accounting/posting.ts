@@ -129,6 +129,19 @@ export async function postJournalEntry(
 
   const nextNumber = await getNextJournalNumber(tx, organizationId, entry.periodId ?? '');
 
+  // Persist the derived base amounts while the entry is still APPROVED. The
+  // database makes journal lines immutable as soon as their entry is POSTED.
+  for (const line of entry.lines) {
+    const baseAmount = line.debit.plus(line.credit).times(fxRate);
+    await tx.journalLine.update({
+      where: { id: line.id },
+      data: {
+        baseAmount,
+        fxRate,
+      },
+    });
+  }
+
   const postedAt = new Date();
   const updatedEntry = await tx.journalEntry.update({
     where: { id: entryId },
@@ -140,17 +153,6 @@ export async function postJournalEntry(
     },
     select: { id: true, number: true, status: true, postedAt: true, postedById: true },
   });
-
-  for (const line of entry.lines) {
-    const baseAmount = line.debit.plus(line.credit).times(fxRate);
-    await tx.journalLine.update({
-      where: { id: line.id },
-      data: {
-        baseAmount,
-        fxRate,
-      },
-    });
-  }
 
   return {
     entry: {

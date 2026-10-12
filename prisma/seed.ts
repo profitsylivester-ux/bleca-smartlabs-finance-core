@@ -306,6 +306,54 @@ conditionOperator: 'ALWAYS',
   return policy;
 }
 
+async function seedSalesApprovalPolicies(orgId: string) {
+  const ceoRole = await prisma.role.findUniqueOrThrow({
+    where: { code: 'CEO' },
+    select: { id: true },
+  });
+  const entityTypes = ['QUOTATION', 'INVOICE', 'PAYMENT', 'CREDIT_NOTE', 'DEBIT_NOTE'] as const;
+
+  for (const entityType of entityTypes) {
+    const existing = await prisma.approvalPolicy.findFirst({
+      where: { organizationId: orgId, entityType },
+      select: { id: true },
+    });
+    const step = {
+      stepOrder: 1,
+      name: 'CEO Approval',
+      type: 'APPROVAL' as const,
+      assigneeType: 'ROLE' as const,
+      assigneeRoleId: ceoRole.id,
+      resolutionMode: 'ANY' as const,
+      conditionOperator: 'ALWAYS' as const,
+      conditionValue: Prisma.JsonNull,
+      isRequired: true,
+      isFinalApprover: true,
+    };
+
+    if (existing) {
+      await prisma.approvalPolicyStep.deleteMany({ where: { policyId: existing.id } });
+      await prisma.approvalPolicyStep.create({ data: { ...step, policyId: existing.id } });
+      await prisma.approvalPolicy.update({
+        where: { id: existing.id },
+        data: { isActive: true, priority: 100 },
+      });
+    } else {
+      await prisma.approvalPolicy.create({
+        data: {
+          organizationId: orgId,
+          name: `CEO ${entityType} Approval`,
+          description: `All ${entityType.toLowerCase()} documents require CEO approval.`,
+          entityType,
+          isActive: true,
+          priority: 100,
+          steps: { create: [step] },
+        },
+      });
+    }
+  }
+}
+
 async function seedCeo(orgId: string) {
   const email = process.env.SEED_CEO_EMAIL?.trim();
   const password = process.env.SEED_CEO_PASSWORD;
@@ -399,6 +447,7 @@ async function main() {
   console.log(`  reversal reasons  ${rrcCount} codes`);
 
   await seedApprovalPolicy(org.id);
+  await seedSalesApprovalPolicies(org.id);
   console.log(`  approval policy  CEO Final Approval (2 steps, Q2: every amount)`);
 
   const ceo = await seedCeo(org.id);

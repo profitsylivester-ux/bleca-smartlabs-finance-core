@@ -136,6 +136,7 @@ enum ModuleKey {
   PAYMENTS
   RECEIPTS
   CREDIT_NOTES
+  DEBIT_NOTES
   DOCUMENTS
   MASTER_DATA
   REPORTS
@@ -530,6 +531,8 @@ enum JournalSource {
   INVOICE
   PAYMENT
   RECEIPT
+  CREDIT_NOTE
+  DEBIT_NOTE
   TRANSFER
   OPENING_BALANCE
   CLOSE
@@ -545,6 +548,105 @@ enum PaymentMethod {
   CHEQUE
   CARD
   OTHER
+}
+
+/// Commercial document lifecycles (M11).
+enum QuotationStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  SENT
+  ACCEPTED
+  EXPIRED
+  CONVERTED
+  CANCELLED
+}
+
+enum InvoiceDirection {
+  RECEIVABLE
+  PAYABLE
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  SENT
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum PaymentStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  COMPLETED
+  REVERSED
+  CANCELLED
+}
+
+enum PaymentAllocationMode {
+  MANUAL
+  AUTOMATIC
+  FIFO
+}
+
+enum ReceiptStatus {
+  ISSUED
+  VOIDED
+}
+
+enum AdjustmentNoteStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  APPLIED
+  CANCELLED
+}
+
+enum AdjustmentReasonCode {
+  RETURN
+  PRICING_ADJUSTMENT
+  DAMAGED_GOODS
+  DUPLICATE_BILLING
+  SERVICE_NOT_RENDERED
+  TAX_ADJUSTMENT
+  OVERCHARGE
+  UNDERCHARGE
+  OTHER
+}
+
+enum RecurrenceFrequency {
+  MONTHLY
+  QUARTERLY
+  ANNUALLY
+}
+
+enum ReminderStatus {
+  SCHEDULED
+  SENT
+  FAILED
+  CANCELLED
+}
+
+enum DocumentSequenceType {
+  QUOTATION
+  INVOICE
+  PAYMENT
+  RECEIPT
+  CREDIT_NOTE
+  DEBIT_NOTE
 }
 
 /// Treasury Account kinds (PDF §10).
@@ -691,6 +793,31 @@ enum AuditAction {
   SUPPLIER_BANK_DETAIL_CHANGE_APPROVED
   SUPPLIER_BANK_DETAIL_CHANGE_REJECTED
   COMMUNICATION_LOG_CREATED
+  QUOTATION_CREATED
+  QUOTATION_SUBMITTED
+  QUOTATION_APPROVED
+  QUOTATION_SENT
+  QUOTATION_ACCEPTED
+  QUOTATION_EXPIRED
+  QUOTATION_CONVERTED
+  INVOICE_CREATED
+  INVOICE_SUBMITTED
+  INVOICE_APPROVED
+  INVOICE_SENT
+  INVOICE_CANCELLED
+  PAYMENT_CREATED
+  PAYMENT_SUBMITTED
+  PAYMENT_APPROVED
+  PAYMENT_COMPLETED
+  PAYMENT_REVERSED
+  PAYMENT_ALLOCATED
+  RECEIPT_ISSUED
+  RECEIPT_VOIDED
+  CREDIT_NOTE_CREATED
+  CREDIT_NOTE_APPLIED
+  DEBIT_NOTE_CREATED
+  DEBIT_NOTE_APPLIED
+  INVOICE_REMINDER_CREATED
 }
 
 enum AuditEntityType {
@@ -757,6 +884,12 @@ enum AuditEntityType {
   SUPPLIER_BANK_DETAIL_CHANGE_REQUEST
   CUSTOMER_CREDIT_HOLD
   CUSTOMER_RECEIVABLE
+  QUOTATION
+  INVOICE
+  PAYMENT
+  RECEIPT
+  CREDIT_NOTE
+  DEBIT_NOTE
 }
 
 enum AuditResult {
@@ -1572,6 +1705,14 @@ model Organization {
   communicationLogs                CommunicationLog[]
   supplierBankDetailChangeRequests SupplierBankDetailChangeRequest[]
   customerReceivables              CustomerReceivable[]
+  quotations                       Quotation[]
+  invoices                         Invoice[]
+  payments                         Payment[]
+  receipts                         Receipt[]
+  creditNotes                      CreditNote[]
+  debitNotes                       DebitNote[]
+  documentSequences                DocumentSequence[]
+  invoiceReminders                 InvoiceReminder[]
   accounts                         Account[]
   financialPeriods                 FinancialPeriod[]
   openingBalances                  OpeningBalance[]
@@ -1758,6 +1899,7 @@ model TreasuryAccount {
   journalLines           JournalLine[]
   transactions           Transaction[]
   paymentSchedules       PaymentSchedule[]
+  payments               Payment[]
   transfersAsSource      Transfer[]              @relation("TransferSource")
   transfersAsDestination Transfer[]              @relation("TransferDestination")
   reconciliationSessions ReconciliationSession[]
@@ -2053,6 +2195,9 @@ model Customer {
 
   creditHolds CustomerCreditHold[]
   receivables CustomerReceivable[]
+  quotations  Quotation[]
+  invoices    Invoice[]
+  payments    Payment[]
 
   @@index([organizationId, status, masterDataStatus])
   @@index([organizationId, relationshipOwnerId])
@@ -2083,6 +2228,8 @@ model Supplier {
   bankDetailChangeRequests SupplierBankDetailChangeRequest[]
   productsServices         SupplierProductService[]
   taxObligations           SupplierTaxObligationLink[]
+  invoices                 Invoice[]
+  payments                 Payment[]
 
   @@index([organizationId, status, masterDataStatus])
   @@map("suppliers")
@@ -2264,6 +2411,324 @@ model CustomerReceivable {
   @@index([organizationId, customerId, status, dueAt])
   @@index([organizationId, invoiceId])
   @@map("customer_receivables")
+}
+
+/// Commercial offer. It deliberately has no ledger relation or posting fields:
+/// quotations do not recognize revenue.
+model Quotation {
+  id             String          @id @default(cuid())
+  organizationId String          @map("organization_id")
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customerId     String          @map("customer_id")
+  customer       Customer        @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  number         String
+  status         QuotationStatus @default(DRAFT)
+  quoteDate      DateTime        @map("quote_date") @db.Date
+  validUntil     DateTime        @map("valid_until") @db.Date
+  currencyCode   String          @map("currency_code") @db.Char(3)
+  reference      String?
+  notes          String?
+  subtotal       Decimal         @db.Decimal(20, 6)
+  taxAmount      Decimal         @default(0) @map("tax_amount") @db.Decimal(20, 6)
+  totalAmount    Decimal         @map("total_amount") @db.Decimal(20, 6)
+  submittedById  String?         @map("submitted_by_id")
+  submittedAt    DateTime?       @map("submitted_at")
+  approvedById   String?         @map("approved_by_id")
+  approvedAt     DateTime?       @map("approved_at")
+  sentAt         DateTime?       @map("sent_at")
+  acceptedAt     DateTime?       @map("accepted_at")
+  convertedAt    DateTime?       @map("converted_at")
+  createdById    String          @map("created_by_id")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+
+  lines    QuotationLine[]
+  invoices Invoice[]
+
+  @@unique([organizationId, number])
+  @@index([organizationId, customerId, status, validUntil])
+  @@map("quotations")
+}
+
+model QuotationLine {
+  id               String        @id @default(cuid())
+  quotationId      String        @map("quotation_id")
+  quotation        Quotation     @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  description      String
+  quantity         Decimal       @db.Decimal(20, 6)
+  unitPrice        Decimal       @map("unit_price") @db.Decimal(20, 6)
+  amount           Decimal       @db.Decimal(20, 6)
+  invoicedQuantity Decimal       @default(0) @map("invoiced_quantity") @db.Decimal(20, 6)
+  invoiceLines     InvoiceLine[]
+
+  @@index([quotationId])
+  @@map("quotation_lines")
+}
+
+/// Receivable and payable invoices share one ledger-backed document model.
+model Invoice {
+  id                     String               @id @default(cuid())
+  organizationId         String               @map("organization_id")
+  organization           Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  direction              InvoiceDirection
+  customerId             String?              @map("customer_id")
+  customer               Customer?            @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  supplierId             String?              @map("supplier_id")
+  supplier               Supplier?            @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  quotationId            String?              @map("quotation_id")
+  quotation              Quotation?           @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+  number                 String
+  status                 InvoiceStatus        @default(DRAFT)
+  invoiceDate            DateTime             @map("invoice_date") @db.Date
+  dueDate                DateTime             @map("due_date") @db.Date
+  currencyCode           String               @map("currency_code") @db.Char(3)
+  reference              String?
+  notes                  String?
+  subtotal               Decimal              @db.Decimal(20, 6)
+  taxAmount              Decimal              @default(0) @map("tax_amount") @db.Decimal(20, 6)
+  totalAmount            Decimal              @map("total_amount") @db.Decimal(20, 6)
+  taxInvoiceNumber       String?              @map("tax_invoice_number")
+  isTaxInvoice           Boolean              @default(false) @map("is_tax_invoice")
+  journalEntryId         String?              @unique @map("journal_entry_id")
+  reversalJournalEntryId String?              @unique @map("reversal_journal_entry_id")
+  submittedById          String?              @map("submitted_by_id")
+  submittedAt            DateTime?            @map("submitted_at")
+  approvedById           String?              @map("approved_by_id")
+  approvedAt             DateTime?            @map("approved_at")
+  sentAt                 DateTime?            @map("sent_at")
+  cancelledAt            DateTime?            @map("cancelled_at")
+  cancellationReason     String?              @map("cancellation_reason")
+  recurrenceFrequency    RecurrenceFrequency? @map("recurrence_frequency")
+  recurrenceNextAt       DateTime?            @map("recurrence_next_at") @db.Date
+  recurrenceEndsAt       DateTime?            @map("recurrence_ends_at") @db.Date
+  recurrenceTemplateId   String?              @map("recurrence_template_id")
+  recurrenceTemplate     Invoice?             @relation("InvoiceRecurrences", fields: [recurrenceTemplateId], references: [id], onDelete: Restrict)
+  recurringInvoices      Invoice[]            @relation("InvoiceRecurrences")
+  createdById            String               @map("created_by_id")
+  createdAt              DateTime             @default(now()) @map("created_at")
+  updatedAt              DateTime             @updatedAt @map("updated_at")
+
+  lines       InvoiceLine[]
+  allocations PaymentAllocation[]
+  receipts    ReceiptLine[]
+  creditNotes CreditNote[]
+  debitNotes  DebitNote[]
+  reminders   InvoiceReminder[]
+
+  @@unique([organizationId, number])
+  @@unique([organizationId, taxInvoiceNumber])
+  @@unique([organizationId, recurrenceTemplateId, invoiceDate])
+  @@index([organizationId, direction, status, dueDate])
+  @@index([organizationId, customerId, invoiceDate])
+  @@index([organizationId, supplierId, invoiceDate])
+  @@map("invoices")
+}
+
+model InvoiceLine {
+  id              String         @id @default(cuid())
+  invoiceId       String         @map("invoice_id")
+  invoice         Invoice        @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  quotationLineId String?        @map("quotation_line_id")
+  quotationLine   QuotationLine? @relation(fields: [quotationLineId], references: [id], onDelete: Restrict)
+  description     String
+  quantity        Decimal        @db.Decimal(20, 6)
+  unitPrice       Decimal        @map("unit_price") @db.Decimal(20, 6)
+  amount          Decimal        @db.Decimal(20, 6)
+  taxRate         Decimal?       @map("tax_rate") @db.Decimal(9, 6)
+  taxAmount       Decimal        @default(0) @map("tax_amount") @db.Decimal(20, 6)
+  taxAccountId    String?        @map("tax_account_id")
+  accountId       String         @map("account_id")
+
+  @@index([invoiceId])
+  @@index([quotationLineId])
+  @@map("invoice_lines")
+}
+
+model InvoiceReminder {
+  id             String         @id @default(cuid())
+  organizationId String         @map("organization_id")
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoiceId      String         @map("invoice_id")
+  invoice        Invoice        @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  status         ReminderStatus @default(SCHEDULED)
+  recipient      String?
+  message        String
+  scheduledAt    DateTime       @default(now()) @map("scheduled_at")
+  sentAt         DateTime?      @map("sent_at")
+  createdById    String         @map("created_by_id")
+  createdAt      DateTime       @default(now()) @map("created_at")
+
+  @@index([organizationId, status, scheduledAt])
+  @@index([invoiceId, scheduledAt])
+  @@map("invoice_reminders")
+}
+
+model DocumentSequence {
+  id             String               @id @default(cuid())
+  organizationId String               @map("organization_id")
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  type           DocumentSequenceType
+  lastNumber     Int                  @default(0) @map("last_number")
+  updatedAt      DateTime             @updatedAt @map("updated_at")
+
+  @@unique([organizationId, type])
+  @@map("document_sequences")
+}
+
+model Payment {
+  id                     String                @id @default(cuid())
+  organizationId         String                @map("organization_id")
+  organization           Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  direction              PaymentDirection
+  customerId             String?               @map("customer_id")
+  customer               Customer?             @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  supplierId             String?               @map("supplier_id")
+  supplier               Supplier?             @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  number                 String
+  status                 PaymentStatus         @default(DRAFT)
+  treasuryAccountId      String                @map("treasury_account_id")
+  treasuryAccount        TreasuryAccount       @relation(fields: [treasuryAccountId], references: [id], onDelete: Restrict)
+  currencyCode           String                @map("currency_code") @db.Char(3)
+  amount                 Decimal               @db.Decimal(20, 6)
+  unappliedAmount        Decimal               @default(0) @map("unapplied_amount") @db.Decimal(20, 6)
+  allocationMode         PaymentAllocationMode @default(FIFO) @map("allocation_mode")
+  onAccountAccountId     String?               @map("on_account_account_id")
+  paymentDate            DateTime              @map("payment_date") @db.Date
+  reference              String?
+  description            String?
+  journalEntryId         String?               @unique @map("journal_entry_id")
+  reversalJournalEntryId String?               @unique @map("reversal_journal_entry_id")
+  submittedById          String?               @map("submitted_by_id")
+  submittedAt            DateTime?             @map("submitted_at")
+  approvedById           String?               @map("approved_by_id")
+  approvedAt             DateTime?             @map("approved_at")
+  completedAt            DateTime?             @map("completed_at")
+  createdById            String                @map("created_by_id")
+  createdAt              DateTime              @default(now()) @map("created_at")
+  updatedAt              DateTime              @updatedAt @map("updated_at")
+
+  methods     PaymentMethodLine[]
+  allocations PaymentAllocation[]
+  receipt     Receipt?
+
+  @@unique([organizationId, number])
+  @@index([organizationId, direction, status, paymentDate])
+  @@index([organizationId, customerId, paymentDate])
+  @@index([organizationId, supplierId, paymentDate])
+  @@map("payments")
+}
+
+model PaymentMethodLine {
+  id        String        @id @default(cuid())
+  paymentId String        @map("payment_id")
+  payment   Payment       @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  method    PaymentMethod
+  amount    Decimal       @db.Decimal(20, 6)
+  reference String?
+
+  @@index([paymentId])
+  @@map("payment_method_lines")
+}
+
+model PaymentAllocation {
+  id          String   @id @default(cuid())
+  paymentId   String   @map("payment_id")
+  payment     Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  invoiceId   String   @map("invoice_id")
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  amount      Decimal  @db.Decimal(20, 6)
+  allocatedAt DateTime @default(now()) @map("allocated_at")
+
+  @@unique([paymentId, invoiceId])
+  @@index([invoiceId, allocatedAt])
+  @@map("payment_allocations")
+}
+
+model Receipt {
+  id                   String        @id @default(cuid())
+  organizationId       String        @map("organization_id")
+  organization         Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  paymentId            String        @unique @map("payment_id")
+  payment              Payment       @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  number               String
+  status               ReceiptStatus @default(ISSUED)
+  issuedAt             DateTime      @default(now()) @map("issued_at")
+  supportingDocumentId String?       @map("supporting_document_id")
+  voidedAt             DateTime?     @map("voided_at")
+  voidReason           String?       @map("void_reason")
+  createdById          String        @map("created_by_id")
+  createdAt            DateTime      @default(now()) @map("created_at")
+
+  lines ReceiptLine[]
+
+  @@unique([organizationId, number])
+  @@index([organizationId, issuedAt])
+  @@map("receipts")
+}
+
+model ReceiptLine {
+  id        String  @id @default(cuid())
+  receiptId String  @map("receipt_id")
+  receipt   Receipt @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  invoiceId String  @map("invoice_id")
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  amount    Decimal @db.Decimal(20, 6)
+
+  @@index([receiptId])
+  @@index([invoiceId])
+  @@map("receipt_lines")
+}
+
+model CreditNote {
+  id             String               @id @default(cuid())
+  organizationId String               @map("organization_id")
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoiceId      String               @map("invoice_id")
+  invoice        Invoice              @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  number         String
+  status         AdjustmentNoteStatus @default(DRAFT)
+  reasonCode     AdjustmentReasonCode @map("reason_code")
+  reason         String
+  amount         Decimal              @db.Decimal(20, 6)
+  taxAmount      Decimal              @default(0) @map("tax_amount") @db.Decimal(20, 6)
+  journalEntryId String?              @unique @map("journal_entry_id")
+  createdById    String               @map("created_by_id")
+  approvedById   String?              @map("approved_by_id")
+  approvedAt     DateTime?            @map("approved_at")
+  appliedAt      DateTime?            @map("applied_at")
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @updatedAt @map("updated_at")
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status, createdAt])
+  @@index([invoiceId])
+  @@map("credit_notes")
+}
+
+model DebitNote {
+  id             String               @id @default(cuid())
+  organizationId String               @map("organization_id")
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoiceId      String               @map("invoice_id")
+  invoice        Invoice              @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  number         String
+  status         AdjustmentNoteStatus @default(DRAFT)
+  reasonCode     AdjustmentReasonCode @map("reason_code")
+  reason         String
+  amount         Decimal              @db.Decimal(20, 6)
+  taxAmount      Decimal              @default(0) @map("tax_amount") @db.Decimal(20, 6)
+  journalEntryId String?              @unique @map("journal_entry_id")
+  createdById    String               @map("created_by_id")
+  approvedById   String?              @map("approved_by_id")
+  approvedAt     DateTime?            @map("approved_at")
+  appliedAt      DateTime?            @map("applied_at")
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @updatedAt @map("updated_at")
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status, createdAt])
+  @@index([invoiceId])
+  @@map("debit_notes")
 }
 
 /// Chart of Accounts — hierarchical, configurable per PDF §7.

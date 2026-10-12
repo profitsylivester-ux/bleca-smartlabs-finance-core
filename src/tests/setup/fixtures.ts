@@ -256,6 +256,56 @@ export async function seedTestFixtures(prisma: PrismaClient): Promise<void> {
     });
   }
 
+  for (const entityType of ['QUOTATION', 'INVOICE', 'PAYMENT', 'CREDIT_NOTE', 'DEBIT_NOTE'] as const) {
+    const salesPolicy = await prisma.approvalPolicy.findFirst({
+      where: { organizationId: org.id, entityType },
+      select: { id: true },
+    });
+    if (salesPolicy) {
+      await prisma.approvalPolicyStep.deleteMany({ where: { policyId: salesPolicy.id } });
+      await prisma.approvalPolicyStep.create({
+        data: {
+          policyId: salesPolicy.id,
+          stepOrder: 1,
+          name: 'CEO Approval',
+          type: 'APPROVAL',
+          assigneeType: 'ROLE',
+          assigneeRoleId: ceoRole.id,
+          resolutionMode: 'ANY',
+          conditionOperator: 'ALWAYS',
+          conditionValue: Prisma.JsonNull,
+          isRequired: true,
+          isFinalApprover: true,
+        },
+      });
+    } else {
+      await prisma.approvalPolicy.create({
+        data: {
+          organizationId: org.id,
+          name: `CEO ${entityType} Approval`,
+          description: `All ${entityType.toLowerCase()} documents require CEO approval.`,
+          entityType,
+          isActive: true,
+          priority: 100,
+          steps: {
+            create: [{
+              stepOrder: 1,
+              name: 'CEO Approval',
+              type: 'APPROVAL',
+              assigneeType: 'ROLE',
+              assigneeRoleId: ceoRole.id,
+              resolutionMode: 'ANY',
+              conditionOperator: 'ALWAYS',
+              conditionValue: Prisma.JsonNull,
+              isRequired: true,
+              isFinalApprover: true,
+            }],
+          },
+        },
+      });
+    }
+  }
+
   // Create financial periods for 2025 fiscal year
   await createFiscalYearPeriods(prisma, org.id, 2025);
 }

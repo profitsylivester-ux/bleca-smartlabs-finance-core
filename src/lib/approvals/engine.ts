@@ -160,6 +160,10 @@ export async function advanceRequest(
     actor
   );
 
+  if (decision === 'REJECTED' || decision === 'CANCELLED') {
+    await updateBusinessDocumentDecision(tx, request, decision);
+  }
+
   await writeAuditEntry(
     tx,
     { id: actor.userId, name: actor.fullName, roleCodes: actor.roleCodes },
@@ -341,6 +345,37 @@ async function completeRequest(
     });
   }
 
+  if (request.entityType === 'QUOTATION') {
+    await tx.quotation.update({
+      where: { id: request.entityId },
+      data: { status: 'APPROVED', approvedById: actor.userId, approvedAt: new Date() },
+    });
+  }
+  if (request.entityType === 'INVOICE') {
+    await tx.invoice.update({
+      where: { id: request.entityId },
+      data: { status: 'APPROVED', approvedById: actor.userId, approvedAt: new Date() },
+    });
+  }
+  if (request.entityType === 'PAYMENT') {
+    await tx.payment.update({
+      where: { id: request.entityId },
+      data: { status: 'APPROVED', approvedById: actor.userId, approvedAt: new Date() },
+    });
+  }
+  if (request.entityType === 'CREDIT_NOTE') {
+    await tx.creditNote.update({
+      where: { id: request.entityId },
+      data: { status: 'APPROVED', approvedById: actor.userId, approvedAt: new Date() },
+    });
+  }
+  if (request.entityType === 'DEBIT_NOTE') {
+    await tx.debitNote.update({
+      where: { id: request.entityId },
+      data: { status: 'APPROVED', approvedById: actor.userId, approvedAt: new Date() },
+    });
+  }
+
   await writeAuditEntry(
     tx,
     { id: actor.userId, name: actor.fullName, roleCodes: actor.roleCodes },
@@ -359,6 +394,29 @@ async function completeRequest(
   );
 
   return { isComplete: true, nextStepInstance: null as ApprovalStepInstance | null, updatedRequest };
+}
+
+async function updateBusinessDocumentDecision(
+  tx: Prisma.TransactionClient,
+  request: ApprovalRequest,
+  decision: 'REJECTED' | 'CANCELLED',
+): Promise<void> {
+  const status = decision === 'REJECTED' ? 'REJECTED' : 'CANCELLED';
+  if (request.entityType === 'QUOTATION') {
+    await tx.quotation.update({ where: { id: request.entityId }, data: { status } });
+  }
+  if (request.entityType === 'INVOICE') {
+    await tx.invoice.update({ where: { id: request.entityId }, data: { status } });
+  }
+  if (request.entityType === 'PAYMENT') {
+    await tx.payment.update({ where: { id: request.entityId }, data: { status } });
+  }
+  if (request.entityType === 'CREDIT_NOTE') {
+    await tx.creditNote.update({ where: { id: request.entityId }, data: { status } });
+  }
+  if (request.entityType === 'DEBIT_NOTE') {
+    await tx.debitNote.update({ where: { id: request.entityId }, data: { status } });
+  }
 }
 
 async function resolveNextStepApprovers(
