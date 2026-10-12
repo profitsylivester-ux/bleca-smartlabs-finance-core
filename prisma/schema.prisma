@@ -525,6 +525,19 @@ enum AuditAction {
   IMPORT_ROLLED_BACK
   IMPORT_ROW_ERROR
   IMPORT_ERROR_RESOLVED
+  /// Reconciliation (M8). Confirm is deliberately separate from auto-match: a
+  /// proposed match is a machine opinion, a confirmed one is a human assertion,
+  /// and the audit trail must be able to tell them apart forever.
+  RECONCILIATION_SESSION_CREATED
+  RECONCILIATION_AUTO_MATCHED
+  RECONCILIATION_MATCH_CONFIRMED
+  RECONCILIATION_MATCH_REJECTED
+  RECONCILIATION_EXCEPTION_RESOLVED
+  RECONCILIATION_ADJUSTMENT_CREATED
+  RECONCILIATION_ADJUSTMENT_APPROVED
+  RECONCILIATION_ADJUSTMENT_POSTED
+  RECONCILIATION_APPROVED
+  RECONCILIATION_REOPENED
 }
 
 enum AuditEntityType {
@@ -569,6 +582,11 @@ enum AuditEntityType {
   IMPORT_ROW
   IMPORT_FIELD_MAPPING
   IMPORT_ERROR
+  RECONCILIATION_SESSION
+  RECONCILIATION_MATCH
+  RECONCILIATION_EXCEPTION
+  RECONCILIATION_ADJUSTMENT
+  MATCHING_RULE
 }
 
 enum AuditResult {
@@ -1247,6 +1265,7 @@ model ApprovalRequest {
   stepInstances    ApprovalStepInstance[] @relation("ApprovalRequestStepInstances")
   decisionRecords  ApprovalDecisionRecord[] @relation("ApprovalRequestDecisionRecords")
   sodWaivers       SODWaiver[]
+  reconciliationAdjustments ReconciliationAdjustment[] @relation("ReconciliationAdjustmentApproval")
 
   @@index([organizationId, entityType, entityId])
   @@index([status])
@@ -1384,6 +1403,11 @@ model Organization {
   transfers Transfer[]
   importBatches ImportBatch[]
   importFieldMappings ImportFieldMapping[]
+  matchingRules MatchingRule[]
+  reconciliationSessions ReconciliationSession[]
+  reconciliationMatches ReconciliationMatch[]
+  reconciliationExceptions ReconciliationException[]
+  reconciliationAdjustments ReconciliationAdjustment[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -1540,6 +1564,7 @@ model TreasuryAccount {
   paymentSchedules  PaymentSchedule[]
   transfersAsSource Transfer[] @relation("TransferSource")
   transfersAsDestination Transfer[] @relation("TransferDestination")
+  reconciliationSessions ReconciliationSession[]
 
   @@unique([organizationId, code])
   @@index([kind, isActive])
@@ -1737,6 +1762,8 @@ model ReasonCode {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
+  reconciliationAdjustments ReconciliationAdjustment[]
+
   @@unique([organizationId, code])
   @@index([category, isActive])
   @@map("reason_codes")
@@ -1793,6 +1820,7 @@ model Account {
   accountBalanceSnapshots AccountBalanceSnapshot[]
   transactions           Transaction[]
   treasuryAccounts       TreasuryAccount[]
+  reconciliationAdjustments ReconciliationAdjustment[]
 
   @@unique([organizationId, code])
   @@index([parentId])
@@ -1821,6 +1849,7 @@ model FinancialPeriod {
   openingBalances  OpeningBalance[]
   accountBalanceSnapshots AccountBalanceSnapshot[]
   journalEntries   JournalEntry[]
+  reconciliationSessions ReconciliationSession[]
 
   @@unique([organizationId, code])
   @@index([status, startDate])
@@ -1917,6 +1946,8 @@ model JournalEntry {
   lines              JournalLine[]
   transfers          Transfer[] @relation("TransferJournalEntry")
   reversalTransfers  Transfer[] @relation("TransferReversalJournalEntry")
+  reconciliationMatches ReconciliationMatch[] @relation("ReconciliationMatchJournalEntry")
+  reconciliationAdjustments ReconciliationAdjustment[] @relation("ReconciliationAdjustmentJournalEntry")
 
   @@unique([organizationId, number])
   @@index([periodId, status])
@@ -2046,6 +2077,8 @@ model Transaction {
   updatedAt          DateTime             @updatedAt @map("updated_at")
 
   journalEntries     JournalEntry[]
+  reconciliationMatches ReconciliationMatch[]
+  reconciliationExceptions ReconciliationException[]
 
   @@unique([organizationId, number])
   @@index([status, date])
@@ -2270,6 +2303,82 @@ enum ImportErrorType {
   PARSE
 }
 
+// ---- Reconciliation (M8) ----------------------------------------------------
+
+/// What a session is reconciling. Derived from the treasury account kind, but
+/// stored explicitly: a bank account can be reconciled against a statement,
+/// against the ledger, or against both, and the report must state which.
+enum ReconciliationTarget {
+  BANK_STATEMENT
+  LEDGER
+  MOBILE_MONEY
+  PAYMENT_GATEWAY
+  CASH
+}
+
+enum ReconciliationStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  MATCHED
+  AWAITING_APPROVAL
+  APPROVED
+  LOCKED
+  REOPENED
+  CANCELLED
+}
+
+/// How a match was produced. EXACT through MANY_TO_ONE are machine strategies;
+/// MANUAL means a human paired them with no rule involved.
+enum MatchType {
+  EXACT
+  DATE_WINDOW
+  AMOUNT_TOLERANCE
+  REFERENCE_SIMILARITY
+  ONE_TO_MANY
+  MANY_TO_ONE
+  MANUAL
+}
+
+/// Lifecycle of a single match row.
+///
+/// PROPOSED is the only status auto-match may write. Moving to MATCHED requires
+/// a human decision via POST /matches/:id/confirm — there is no path that
+/// promotes a proposal automatically, by design.
+enum ReconciliationLineStatus {
+  PROPOSED
+  MATCHED
+  REJECTED
+  EXCEPTION
+  RESOLVED
+}
+
+/// Why a statement line or ledger item could not be matched.
+enum ReconciliationExceptionType {
+  UNMATCHED_STATEMENT_LINE
+  UNMATCHED_LEDGER_ENTRY
+  AMOUNT_DIFFERENCE
+  DATE_DIFFERENCE
+  DUPLICATE_SUSPECTED
+  LOW_CONFIDENCE
+  UNSUPPORTED_ITEM
+  TIMING_DIFFERENCE
+}
+
+enum ReconciliationExceptionStatus {
+  OPEN
+  RESOLVED
+  WAIVED
+}
+
+enum ReconciliationAdjustmentStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  POSTED
+  REJECTED
+  REVERSED
+}
+
 model ImportBatch {
   id                String           @id @default(cuid())
   organizationId    String           @map("organization_id")
@@ -2307,6 +2416,7 @@ model ImportBatch {
   rows              ImportRow[]
   fieldMappings     ImportFieldMapping[]
   errors            ImportError[]
+  reconciliationSessions ReconciliationSession[]
 
   @@unique([organizationId, code])
   @@unique([organizationId, fileHash])
@@ -2330,6 +2440,8 @@ model ImportRow {
   updatedAt         DateTime     @updatedAt @map("updated_at")
 
   errors            ImportError[]
+  reconciliationMatches ReconciliationMatch[]
+  reconciliationExceptions ReconciliationException[]
 
   @@index([batchId, status])
   @@index([batchId, fingerprint])
@@ -2386,6 +2498,228 @@ model ImportError {
   @@index([batchId, rowNumber])
   @@map("import_errors")
 }
+
+// ============================================================================
+// B4b. RECONCILIATION (M8) — PDF §12
+// ============================================================================
+//
+// The invariant this whole section exists to enforce: a match proposed by the
+// engine and a match asserted by a human are different facts with different
+// authority. auto-match writes ReconciliationLineStatus.PROPOSED and nothing
+// else may. Only POST /matches/:id/confirm promotes a row to MATCHED, so a
+// reconciliation that reaches APPROVED has been vouched for line by line.
+
+/// A reusable matching strategy. Rules are ordered and the engine walks them in
+/// priority order, stopping at the first that produces a proposal per line.
+model MatchingRule {
+  id                String   @id @default(cuid())
+  organizationId    String   @map("organization_id")
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name              String
+  description       String?
+  ruleType          MatchType
+  target            ReconciliationTarget
+  /// +/- whole days either side of the statement date that still counts as a hit.
+  dateWindowDays    Int      @default(3) @map("date_window_days")
+  /// +/- absolute amount difference tolerated, in the session currency.
+  amountTolerance   Decimal  @default(0) @db.Decimal(20, 6) @map("amount_tolerance")
+  /// 0-100. Reference text similarity required by REFERENCE_SIMILARITY.
+  similarityThreshold Int    @default(80) @map("similarity_threshold")
+  /// Lower runs first. Ties broken by id so ordering is stable across runs.
+  priority          Int      @default(100)
+  isActive          Boolean  @default(true) @map("is_active")
+  createdById       String?  @map("created_by_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@unique([organizationId, name])
+  @@index([organizationId, target, isActive, priority])
+  @@map("matching_rules")
+}
+
+/// One reconciliation run: one treasury account, one period, one target.
+model ReconciliationSession {
+  id                String               @id @default(cuid())
+  organizationId    String               @map("organization_id")
+  organization      Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  treasuryAccountId String               @map("treasury_account_id")
+  treasuryAccount   TreasuryAccount      @relation(fields: [treasuryAccountId], references: [id])
+  /// The statement import being reconciled, when the target is a file.
+  importId          String?              @map("import_id")
+  import            ImportBatch?         @relation(fields: [importId], references: [id])
+  periodId          String?              @map("period_id")
+  period            FinancialPeriod?     @relation(fields: [periodId], references: [id])
+  code              String
+  target            ReconciliationTarget
+  status            ReconciliationStatus @default(NOT_STARTED)
+  statementStartDate    DateTime?        @db.Date @map("statement_start_date")
+  statementEndDate      DateTime?        @db.Date @map("statement_end_date")
+  statementOpeningBalance Decimal?       @db.Decimal(20, 6) @map("statement_opening_balance")
+  statementClosingBalance Decimal?       @db.Decimal(20, 6) @map("statement_closing_balance")
+  bookBalanceBeginning   Decimal?        @db.Decimal(20, 6) @map("book_balance_beginning")
+  bookBalanceEnding      Decimal?        @db.Decimal(20, 6) @map("book_balance_ending")
+  /// opening + net matched movement, recomputed on every confirm.
+  calculatedEndingBalance Decimal?       @db.Decimal(20, 6) @map("calculated_ending_balance")
+  /// statementClosingBalance - calculatedEndingBalance. Approve requires 0.
+  difference            Decimal?         @db.Decimal(20, 6)
+  currency          String               @db.Char(3)
+  /// Snapshot of the rules and thresholds the last run used, so a later run
+  /// under different config cannot be confused with this one.
+  matchingRulesApplied Json?             @map("matching_rules_applied")
+  autoMatchThreshold Int                 @default(85) @map("auto_match_threshold")
+  startedById       String?              @map("started_by_id")
+  startedAt         DateTime?
+  reviewedById      String?              @map("reviewed_by_id")
+  reviewedAt        DateTime?            @map("reviewed_at")
+  approvedById      String?              @map("approved_by_id")
+  approvedAt        DateTime?            @map("approved_at")
+  lockedAt          DateTime?            @map("locked_at")
+  reopenedAt        DateTime?            @map("reopened_at")
+  reopenReason      String?              @map("reopen_reason")
+  reopenCount       Int                  @default(0) @map("reopen_count")
+  notes             String?
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
+
+  matches     ReconciliationMatch[]
+  exceptions  ReconciliationException[]
+  adjustments ReconciliationAdjustment[]
+
+  @@unique([organizationId, code])
+  @@unique([organizationId, treasuryAccountId, statementStartDate, statementEndDate])
+  @@index([status])
+  @@index([periodId])
+  @@index([treasuryAccountId])
+  @@map("reconciliation_sessions")
+}
+/// A proposed or confirmed pairing between a statement line and a book entry.
+///
+/// One-to-many and many-to-one are expressed as several rows sharing a
+/// matchGroupId: the group is the unit that must be confirmed together, because
+/// approving only half of a split would unbalance the reconciliation.
+model ReconciliationMatch {
+  id                String                   @id @default(cuid())
+  organizationId    String                   @map("organization_id")
+  organization      Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  sessionId         String                   @map("session_id")
+  session           ReconciliationSession    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  /// Set when this row is one leg of a one-to-many / many-to-one pairing.
+  matchGroupId      String?                  @map("match_group_id")
+  importRowId       String?                  @map("import_row_id")
+  importRow         ImportRow?               @relation(fields: [importRowId], references: [id], onDelete: SetNull)
+  transactionId     String?                  @map("transaction_id")
+  transaction       Transaction?             @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  journalEntryId    String?                  @map("journal_entry_id")
+  journalEntry      JournalEntry?            @relation("ReconciliationMatchJournalEntry", fields: [journalEntryId], references: [id], onDelete: SetNull)
+  matchType         MatchType                @default(MANUAL)
+  status            ReconciliationLineStatus @default(PROPOSED)
+  /// The statement-side amount. Positive = money in.
+  statementAmount   Decimal                  @default(0) @db.Decimal(20, 6) @map("statement_amount")
+  /// The book-side amount, in the same sign convention.
+  ledgerAmount      Decimal                  @default(0) @db.Decimal(20, 6) @map("ledger_amount")
+  /// How much of the statement line this row actually explains. For a split
+  /// match this is the leg's share, not the whole line.
+  matchedAmount     Decimal                  @db.Decimal(20, 6) @map("matched_amount")
+  /// statementAmount - ledgerAmount for this row.
+  differenceAmount  Decimal                  @default(0) @db.Decimal(20, 6) @map("difference_amount")
+  /// 0-100, engine confidence. Null for MANUAL, which has no score to report.
+  confidence        Int?
+  matchedRuleId     String?                  @map("matched_rule_id")
+  differenceReason  String?                  @map("difference_reason")
+  isManual          Boolean                  @default(false) @map("is_manual")
+  matchedById       String?                  @map("matched_by_id")
+  matchedAt         DateTime?                @map("matched_at")
+  confirmedById     String?                  @map("confirmed_by_id")
+  confirmedAt       DateTime?                @map("confirmed_at")
+  rejectedById      String?                  @map("rejected_by_id")
+  rejectedAt        DateTime?                @map("rejected_at")
+  rejectionReason   String?                  @map("rejection_reason")
+  notes             String?
+  createdAt         DateTime                 @default(now()) @map("created_at")
+  updatedAt         DateTime                 @updatedAt @map("updated_at")
+
+  @@index([sessionId, status])
+  @@index([sessionId, matchGroupId])
+  @@index([importRowId])
+  @@index([transactionId])
+  @@index([journalEntryId])
+  @@map("reconciliation_matches")
+}
+
+/// Anything the engine could not pair, or paired below the confidence floor.
+/// The exception queue is what a human works through after auto-match.
+model ReconciliationException {
+  id                String                       @id @default(cuid())
+  organizationId    String                       @map("organization_id")
+  organization      Organization                 @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  sessionId         String                       @map("session_id")
+  session           ReconciliationSession        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  importRowId       String?                      @map("import_row_id")
+  importRow         ImportRow?                   @relation(fields: [importRowId], references: [id], onDelete: SetNull)
+  transactionId     String?                      @map("transaction_id")
+  transaction       Transaction?                 @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+  exceptionType     ReconciliationExceptionType  @map("exception_type")
+  severity          String                       @default("MEDIUM") // LOW | MEDIUM | HIGH
+  /// Signed amount at stake, session currency. Lets the queue be worked in
+  /// value order rather than discovery order.
+  amount            Decimal                      @default(0) @db.Decimal(20, 6)
+  description       String
+  suggestedResolution String?                    @map("suggested_resolution")
+  confidence        Int?
+  status            ReconciliationExceptionStatus @default(OPEN)
+  resolution        String?
+  resolvedById      String?                      @map("resolved_by_id")
+  resolvedAt        DateTime?                    @map("resolved_at")
+  createdAt         DateTime                     @default(now()) @map("created_at")
+  updatedAt         DateTime                     @updatedAt @map("updated_at")
+
+  @@index([sessionId, status])
+  @@index([sessionId, severity])
+  @@index([importRowId])
+  @@map("reconciliation_exceptions")
+}
+
+/// A correction raised against a session. Requires a reason code, and is
+/// approval-gated before it may post: an adjustment is how a reconciliation
+/// difference disappears from the books, so it is not a casual edit.
+model ReconciliationAdjustment {
+  id                String                         @id @default(cuid())
+  organizationId    String                         @map("organization_id")
+  organization      Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  sessionId         String                         @map("session_id")
+  session           ReconciliationSession          @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  accountId         String                         @map("account_id")
+  account           Account                        @relation(fields: [accountId], references: [id])
+  description       String
+  debit             Decimal                        @default(0) @db.Decimal(20, 6)
+  credit            Decimal                        @default(0) @db.Decimal(20, 6)
+  currency          String                         @db.Char(3)
+  status            ReconciliationAdjustmentStatus @default(DRAFT)
+  /// Mandatory. An adjustment with no stated reason is an unexplained edit to
+  /// the ledger, which is precisely what the audit trail exists to prevent.
+  reasonCodeId      String                         @map("reason_code_id")
+  reasonCode        ReasonCode                     @relation(fields: [reasonCodeId], references: [id])
+  approvalRequestId String?                        @map("approval_request_id")
+  approvalRequest   ApprovalRequest?               @relation("ReconciliationAdjustmentApproval", fields: [approvalRequestId], references: [id])
+  /// The posted JournalEntry. Null until approved and posted; non-null is what
+  /// proves the books actually moved.
+  journalEntryId    String?                        @map("journal_entry_id")
+  journalEntry      JournalEntry?                  @relation("ReconciliationAdjustmentJournalEntry", fields: [journalEntryId], references: [id])
+  documentId        String?                        @map("document_id")
+  postedById        String?                        @map("posted_by_id")
+  postedAt          DateTime?                      @map("posted_at")
+  createdById       String                         @map("created_by_id")
+  createdAt         DateTime                        @default(now()) @map("created_at")
+  updatedAt         DateTime                        @updatedAt @map("updated_at")
+
+  @@index([sessionId])
+  @@index([sessionId, status])
+  @@index([accountId])
+  @@index([journalEntryId])
+  @@map("reconciliation_adjustments")
+}
+
+
 
 // ============================================================================
 // B5. INFRASTRUCTURE

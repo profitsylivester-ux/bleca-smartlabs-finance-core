@@ -1003,6 +1003,129 @@ exports.Prisma.ImportErrorScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.MatchingRuleScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  description: 'description',
+  ruleType: 'ruleType',
+  target: 'target',
+  dateWindowDays: 'dateWindowDays',
+  amountTolerance: 'amountTolerance',
+  similarityThreshold: 'similarityThreshold',
+  priority: 'priority',
+  isActive: 'isActive',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReconciliationSessionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  treasuryAccountId: 'treasuryAccountId',
+  importId: 'importId',
+  periodId: 'periodId',
+  code: 'code',
+  target: 'target',
+  status: 'status',
+  statementStartDate: 'statementStartDate',
+  statementEndDate: 'statementEndDate',
+  statementOpeningBalance: 'statementOpeningBalance',
+  statementClosingBalance: 'statementClosingBalance',
+  bookBalanceBeginning: 'bookBalanceBeginning',
+  bookBalanceEnding: 'bookBalanceEnding',
+  calculatedEndingBalance: 'calculatedEndingBalance',
+  difference: 'difference',
+  currency: 'currency',
+  matchingRulesApplied: 'matchingRulesApplied',
+  autoMatchThreshold: 'autoMatchThreshold',
+  startedById: 'startedById',
+  startedAt: 'startedAt',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  lockedAt: 'lockedAt',
+  reopenedAt: 'reopenedAt',
+  reopenReason: 'reopenReason',
+  reopenCount: 'reopenCount',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReconciliationMatchScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  sessionId: 'sessionId',
+  matchGroupId: 'matchGroupId',
+  importRowId: 'importRowId',
+  transactionId: 'transactionId',
+  journalEntryId: 'journalEntryId',
+  matchType: 'matchType',
+  status: 'status',
+  statementAmount: 'statementAmount',
+  ledgerAmount: 'ledgerAmount',
+  matchedAmount: 'matchedAmount',
+  differenceAmount: 'differenceAmount',
+  confidence: 'confidence',
+  matchedRuleId: 'matchedRuleId',
+  differenceReason: 'differenceReason',
+  isManual: 'isManual',
+  matchedById: 'matchedById',
+  matchedAt: 'matchedAt',
+  confirmedById: 'confirmedById',
+  confirmedAt: 'confirmedAt',
+  rejectedById: 'rejectedById',
+  rejectedAt: 'rejectedAt',
+  rejectionReason: 'rejectionReason',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReconciliationExceptionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  sessionId: 'sessionId',
+  importRowId: 'importRowId',
+  transactionId: 'transactionId',
+  exceptionType: 'exceptionType',
+  severity: 'severity',
+  amount: 'amount',
+  description: 'description',
+  suggestedResolution: 'suggestedResolution',
+  confidence: 'confidence',
+  status: 'status',
+  resolution: 'resolution',
+  resolvedById: 'resolvedById',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReconciliationAdjustmentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  sessionId: 'sessionId',
+  accountId: 'accountId',
+  description: 'description',
+  debit: 'debit',
+  credit: 'credit',
+  currency: 'currency',
+  status: 'status',
+  reasonCodeId: 'reasonCodeId',
+  approvalRequestId: 'approvalRequestId',
+  journalEntryId: 'journalEntryId',
+  documentId: 'documentId',
+  postedById: 'postedById',
+  postedAt: 'postedAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.IdempotencyKeyScalarFieldEnum = {
   id: 'id',
   key: 'key',
@@ -1414,7 +1537,12 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   IMPORT_BATCH: 'IMPORT_BATCH',
   IMPORT_ROW: 'IMPORT_ROW',
   IMPORT_FIELD_MAPPING: 'IMPORT_FIELD_MAPPING',
-  IMPORT_ERROR: 'IMPORT_ERROR'
+  IMPORT_ERROR: 'IMPORT_ERROR',
+  RECONCILIATION_SESSION: 'RECONCILIATION_SESSION',
+  RECONCILIATION_MATCH: 'RECONCILIATION_MATCH',
+  RECONCILIATION_EXCEPTION: 'RECONCILIATION_EXCEPTION',
+  RECONCILIATION_ADJUSTMENT: 'RECONCILIATION_ADJUSTMENT',
+  MATCHING_RULE: 'MATCHING_RULE'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -1660,7 +1788,17 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   IMPORT_EXECUTED: 'IMPORT_EXECUTED',
   IMPORT_ROLLED_BACK: 'IMPORT_ROLLED_BACK',
   IMPORT_ROW_ERROR: 'IMPORT_ROW_ERROR',
-  IMPORT_ERROR_RESOLVED: 'IMPORT_ERROR_RESOLVED'
+  IMPORT_ERROR_RESOLVED: 'IMPORT_ERROR_RESOLVED',
+  RECONCILIATION_SESSION_CREATED: 'RECONCILIATION_SESSION_CREATED',
+  RECONCILIATION_AUTO_MATCHED: 'RECONCILIATION_AUTO_MATCHED',
+  RECONCILIATION_MATCH_CONFIRMED: 'RECONCILIATION_MATCH_CONFIRMED',
+  RECONCILIATION_MATCH_REJECTED: 'RECONCILIATION_MATCH_REJECTED',
+  RECONCILIATION_EXCEPTION_RESOLVED: 'RECONCILIATION_EXCEPTION_RESOLVED',
+  RECONCILIATION_ADJUSTMENT_CREATED: 'RECONCILIATION_ADJUSTMENT_CREATED',
+  RECONCILIATION_ADJUSTMENT_APPROVED: 'RECONCILIATION_ADJUSTMENT_APPROVED',
+  RECONCILIATION_ADJUSTMENT_POSTED: 'RECONCILIATION_ADJUSTMENT_POSTED',
+  RECONCILIATION_APPROVED: 'RECONCILIATION_APPROVED',
+  RECONCILIATION_REOPENED: 'RECONCILIATION_REOPENED'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -1743,6 +1881,69 @@ exports.ImportErrorType = exports.$Enums.ImportErrorType = {
   PERMISSION: 'PERMISSION',
   SYSTEM: 'SYSTEM',
   PARSE: 'PARSE'
+};
+
+exports.MatchType = exports.$Enums.MatchType = {
+  EXACT: 'EXACT',
+  DATE_WINDOW: 'DATE_WINDOW',
+  AMOUNT_TOLERANCE: 'AMOUNT_TOLERANCE',
+  REFERENCE_SIMILARITY: 'REFERENCE_SIMILARITY',
+  ONE_TO_MANY: 'ONE_TO_MANY',
+  MANY_TO_ONE: 'MANY_TO_ONE',
+  MANUAL: 'MANUAL'
+};
+
+exports.ReconciliationTarget = exports.$Enums.ReconciliationTarget = {
+  BANK_STATEMENT: 'BANK_STATEMENT',
+  LEDGER: 'LEDGER',
+  MOBILE_MONEY: 'MOBILE_MONEY',
+  PAYMENT_GATEWAY: 'PAYMENT_GATEWAY',
+  CASH: 'CASH'
+};
+
+exports.ReconciliationStatus = exports.$Enums.ReconciliationStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  MATCHED: 'MATCHED',
+  AWAITING_APPROVAL: 'AWAITING_APPROVAL',
+  APPROVED: 'APPROVED',
+  LOCKED: 'LOCKED',
+  REOPENED: 'REOPENED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.ReconciliationLineStatus = exports.$Enums.ReconciliationLineStatus = {
+  PROPOSED: 'PROPOSED',
+  MATCHED: 'MATCHED',
+  REJECTED: 'REJECTED',
+  EXCEPTION: 'EXCEPTION',
+  RESOLVED: 'RESOLVED'
+};
+
+exports.ReconciliationExceptionType = exports.$Enums.ReconciliationExceptionType = {
+  UNMATCHED_STATEMENT_LINE: 'UNMATCHED_STATEMENT_LINE',
+  UNMATCHED_LEDGER_ENTRY: 'UNMATCHED_LEDGER_ENTRY',
+  AMOUNT_DIFFERENCE: 'AMOUNT_DIFFERENCE',
+  DATE_DIFFERENCE: 'DATE_DIFFERENCE',
+  DUPLICATE_SUSPECTED: 'DUPLICATE_SUSPECTED',
+  LOW_CONFIDENCE: 'LOW_CONFIDENCE',
+  UNSUPPORTED_ITEM: 'UNSUPPORTED_ITEM',
+  TIMING_DIFFERENCE: 'TIMING_DIFFERENCE'
+};
+
+exports.ReconciliationExceptionStatus = exports.$Enums.ReconciliationExceptionStatus = {
+  OPEN: 'OPEN',
+  RESOLVED: 'RESOLVED',
+  WAIVED: 'WAIVED'
+};
+
+exports.ReconciliationAdjustmentStatus = exports.$Enums.ReconciliationAdjustmentStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  POSTED: 'POSTED',
+  REJECTED: 'REJECTED',
+  REVERSED: 'REVERSED'
 };
 
 exports.IdempotencyKeyStatus = exports.$Enums.IdempotencyKeyStatus = {
@@ -1837,6 +2038,11 @@ exports.Prisma.ModelName = {
   ImportRow: 'ImportRow',
   ImportFieldMapping: 'ImportFieldMapping',
   ImportError: 'ImportError',
+  MatchingRule: 'MatchingRule',
+  ReconciliationSession: 'ReconciliationSession',
+  ReconciliationMatch: 'ReconciliationMatch',
+  ReconciliationException: 'ReconciliationException',
+  ReconciliationAdjustment: 'ReconciliationAdjustment',
   IdempotencyKey: 'IdempotencyKey',
   Notification: 'Notification',
   NotificationPreference: 'NotificationPreference'
