@@ -984,6 +984,14 @@ enum AuditAction {
   FINANCIAL_CLOSE_REOPEN_APPROVED
   YEAR_END_PROCEDURE_RUN
   ADJUSTMENT_PERIOD_CREATED
+  /// Dashboards, notifications, search, anomalies (M16).
+  NOTIFICATION_READ
+  NOTIFICATION_PREFERENCE_UPDATED
+  ANOMALY_FLAG_RAISED
+  ANOMALY_FLAG_ACKNOWLEDGED
+  ANOMALY_FLAG_DISMISSED
+  ANOMALY_FLAG_CONFIRMED
+  ANOMALY_SCAN_COMPLETED
 }
 
 enum AuditEntityType {
@@ -1075,6 +1083,8 @@ enum AuditEntityType {
   /// Financial Close (M15)
   FINANCIAL_CLOSE
   CLOSE_CHECKLIST_ITEM
+  /// Anomaly detection (M16, PDF §65). Flag only — no accused person.
+  ANOMALY_FLAG
 }
 
 enum AuditResult {
@@ -1153,11 +1163,20 @@ enum NotificationStatus {
 
 enum NotificationCategory {
   APPROVAL
+  BUDGET_ALERT
+  PAYMENT_REMINDER
+  COMPLIANCE_ALERT
+  COMPLIANCE_EXPIRY
   SECURITY_ALERT
   ACCESS_REVIEW
   DOCUMENT_EXPIRY
-  COMPLIANCE_EXPIRY
+  PERIOD_CLOSE
+  RECONCILIATION
+  STATEMENT_IMPORT
+  OVER_BUDGET
+  ANOMALY
   SYSTEM
+  REPORT_READY
   ACCOUNT
 }
 
@@ -1392,6 +1411,9 @@ model User {
   closeChecklistItemsConfirmed      CloseChecklistItem[] @relation("CloseChecklistItemConfirmedBy")
   closeChecklistItemsWaived         CloseChecklistItem[] @relation("CloseChecklistItemWaivedBy")
   closeChecklistItemsWaiverApproved CloseChecklistItem[] @relation("CloseChecklistItemWaiverApprover")
+  anomaliesAcknowledged             AnomalyFlag[]        @relation("AnomalyAcknowledgedBy")
+  anomaliesDismissed                AnomalyFlag[]        @relation("AnomalyDismissedBy")
+  anomaliesConfirmed                AnomalyFlag[]        @relation("AnomalyConfirmedBy")
 
   @@index([status, isActive])
   @@index([primaryLocationId])
@@ -1948,6 +1970,7 @@ model Organization {
   taxInvoiceSequence               TaxInvoiceSequence?
   financialCloses                  FinancialClose[]
   closeChecklistItems              CloseChecklistItem[]
+  anomalies                        AnomalyFlag[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -3712,6 +3735,40 @@ model SecurityEvent {
   @@map("security_events")
 }
 
+// ---- Anomaly detection (M16, PDF §30 + §65) - flag only ----------------------
+
+/// Deterministic rules only. No LLM decision path exists in Phase 1.
+enum AnomalyType {
+  DUPLICATE_TRANSACTION
+  DUPLICATE_INVOICE
+  UNUSUAL_SPENDING
+  UNUSUAL_LOGIN_ACTIVITY
+  SUSPICIOUS_PAYMENT_CHANGE
+  SOD_VIOLATION
+  ROUNDING_PATTERN
+  WEEKEND_TRANSACTION
+  AMOUNT_OUTLIER
+  LATE_NIGHT_ACTIVITY
+}
+
+enum AnomalySeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AnomalyStatus {
+  OPEN
+  ACKNOWLEDGED
+  DISMISSED
+  CONFIRMED
+  RESOLVED
+}
+
+// NOTE: deliberately NO `accusedUserId` on AnomalyFlag. PDF §65 - AI "shall not
+// independently accuse a person". The subject is the record, not a person.
+
 /// Import Pipeline models (PDF §52) — M8
 /// Seven-stage gated pipeline: Upload → Map Fields → Validate → Preview → Detect Duplicates → Approve → Import
 enum ImportSource {
@@ -4216,14 +4273,58 @@ model Notification {
   @@map("notifications")
 }
 
+/// Anomaly flags (M16, PDF §30 + §65).
+/// Rule-based only — deterministic flags, no LLM, no auto-block, no auto-reject.
+/// Every rule writes AnomalyFlag rows with anomalyType, severity, entityType,
+/// entityId, description, evidence (JSON). CRITICAL: no accusedUserId field, no
+/// auto-block, no auto-reject. Triage actions (acknowledge/dismiss/confirm) are
+/// audit-logged with a named human actor.
+model AnomalyFlag {
+  id               String          @id @default(cuid())
+  organizationId   String          @map("organization_id")
+  organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  anomalyType      AnomalyType     @map("anomaly_type")
+  severity         AnomalySeverity @default(MEDIUM)
+  status           AnomalyStatus   @default(OPEN)
+  entityType       AuditEntityType @map("entity_type")
+  entityId         String          @map("entity_id")
+  entityLabel      String?         @map("entity_label")
+  description      String          @db.Text
+  /// Rule-specific evidence (amounts, timestamps, matched rule id, compared rows).
+  evidence         Json?
+  /// Dedupe key per rule+entity so a scan never creates a storm of duplicates.
+  dedupeKey        String?         @map("dedupe_key")
+  acknowledgedAt   DateTime?       @map("acknowledged_at")
+  acknowledgedById String?         @map("acknowledged_by_id")
+  acknowledgedBy   User?           @relation("AnomalyAcknowledgedBy", fields: [acknowledgedById], references: [id], onDelete: SetNull)
+  dismissedAt      DateTime?       @map("dismissed_at")
+  dismissedById    String?         @map("dismissed_by_id")
+  dismissedBy      User?           @relation("AnomalyDismissedBy", fields: [dismissedById], references: [id], onDelete: SetNull)
+  dismissReason    String?         @map("dismiss_reason")
+  confirmedAt      DateTime?       @map("confirmed_at")
+  confirmedById    String?         @map("confirmed_by_id")
+  confirmedBy      User?           @relation("AnomalyConfirmedBy", fields: [confirmedById], references: [id], onDelete: SetNull)
+  resolvedAt       DateTime?       @map("resolved_at")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  @@unique([organizationId, dedupeKey])
+  @@index([organizationId, status, createdAt])
+  @@index([organizationId, anomalyType, status])
+  @@index([entityType, entityId])
+  @@map("anomaly_flags")
+}
+
 model NotificationPreference {
-  id        String               @id @default(cuid())
-  userId    String               @map("user_id")
-  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category  NotificationCategory
-  channel   NotificationChannel
-  enabled   Boolean              @default(true)
-  updatedAt DateTime             @updatedAt @map("updated_at")
+  id              String               @id @default(cuid())
+  userId          String               @map("user_id")
+  user            User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category        NotificationCategory
+  channel         NotificationChannel
+  enabled         Boolean              @default(true)
+  quietHoursStart String?              @map("quiet_hours_start")
+  quietHoursEnd   String?              @map("quiet_hours_end")
+  updatedAt       DateTime             @updatedAt @map("updated_at")
 
   @@unique([userId, category, channel])
   @@map("notification_preferences")

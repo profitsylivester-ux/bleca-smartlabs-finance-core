@@ -6,20 +6,17 @@ import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { prisma } from '@/lib/db/prisma';
 import { verifyChain } from '@/lib/audit/verifier';
-import { formatInteger, formatDateTime, formatRelative } from '@/lib/format';
+import { formatInteger, formatDateTime, formatRelative, formatAmount } from '@/lib/format';
 import { Badge } from '@/components/ui';
 import { Prisma } from '@/generated/prisma/client';
+import { getCeoDashboard } from '@/lib/dashboards/ceo';
 
 export const metadata: Metadata = { title: 'CEO dashboard' };
 
 /**
  * CEO dashboard (PDF 61).
  *
- * Every figure on this page is currently UNAVAILABLE, and it says so rather than
- * showing zero. The distinction matters: this is a system whose whole premise is
- * that it never presents an absent number as a real one (the same rule that makes
- * unverified historical figures render as unverified). A tile reading "0" would
- * be a false statement about BLECA's position.
+ * Figures are derived from the ledger via the reports engine.
  */
 const sodWaiverInclude = {
   user: { select: { fullName: true, emailNormalized: true } },
@@ -35,7 +32,8 @@ export default async function CeoDashboardPage() {
   await authorize(ctx, { module: 'DASHBOARD_CEO', action: 'VIEW' });
   const orgId = ctx.actor.organizationId!;
 
-  const [chain, recentSignIns, pendingSecurityEvents, org, sodWaivers, pendingApprovals] = await Promise.all([
+  const [dashboard, chain, recentSignIns, pendingSecurityEvents, org, sodWaivers, pendingApprovals] = await Promise.all([
+    getCeoDashboard(ctx),
     verifyChain({}),
     prisma.loginHistory.findMany({
       where: { outcome: 'SUCCESS' },
@@ -90,27 +88,53 @@ export default async function CeoDashboardPage() {
       />
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile label="Cash and bank position" unavailable="Not available" hint="M7" />
-        <StatTile label="Revenue, period to date" unavailable="Not available" hint="M4" />
-        <StatTile label="Outstanding receivables" unavailable="Not available" hint="M11" />
-        <StatTile label="Budget utilisation" unavailable="Not available" hint="M9" />
+        <StatTile
+          label="Cash and bank position"
+          value={formatAmount(dashboard.cashPosition.amount, dashboard.currency)}
+          hint={dashboard.cashPosition.unverified ? 'Unverified data' : 'M7'}
+        />
+        <StatTile
+          label="Revenue, period to date"
+          value={formatAmount(dashboard.revenuePeriodToDate.amount, dashboard.currency)}
+          hint={dashboard.revenuePeriodToDate.unverified ? 'Unverified data' : 'M4'}
+        />
+        <StatTile
+          label="Outstanding receivables"
+          value={formatAmount(dashboard.receivablesOutstanding.amount, dashboard.currency)}
+          hint="M11"
+        />
+        <StatTile
+          label="Budget utilisation"
+          value={`${((Number(dashboard.budgetUtilisation.actual) / (Number(dashboard.budgetUtilisation.approved) || 1)) * 100).toFixed(1)}%`}
+          hint={`${dashboard.budgetUtilisation.overBudgetCount} over budget`}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <PlannedPanel
-          milestone="M4-M16"
-          title="Financial position"
-          description="These figures appear once the double-entry core exists. They will be derived from posted journal entries, never entered by hand."
-          items={[
-            'Cash, bank and mobile money balances',
-            'Revenue and expenses for the period',
-            'Profit or loss',
-            'Receivables and payables ageing',
-            'Budget versus actual with commitment netting',
-            'Funding runways for grants and sponsorships',
-            'Project performance for Iventika and Uzanite',
-          ]}
-        />
+        <div className="border-border-subtle rounded-lg border bg-white p-4 space-y-3">
+          <h2 className="text-sm font-semibold">Financial position</h2>
+          <dl className="grid grid-cols-2 gap-2 text-sm">
+            <dt className="text-muted-foreground">Expenses (period)</dt>
+            <dd className="tabular text-foreground font-medium">{formatAmount(dashboard.expensesPeriodToDate.amount, dashboard.currency)}</dd>
+            <dt className="text-muted-foreground">Net result</dt>
+            <dd className="tabular text-foreground font-medium">{formatAmount(dashboard.netResult.amount, dashboard.currency)}</dd>
+            <dt className="text-muted-foreground">Payables outstanding</dt>
+            <dd className="tabular text-foreground font-medium">{formatAmount(dashboard.payablesOutstanding.amount, dashboard.currency)}</dd>
+            <dt className="text-muted-foreground">Cash deposits</dt>
+            <dd className="tabular text-foreground font-medium">{formatAmount(dashboard.cashDeposits.amount, dashboard.currency)}</dd>
+            <dt className="text-muted-foreground">Cash withdrawals</dt>
+            <dd className="tabular text-foreground font-medium">{formatAmount(dashboard.cashWithdrawals.amount, dashboard.currency)}</dd>
+            <dt className="text-muted-foreground">Petty cash open balance</dt>
+            <dd className="tabular text-foreground font-medium">{formatAmount(dashboard.pettyCashOpenBalance.amount, dashboard.currency)}</dd>
+            <dt className="text-muted-foreground">Budget approved</dt>
+            <dd className="tabular text-foreground font-medium">{formatAmount(dashboard.budgetUtilisation.approved, dashboard.currency)}</dd>
+            <dt className="text-muted-foreground">Budget actual</dt>
+            <dd className="tabular text-foreground font-medium">{formatAmount(dashboard.budgetUtilisation.actual, dashboard.currency)}</dd>
+          </dl>
+          {dashboard.hasUnverified && (
+            <p className="text-warning text-xs mt-2">Some figures contain unverified (pre-closing) data.</p>
+          )}
+        </div>
 
         <div className="space-y-4">
           <div className="border-border-subtle rounded-lg border bg-white">
@@ -281,6 +305,27 @@ export default async function CeoDashboardPage() {
                 </Link>
               </div>
             )}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="border-border-subtle rounded-lg border bg-white p-4">
+          <h2 className="text-sm font-semibold mb-2">Risks & anomalies</h2>
+          <div className="space-y-1 text-sm">
+            <p>
+              <span className="tabular text-foreground font-medium">{dashboard.openAnomalies}</span>{' '}
+              open anomaly flag{dashboard.openAnomalies !== 1 ? 's' : ''}
+            </p>
+            <a href="/admin/anomalies" className="text-navy-600 hover:text-navy-800 underline underline-offset-2 text-sm">
+              Review anomalies →
+            </a>
+          </div>
+        </div>
+        <div className="border-border-subtle rounded-lg border bg-white p-4">
+          <h2 className="text-sm font-semibold mb-2">Compliance alerts</h2>
+          <div className="text-sm text-muted-foreground">
+            Credential expiry, tax filing deadlines, and regulatory alerts appear here once the compliance module lands (M13).
           </div>
         </div>
       </div>

@@ -1712,12 +1712,38 @@ exports.Prisma.NotificationScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AnomalyFlagScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  anomalyType: 'anomalyType',
+  severity: 'severity',
+  status: 'status',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  entityLabel: 'entityLabel',
+  description: 'description',
+  evidence: 'evidence',
+  dedupeKey: 'dedupeKey',
+  acknowledgedAt: 'acknowledgedAt',
+  acknowledgedById: 'acknowledgedById',
+  dismissedAt: 'dismissedAt',
+  dismissedById: 'dismissedById',
+  dismissReason: 'dismissReason',
+  confirmedAt: 'confirmedAt',
+  confirmedById: 'confirmedById',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.NotificationPreferenceScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   category: 'category',
   channel: 'channel',
   enabled: 'enabled',
+  quietHoursStart: 'quietHoursStart',
+  quietHoursEnd: 'quietHoursEnd',
   updatedAt: 'updatedAt'
 };
 
@@ -2339,7 +2365,8 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   REPORT: 'REPORT',
   EXPORT: 'EXPORT',
   FINANCIAL_CLOSE: 'FINANCIAL_CLOSE',
-  CLOSE_CHECKLIST_ITEM: 'CLOSE_CHECKLIST_ITEM'
+  CLOSE_CHECKLIST_ITEM: 'CLOSE_CHECKLIST_ITEM',
+  ANOMALY_FLAG: 'ANOMALY_FLAG'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -2926,7 +2953,14 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   FINANCIAL_CLOSE_REOPEN_REQUESTED: 'FINANCIAL_CLOSE_REOPEN_REQUESTED',
   FINANCIAL_CLOSE_REOPEN_APPROVED: 'FINANCIAL_CLOSE_REOPEN_APPROVED',
   YEAR_END_PROCEDURE_RUN: 'YEAR_END_PROCEDURE_RUN',
-  ADJUSTMENT_PERIOD_CREATED: 'ADJUSTMENT_PERIOD_CREATED'
+  ADJUSTMENT_PERIOD_CREATED: 'ADJUSTMENT_PERIOD_CREATED',
+  NOTIFICATION_READ: 'NOTIFICATION_READ',
+  NOTIFICATION_PREFERENCE_UPDATED: 'NOTIFICATION_PREFERENCE_UPDATED',
+  ANOMALY_FLAG_RAISED: 'ANOMALY_FLAG_RAISED',
+  ANOMALY_FLAG_ACKNOWLEDGED: 'ANOMALY_FLAG_ACKNOWLEDGED',
+  ANOMALY_FLAG_DISMISSED: 'ANOMALY_FLAG_DISMISSED',
+  ANOMALY_FLAG_CONFIRMED: 'ANOMALY_FLAG_CONFIRMED',
+  ANOMALY_SCAN_COMPLETED: 'ANOMALY_SCAN_COMPLETED'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -3082,11 +3116,20 @@ exports.IdempotencyKeyStatus = exports.$Enums.IdempotencyKeyStatus = {
 
 exports.NotificationCategory = exports.$Enums.NotificationCategory = {
   APPROVAL: 'APPROVAL',
+  BUDGET_ALERT: 'BUDGET_ALERT',
+  PAYMENT_REMINDER: 'PAYMENT_REMINDER',
+  COMPLIANCE_ALERT: 'COMPLIANCE_ALERT',
+  COMPLIANCE_EXPIRY: 'COMPLIANCE_EXPIRY',
   SECURITY_ALERT: 'SECURITY_ALERT',
   ACCESS_REVIEW: 'ACCESS_REVIEW',
   DOCUMENT_EXPIRY: 'DOCUMENT_EXPIRY',
-  COMPLIANCE_EXPIRY: 'COMPLIANCE_EXPIRY',
+  PERIOD_CLOSE: 'PERIOD_CLOSE',
+  RECONCILIATION: 'RECONCILIATION',
+  STATEMENT_IMPORT: 'STATEMENT_IMPORT',
+  OVER_BUDGET: 'OVER_BUDGET',
+  ANOMALY: 'ANOMALY',
   SYSTEM: 'SYSTEM',
+  REPORT_READY: 'REPORT_READY',
   ACCOUNT: 'ACCOUNT'
 };
 
@@ -3112,6 +3155,34 @@ exports.NotificationStatus = exports.$Enums.NotificationStatus = {
   READ: 'READ',
   ARCHIVED: 'ARCHIVED',
   SUPPRESSED: 'SUPPRESSED'
+};
+
+exports.AnomalyType = exports.$Enums.AnomalyType = {
+  DUPLICATE_TRANSACTION: 'DUPLICATE_TRANSACTION',
+  DUPLICATE_INVOICE: 'DUPLICATE_INVOICE',
+  UNUSUAL_SPENDING: 'UNUSUAL_SPENDING',
+  UNUSUAL_LOGIN_ACTIVITY: 'UNUSUAL_LOGIN_ACTIVITY',
+  SUSPICIOUS_PAYMENT_CHANGE: 'SUSPICIOUS_PAYMENT_CHANGE',
+  SOD_VIOLATION: 'SOD_VIOLATION',
+  ROUNDING_PATTERN: 'ROUNDING_PATTERN',
+  WEEKEND_TRANSACTION: 'WEEKEND_TRANSACTION',
+  AMOUNT_OUTLIER: 'AMOUNT_OUTLIER',
+  LATE_NIGHT_ACTIVITY: 'LATE_NIGHT_ACTIVITY'
+};
+
+exports.AnomalySeverity = exports.$Enums.AnomalySeverity = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+};
+
+exports.AnomalyStatus = exports.$Enums.AnomalyStatus = {
+  OPEN: 'OPEN',
+  ACKNOWLEDGED: 'ACKNOWLEDGED',
+  DISMISSED: 'DISMISSED',
+  CONFIRMED: 'CONFIRMED',
+  RESOLVED: 'RESOLVED'
 };
 
 exports.DocumentCategory = exports.$Enums.DocumentCategory = {
@@ -3315,6 +3386,7 @@ exports.Prisma.ModelName = {
   ReconciliationAdjustment: 'ReconciliationAdjustment',
   IdempotencyKey: 'IdempotencyKey',
   Notification: 'Notification',
+  AnomalyFlag: 'AnomalyFlag',
   NotificationPreference: 'NotificationPreference',
   Document: 'Document',
   DocumentVersion: 'DocumentVersion',

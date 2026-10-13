@@ -516,6 +516,16 @@ export type IdempotencyKey = $Result.DefaultSelection<Prisma.$IdempotencyKeyPayl
  */
 export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
 /**
+ * Model AnomalyFlag
+ * Anomaly flags (M16, PDF §30 + §65).
+ * Rule-based only — deterministic flags, no LLM, no auto-block, no auto-reject.
+ * Every rule writes AnomalyFlag rows with anomalyType, severity, entityType,
+ * entityId, description, evidence (JSON). CRITICAL: no accusedUserId field, no
+ * auto-block, no auto-reject. Triage actions (acknowledge/dismiss/confirm) are
+ * audit-logged with a named human actor.
+ */
+export type AnomalyFlag = $Result.DefaultSelection<Prisma.$AnomalyFlagPayload>
+/**
  * Model NotificationPreference
  * 
  */
@@ -1719,7 +1729,14 @@ export const AuditAction: {
   FINANCIAL_CLOSE_REOPEN_REQUESTED: 'FINANCIAL_CLOSE_REOPEN_REQUESTED',
   FINANCIAL_CLOSE_REOPEN_APPROVED: 'FINANCIAL_CLOSE_REOPEN_APPROVED',
   YEAR_END_PROCEDURE_RUN: 'YEAR_END_PROCEDURE_RUN',
-  ADJUSTMENT_PERIOD_CREATED: 'ADJUSTMENT_PERIOD_CREATED'
+  ADJUSTMENT_PERIOD_CREATED: 'ADJUSTMENT_PERIOD_CREATED',
+  NOTIFICATION_READ: 'NOTIFICATION_READ',
+  NOTIFICATION_PREFERENCE_UPDATED: 'NOTIFICATION_PREFERENCE_UPDATED',
+  ANOMALY_FLAG_RAISED: 'ANOMALY_FLAG_RAISED',
+  ANOMALY_FLAG_ACKNOWLEDGED: 'ANOMALY_FLAG_ACKNOWLEDGED',
+  ANOMALY_FLAG_DISMISSED: 'ANOMALY_FLAG_DISMISSED',
+  ANOMALY_FLAG_CONFIRMED: 'ANOMALY_FLAG_CONFIRMED',
+  ANOMALY_SCAN_COMPLETED: 'ANOMALY_SCAN_COMPLETED'
 };
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
@@ -1809,7 +1826,8 @@ export const AuditEntityType: {
   REPORT: 'REPORT',
   EXPORT: 'EXPORT',
   FINANCIAL_CLOSE: 'FINANCIAL_CLOSE',
-  CLOSE_CHECKLIST_ITEM: 'CLOSE_CHECKLIST_ITEM'
+  CLOSE_CHECKLIST_ITEM: 'CLOSE_CHECKLIST_ITEM',
+  ANOMALY_FLAG: 'ANOMALY_FLAG'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -1907,11 +1925,20 @@ export type NotificationStatus = (typeof NotificationStatus)[keyof typeof Notifi
 
 export const NotificationCategory: {
   APPROVAL: 'APPROVAL',
+  BUDGET_ALERT: 'BUDGET_ALERT',
+  PAYMENT_REMINDER: 'PAYMENT_REMINDER',
+  COMPLIANCE_ALERT: 'COMPLIANCE_ALERT',
+  COMPLIANCE_EXPIRY: 'COMPLIANCE_EXPIRY',
   SECURITY_ALERT: 'SECURITY_ALERT',
   ACCESS_REVIEW: 'ACCESS_REVIEW',
   DOCUMENT_EXPIRY: 'DOCUMENT_EXPIRY',
-  COMPLIANCE_EXPIRY: 'COMPLIANCE_EXPIRY',
+  PERIOD_CLOSE: 'PERIOD_CLOSE',
+  RECONCILIATION: 'RECONCILIATION',
+  STATEMENT_IMPORT: 'STATEMENT_IMPORT',
+  OVER_BUDGET: 'OVER_BUDGET',
+  ANOMALY: 'ANOMALY',
   SYSTEM: 'SYSTEM',
+  REPORT_READY: 'REPORT_READY',
   ACCOUNT: 'ACCOUNT'
 };
 
@@ -2071,6 +2098,43 @@ export const TransferStatus: {
 };
 
 export type TransferStatus = (typeof TransferStatus)[keyof typeof TransferStatus]
+
+
+export const AnomalyType: {
+  DUPLICATE_TRANSACTION: 'DUPLICATE_TRANSACTION',
+  DUPLICATE_INVOICE: 'DUPLICATE_INVOICE',
+  UNUSUAL_SPENDING: 'UNUSUAL_SPENDING',
+  UNUSUAL_LOGIN_ACTIVITY: 'UNUSUAL_LOGIN_ACTIVITY',
+  SUSPICIOUS_PAYMENT_CHANGE: 'SUSPICIOUS_PAYMENT_CHANGE',
+  SOD_VIOLATION: 'SOD_VIOLATION',
+  ROUNDING_PATTERN: 'ROUNDING_PATTERN',
+  WEEKEND_TRANSACTION: 'WEEKEND_TRANSACTION',
+  AMOUNT_OUTLIER: 'AMOUNT_OUTLIER',
+  LATE_NIGHT_ACTIVITY: 'LATE_NIGHT_ACTIVITY'
+};
+
+export type AnomalyType = (typeof AnomalyType)[keyof typeof AnomalyType]
+
+
+export const AnomalySeverity: {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+};
+
+export type AnomalySeverity = (typeof AnomalySeverity)[keyof typeof AnomalySeverity]
+
+
+export const AnomalyStatus: {
+  OPEN: 'OPEN',
+  ACKNOWLEDGED: 'ACKNOWLEDGED',
+  DISMISSED: 'DISMISSED',
+  CONFIRMED: 'CONFIRMED',
+  RESOLVED: 'RESOLVED'
+};
+
+export type AnomalyStatus = (typeof AnomalyStatus)[keyof typeof AnomalyStatus]
 
 
 export const ImportSource: {
@@ -2596,6 +2660,18 @@ export const SODWaiverStatus: typeof $Enums.SODWaiverStatus
 export type TransferStatus = $Enums.TransferStatus
 
 export const TransferStatus: typeof $Enums.TransferStatus
+
+export type AnomalyType = $Enums.AnomalyType
+
+export const AnomalyType: typeof $Enums.AnomalyType
+
+export type AnomalySeverity = $Enums.AnomalySeverity
+
+export const AnomalySeverity: typeof $Enums.AnomalySeverity
+
+export type AnomalyStatus = $Enums.AnomalyStatus
+
+export const AnomalyStatus: typeof $Enums.AnomalyStatus
 
 export type ImportSource = $Enums.ImportSource
 
@@ -3676,6 +3752,16 @@ export class PrismaClient<
   get notification(): Prisma.NotificationDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.anomalyFlag`: Exposes CRUD operations for the **AnomalyFlag** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AnomalyFlags
+    * const anomalyFlags = await prisma.anomalyFlag.findMany()
+    * ```
+    */
+  get anomalyFlag(): Prisma.AnomalyFlagDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.notificationPreference`: Exposes CRUD operations for the **NotificationPreference** model.
     * Example usage:
     * ```ts
@@ -4347,6 +4433,7 @@ export namespace Prisma {
     ReconciliationAdjustment: 'ReconciliationAdjustment',
     IdempotencyKey: 'IdempotencyKey',
     Notification: 'Notification',
+    AnomalyFlag: 'AnomalyFlag',
     NotificationPreference: 'NotificationPreference',
     Document: 'Document',
     DocumentVersion: 'DocumentVersion',
@@ -4379,7 +4466,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "treasuryAccount" | "paymentSchedule" | "transfer" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "party" | "customer" | "supplier" | "contact" | "partyAddress" | "communicationLog" | "supplierBankDetail" | "supplierBankDetailChangeRequest" | "supplierProductService" | "supplierTaxObligationLink" | "customerCreditHold" | "customerReceivable" | "quotation" | "quotationLine" | "invoice" | "invoiceLine" | "invoiceReminder" | "documentSequence" | "payment" | "paymentMethodLine" | "paymentAllocation" | "receipt" | "receiptLine" | "creditNote" | "debitNote" | "account" | "financialPeriod" | "financialClose" | "closeChecklistItem" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "commitment" | "budgetRevision" | "budgetRevisionLine" | "budgetTransfer" | "budgetScenario" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "importBatch" | "importRow" | "importFieldMapping" | "importError" | "matchingRule" | "reconciliationSession" | "reconciliationMatch" | "reconciliationException" | "reconciliationAdjustment" | "idempotencyKey" | "notification" | "notificationPreference" | "document" | "documentVersion" | "documentTag" | "documentTagLink" | "documentLink" | "retentionPolicy" | "legalHold" | "taxRule" | "taxObligation" | "taxPayment" | "credential" | "complianceDocument" | "taxInvoiceSequence"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "treasuryAccount" | "paymentSchedule" | "transfer" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "party" | "customer" | "supplier" | "contact" | "partyAddress" | "communicationLog" | "supplierBankDetail" | "supplierBankDetailChangeRequest" | "supplierProductService" | "supplierTaxObligationLink" | "customerCreditHold" | "customerReceivable" | "quotation" | "quotationLine" | "invoice" | "invoiceLine" | "invoiceReminder" | "documentSequence" | "payment" | "paymentMethodLine" | "paymentAllocation" | "receipt" | "receiptLine" | "creditNote" | "debitNote" | "account" | "financialPeriod" | "financialClose" | "closeChecklistItem" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "commitment" | "budgetRevision" | "budgetRevisionLine" | "budgetTransfer" | "budgetScenario" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "importBatch" | "importRow" | "importFieldMapping" | "importError" | "matchingRule" | "reconciliationSession" | "reconciliationMatch" | "reconciliationException" | "reconciliationAdjustment" | "idempotencyKey" | "notification" | "anomalyFlag" | "notificationPreference" | "document" | "documentVersion" | "documentTag" | "documentTagLink" | "documentLink" | "retentionPolicy" | "legalHold" | "taxRule" | "taxObligation" | "taxPayment" | "credential" | "complianceDocument" | "taxInvoiceSequence"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -11191,6 +11278,80 @@ export namespace Prisma {
           }
         }
       }
+      AnomalyFlag: {
+        payload: Prisma.$AnomalyFlagPayload<ExtArgs>
+        fields: Prisma.AnomalyFlagFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AnomalyFlagFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AnomalyFlagFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload>
+          }
+          findFirst: {
+            args: Prisma.AnomalyFlagFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AnomalyFlagFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload>
+          }
+          findMany: {
+            args: Prisma.AnomalyFlagFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload>[]
+          }
+          create: {
+            args: Prisma.AnomalyFlagCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload>
+          }
+          createMany: {
+            args: Prisma.AnomalyFlagCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AnomalyFlagCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload>[]
+          }
+          delete: {
+            args: Prisma.AnomalyFlagDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload>
+          }
+          update: {
+            args: Prisma.AnomalyFlagUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload>
+          }
+          deleteMany: {
+            args: Prisma.AnomalyFlagDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AnomalyFlagUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AnomalyFlagUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload>[]
+          }
+          upsert: {
+            args: Prisma.AnomalyFlagUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyFlagPayload>
+          }
+          aggregate: {
+            args: Prisma.AnomalyFlagAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAnomalyFlag>
+          }
+          groupBy: {
+            args: Prisma.AnomalyFlagGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AnomalyFlagGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AnomalyFlagCountArgs<ExtArgs>
+            result: $Utils.Optional<AnomalyFlagCountAggregateOutputType> | number
+          }
+        }
+      }
       NotificationPreference: {
         payload: Prisma.$NotificationPreferencePayload<ExtArgs>
         fields: Prisma.NotificationPreferenceFieldRefs
@@ -12415,6 +12576,7 @@ export namespace Prisma {
     reconciliationAdjustment?: ReconciliationAdjustmentOmit
     idempotencyKey?: IdempotencyKeyOmit
     notification?: NotificationOmit
+    anomalyFlag?: AnomalyFlagOmit
     notificationPreference?: NotificationPreferenceOmit
     document?: DocumentOmit
     documentVersion?: DocumentVersionOmit
@@ -12568,6 +12730,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed: number
     closeChecklistItemsWaived: number
     closeChecklistItemsWaiverApproved: number
+    anomaliesAcknowledged: number
+    anomaliesDismissed: number
+    anomaliesConfirmed: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12630,6 +12795,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: boolean | UserCountOutputTypeCountCloseChecklistItemsConfirmedArgs
     closeChecklistItemsWaived?: boolean | UserCountOutputTypeCountCloseChecklistItemsWaivedArgs
     closeChecklistItemsWaiverApproved?: boolean | UserCountOutputTypeCountCloseChecklistItemsWaiverApprovedArgs
+    anomaliesAcknowledged?: boolean | UserCountOutputTypeCountAnomaliesAcknowledgedArgs
+    anomaliesDismissed?: boolean | UserCountOutputTypeCountAnomaliesDismissedArgs
+    anomaliesConfirmed?: boolean | UserCountOutputTypeCountAnomaliesConfirmedArgs
   }
 
   // Custom InputTypes
@@ -13056,6 +13224,27 @@ export namespace Prisma {
     where?: CloseChecklistItemWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAnomaliesAcknowledgedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnomalyFlagWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAnomaliesDismissedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnomalyFlagWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAnomaliesConfirmedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnomalyFlagWhereInput
+  }
+
 
   /**
    * Count Type RoleCountOutputType
@@ -13419,6 +13608,7 @@ export namespace Prisma {
     complianceDocuments: number
     financialCloses: number
     closeChecklistItems: number
+    anomalies: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13485,6 +13675,7 @@ export namespace Prisma {
     complianceDocuments?: boolean | OrganizationCountOutputTypeCountComplianceDocumentsArgs
     financialCloses?: boolean | OrganizationCountOutputTypeCountFinancialClosesArgs
     closeChecklistItems?: boolean | OrganizationCountOutputTypeCountCloseChecklistItemsArgs
+    anomalies?: boolean | OrganizationCountOutputTypeCountAnomaliesArgs
   }
 
   // Custom InputTypes
@@ -13937,6 +14128,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountCloseChecklistItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CloseChecklistItemWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountAnomaliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnomalyFlagWhereInput
   }
 
 
@@ -16468,6 +16666,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: boolean | User$closeChecklistItemsConfirmedArgs<ExtArgs>
     closeChecklistItemsWaived?: boolean | User$closeChecklistItemsWaivedArgs<ExtArgs>
     closeChecklistItemsWaiverApproved?: boolean | User$closeChecklistItemsWaiverApprovedArgs<ExtArgs>
+    anomaliesAcknowledged?: boolean | User$anomaliesAcknowledgedArgs<ExtArgs>
+    anomaliesDismissed?: boolean | User$anomaliesDismissedArgs<ExtArgs>
+    anomaliesConfirmed?: boolean | User$anomaliesConfirmedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -16652,6 +16853,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: boolean | User$closeChecklistItemsConfirmedArgs<ExtArgs>
     closeChecklistItemsWaived?: boolean | User$closeChecklistItemsWaivedArgs<ExtArgs>
     closeChecklistItemsWaiverApproved?: boolean | User$closeChecklistItemsWaiverApprovedArgs<ExtArgs>
+    anomaliesAcknowledged?: boolean | User$anomaliesAcknowledgedArgs<ExtArgs>
+    anomaliesDismissed?: boolean | User$anomaliesDismissedArgs<ExtArgs>
+    anomaliesConfirmed?: boolean | User$anomaliesConfirmedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16733,6 +16937,9 @@ export namespace Prisma {
       closeChecklistItemsConfirmed: Prisma.$CloseChecklistItemPayload<ExtArgs>[]
       closeChecklistItemsWaived: Prisma.$CloseChecklistItemPayload<ExtArgs>[]
       closeChecklistItemsWaiverApproved: Prisma.$CloseChecklistItemPayload<ExtArgs>[]
+      anomaliesAcknowledged: Prisma.$AnomalyFlagPayload<ExtArgs>[]
+      anomaliesDismissed: Prisma.$AnomalyFlagPayload<ExtArgs>[]
+      anomaliesConfirmed: Prisma.$AnomalyFlagPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -17236,6 +17443,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed<T extends User$closeChecklistItemsConfirmedArgs<ExtArgs> = {}>(args?: Subset<T, User$closeChecklistItemsConfirmedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CloseChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     closeChecklistItemsWaived<T extends User$closeChecklistItemsWaivedArgs<ExtArgs> = {}>(args?: Subset<T, User$closeChecklistItemsWaivedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CloseChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     closeChecklistItemsWaiverApproved<T extends User$closeChecklistItemsWaiverApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$closeChecklistItemsWaiverApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CloseChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    anomaliesAcknowledged<T extends User$anomaliesAcknowledgedArgs<ExtArgs> = {}>(args?: Subset<T, User$anomaliesAcknowledgedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    anomaliesDismissed<T extends User$anomaliesDismissedArgs<ExtArgs> = {}>(args?: Subset<T, User$anomaliesDismissedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    anomaliesConfirmed<T extends User$anomaliesConfirmedArgs<ExtArgs> = {}>(args?: Subset<T, User$anomaliesConfirmedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -19183,6 +19393,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CloseChecklistItemScalarFieldEnum | CloseChecklistItemScalarFieldEnum[]
+  }
+
+  /**
+   * User.anomaliesAcknowledged
+   */
+  export type User$anomaliesAcknowledgedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    where?: AnomalyFlagWhereInput
+    orderBy?: AnomalyFlagOrderByWithRelationInput | AnomalyFlagOrderByWithRelationInput[]
+    cursor?: AnomalyFlagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnomalyFlagScalarFieldEnum | AnomalyFlagScalarFieldEnum[]
+  }
+
+  /**
+   * User.anomaliesDismissed
+   */
+  export type User$anomaliesDismissedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    where?: AnomalyFlagWhereInput
+    orderBy?: AnomalyFlagOrderByWithRelationInput | AnomalyFlagOrderByWithRelationInput[]
+    cursor?: AnomalyFlagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnomalyFlagScalarFieldEnum | AnomalyFlagScalarFieldEnum[]
+  }
+
+  /**
+   * User.anomaliesConfirmed
+   */
+  export type User$anomaliesConfirmedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    where?: AnomalyFlagWhereInput
+    orderBy?: AnomalyFlagOrderByWithRelationInput | AnomalyFlagOrderByWithRelationInput[]
+    cursor?: AnomalyFlagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnomalyFlagScalarFieldEnum | AnomalyFlagScalarFieldEnum[]
   }
 
   /**
@@ -41305,6 +41587,7 @@ export namespace Prisma {
     taxInvoiceSequence?: boolean | Organization$taxInvoiceSequenceArgs<ExtArgs>
     financialCloses?: boolean | Organization$financialClosesArgs<ExtArgs>
     closeChecklistItems?: boolean | Organization$closeChecklistItemsArgs<ExtArgs>
+    anomalies?: boolean | Organization$anomaliesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -41434,6 +41717,7 @@ export namespace Prisma {
     taxInvoiceSequence?: boolean | Organization$taxInvoiceSequenceArgs<ExtArgs>
     financialCloses?: boolean | Organization$financialClosesArgs<ExtArgs>
     closeChecklistItems?: boolean | Organization$closeChecklistItemsArgs<ExtArgs>
+    anomalies?: boolean | Organization$anomaliesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -41506,6 +41790,7 @@ export namespace Prisma {
       taxInvoiceSequence: Prisma.$TaxInvoiceSequencePayload<ExtArgs> | null
       financialCloses: Prisma.$FinancialClosePayload<ExtArgs>[]
       closeChecklistItems: Prisma.$CloseChecklistItemPayload<ExtArgs>[]
+      anomalies: Prisma.$AnomalyFlagPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -41989,6 +42274,7 @@ export namespace Prisma {
     taxInvoiceSequence<T extends Organization$taxInvoiceSequenceArgs<ExtArgs> = {}>(args?: Subset<T, Organization$taxInvoiceSequenceArgs<ExtArgs>>): Prisma__TaxInvoiceSequenceClient<$Result.GetResult<Prisma.$TaxInvoiceSequencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     financialCloses<T extends Organization$financialClosesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$financialClosesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialClosePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     closeChecklistItems<T extends Organization$closeChecklistItemsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$closeChecklistItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CloseChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    anomalies<T extends Organization$anomaliesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$anomaliesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -43951,6 +44237,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CloseChecklistItemScalarFieldEnum | CloseChecklistItemScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.anomalies
+   */
+  export type Organization$anomaliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    where?: AnomalyFlagWhereInput
+    orderBy?: AnomalyFlagOrderByWithRelationInput | AnomalyFlagOrderByWithRelationInput[]
+    cursor?: AnomalyFlagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AnomalyFlagScalarFieldEnum | AnomalyFlagScalarFieldEnum[]
   }
 
   /**
@@ -137336,6 +137646,1355 @@ export namespace Prisma {
 
 
   /**
+   * Model AnomalyFlag
+   */
+
+  export type AggregateAnomalyFlag = {
+    _count: AnomalyFlagCountAggregateOutputType | null
+    _min: AnomalyFlagMinAggregateOutputType | null
+    _max: AnomalyFlagMaxAggregateOutputType | null
+  }
+
+  export type AnomalyFlagMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    anomalyType: $Enums.AnomalyType | null
+    severity: $Enums.AnomalySeverity | null
+    status: $Enums.AnomalyStatus | null
+    entityType: $Enums.AuditEntityType | null
+    entityId: string | null
+    entityLabel: string | null
+    description: string | null
+    dedupeKey: string | null
+    acknowledgedAt: Date | null
+    acknowledgedById: string | null
+    dismissedAt: Date | null
+    dismissedById: string | null
+    dismissReason: string | null
+    confirmedAt: Date | null
+    confirmedById: string | null
+    resolvedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AnomalyFlagMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    anomalyType: $Enums.AnomalyType | null
+    severity: $Enums.AnomalySeverity | null
+    status: $Enums.AnomalyStatus | null
+    entityType: $Enums.AuditEntityType | null
+    entityId: string | null
+    entityLabel: string | null
+    description: string | null
+    dedupeKey: string | null
+    acknowledgedAt: Date | null
+    acknowledgedById: string | null
+    dismissedAt: Date | null
+    dismissedById: string | null
+    dismissReason: string | null
+    confirmedAt: Date | null
+    confirmedById: string | null
+    resolvedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AnomalyFlagCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    anomalyType: number
+    severity: number
+    status: number
+    entityType: number
+    entityId: number
+    entityLabel: number
+    description: number
+    evidence: number
+    dedupeKey: number
+    acknowledgedAt: number
+    acknowledgedById: number
+    dismissedAt: number
+    dismissedById: number
+    dismissReason: number
+    confirmedAt: number
+    confirmedById: number
+    resolvedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AnomalyFlagMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    anomalyType?: true
+    severity?: true
+    status?: true
+    entityType?: true
+    entityId?: true
+    entityLabel?: true
+    description?: true
+    dedupeKey?: true
+    acknowledgedAt?: true
+    acknowledgedById?: true
+    dismissedAt?: true
+    dismissedById?: true
+    dismissReason?: true
+    confirmedAt?: true
+    confirmedById?: true
+    resolvedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AnomalyFlagMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    anomalyType?: true
+    severity?: true
+    status?: true
+    entityType?: true
+    entityId?: true
+    entityLabel?: true
+    description?: true
+    dedupeKey?: true
+    acknowledgedAt?: true
+    acknowledgedById?: true
+    dismissedAt?: true
+    dismissedById?: true
+    dismissReason?: true
+    confirmedAt?: true
+    confirmedById?: true
+    resolvedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AnomalyFlagCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    anomalyType?: true
+    severity?: true
+    status?: true
+    entityType?: true
+    entityId?: true
+    entityLabel?: true
+    description?: true
+    evidence?: true
+    dedupeKey?: true
+    acknowledgedAt?: true
+    acknowledgedById?: true
+    dismissedAt?: true
+    dismissedById?: true
+    dismissReason?: true
+    confirmedAt?: true
+    confirmedById?: true
+    resolvedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AnomalyFlagAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AnomalyFlag to aggregate.
+     */
+    where?: AnomalyFlagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnomalyFlags to fetch.
+     */
+    orderBy?: AnomalyFlagOrderByWithRelationInput | AnomalyFlagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AnomalyFlagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnomalyFlags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnomalyFlags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AnomalyFlags
+    **/
+    _count?: true | AnomalyFlagCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AnomalyFlagMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AnomalyFlagMaxAggregateInputType
+  }
+
+  export type GetAnomalyFlagAggregateType<T extends AnomalyFlagAggregateArgs> = {
+        [P in keyof T & keyof AggregateAnomalyFlag]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAnomalyFlag[P]>
+      : GetScalarType<T[P], AggregateAnomalyFlag[P]>
+  }
+
+
+
+
+  export type AnomalyFlagGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnomalyFlagWhereInput
+    orderBy?: AnomalyFlagOrderByWithAggregationInput | AnomalyFlagOrderByWithAggregationInput[]
+    by: AnomalyFlagScalarFieldEnum[] | AnomalyFlagScalarFieldEnum
+    having?: AnomalyFlagScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AnomalyFlagCountAggregateInputType | true
+    _min?: AnomalyFlagMinAggregateInputType
+    _max?: AnomalyFlagMaxAggregateInputType
+  }
+
+  export type AnomalyFlagGroupByOutputType = {
+    id: string
+    organizationId: string
+    anomalyType: $Enums.AnomalyType
+    severity: $Enums.AnomalySeverity
+    status: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel: string | null
+    description: string
+    evidence: JsonValue | null
+    dedupeKey: string | null
+    acknowledgedAt: Date | null
+    acknowledgedById: string | null
+    dismissedAt: Date | null
+    dismissedById: string | null
+    dismissReason: string | null
+    confirmedAt: Date | null
+    confirmedById: string | null
+    resolvedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: AnomalyFlagCountAggregateOutputType | null
+    _min: AnomalyFlagMinAggregateOutputType | null
+    _max: AnomalyFlagMaxAggregateOutputType | null
+  }
+
+  type GetAnomalyFlagGroupByPayload<T extends AnomalyFlagGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AnomalyFlagGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AnomalyFlagGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AnomalyFlagGroupByOutputType[P]>
+            : GetScalarType<T[P], AnomalyFlagGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AnomalyFlagSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    anomalyType?: boolean
+    severity?: boolean
+    status?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    entityLabel?: boolean
+    description?: boolean
+    evidence?: boolean
+    dedupeKey?: boolean
+    acknowledgedAt?: boolean
+    acknowledgedById?: boolean
+    dismissedAt?: boolean
+    dismissedById?: boolean
+    dismissReason?: boolean
+    confirmedAt?: boolean
+    confirmedById?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    acknowledgedBy?: boolean | AnomalyFlag$acknowledgedByArgs<ExtArgs>
+    dismissedBy?: boolean | AnomalyFlag$dismissedByArgs<ExtArgs>
+    confirmedBy?: boolean | AnomalyFlag$confirmedByArgs<ExtArgs>
+  }, ExtArgs["result"]["anomalyFlag"]>
+
+  export type AnomalyFlagSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    anomalyType?: boolean
+    severity?: boolean
+    status?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    entityLabel?: boolean
+    description?: boolean
+    evidence?: boolean
+    dedupeKey?: boolean
+    acknowledgedAt?: boolean
+    acknowledgedById?: boolean
+    dismissedAt?: boolean
+    dismissedById?: boolean
+    dismissReason?: boolean
+    confirmedAt?: boolean
+    confirmedById?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    acknowledgedBy?: boolean | AnomalyFlag$acknowledgedByArgs<ExtArgs>
+    dismissedBy?: boolean | AnomalyFlag$dismissedByArgs<ExtArgs>
+    confirmedBy?: boolean | AnomalyFlag$confirmedByArgs<ExtArgs>
+  }, ExtArgs["result"]["anomalyFlag"]>
+
+  export type AnomalyFlagSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    anomalyType?: boolean
+    severity?: boolean
+    status?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    entityLabel?: boolean
+    description?: boolean
+    evidence?: boolean
+    dedupeKey?: boolean
+    acknowledgedAt?: boolean
+    acknowledgedById?: boolean
+    dismissedAt?: boolean
+    dismissedById?: boolean
+    dismissReason?: boolean
+    confirmedAt?: boolean
+    confirmedById?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    acknowledgedBy?: boolean | AnomalyFlag$acknowledgedByArgs<ExtArgs>
+    dismissedBy?: boolean | AnomalyFlag$dismissedByArgs<ExtArgs>
+    confirmedBy?: boolean | AnomalyFlag$confirmedByArgs<ExtArgs>
+  }, ExtArgs["result"]["anomalyFlag"]>
+
+  export type AnomalyFlagSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    anomalyType?: boolean
+    severity?: boolean
+    status?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    entityLabel?: boolean
+    description?: boolean
+    evidence?: boolean
+    dedupeKey?: boolean
+    acknowledgedAt?: boolean
+    acknowledgedById?: boolean
+    dismissedAt?: boolean
+    dismissedById?: boolean
+    dismissReason?: boolean
+    confirmedAt?: boolean
+    confirmedById?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AnomalyFlagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "anomalyType" | "severity" | "status" | "entityType" | "entityId" | "entityLabel" | "description" | "evidence" | "dedupeKey" | "acknowledgedAt" | "acknowledgedById" | "dismissedAt" | "dismissedById" | "dismissReason" | "confirmedAt" | "confirmedById" | "resolvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["anomalyFlag"]>
+  export type AnomalyFlagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    acknowledgedBy?: boolean | AnomalyFlag$acknowledgedByArgs<ExtArgs>
+    dismissedBy?: boolean | AnomalyFlag$dismissedByArgs<ExtArgs>
+    confirmedBy?: boolean | AnomalyFlag$confirmedByArgs<ExtArgs>
+  }
+  export type AnomalyFlagIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    acknowledgedBy?: boolean | AnomalyFlag$acknowledgedByArgs<ExtArgs>
+    dismissedBy?: boolean | AnomalyFlag$dismissedByArgs<ExtArgs>
+    confirmedBy?: boolean | AnomalyFlag$confirmedByArgs<ExtArgs>
+  }
+  export type AnomalyFlagIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    acknowledgedBy?: boolean | AnomalyFlag$acknowledgedByArgs<ExtArgs>
+    dismissedBy?: boolean | AnomalyFlag$dismissedByArgs<ExtArgs>
+    confirmedBy?: boolean | AnomalyFlag$confirmedByArgs<ExtArgs>
+  }
+
+  export type $AnomalyFlagPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AnomalyFlag"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      acknowledgedBy: Prisma.$UserPayload<ExtArgs> | null
+      dismissedBy: Prisma.$UserPayload<ExtArgs> | null
+      confirmedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      anomalyType: $Enums.AnomalyType
+      severity: $Enums.AnomalySeverity
+      status: $Enums.AnomalyStatus
+      entityType: $Enums.AuditEntityType
+      entityId: string
+      entityLabel: string | null
+      description: string
+      /**
+       * Rule-specific evidence (amounts, timestamps, matched rule id, compared rows).
+       */
+      evidence: Prisma.JsonValue | null
+      /**
+       * Dedupe key per rule+entity so a scan never creates a storm of duplicates.
+       */
+      dedupeKey: string | null
+      acknowledgedAt: Date | null
+      acknowledgedById: string | null
+      dismissedAt: Date | null
+      dismissedById: string | null
+      dismissReason: string | null
+      confirmedAt: Date | null
+      confirmedById: string | null
+      resolvedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["anomalyFlag"]>
+    composites: {}
+  }
+
+  type AnomalyFlagGetPayload<S extends boolean | null | undefined | AnomalyFlagDefaultArgs> = $Result.GetResult<Prisma.$AnomalyFlagPayload, S>
+
+  type AnomalyFlagCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AnomalyFlagFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AnomalyFlagCountAggregateInputType | true
+    }
+
+  export interface AnomalyFlagDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AnomalyFlag'], meta: { name: 'AnomalyFlag' } }
+    /**
+     * Find zero or one AnomalyFlag that matches the filter.
+     * @param {AnomalyFlagFindUniqueArgs} args - Arguments to find a AnomalyFlag
+     * @example
+     * // Get one AnomalyFlag
+     * const anomalyFlag = await prisma.anomalyFlag.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AnomalyFlagFindUniqueArgs>(args: SelectSubset<T, AnomalyFlagFindUniqueArgs<ExtArgs>>): Prisma__AnomalyFlagClient<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AnomalyFlag that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AnomalyFlagFindUniqueOrThrowArgs} args - Arguments to find a AnomalyFlag
+     * @example
+     * // Get one AnomalyFlag
+     * const anomalyFlag = await prisma.anomalyFlag.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AnomalyFlagFindUniqueOrThrowArgs>(args: SelectSubset<T, AnomalyFlagFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AnomalyFlagClient<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AnomalyFlag that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyFlagFindFirstArgs} args - Arguments to find a AnomalyFlag
+     * @example
+     * // Get one AnomalyFlag
+     * const anomalyFlag = await prisma.anomalyFlag.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AnomalyFlagFindFirstArgs>(args?: SelectSubset<T, AnomalyFlagFindFirstArgs<ExtArgs>>): Prisma__AnomalyFlagClient<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AnomalyFlag that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyFlagFindFirstOrThrowArgs} args - Arguments to find a AnomalyFlag
+     * @example
+     * // Get one AnomalyFlag
+     * const anomalyFlag = await prisma.anomalyFlag.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AnomalyFlagFindFirstOrThrowArgs>(args?: SelectSubset<T, AnomalyFlagFindFirstOrThrowArgs<ExtArgs>>): Prisma__AnomalyFlagClient<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AnomalyFlags that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyFlagFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AnomalyFlags
+     * const anomalyFlags = await prisma.anomalyFlag.findMany()
+     * 
+     * // Get first 10 AnomalyFlags
+     * const anomalyFlags = await prisma.anomalyFlag.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const anomalyFlagWithIdOnly = await prisma.anomalyFlag.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AnomalyFlagFindManyArgs>(args?: SelectSubset<T, AnomalyFlagFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AnomalyFlag.
+     * @param {AnomalyFlagCreateArgs} args - Arguments to create a AnomalyFlag.
+     * @example
+     * // Create one AnomalyFlag
+     * const AnomalyFlag = await prisma.anomalyFlag.create({
+     *   data: {
+     *     // ... data to create a AnomalyFlag
+     *   }
+     * })
+     * 
+     */
+    create<T extends AnomalyFlagCreateArgs>(args: SelectSubset<T, AnomalyFlagCreateArgs<ExtArgs>>): Prisma__AnomalyFlagClient<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AnomalyFlags.
+     * @param {AnomalyFlagCreateManyArgs} args - Arguments to create many AnomalyFlags.
+     * @example
+     * // Create many AnomalyFlags
+     * const anomalyFlag = await prisma.anomalyFlag.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AnomalyFlagCreateManyArgs>(args?: SelectSubset<T, AnomalyFlagCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AnomalyFlags and returns the data saved in the database.
+     * @param {AnomalyFlagCreateManyAndReturnArgs} args - Arguments to create many AnomalyFlags.
+     * @example
+     * // Create many AnomalyFlags
+     * const anomalyFlag = await prisma.anomalyFlag.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AnomalyFlags and only return the `id`
+     * const anomalyFlagWithIdOnly = await prisma.anomalyFlag.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AnomalyFlagCreateManyAndReturnArgs>(args?: SelectSubset<T, AnomalyFlagCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AnomalyFlag.
+     * @param {AnomalyFlagDeleteArgs} args - Arguments to delete one AnomalyFlag.
+     * @example
+     * // Delete one AnomalyFlag
+     * const AnomalyFlag = await prisma.anomalyFlag.delete({
+     *   where: {
+     *     // ... filter to delete one AnomalyFlag
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AnomalyFlagDeleteArgs>(args: SelectSubset<T, AnomalyFlagDeleteArgs<ExtArgs>>): Prisma__AnomalyFlagClient<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AnomalyFlag.
+     * @param {AnomalyFlagUpdateArgs} args - Arguments to update one AnomalyFlag.
+     * @example
+     * // Update one AnomalyFlag
+     * const anomalyFlag = await prisma.anomalyFlag.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AnomalyFlagUpdateArgs>(args: SelectSubset<T, AnomalyFlagUpdateArgs<ExtArgs>>): Prisma__AnomalyFlagClient<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AnomalyFlags.
+     * @param {AnomalyFlagDeleteManyArgs} args - Arguments to filter AnomalyFlags to delete.
+     * @example
+     * // Delete a few AnomalyFlags
+     * const { count } = await prisma.anomalyFlag.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AnomalyFlagDeleteManyArgs>(args?: SelectSubset<T, AnomalyFlagDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AnomalyFlags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyFlagUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AnomalyFlags
+     * const anomalyFlag = await prisma.anomalyFlag.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AnomalyFlagUpdateManyArgs>(args: SelectSubset<T, AnomalyFlagUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AnomalyFlags and returns the data updated in the database.
+     * @param {AnomalyFlagUpdateManyAndReturnArgs} args - Arguments to update many AnomalyFlags.
+     * @example
+     * // Update many AnomalyFlags
+     * const anomalyFlag = await prisma.anomalyFlag.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AnomalyFlags and only return the `id`
+     * const anomalyFlagWithIdOnly = await prisma.anomalyFlag.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AnomalyFlagUpdateManyAndReturnArgs>(args: SelectSubset<T, AnomalyFlagUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AnomalyFlag.
+     * @param {AnomalyFlagUpsertArgs} args - Arguments to update or create a AnomalyFlag.
+     * @example
+     * // Update or create a AnomalyFlag
+     * const anomalyFlag = await prisma.anomalyFlag.upsert({
+     *   create: {
+     *     // ... data to create a AnomalyFlag
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AnomalyFlag we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AnomalyFlagUpsertArgs>(args: SelectSubset<T, AnomalyFlagUpsertArgs<ExtArgs>>): Prisma__AnomalyFlagClient<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AnomalyFlags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyFlagCountArgs} args - Arguments to filter AnomalyFlags to count.
+     * @example
+     * // Count the number of AnomalyFlags
+     * const count = await prisma.anomalyFlag.count({
+     *   where: {
+     *     // ... the filter for the AnomalyFlags we want to count
+     *   }
+     * })
+    **/
+    count<T extends AnomalyFlagCountArgs>(
+      args?: Subset<T, AnomalyFlagCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AnomalyFlagCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AnomalyFlag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyFlagAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AnomalyFlagAggregateArgs>(args: Subset<T, AnomalyFlagAggregateArgs>): Prisma.PrismaPromise<GetAnomalyFlagAggregateType<T>>
+
+    /**
+     * Group by AnomalyFlag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyFlagGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AnomalyFlagGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AnomalyFlagGroupByArgs['orderBy'] }
+        : { orderBy?: AnomalyFlagGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AnomalyFlagGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAnomalyFlagGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AnomalyFlag model
+   */
+  readonly fields: AnomalyFlagFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AnomalyFlag.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AnomalyFlagClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    acknowledgedBy<T extends AnomalyFlag$acknowledgedByArgs<ExtArgs> = {}>(args?: Subset<T, AnomalyFlag$acknowledgedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    dismissedBy<T extends AnomalyFlag$dismissedByArgs<ExtArgs> = {}>(args?: Subset<T, AnomalyFlag$dismissedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    confirmedBy<T extends AnomalyFlag$confirmedByArgs<ExtArgs> = {}>(args?: Subset<T, AnomalyFlag$confirmedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AnomalyFlag model
+   */
+  interface AnomalyFlagFieldRefs {
+    readonly id: FieldRef<"AnomalyFlag", 'String'>
+    readonly organizationId: FieldRef<"AnomalyFlag", 'String'>
+    readonly anomalyType: FieldRef<"AnomalyFlag", 'AnomalyType'>
+    readonly severity: FieldRef<"AnomalyFlag", 'AnomalySeverity'>
+    readonly status: FieldRef<"AnomalyFlag", 'AnomalyStatus'>
+    readonly entityType: FieldRef<"AnomalyFlag", 'AuditEntityType'>
+    readonly entityId: FieldRef<"AnomalyFlag", 'String'>
+    readonly entityLabel: FieldRef<"AnomalyFlag", 'String'>
+    readonly description: FieldRef<"AnomalyFlag", 'String'>
+    readonly evidence: FieldRef<"AnomalyFlag", 'Json'>
+    readonly dedupeKey: FieldRef<"AnomalyFlag", 'String'>
+    readonly acknowledgedAt: FieldRef<"AnomalyFlag", 'DateTime'>
+    readonly acknowledgedById: FieldRef<"AnomalyFlag", 'String'>
+    readonly dismissedAt: FieldRef<"AnomalyFlag", 'DateTime'>
+    readonly dismissedById: FieldRef<"AnomalyFlag", 'String'>
+    readonly dismissReason: FieldRef<"AnomalyFlag", 'String'>
+    readonly confirmedAt: FieldRef<"AnomalyFlag", 'DateTime'>
+    readonly confirmedById: FieldRef<"AnomalyFlag", 'String'>
+    readonly resolvedAt: FieldRef<"AnomalyFlag", 'DateTime'>
+    readonly createdAt: FieldRef<"AnomalyFlag", 'DateTime'>
+    readonly updatedAt: FieldRef<"AnomalyFlag", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AnomalyFlag findUnique
+   */
+  export type AnomalyFlagFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    /**
+     * Filter, which AnomalyFlag to fetch.
+     */
+    where: AnomalyFlagWhereUniqueInput
+  }
+
+  /**
+   * AnomalyFlag findUniqueOrThrow
+   */
+  export type AnomalyFlagFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    /**
+     * Filter, which AnomalyFlag to fetch.
+     */
+    where: AnomalyFlagWhereUniqueInput
+  }
+
+  /**
+   * AnomalyFlag findFirst
+   */
+  export type AnomalyFlagFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    /**
+     * Filter, which AnomalyFlag to fetch.
+     */
+    where?: AnomalyFlagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnomalyFlags to fetch.
+     */
+    orderBy?: AnomalyFlagOrderByWithRelationInput | AnomalyFlagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AnomalyFlags.
+     */
+    cursor?: AnomalyFlagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnomalyFlags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnomalyFlags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnomalyFlags.
+     */
+    distinct?: AnomalyFlagScalarFieldEnum | AnomalyFlagScalarFieldEnum[]
+  }
+
+  /**
+   * AnomalyFlag findFirstOrThrow
+   */
+  export type AnomalyFlagFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    /**
+     * Filter, which AnomalyFlag to fetch.
+     */
+    where?: AnomalyFlagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnomalyFlags to fetch.
+     */
+    orderBy?: AnomalyFlagOrderByWithRelationInput | AnomalyFlagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AnomalyFlags.
+     */
+    cursor?: AnomalyFlagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnomalyFlags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnomalyFlags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnomalyFlags.
+     */
+    distinct?: AnomalyFlagScalarFieldEnum | AnomalyFlagScalarFieldEnum[]
+  }
+
+  /**
+   * AnomalyFlag findMany
+   */
+  export type AnomalyFlagFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    /**
+     * Filter, which AnomalyFlags to fetch.
+     */
+    where?: AnomalyFlagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnomalyFlags to fetch.
+     */
+    orderBy?: AnomalyFlagOrderByWithRelationInput | AnomalyFlagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AnomalyFlags.
+     */
+    cursor?: AnomalyFlagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnomalyFlags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnomalyFlags.
+     */
+    skip?: number
+    distinct?: AnomalyFlagScalarFieldEnum | AnomalyFlagScalarFieldEnum[]
+  }
+
+  /**
+   * AnomalyFlag create
+   */
+  export type AnomalyFlagCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AnomalyFlag.
+     */
+    data: XOR<AnomalyFlagCreateInput, AnomalyFlagUncheckedCreateInput>
+  }
+
+  /**
+   * AnomalyFlag createMany
+   */
+  export type AnomalyFlagCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AnomalyFlags.
+     */
+    data: AnomalyFlagCreateManyInput | AnomalyFlagCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AnomalyFlag createManyAndReturn
+   */
+  export type AnomalyFlagCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * The data used to create many AnomalyFlags.
+     */
+    data: AnomalyFlagCreateManyInput | AnomalyFlagCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AnomalyFlag update
+   */
+  export type AnomalyFlagUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AnomalyFlag.
+     */
+    data: XOR<AnomalyFlagUpdateInput, AnomalyFlagUncheckedUpdateInput>
+    /**
+     * Choose, which AnomalyFlag to update.
+     */
+    where: AnomalyFlagWhereUniqueInput
+  }
+
+  /**
+   * AnomalyFlag updateMany
+   */
+  export type AnomalyFlagUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AnomalyFlags.
+     */
+    data: XOR<AnomalyFlagUpdateManyMutationInput, AnomalyFlagUncheckedUpdateManyInput>
+    /**
+     * Filter which AnomalyFlags to update
+     */
+    where?: AnomalyFlagWhereInput
+    /**
+     * Limit how many AnomalyFlags to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnomalyFlag updateManyAndReturn
+   */
+  export type AnomalyFlagUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * The data used to update AnomalyFlags.
+     */
+    data: XOR<AnomalyFlagUpdateManyMutationInput, AnomalyFlagUncheckedUpdateManyInput>
+    /**
+     * Filter which AnomalyFlags to update
+     */
+    where?: AnomalyFlagWhereInput
+    /**
+     * Limit how many AnomalyFlags to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AnomalyFlag upsert
+   */
+  export type AnomalyFlagUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AnomalyFlag to update in case it exists.
+     */
+    where: AnomalyFlagWhereUniqueInput
+    /**
+     * In case the AnomalyFlag found by the `where` argument doesn't exist, create a new AnomalyFlag with this data.
+     */
+    create: XOR<AnomalyFlagCreateInput, AnomalyFlagUncheckedCreateInput>
+    /**
+     * In case the AnomalyFlag was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AnomalyFlagUpdateInput, AnomalyFlagUncheckedUpdateInput>
+  }
+
+  /**
+   * AnomalyFlag delete
+   */
+  export type AnomalyFlagDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+    /**
+     * Filter which AnomalyFlag to delete.
+     */
+    where: AnomalyFlagWhereUniqueInput
+  }
+
+  /**
+   * AnomalyFlag deleteMany
+   */
+  export type AnomalyFlagDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AnomalyFlags to delete
+     */
+    where?: AnomalyFlagWhereInput
+    /**
+     * Limit how many AnomalyFlags to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnomalyFlag.acknowledgedBy
+   */
+  export type AnomalyFlag$acknowledgedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * AnomalyFlag.dismissedBy
+   */
+  export type AnomalyFlag$dismissedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * AnomalyFlag.confirmedBy
+   */
+  export type AnomalyFlag$confirmedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * AnomalyFlag without action
+   */
+  export type AnomalyFlagDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyFlag
+     */
+    select?: AnomalyFlagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyFlag
+     */
+    omit?: AnomalyFlagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AnomalyFlagInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model NotificationPreference
    */
 
@@ -137351,6 +139010,8 @@ export namespace Prisma {
     category: $Enums.NotificationCategory | null
     channel: $Enums.NotificationChannel | null
     enabled: boolean | null
+    quietHoursStart: string | null
+    quietHoursEnd: string | null
     updatedAt: Date | null
   }
 
@@ -137360,6 +139021,8 @@ export namespace Prisma {
     category: $Enums.NotificationCategory | null
     channel: $Enums.NotificationChannel | null
     enabled: boolean | null
+    quietHoursStart: string | null
+    quietHoursEnd: string | null
     updatedAt: Date | null
   }
 
@@ -137369,6 +139032,8 @@ export namespace Prisma {
     category: number
     channel: number
     enabled: number
+    quietHoursStart: number
+    quietHoursEnd: number
     updatedAt: number
     _all: number
   }
@@ -137380,6 +139045,8 @@ export namespace Prisma {
     category?: true
     channel?: true
     enabled?: true
+    quietHoursStart?: true
+    quietHoursEnd?: true
     updatedAt?: true
   }
 
@@ -137389,6 +139056,8 @@ export namespace Prisma {
     category?: true
     channel?: true
     enabled?: true
+    quietHoursStart?: true
+    quietHoursEnd?: true
     updatedAt?: true
   }
 
@@ -137398,6 +139067,8 @@ export namespace Prisma {
     category?: true
     channel?: true
     enabled?: true
+    quietHoursStart?: true
+    quietHoursEnd?: true
     updatedAt?: true
     _all?: true
   }
@@ -137480,6 +139151,8 @@ export namespace Prisma {
     category: $Enums.NotificationCategory
     channel: $Enums.NotificationChannel
     enabled: boolean
+    quietHoursStart: string | null
+    quietHoursEnd: string | null
     updatedAt: Date
     _count: NotificationPreferenceCountAggregateOutputType | null
     _min: NotificationPreferenceMinAggregateOutputType | null
@@ -137506,6 +139179,8 @@ export namespace Prisma {
     category?: boolean
     channel?: boolean
     enabled?: boolean
+    quietHoursStart?: boolean
+    quietHoursEnd?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notificationPreference"]>
@@ -137516,6 +139191,8 @@ export namespace Prisma {
     category?: boolean
     channel?: boolean
     enabled?: boolean
+    quietHoursStart?: boolean
+    quietHoursEnd?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notificationPreference"]>
@@ -137526,6 +139203,8 @@ export namespace Prisma {
     category?: boolean
     channel?: boolean
     enabled?: boolean
+    quietHoursStart?: boolean
+    quietHoursEnd?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["notificationPreference"]>
@@ -137536,10 +139215,12 @@ export namespace Prisma {
     category?: boolean
     channel?: boolean
     enabled?: boolean
+    quietHoursStart?: boolean
+    quietHoursEnd?: boolean
     updatedAt?: boolean
   }
 
-  export type NotificationPreferenceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "category" | "channel" | "enabled" | "updatedAt", ExtArgs["result"]["notificationPreference"]>
+  export type NotificationPreferenceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "category" | "channel" | "enabled" | "quietHoursStart" | "quietHoursEnd" | "updatedAt", ExtArgs["result"]["notificationPreference"]>
   export type NotificationPreferenceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -137561,6 +139242,8 @@ export namespace Prisma {
       category: $Enums.NotificationCategory
       channel: $Enums.NotificationChannel
       enabled: boolean
+      quietHoursStart: string | null
+      quietHoursEnd: string | null
       updatedAt: Date
     }, ExtArgs["result"]["notificationPreference"]>
     composites: {}
@@ -137991,6 +139674,8 @@ export namespace Prisma {
     readonly category: FieldRef<"NotificationPreference", 'NotificationCategory'>
     readonly channel: FieldRef<"NotificationPreference", 'NotificationChannel'>
     readonly enabled: FieldRef<"NotificationPreference", 'Boolean'>
+    readonly quietHoursStart: FieldRef<"NotificationPreference", 'String'>
+    readonly quietHoursEnd: FieldRef<"NotificationPreference", 'String'>
     readonly updatedAt: FieldRef<"NotificationPreference", 'DateTime'>
   }
     
@@ -156353,12 +158038,41 @@ export namespace Prisma {
   export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
+  export const AnomalyFlagScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    anomalyType: 'anomalyType',
+    severity: 'severity',
+    status: 'status',
+    entityType: 'entityType',
+    entityId: 'entityId',
+    entityLabel: 'entityLabel',
+    description: 'description',
+    evidence: 'evidence',
+    dedupeKey: 'dedupeKey',
+    acknowledgedAt: 'acknowledgedAt',
+    acknowledgedById: 'acknowledgedById',
+    dismissedAt: 'dismissedAt',
+    dismissedById: 'dismissedById',
+    dismissReason: 'dismissReason',
+    confirmedAt: 'confirmedAt',
+    confirmedById: 'confirmedById',
+    resolvedAt: 'resolvedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AnomalyFlagScalarFieldEnum = (typeof AnomalyFlagScalarFieldEnum)[keyof typeof AnomalyFlagScalarFieldEnum]
+
+
   export const NotificationPreferenceScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
     category: 'category',
     channel: 'channel',
     enabled: 'enabled',
+    quietHoursStart: 'quietHoursStart',
+    quietHoursEnd: 'quietHoursEnd',
     updatedAt: 'updatedAt'
   };
 
@@ -158114,6 +159828,48 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AnomalyType'
+   */
+  export type EnumAnomalyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnomalyType'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnomalyType[]'
+   */
+  export type ListEnumAnomalyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnomalyType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnomalySeverity'
+   */
+  export type EnumAnomalySeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnomalySeverity'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnomalySeverity[]'
+   */
+  export type ListEnumAnomalySeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnomalySeverity[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnomalyStatus'
+   */
+  export type EnumAnomalyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnomalyStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AnomalyStatus[]'
+   */
+  export type ListEnumAnomalyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnomalyStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DocumentCategory'
    */
   export type EnumDocumentCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentCategory'>
@@ -158398,6 +160154,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemListRelationFilter
     closeChecklistItemsWaived?: CloseChecklistItemListRelationFilter
     closeChecklistItemsWaiverApproved?: CloseChecklistItemListRelationFilter
+    anomaliesAcknowledged?: AnomalyFlagListRelationFilter
+    anomaliesDismissed?: AnomalyFlagListRelationFilter
+    anomaliesConfirmed?: AnomalyFlagListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -158497,6 +160256,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemOrderByRelationAggregateInput
     closeChecklistItemsWaived?: CloseChecklistItemOrderByRelationAggregateInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemOrderByRelationAggregateInput
+    anomaliesAcknowledged?: AnomalyFlagOrderByRelationAggregateInput
+    anomaliesDismissed?: AnomalyFlagOrderByRelationAggregateInput
+    anomaliesConfirmed?: AnomalyFlagOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -158599,6 +160361,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemListRelationFilter
     closeChecklistItemsWaived?: CloseChecklistItemListRelationFilter
     closeChecklistItemsWaiverApproved?: CloseChecklistItemListRelationFilter
+    anomaliesAcknowledged?: AnomalyFlagListRelationFilter
+    anomaliesDismissed?: AnomalyFlagListRelationFilter
+    anomaliesConfirmed?: AnomalyFlagListRelationFilter
   }, "id" | "emailNormalized" | "passwordResetToken">
 
   export type UserOrderByWithAggregationInput = {
@@ -160502,6 +162267,7 @@ export namespace Prisma {
     taxInvoiceSequence?: XOR<TaxInvoiceSequenceNullableScalarRelationFilter, TaxInvoiceSequenceWhereInput> | null
     financialCloses?: FinancialCloseListRelationFilter
     closeChecklistItems?: CloseChecklistItemListRelationFilter
+    anomalies?: AnomalyFlagListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -160586,6 +162352,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceOrderByWithRelationInput
     financialCloses?: FinancialCloseOrderByRelationAggregateInput
     closeChecklistItems?: CloseChecklistItemOrderByRelationAggregateInput
+    anomalies?: AnomalyFlagOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -160673,6 +162440,7 @@ export namespace Prisma {
     taxInvoiceSequence?: XOR<TaxInvoiceSequenceNullableScalarRelationFilter, TaxInvoiceSequenceWhereInput> | null
     financialCloses?: FinancialCloseListRelationFilter
     closeChecklistItems?: CloseChecklistItemListRelationFilter
+    anomalies?: AnomalyFlagListRelationFilter
   }, "id" | "code">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -169093,6 +170861,151 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
   }
 
+  export type AnomalyFlagWhereInput = {
+    AND?: AnomalyFlagWhereInput | AnomalyFlagWhereInput[]
+    OR?: AnomalyFlagWhereInput[]
+    NOT?: AnomalyFlagWhereInput | AnomalyFlagWhereInput[]
+    id?: StringFilter<"AnomalyFlag"> | string
+    organizationId?: StringFilter<"AnomalyFlag"> | string
+    anomalyType?: EnumAnomalyTypeFilter<"AnomalyFlag"> | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFilter<"AnomalyFlag"> | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFilter<"AnomalyFlag"> | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFilter<"AnomalyFlag"> | $Enums.AuditEntityType
+    entityId?: StringFilter<"AnomalyFlag"> | string
+    entityLabel?: StringNullableFilter<"AnomalyFlag"> | string | null
+    description?: StringFilter<"AnomalyFlag"> | string
+    evidence?: JsonNullableFilter<"AnomalyFlag">
+    dedupeKey?: StringNullableFilter<"AnomalyFlag"> | string | null
+    acknowledgedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    acknowledgedById?: StringNullableFilter<"AnomalyFlag"> | string | null
+    dismissedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    dismissedById?: StringNullableFilter<"AnomalyFlag"> | string | null
+    dismissReason?: StringNullableFilter<"AnomalyFlag"> | string | null
+    confirmedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    confirmedById?: StringNullableFilter<"AnomalyFlag"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    createdAt?: DateTimeFilter<"AnomalyFlag"> | Date | string
+    updatedAt?: DateTimeFilter<"AnomalyFlag"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    acknowledgedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    dismissedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    confirmedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type AnomalyFlagOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    anomalyType?: SortOrder
+    severity?: SortOrder
+    status?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    entityLabel?: SortOrderInput | SortOrder
+    description?: SortOrder
+    evidence?: SortOrderInput | SortOrder
+    dedupeKey?: SortOrderInput | SortOrder
+    acknowledgedAt?: SortOrderInput | SortOrder
+    acknowledgedById?: SortOrderInput | SortOrder
+    dismissedAt?: SortOrderInput | SortOrder
+    dismissedById?: SortOrderInput | SortOrder
+    dismissReason?: SortOrderInput | SortOrder
+    confirmedAt?: SortOrderInput | SortOrder
+    confirmedById?: SortOrderInput | SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    acknowledgedBy?: UserOrderByWithRelationInput
+    dismissedBy?: UserOrderByWithRelationInput
+    confirmedBy?: UserOrderByWithRelationInput
+  }
+
+  export type AnomalyFlagWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_dedupeKey?: AnomalyFlagOrganizationIdDedupeKeyCompoundUniqueInput
+    AND?: AnomalyFlagWhereInput | AnomalyFlagWhereInput[]
+    OR?: AnomalyFlagWhereInput[]
+    NOT?: AnomalyFlagWhereInput | AnomalyFlagWhereInput[]
+    organizationId?: StringFilter<"AnomalyFlag"> | string
+    anomalyType?: EnumAnomalyTypeFilter<"AnomalyFlag"> | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFilter<"AnomalyFlag"> | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFilter<"AnomalyFlag"> | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFilter<"AnomalyFlag"> | $Enums.AuditEntityType
+    entityId?: StringFilter<"AnomalyFlag"> | string
+    entityLabel?: StringNullableFilter<"AnomalyFlag"> | string | null
+    description?: StringFilter<"AnomalyFlag"> | string
+    evidence?: JsonNullableFilter<"AnomalyFlag">
+    dedupeKey?: StringNullableFilter<"AnomalyFlag"> | string | null
+    acknowledgedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    acknowledgedById?: StringNullableFilter<"AnomalyFlag"> | string | null
+    dismissedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    dismissedById?: StringNullableFilter<"AnomalyFlag"> | string | null
+    dismissReason?: StringNullableFilter<"AnomalyFlag"> | string | null
+    confirmedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    confirmedById?: StringNullableFilter<"AnomalyFlag"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    createdAt?: DateTimeFilter<"AnomalyFlag"> | Date | string
+    updatedAt?: DateTimeFilter<"AnomalyFlag"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    acknowledgedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    dismissedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    confirmedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "organizationId_dedupeKey">
+
+  export type AnomalyFlagOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    anomalyType?: SortOrder
+    severity?: SortOrder
+    status?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    entityLabel?: SortOrderInput | SortOrder
+    description?: SortOrder
+    evidence?: SortOrderInput | SortOrder
+    dedupeKey?: SortOrderInput | SortOrder
+    acknowledgedAt?: SortOrderInput | SortOrder
+    acknowledgedById?: SortOrderInput | SortOrder
+    dismissedAt?: SortOrderInput | SortOrder
+    dismissedById?: SortOrderInput | SortOrder
+    dismissReason?: SortOrderInput | SortOrder
+    confirmedAt?: SortOrderInput | SortOrder
+    confirmedById?: SortOrderInput | SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AnomalyFlagCountOrderByAggregateInput
+    _max?: AnomalyFlagMaxOrderByAggregateInput
+    _min?: AnomalyFlagMinOrderByAggregateInput
+  }
+
+  export type AnomalyFlagScalarWhereWithAggregatesInput = {
+    AND?: AnomalyFlagScalarWhereWithAggregatesInput | AnomalyFlagScalarWhereWithAggregatesInput[]
+    OR?: AnomalyFlagScalarWhereWithAggregatesInput[]
+    NOT?: AnomalyFlagScalarWhereWithAggregatesInput | AnomalyFlagScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AnomalyFlag"> | string
+    organizationId?: StringWithAggregatesFilter<"AnomalyFlag"> | string
+    anomalyType?: EnumAnomalyTypeWithAggregatesFilter<"AnomalyFlag"> | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityWithAggregatesFilter<"AnomalyFlag"> | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusWithAggregatesFilter<"AnomalyFlag"> | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeWithAggregatesFilter<"AnomalyFlag"> | $Enums.AuditEntityType
+    entityId?: StringWithAggregatesFilter<"AnomalyFlag"> | string
+    entityLabel?: StringNullableWithAggregatesFilter<"AnomalyFlag"> | string | null
+    description?: StringWithAggregatesFilter<"AnomalyFlag"> | string
+    evidence?: JsonNullableWithAggregatesFilter<"AnomalyFlag">
+    dedupeKey?: StringNullableWithAggregatesFilter<"AnomalyFlag"> | string | null
+    acknowledgedAt?: DateTimeNullableWithAggregatesFilter<"AnomalyFlag"> | Date | string | null
+    acknowledgedById?: StringNullableWithAggregatesFilter<"AnomalyFlag"> | string | null
+    dismissedAt?: DateTimeNullableWithAggregatesFilter<"AnomalyFlag"> | Date | string | null
+    dismissedById?: StringNullableWithAggregatesFilter<"AnomalyFlag"> | string | null
+    dismissReason?: StringNullableWithAggregatesFilter<"AnomalyFlag"> | string | null
+    confirmedAt?: DateTimeNullableWithAggregatesFilter<"AnomalyFlag"> | Date | string | null
+    confirmedById?: StringNullableWithAggregatesFilter<"AnomalyFlag"> | string | null
+    resolvedAt?: DateTimeNullableWithAggregatesFilter<"AnomalyFlag"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AnomalyFlag"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AnomalyFlag"> | Date | string
+  }
+
   export type NotificationPreferenceWhereInput = {
     AND?: NotificationPreferenceWhereInput | NotificationPreferenceWhereInput[]
     OR?: NotificationPreferenceWhereInput[]
@@ -169102,6 +171015,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryFilter<"NotificationPreference"> | $Enums.NotificationCategory
     channel?: EnumNotificationChannelFilter<"NotificationPreference"> | $Enums.NotificationChannel
     enabled?: BoolFilter<"NotificationPreference"> | boolean
+    quietHoursStart?: StringNullableFilter<"NotificationPreference"> | string | null
+    quietHoursEnd?: StringNullableFilter<"NotificationPreference"> | string | null
     updatedAt?: DateTimeFilter<"NotificationPreference"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -169112,6 +171027,8 @@ export namespace Prisma {
     category?: SortOrder
     channel?: SortOrder
     enabled?: SortOrder
+    quietHoursStart?: SortOrderInput | SortOrder
+    quietHoursEnd?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -169126,6 +171043,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryFilter<"NotificationPreference"> | $Enums.NotificationCategory
     channel?: EnumNotificationChannelFilter<"NotificationPreference"> | $Enums.NotificationChannel
     enabled?: BoolFilter<"NotificationPreference"> | boolean
+    quietHoursStart?: StringNullableFilter<"NotificationPreference"> | string | null
+    quietHoursEnd?: StringNullableFilter<"NotificationPreference"> | string | null
     updatedAt?: DateTimeFilter<"NotificationPreference"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId_category_channel">
@@ -169136,6 +171055,8 @@ export namespace Prisma {
     category?: SortOrder
     channel?: SortOrder
     enabled?: SortOrder
+    quietHoursStart?: SortOrderInput | SortOrder
+    quietHoursEnd?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: NotificationPreferenceCountOrderByAggregateInput
     _max?: NotificationPreferenceMaxOrderByAggregateInput
@@ -169151,6 +171072,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryWithAggregatesFilter<"NotificationPreference"> | $Enums.NotificationCategory
     channel?: EnumNotificationChannelWithAggregatesFilter<"NotificationPreference"> | $Enums.NotificationChannel
     enabled?: BoolWithAggregatesFilter<"NotificationPreference"> | boolean
+    quietHoursStart?: StringNullableWithAggregatesFilter<"NotificationPreference"> | string | null
+    quietHoursEnd?: StringNullableWithAggregatesFilter<"NotificationPreference"> | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"NotificationPreference"> | Date | string
   }
 
@@ -170588,6 +172511,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -170683,6 +172609,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUpdateInput = {
@@ -170778,6 +172707,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -170873,6 +172805,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -172982,6 +174917,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -173066,6 +175002,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -173150,6 +175087,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -173234,6 +175172,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -182462,11 +184401,177 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AnomalyFlagCreateInput = {
+    id?: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    dismissedAt?: Date | string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAnomaliesInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAnomaliesAcknowledgedInput
+    dismissedBy?: UserCreateNestedOneWithoutAnomaliesDismissedInput
+    confirmedBy?: UserCreateNestedOneWithoutAnomaliesConfirmedInput
+  }
+
+  export type AnomalyFlagUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    acknowledgedById?: string | null
+    dismissedAt?: Date | string | null
+    dismissedById?: string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnomalyFlagUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAnomaliesNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAnomaliesAcknowledgedNestedInput
+    dismissedBy?: UserUpdateOneWithoutAnomaliesDismissedNestedInput
+    confirmedBy?: UserUpdateOneWithoutAnomaliesConfirmedNestedInput
+  }
+
+  export type AnomalyFlagUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyFlagCreateManyInput = {
+    id?: string
+    organizationId: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    acknowledgedById?: string | null
+    dismissedAt?: Date | string | null
+    dismissedById?: string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnomalyFlagUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyFlagUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type NotificationPreferenceCreateInput = {
     id?: string
     category: $Enums.NotificationCategory
     channel: $Enums.NotificationChannel
     enabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutNotificationPreferencesInput
   }
@@ -182477,6 +184582,8 @@ export namespace Prisma {
     category: $Enums.NotificationCategory
     channel: $Enums.NotificationChannel
     enabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
     updatedAt?: Date | string
   }
 
@@ -182485,6 +184592,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryFieldUpdateOperationsInput | $Enums.NotificationCategory
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     enabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutNotificationPreferencesNestedInput
   }
@@ -182495,6 +184604,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryFieldUpdateOperationsInput | $Enums.NotificationCategory
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     enabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -182504,6 +184615,8 @@ export namespace Prisma {
     category: $Enums.NotificationCategory
     channel: $Enums.NotificationChannel
     enabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
     updatedAt?: Date | string
   }
 
@@ -182512,6 +184625,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryFieldUpdateOperationsInput | $Enums.NotificationCategory
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     enabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -182521,6 +184636,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryFieldUpdateOperationsInput | $Enums.NotificationCategory
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     enabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -184281,6 +186398,12 @@ export namespace Prisma {
     none?: CloseChecklistItemWhereInput
   }
 
+  export type AnomalyFlagListRelationFilter = {
+    every?: AnomalyFlagWhereInput
+    some?: AnomalyFlagWhereInput
+    none?: AnomalyFlagWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -184403,6 +186526,10 @@ export namespace Prisma {
   }
 
   export type CloseChecklistItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AnomalyFlagOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -192876,6 +195003,132 @@ export namespace Prisma {
     _max?: NestedEnumNotificationStatusFilter<$PrismaModel>
   }
 
+  export type EnumAnomalyTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalyType | EnumAnomalyTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalyType[] | ListEnumAnomalyTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalyType[] | ListEnumAnomalyTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalyTypeFilter<$PrismaModel> | $Enums.AnomalyType
+  }
+
+  export type EnumAnomalySeverityFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalySeverity | EnumAnomalySeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalySeverity[] | ListEnumAnomalySeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalySeverity[] | ListEnumAnomalySeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalySeverityFilter<$PrismaModel> | $Enums.AnomalySeverity
+  }
+
+  export type EnumAnomalyStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalyStatus | EnumAnomalyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalyStatus[] | ListEnumAnomalyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalyStatus[] | ListEnumAnomalyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalyStatusFilter<$PrismaModel> | $Enums.AnomalyStatus
+  }
+
+  export type AnomalyFlagOrganizationIdDedupeKeyCompoundUniqueInput = {
+    organizationId: string
+    dedupeKey: string
+  }
+
+  export type AnomalyFlagCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    anomalyType?: SortOrder
+    severity?: SortOrder
+    status?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    entityLabel?: SortOrder
+    description?: SortOrder
+    evidence?: SortOrder
+    dedupeKey?: SortOrder
+    acknowledgedAt?: SortOrder
+    acknowledgedById?: SortOrder
+    dismissedAt?: SortOrder
+    dismissedById?: SortOrder
+    dismissReason?: SortOrder
+    confirmedAt?: SortOrder
+    confirmedById?: SortOrder
+    resolvedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AnomalyFlagMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    anomalyType?: SortOrder
+    severity?: SortOrder
+    status?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    entityLabel?: SortOrder
+    description?: SortOrder
+    dedupeKey?: SortOrder
+    acknowledgedAt?: SortOrder
+    acknowledgedById?: SortOrder
+    dismissedAt?: SortOrder
+    dismissedById?: SortOrder
+    dismissReason?: SortOrder
+    confirmedAt?: SortOrder
+    confirmedById?: SortOrder
+    resolvedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AnomalyFlagMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    anomalyType?: SortOrder
+    severity?: SortOrder
+    status?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    entityLabel?: SortOrder
+    description?: SortOrder
+    dedupeKey?: SortOrder
+    acknowledgedAt?: SortOrder
+    acknowledgedById?: SortOrder
+    dismissedAt?: SortOrder
+    dismissedById?: SortOrder
+    dismissReason?: SortOrder
+    confirmedAt?: SortOrder
+    confirmedById?: SortOrder
+    resolvedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumAnomalyTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalyType | EnumAnomalyTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalyType[] | ListEnumAnomalyTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalyType[] | ListEnumAnomalyTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalyTypeWithAggregatesFilter<$PrismaModel> | $Enums.AnomalyType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnomalyTypeFilter<$PrismaModel>
+    _max?: NestedEnumAnomalyTypeFilter<$PrismaModel>
+  }
+
+  export type EnumAnomalySeverityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalySeverity | EnumAnomalySeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalySeverity[] | ListEnumAnomalySeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalySeverity[] | ListEnumAnomalySeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalySeverityWithAggregatesFilter<$PrismaModel> | $Enums.AnomalySeverity
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnomalySeverityFilter<$PrismaModel>
+    _max?: NestedEnumAnomalySeverityFilter<$PrismaModel>
+  }
+
+  export type EnumAnomalyStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalyStatus | EnumAnomalyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalyStatus[] | ListEnumAnomalyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalyStatus[] | ListEnumAnomalyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalyStatusWithAggregatesFilter<$PrismaModel> | $Enums.AnomalyStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnomalyStatusFilter<$PrismaModel>
+    _max?: NestedEnumAnomalyStatusFilter<$PrismaModel>
+  }
+
   export type NotificationPreferenceUserIdCategoryChannelCompoundUniqueInput = {
     userId: string
     category: $Enums.NotificationCategory
@@ -192888,6 +195141,8 @@ export namespace Prisma {
     category?: SortOrder
     channel?: SortOrder
     enabled?: SortOrder
+    quietHoursStart?: SortOrder
+    quietHoursEnd?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -192897,6 +195152,8 @@ export namespace Prisma {
     category?: SortOrder
     channel?: SortOrder
     enabled?: SortOrder
+    quietHoursStart?: SortOrder
+    quietHoursEnd?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -192906,6 +195163,8 @@ export namespace Prisma {
     category?: SortOrder
     channel?: SortOrder
     enabled?: SortOrder
+    quietHoursStart?: SortOrder
+    quietHoursEnd?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -194325,6 +196584,27 @@ export namespace Prisma {
     connect?: CloseChecklistItemWhereUniqueInput | CloseChecklistItemWhereUniqueInput[]
   }
 
+  export type AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput = {
+    create?: XOR<AnomalyFlagCreateWithoutAcknowledgedByInput, AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput> | AnomalyFlagCreateWithoutAcknowledgedByInput[] | AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutAcknowledgedByInput | AnomalyFlagCreateOrConnectWithoutAcknowledgedByInput[]
+    createMany?: AnomalyFlagCreateManyAcknowledgedByInputEnvelope
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+  }
+
+  export type AnomalyFlagCreateNestedManyWithoutDismissedByInput = {
+    create?: XOR<AnomalyFlagCreateWithoutDismissedByInput, AnomalyFlagUncheckedCreateWithoutDismissedByInput> | AnomalyFlagCreateWithoutDismissedByInput[] | AnomalyFlagUncheckedCreateWithoutDismissedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutDismissedByInput | AnomalyFlagCreateOrConnectWithoutDismissedByInput[]
+    createMany?: AnomalyFlagCreateManyDismissedByInputEnvelope
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+  }
+
+  export type AnomalyFlagCreateNestedManyWithoutConfirmedByInput = {
+    create?: XOR<AnomalyFlagCreateWithoutConfirmedByInput, AnomalyFlagUncheckedCreateWithoutConfirmedByInput> | AnomalyFlagCreateWithoutConfirmedByInput[] | AnomalyFlagUncheckedCreateWithoutConfirmedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutConfirmedByInput | AnomalyFlagCreateOrConnectWithoutConfirmedByInput[]
+    createMany?: AnomalyFlagCreateManyConfirmedByInputEnvelope
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -194736,6 +197016,27 @@ export namespace Prisma {
     connectOrCreate?: CloseChecklistItemCreateOrConnectWithoutWaiverApproverInput | CloseChecklistItemCreateOrConnectWithoutWaiverApproverInput[]
     createMany?: CloseChecklistItemCreateManyWaiverApproverInputEnvelope
     connect?: CloseChecklistItemWhereUniqueInput | CloseChecklistItemWhereUniqueInput[]
+  }
+
+  export type AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput = {
+    create?: XOR<AnomalyFlagCreateWithoutAcknowledgedByInput, AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput> | AnomalyFlagCreateWithoutAcknowledgedByInput[] | AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutAcknowledgedByInput | AnomalyFlagCreateOrConnectWithoutAcknowledgedByInput[]
+    createMany?: AnomalyFlagCreateManyAcknowledgedByInputEnvelope
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+  }
+
+  export type AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput = {
+    create?: XOR<AnomalyFlagCreateWithoutDismissedByInput, AnomalyFlagUncheckedCreateWithoutDismissedByInput> | AnomalyFlagCreateWithoutDismissedByInput[] | AnomalyFlagUncheckedCreateWithoutDismissedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutDismissedByInput | AnomalyFlagCreateOrConnectWithoutDismissedByInput[]
+    createMany?: AnomalyFlagCreateManyDismissedByInputEnvelope
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+  }
+
+  export type AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput = {
+    create?: XOR<AnomalyFlagCreateWithoutConfirmedByInput, AnomalyFlagUncheckedCreateWithoutConfirmedByInput> | AnomalyFlagCreateWithoutConfirmedByInput[] | AnomalyFlagUncheckedCreateWithoutConfirmedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutConfirmedByInput | AnomalyFlagCreateOrConnectWithoutConfirmedByInput[]
+    createMany?: AnomalyFlagCreateManyConfirmedByInputEnvelope
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -195645,6 +197946,48 @@ export namespace Prisma {
     deleteMany?: CloseChecklistItemScalarWhereInput | CloseChecklistItemScalarWhereInput[]
   }
 
+  export type AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput = {
+    create?: XOR<AnomalyFlagCreateWithoutAcknowledgedByInput, AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput> | AnomalyFlagCreateWithoutAcknowledgedByInput[] | AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutAcknowledgedByInput | AnomalyFlagCreateOrConnectWithoutAcknowledgedByInput[]
+    upsert?: AnomalyFlagUpsertWithWhereUniqueWithoutAcknowledgedByInput | AnomalyFlagUpsertWithWhereUniqueWithoutAcknowledgedByInput[]
+    createMany?: AnomalyFlagCreateManyAcknowledgedByInputEnvelope
+    set?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    disconnect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    delete?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    update?: AnomalyFlagUpdateWithWhereUniqueWithoutAcknowledgedByInput | AnomalyFlagUpdateWithWhereUniqueWithoutAcknowledgedByInput[]
+    updateMany?: AnomalyFlagUpdateManyWithWhereWithoutAcknowledgedByInput | AnomalyFlagUpdateManyWithWhereWithoutAcknowledgedByInput[]
+    deleteMany?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
+  }
+
+  export type AnomalyFlagUpdateManyWithoutDismissedByNestedInput = {
+    create?: XOR<AnomalyFlagCreateWithoutDismissedByInput, AnomalyFlagUncheckedCreateWithoutDismissedByInput> | AnomalyFlagCreateWithoutDismissedByInput[] | AnomalyFlagUncheckedCreateWithoutDismissedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutDismissedByInput | AnomalyFlagCreateOrConnectWithoutDismissedByInput[]
+    upsert?: AnomalyFlagUpsertWithWhereUniqueWithoutDismissedByInput | AnomalyFlagUpsertWithWhereUniqueWithoutDismissedByInput[]
+    createMany?: AnomalyFlagCreateManyDismissedByInputEnvelope
+    set?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    disconnect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    delete?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    update?: AnomalyFlagUpdateWithWhereUniqueWithoutDismissedByInput | AnomalyFlagUpdateWithWhereUniqueWithoutDismissedByInput[]
+    updateMany?: AnomalyFlagUpdateManyWithWhereWithoutDismissedByInput | AnomalyFlagUpdateManyWithWhereWithoutDismissedByInput[]
+    deleteMany?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
+  }
+
+  export type AnomalyFlagUpdateManyWithoutConfirmedByNestedInput = {
+    create?: XOR<AnomalyFlagCreateWithoutConfirmedByInput, AnomalyFlagUncheckedCreateWithoutConfirmedByInput> | AnomalyFlagCreateWithoutConfirmedByInput[] | AnomalyFlagUncheckedCreateWithoutConfirmedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutConfirmedByInput | AnomalyFlagCreateOrConnectWithoutConfirmedByInput[]
+    upsert?: AnomalyFlagUpsertWithWhereUniqueWithoutConfirmedByInput | AnomalyFlagUpsertWithWhereUniqueWithoutConfirmedByInput[]
+    createMany?: AnomalyFlagCreateManyConfirmedByInputEnvelope
+    set?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    disconnect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    delete?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    update?: AnomalyFlagUpdateWithWhereUniqueWithoutConfirmedByInput | AnomalyFlagUpdateWithWhereUniqueWithoutConfirmedByInput[]
+    updateMany?: AnomalyFlagUpdateManyWithWhereWithoutConfirmedByInput | AnomalyFlagUpdateManyWithWhereWithoutConfirmedByInput[]
+    deleteMany?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutUserInput, OrganizationMembershipUncheckedCreateWithoutUserInput> | OrganizationMembershipCreateWithoutUserInput[] | OrganizationMembershipUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutUserInput | OrganizationMembershipCreateOrConnectWithoutUserInput[]
@@ -196469,6 +198812,48 @@ export namespace Prisma {
     update?: CloseChecklistItemUpdateWithWhereUniqueWithoutWaiverApproverInput | CloseChecklistItemUpdateWithWhereUniqueWithoutWaiverApproverInput[]
     updateMany?: CloseChecklistItemUpdateManyWithWhereWithoutWaiverApproverInput | CloseChecklistItemUpdateManyWithWhereWithoutWaiverApproverInput[]
     deleteMany?: CloseChecklistItemScalarWhereInput | CloseChecklistItemScalarWhereInput[]
+  }
+
+  export type AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput = {
+    create?: XOR<AnomalyFlagCreateWithoutAcknowledgedByInput, AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput> | AnomalyFlagCreateWithoutAcknowledgedByInput[] | AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutAcknowledgedByInput | AnomalyFlagCreateOrConnectWithoutAcknowledgedByInput[]
+    upsert?: AnomalyFlagUpsertWithWhereUniqueWithoutAcknowledgedByInput | AnomalyFlagUpsertWithWhereUniqueWithoutAcknowledgedByInput[]
+    createMany?: AnomalyFlagCreateManyAcknowledgedByInputEnvelope
+    set?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    disconnect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    delete?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    update?: AnomalyFlagUpdateWithWhereUniqueWithoutAcknowledgedByInput | AnomalyFlagUpdateWithWhereUniqueWithoutAcknowledgedByInput[]
+    updateMany?: AnomalyFlagUpdateManyWithWhereWithoutAcknowledgedByInput | AnomalyFlagUpdateManyWithWhereWithoutAcknowledgedByInput[]
+    deleteMany?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
+  }
+
+  export type AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput = {
+    create?: XOR<AnomalyFlagCreateWithoutDismissedByInput, AnomalyFlagUncheckedCreateWithoutDismissedByInput> | AnomalyFlagCreateWithoutDismissedByInput[] | AnomalyFlagUncheckedCreateWithoutDismissedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutDismissedByInput | AnomalyFlagCreateOrConnectWithoutDismissedByInput[]
+    upsert?: AnomalyFlagUpsertWithWhereUniqueWithoutDismissedByInput | AnomalyFlagUpsertWithWhereUniqueWithoutDismissedByInput[]
+    createMany?: AnomalyFlagCreateManyDismissedByInputEnvelope
+    set?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    disconnect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    delete?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    update?: AnomalyFlagUpdateWithWhereUniqueWithoutDismissedByInput | AnomalyFlagUpdateWithWhereUniqueWithoutDismissedByInput[]
+    updateMany?: AnomalyFlagUpdateManyWithWhereWithoutDismissedByInput | AnomalyFlagUpdateManyWithWhereWithoutDismissedByInput[]
+    deleteMany?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
+  }
+
+  export type AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput = {
+    create?: XOR<AnomalyFlagCreateWithoutConfirmedByInput, AnomalyFlagUncheckedCreateWithoutConfirmedByInput> | AnomalyFlagCreateWithoutConfirmedByInput[] | AnomalyFlagUncheckedCreateWithoutConfirmedByInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutConfirmedByInput | AnomalyFlagCreateOrConnectWithoutConfirmedByInput[]
+    upsert?: AnomalyFlagUpsertWithWhereUniqueWithoutConfirmedByInput | AnomalyFlagUpsertWithWhereUniqueWithoutConfirmedByInput[]
+    createMany?: AnomalyFlagCreateManyConfirmedByInputEnvelope
+    set?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    disconnect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    delete?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    update?: AnomalyFlagUpdateWithWhereUniqueWithoutConfirmedByInput | AnomalyFlagUpdateWithWhereUniqueWithoutConfirmedByInput[]
+    updateMany?: AnomalyFlagUpdateManyWithWhereWithoutConfirmedByInput | AnomalyFlagUpdateManyWithWhereWithoutConfirmedByInput[]
+    deleteMany?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutMfaDevicesInput = {
@@ -198267,6 +200652,13 @@ export namespace Prisma {
     connect?: CloseChecklistItemWhereUniqueInput | CloseChecklistItemWhereUniqueInput[]
   }
 
+  export type AnomalyFlagCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<AnomalyFlagCreateWithoutOrganizationInput, AnomalyFlagUncheckedCreateWithoutOrganizationInput> | AnomalyFlagCreateWithoutOrganizationInput[] | AnomalyFlagUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutOrganizationInput | AnomalyFlagCreateOrConnectWithoutOrganizationInput[]
+    createMany?: AnomalyFlagCreateManyOrganizationInputEnvelope
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -198712,6 +201104,13 @@ export namespace Prisma {
     connectOrCreate?: CloseChecklistItemCreateOrConnectWithoutOrganizationInput | CloseChecklistItemCreateOrConnectWithoutOrganizationInput[]
     createMany?: CloseChecklistItemCreateManyOrganizationInputEnvelope
     connect?: CloseChecklistItemWhereUniqueInput | CloseChecklistItemWhereUniqueInput[]
+  }
+
+  export type AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<AnomalyFlagCreateWithoutOrganizationInput, AnomalyFlagUncheckedCreateWithoutOrganizationInput> | AnomalyFlagCreateWithoutOrganizationInput[] | AnomalyFlagUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutOrganizationInput | AnomalyFlagCreateOrConnectWithoutOrganizationInput[]
+    createMany?: AnomalyFlagCreateManyOrganizationInputEnvelope
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
   }
 
   export type EnumOrganizationTypeFieldUpdateOperationsInput = {
@@ -199614,6 +202013,20 @@ export namespace Prisma {
     deleteMany?: CloseChecklistItemScalarWhereInput | CloseChecklistItemScalarWhereInput[]
   }
 
+  export type AnomalyFlagUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<AnomalyFlagCreateWithoutOrganizationInput, AnomalyFlagUncheckedCreateWithoutOrganizationInput> | AnomalyFlagCreateWithoutOrganizationInput[] | AnomalyFlagUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutOrganizationInput | AnomalyFlagCreateOrConnectWithoutOrganizationInput[]
+    upsert?: AnomalyFlagUpsertWithWhereUniqueWithoutOrganizationInput | AnomalyFlagUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: AnomalyFlagCreateManyOrganizationInputEnvelope
+    set?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    disconnect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    delete?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    update?: AnomalyFlagUpdateWithWhereUniqueWithoutOrganizationInput | AnomalyFlagUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: AnomalyFlagUpdateManyWithWhereWithoutOrganizationInput | AnomalyFlagUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -200504,6 +202917,20 @@ export namespace Prisma {
     update?: CloseChecklistItemUpdateWithWhereUniqueWithoutOrganizationInput | CloseChecklistItemUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: CloseChecklistItemUpdateManyWithWhereWithoutOrganizationInput | CloseChecklistItemUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: CloseChecklistItemScalarWhereInput | CloseChecklistItemScalarWhereInput[]
+  }
+
+  export type AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<AnomalyFlagCreateWithoutOrganizationInput, AnomalyFlagUncheckedCreateWithoutOrganizationInput> | AnomalyFlagCreateWithoutOrganizationInput[] | AnomalyFlagUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: AnomalyFlagCreateOrConnectWithoutOrganizationInput | AnomalyFlagCreateOrConnectWithoutOrganizationInput[]
+    upsert?: AnomalyFlagUpsertWithWhereUniqueWithoutOrganizationInput | AnomalyFlagUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: AnomalyFlagCreateManyOrganizationInputEnvelope
+    set?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    disconnect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    delete?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+    update?: AnomalyFlagUpdateWithWhereUniqueWithoutOrganizationInput | AnomalyFlagUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: AnomalyFlagUpdateManyWithWhereWithoutOrganizationInput | AnomalyFlagUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutLocationsInput = {
@@ -209473,6 +211900,80 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
   }
 
+  export type OrganizationCreateNestedOneWithoutAnomaliesInput = {
+    create?: XOR<OrganizationCreateWithoutAnomaliesInput, OrganizationUncheckedCreateWithoutAnomaliesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutAnomaliesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAnomaliesAcknowledgedInput = {
+    create?: XOR<UserCreateWithoutAnomaliesAcknowledgedInput, UserUncheckedCreateWithoutAnomaliesAcknowledgedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnomaliesAcknowledgedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAnomaliesDismissedInput = {
+    create?: XOR<UserCreateWithoutAnomaliesDismissedInput, UserUncheckedCreateWithoutAnomaliesDismissedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnomaliesDismissedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAnomaliesConfirmedInput = {
+    create?: XOR<UserCreateWithoutAnomaliesConfirmedInput, UserUncheckedCreateWithoutAnomaliesConfirmedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnomaliesConfirmedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumAnomalyTypeFieldUpdateOperationsInput = {
+    set?: $Enums.AnomalyType
+  }
+
+  export type EnumAnomalySeverityFieldUpdateOperationsInput = {
+    set?: $Enums.AnomalySeverity
+  }
+
+  export type EnumAnomalyStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AnomalyStatus
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutAnomaliesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutAnomaliesInput, OrganizationUncheckedCreateWithoutAnomaliesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutAnomaliesInput
+    upsert?: OrganizationUpsertWithoutAnomaliesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutAnomaliesInput, OrganizationUpdateWithoutAnomaliesInput>, OrganizationUncheckedUpdateWithoutAnomaliesInput>
+  }
+
+  export type UserUpdateOneWithoutAnomaliesAcknowledgedNestedInput = {
+    create?: XOR<UserCreateWithoutAnomaliesAcknowledgedInput, UserUncheckedCreateWithoutAnomaliesAcknowledgedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnomaliesAcknowledgedInput
+    upsert?: UserUpsertWithoutAnomaliesAcknowledgedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAnomaliesAcknowledgedInput, UserUpdateWithoutAnomaliesAcknowledgedInput>, UserUncheckedUpdateWithoutAnomaliesAcknowledgedInput>
+  }
+
+  export type UserUpdateOneWithoutAnomaliesDismissedNestedInput = {
+    create?: XOR<UserCreateWithoutAnomaliesDismissedInput, UserUncheckedCreateWithoutAnomaliesDismissedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnomaliesDismissedInput
+    upsert?: UserUpsertWithoutAnomaliesDismissedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAnomaliesDismissedInput, UserUpdateWithoutAnomaliesDismissedInput>, UserUncheckedUpdateWithoutAnomaliesDismissedInput>
+  }
+
+  export type UserUpdateOneWithoutAnomaliesConfirmedNestedInput = {
+    create?: XOR<UserCreateWithoutAnomaliesConfirmedInput, UserUncheckedCreateWithoutAnomaliesConfirmedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAnomaliesConfirmedInput
+    upsert?: UserUpsertWithoutAnomaliesConfirmedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAnomaliesConfirmedInput, UserUpdateWithoutAnomaliesConfirmedInput>, UserUncheckedUpdateWithoutAnomaliesConfirmedInput>
+  }
+
   export type UserCreateNestedOneWithoutNotificationPreferencesInput = {
     create?: XOR<UserCreateWithoutNotificationPreferencesInput, UserUncheckedCreateWithoutNotificationPreferencesInput>
     connectOrCreate?: UserCreateOrConnectWithoutNotificationPreferencesInput
@@ -212526,6 +215027,57 @@ export namespace Prisma {
     _max?: NestedEnumNotificationStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumAnomalyTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalyType | EnumAnomalyTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalyType[] | ListEnumAnomalyTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalyType[] | ListEnumAnomalyTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalyTypeFilter<$PrismaModel> | $Enums.AnomalyType
+  }
+
+  export type NestedEnumAnomalySeverityFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalySeverity | EnumAnomalySeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalySeverity[] | ListEnumAnomalySeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalySeverity[] | ListEnumAnomalySeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalySeverityFilter<$PrismaModel> | $Enums.AnomalySeverity
+  }
+
+  export type NestedEnumAnomalyStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalyStatus | EnumAnomalyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalyStatus[] | ListEnumAnomalyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalyStatus[] | ListEnumAnomalyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalyStatusFilter<$PrismaModel> | $Enums.AnomalyStatus
+  }
+
+  export type NestedEnumAnomalyTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalyType | EnumAnomalyTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalyType[] | ListEnumAnomalyTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalyType[] | ListEnumAnomalyTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalyTypeWithAggregatesFilter<$PrismaModel> | $Enums.AnomalyType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnomalyTypeFilter<$PrismaModel>
+    _max?: NestedEnumAnomalyTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAnomalySeverityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalySeverity | EnumAnomalySeverityFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalySeverity[] | ListEnumAnomalySeverityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalySeverity[] | ListEnumAnomalySeverityFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalySeverityWithAggregatesFilter<$PrismaModel> | $Enums.AnomalySeverity
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnomalySeverityFilter<$PrismaModel>
+    _max?: NestedEnumAnomalySeverityFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAnomalyStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AnomalyStatus | EnumAnomalyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AnomalyStatus[] | ListEnumAnomalyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AnomalyStatus[] | ListEnumAnomalyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAnomalyStatusWithAggregatesFilter<$PrismaModel> | $Enums.AnomalyStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAnomalyStatusFilter<$PrismaModel>
+    _max?: NestedEnumAnomalyStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumDocumentCategoryFilter<$PrismaModel = never> = {
     equals?: $Enums.DocumentCategory | EnumDocumentCategoryFieldRefInput<$PrismaModel>
     in?: $Enums.DocumentCategory[] | ListEnumDocumentCategoryFieldRefInput<$PrismaModel>
@@ -212910,6 +215462,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedUsersInput = {
@@ -213004,6 +215559,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedUsersInput = {
@@ -213103,6 +215661,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedUsersInput = {
@@ -213197,6 +215758,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedUsersInput = {
@@ -213605,6 +216169,8 @@ export namespace Prisma {
     category: $Enums.NotificationCategory
     channel: $Enums.NotificationChannel
     enabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
     updatedAt?: Date | string
   }
 
@@ -213613,6 +216179,8 @@ export namespace Prisma {
     category: $Enums.NotificationCategory
     channel: $Enums.NotificationChannel
     enabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
     updatedAt?: Date | string
   }
 
@@ -213718,6 +216286,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedByInput = {
@@ -213812,6 +216383,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedByInput = {
@@ -213916,6 +216490,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutUpdatedByInput = {
@@ -214010,6 +216587,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutUpdatedByInput = {
@@ -216742,6 +219322,174 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AnomalyFlagCreateWithoutAcknowledgedByInput = {
+    id?: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    dismissedAt?: Date | string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAnomaliesInput
+    dismissedBy?: UserCreateNestedOneWithoutAnomaliesDismissedInput
+    confirmedBy?: UserCreateNestedOneWithoutAnomaliesConfirmedInput
+  }
+
+  export type AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput = {
+    id?: string
+    organizationId: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    dismissedAt?: Date | string | null
+    dismissedById?: string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnomalyFlagCreateOrConnectWithoutAcknowledgedByInput = {
+    where: AnomalyFlagWhereUniqueInput
+    create: XOR<AnomalyFlagCreateWithoutAcknowledgedByInput, AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput>
+  }
+
+  export type AnomalyFlagCreateManyAcknowledgedByInputEnvelope = {
+    data: AnomalyFlagCreateManyAcknowledgedByInput | AnomalyFlagCreateManyAcknowledgedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AnomalyFlagCreateWithoutDismissedByInput = {
+    id?: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    dismissedAt?: Date | string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAnomaliesInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAnomaliesAcknowledgedInput
+    confirmedBy?: UserCreateNestedOneWithoutAnomaliesConfirmedInput
+  }
+
+  export type AnomalyFlagUncheckedCreateWithoutDismissedByInput = {
+    id?: string
+    organizationId: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    acknowledgedById?: string | null
+    dismissedAt?: Date | string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnomalyFlagCreateOrConnectWithoutDismissedByInput = {
+    where: AnomalyFlagWhereUniqueInput
+    create: XOR<AnomalyFlagCreateWithoutDismissedByInput, AnomalyFlagUncheckedCreateWithoutDismissedByInput>
+  }
+
+  export type AnomalyFlagCreateManyDismissedByInputEnvelope = {
+    data: AnomalyFlagCreateManyDismissedByInput | AnomalyFlagCreateManyDismissedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AnomalyFlagCreateWithoutConfirmedByInput = {
+    id?: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    dismissedAt?: Date | string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutAnomaliesInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAnomaliesAcknowledgedInput
+    dismissedBy?: UserCreateNestedOneWithoutAnomaliesDismissedInput
+  }
+
+  export type AnomalyFlagUncheckedCreateWithoutConfirmedByInput = {
+    id?: string
+    organizationId: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    acknowledgedById?: string | null
+    dismissedAt?: Date | string | null
+    dismissedById?: string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnomalyFlagCreateOrConnectWithoutConfirmedByInput = {
+    where: AnomalyFlagWhereUniqueInput
+    create: XOR<AnomalyFlagCreateWithoutConfirmedByInput, AnomalyFlagUncheckedCreateWithoutConfirmedByInput>
+  }
+
+  export type AnomalyFlagCreateManyConfirmedByInputEnvelope = {
+    data: AnomalyFlagCreateManyConfirmedByInput | AnomalyFlagCreateManyConfirmedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type LocationUpsertWithoutUsersInput = {
     update: XOR<LocationUpdateWithoutUsersInput, LocationUncheckedUpdateWithoutUsersInput>
     create: XOR<LocationCreateWithoutUsersInput, LocationUncheckedCreateWithoutUsersInput>
@@ -216945,6 +219693,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedUsersInput = {
@@ -217039,6 +219790,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutUpdatedUsersInput = {
@@ -217144,6 +219898,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedUsersInput = {
@@ -217238,6 +219995,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutUserInput = {
@@ -217593,6 +220353,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryFilter<"NotificationPreference"> | $Enums.NotificationCategory
     channel?: EnumNotificationChannelFilter<"NotificationPreference"> | $Enums.NotificationChannel
     enabled?: BoolFilter<"NotificationPreference"> | boolean
+    quietHoursStart?: StringNullableFilter<"NotificationPreference"> | string | null
+    quietHoursEnd?: StringNullableFilter<"NotificationPreference"> | string | null
     updatedAt?: DateTimeFilter<"NotificationPreference"> | Date | string
   }
 
@@ -218855,6 +221617,81 @@ export namespace Prisma {
     data: XOR<CloseChecklistItemUpdateManyMutationInput, CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverInput>
   }
 
+  export type AnomalyFlagUpsertWithWhereUniqueWithoutAcknowledgedByInput = {
+    where: AnomalyFlagWhereUniqueInput
+    update: XOR<AnomalyFlagUpdateWithoutAcknowledgedByInput, AnomalyFlagUncheckedUpdateWithoutAcknowledgedByInput>
+    create: XOR<AnomalyFlagCreateWithoutAcknowledgedByInput, AnomalyFlagUncheckedCreateWithoutAcknowledgedByInput>
+  }
+
+  export type AnomalyFlagUpdateWithWhereUniqueWithoutAcknowledgedByInput = {
+    where: AnomalyFlagWhereUniqueInput
+    data: XOR<AnomalyFlagUpdateWithoutAcknowledgedByInput, AnomalyFlagUncheckedUpdateWithoutAcknowledgedByInput>
+  }
+
+  export type AnomalyFlagUpdateManyWithWhereWithoutAcknowledgedByInput = {
+    where: AnomalyFlagScalarWhereInput
+    data: XOR<AnomalyFlagUpdateManyMutationInput, AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByInput>
+  }
+
+  export type AnomalyFlagScalarWhereInput = {
+    AND?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
+    OR?: AnomalyFlagScalarWhereInput[]
+    NOT?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
+    id?: StringFilter<"AnomalyFlag"> | string
+    organizationId?: StringFilter<"AnomalyFlag"> | string
+    anomalyType?: EnumAnomalyTypeFilter<"AnomalyFlag"> | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFilter<"AnomalyFlag"> | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFilter<"AnomalyFlag"> | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFilter<"AnomalyFlag"> | $Enums.AuditEntityType
+    entityId?: StringFilter<"AnomalyFlag"> | string
+    entityLabel?: StringNullableFilter<"AnomalyFlag"> | string | null
+    description?: StringFilter<"AnomalyFlag"> | string
+    evidence?: JsonNullableFilter<"AnomalyFlag">
+    dedupeKey?: StringNullableFilter<"AnomalyFlag"> | string | null
+    acknowledgedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    acknowledgedById?: StringNullableFilter<"AnomalyFlag"> | string | null
+    dismissedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    dismissedById?: StringNullableFilter<"AnomalyFlag"> | string | null
+    dismissReason?: StringNullableFilter<"AnomalyFlag"> | string | null
+    confirmedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    confirmedById?: StringNullableFilter<"AnomalyFlag"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"AnomalyFlag"> | Date | string | null
+    createdAt?: DateTimeFilter<"AnomalyFlag"> | Date | string
+    updatedAt?: DateTimeFilter<"AnomalyFlag"> | Date | string
+  }
+
+  export type AnomalyFlagUpsertWithWhereUniqueWithoutDismissedByInput = {
+    where: AnomalyFlagWhereUniqueInput
+    update: XOR<AnomalyFlagUpdateWithoutDismissedByInput, AnomalyFlagUncheckedUpdateWithoutDismissedByInput>
+    create: XOR<AnomalyFlagCreateWithoutDismissedByInput, AnomalyFlagUncheckedCreateWithoutDismissedByInput>
+  }
+
+  export type AnomalyFlagUpdateWithWhereUniqueWithoutDismissedByInput = {
+    where: AnomalyFlagWhereUniqueInput
+    data: XOR<AnomalyFlagUpdateWithoutDismissedByInput, AnomalyFlagUncheckedUpdateWithoutDismissedByInput>
+  }
+
+  export type AnomalyFlagUpdateManyWithWhereWithoutDismissedByInput = {
+    where: AnomalyFlagScalarWhereInput
+    data: XOR<AnomalyFlagUpdateManyMutationInput, AnomalyFlagUncheckedUpdateManyWithoutDismissedByInput>
+  }
+
+  export type AnomalyFlagUpsertWithWhereUniqueWithoutConfirmedByInput = {
+    where: AnomalyFlagWhereUniqueInput
+    update: XOR<AnomalyFlagUpdateWithoutConfirmedByInput, AnomalyFlagUncheckedUpdateWithoutConfirmedByInput>
+    create: XOR<AnomalyFlagCreateWithoutConfirmedByInput, AnomalyFlagUncheckedCreateWithoutConfirmedByInput>
+  }
+
+  export type AnomalyFlagUpdateWithWhereUniqueWithoutConfirmedByInput = {
+    where: AnomalyFlagWhereUniqueInput
+    data: XOR<AnomalyFlagUpdateWithoutConfirmedByInput, AnomalyFlagUncheckedUpdateWithoutConfirmedByInput>
+  }
+
+  export type AnomalyFlagUpdateManyWithWhereWithoutConfirmedByInput = {
+    where: AnomalyFlagScalarWhereInput
+    data: XOR<AnomalyFlagUpdateManyMutationInput, AnomalyFlagUncheckedUpdateManyWithoutConfirmedByInput>
+  }
+
   export type UserCreateWithoutMfaDevicesInput = {
     id?: string
     email: string
@@ -218947,6 +221784,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutMfaDevicesInput = {
@@ -219041,6 +221881,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutMfaDevicesInput = {
@@ -219151,6 +221994,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMfaDevicesInput = {
@@ -219245,6 +222091,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -219339,6 +222188,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -219433,6 +222285,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -219543,6 +222398,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -219637,6 +222495,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserCreateWithoutLoginHistoryInput = {
@@ -219731,6 +222592,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutLoginHistoryInput = {
@@ -219825,6 +222689,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutLoginHistoryInput = {
@@ -219935,6 +222802,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLoginHistoryInput = {
@@ -220029,6 +222899,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type RolePermissionCreateWithoutRoleInput = {
@@ -220754,6 +223627,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -220848,6 +223724,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -221009,6 +223888,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -221103,6 +223985,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type RoleUpsertWithoutUserRolesInput = {
@@ -221418,6 +224303,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsGrantedInput = {
@@ -221512,6 +224400,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsGrantedInput = {
@@ -221611,6 +224502,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutDelegationsReceivedInput = {
@@ -221705,6 +224599,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutDelegationsReceivedInput = {
@@ -221866,6 +224763,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsGrantedInput = {
@@ -221960,6 +224860,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutDelegationsReceivedInput = {
@@ -222065,6 +224968,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDelegationsReceivedInput = {
@@ -222159,6 +225065,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type RoleUpsertWithoutDelegationsInput = {
@@ -222393,6 +225302,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutAccessReviewItemsInput = {
@@ -222487,6 +225399,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutAccessReviewItemsInput = {
@@ -222687,6 +225602,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccessReviewItemsInput = {
@@ -222781,6 +225699,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type RoleUpsertWithoutAccessReviewItemsInput = {
@@ -222921,6 +225842,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutApprovalPoliciesInput = {
@@ -223004,6 +225926,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutApprovalPoliciesInput = {
@@ -223201,6 +226124,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutApprovalPoliciesInput = {
@@ -223284,6 +226208,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ApprovalPolicyStepUpsertWithWhereUniqueWithoutPolicyInput = {
@@ -223496,6 +226421,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -223590,6 +226518,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -223798,6 +226729,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalPolicyStepAssigneeUserInput = {
@@ -223892,6 +226826,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type OrganizationCreateWithoutApprovalRequestsInput = {
@@ -223975,6 +226912,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutApprovalRequestsInput = {
@@ -224058,6 +226996,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutApprovalRequestsInput = {
@@ -224192,6 +227131,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalRequestsSubmittedInput = {
@@ -224286,6 +227228,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalRequestsSubmittedInput = {
@@ -224385,6 +227330,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalRequestsDecidedInput = {
@@ -224479,6 +227427,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalRequestsDecidedInput = {
@@ -224786,6 +227737,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutApprovalRequestsInput = {
@@ -224869,6 +227821,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ApprovalPolicyUpsertWithoutRequestsInput = {
@@ -225015,6 +227968,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalRequestsSubmittedInput = {
@@ -225109,6 +228065,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutApprovalRequestsDecidedInput = {
@@ -225214,6 +228173,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalRequestsDecidedInput = {
@@ -225308,6 +228270,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type ApprovalStepInstanceUpsertWithWhereUniqueWithoutRequestInput = {
@@ -225604,6 +228569,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -225698,6 +228666,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -225797,6 +228768,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalStepInstancesDecidedInput = {
@@ -225891,6 +228865,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalStepInstancesDecidedInput = {
@@ -226145,6 +229122,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalStepInstanceAssigneeUserInput = {
@@ -226239,6 +229219,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutApprovalStepInstancesDecidedInput = {
@@ -226344,6 +229327,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalStepInstancesDecidedInput = {
@@ -226438,6 +229424,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type ApprovalDecisionRecordUpsertWithWhereUniqueWithoutStepInstanceInput = {
@@ -226636,6 +229625,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovalDecisionRecordsInput = {
@@ -226730,6 +229722,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovalDecisionRecordsInput = {
@@ -226940,6 +229935,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovalDecisionRecordsInput = {
@@ -227034,6 +230032,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserCreateWithoutSodWaiversAsUserInput = {
@@ -227128,6 +230129,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutSodWaiversAsUserInput = {
@@ -227222,6 +230226,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutSodWaiversAsUserInput = {
@@ -227321,6 +230328,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutSodWaiversRecordedByInput = {
@@ -227415,6 +230425,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutSodWaiversRecordedByInput = {
@@ -227561,6 +230574,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutSodWaiversReviewedByInput = {
@@ -227655,6 +230671,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutSodWaiversReviewedByInput = {
@@ -227765,6 +230784,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSodWaiversAsUserInput = {
@@ -227859,6 +230881,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutSodWaiversRecordedByInput = {
@@ -227964,6 +230989,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSodWaiversRecordedByInput = {
@@ -228058,6 +231086,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type ApprovalRequestUpsertWithoutSodWaiversInput = {
@@ -228216,6 +231247,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSodWaiversReviewedByInput = {
@@ -228310,6 +231344,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type OrganizationMembershipCreateWithoutOrganizationInput = {
@@ -231463,6 +234500,62 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AnomalyFlagCreateWithoutOrganizationInput = {
+    id?: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    dismissedAt?: Date | string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    acknowledgedBy?: UserCreateNestedOneWithoutAnomaliesAcknowledgedInput
+    dismissedBy?: UserCreateNestedOneWithoutAnomaliesDismissedInput
+    confirmedBy?: UserCreateNestedOneWithoutAnomaliesConfirmedInput
+  }
+
+  export type AnomalyFlagUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    acknowledgedById?: string | null
+    dismissedAt?: Date | string | null
+    dismissedById?: string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnomalyFlagCreateOrConnectWithoutOrganizationInput = {
+    where: AnomalyFlagWhereUniqueInput
+    create: XOR<AnomalyFlagCreateWithoutOrganizationInput, AnomalyFlagUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type AnomalyFlagCreateManyOrganizationInputEnvelope = {
+    data: AnomalyFlagCreateManyOrganizationInput | AnomalyFlagCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: OrganizationMembershipWhereUniqueInput
     update: XOR<OrganizationMembershipUpdateWithoutOrganizationInput, OrganizationMembershipUncheckedUpdateWithoutOrganizationInput>
@@ -233455,6 +236548,22 @@ export namespace Prisma {
     data: XOR<CloseChecklistItemUpdateManyMutationInput, CloseChecklistItemUncheckedUpdateManyWithoutOrganizationInput>
   }
 
+  export type AnomalyFlagUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: AnomalyFlagWhereUniqueInput
+    update: XOR<AnomalyFlagUpdateWithoutOrganizationInput, AnomalyFlagUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<AnomalyFlagCreateWithoutOrganizationInput, AnomalyFlagUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type AnomalyFlagUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: AnomalyFlagWhereUniqueInput
+    data: XOR<AnomalyFlagUpdateWithoutOrganizationInput, AnomalyFlagUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type AnomalyFlagUpdateManyWithWhereWithoutOrganizationInput = {
+    where: AnomalyFlagScalarWhereInput
+    data: XOR<AnomalyFlagUpdateManyMutationInput, AnomalyFlagUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
   export type OrganizationCreateWithoutLocationsInput = {
     id?: string
     code: string
@@ -233536,6 +236645,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -233619,6 +236729,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -233821,6 +236932,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutPrimaryLocationInput = {
@@ -233915,6 +237029,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutPrimaryLocationInput = {
@@ -234215,6 +237332,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -234298,6 +237416,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type LocationUpsertWithoutChildrenInput = {
@@ -234516,6 +237635,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -234599,6 +237719,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -234781,6 +237902,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutHomeDepartmentInput = {
@@ -234875,6 +237999,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutHomeDepartmentInput = {
@@ -235291,6 +238418,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -235374,6 +238502,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutChildrenInput = {
@@ -235614,6 +238743,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCostCentresInput = {
@@ -235697,6 +238827,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCostCentresInput = {
@@ -236053,6 +239184,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCostCentresInput = {
@@ -236136,6 +239268,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutCostCentresInput = {
@@ -236312,6 +239445,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProjectsInput = {
@@ -236395,6 +239529,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProjectsInput = {
@@ -236768,6 +239903,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProjectsInput = {
@@ -236851,6 +239987,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutProjectInput = {
@@ -236998,6 +240135,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFundingSourcesInput = {
@@ -237081,6 +240219,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFundingSourcesInput = {
@@ -237512,6 +240651,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFundingSourcesInput = {
@@ -237595,6 +240735,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput = {
@@ -237758,6 +240899,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTreasuryAccountsInput = {
@@ -237841,6 +240983,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTreasuryAccountsInput = {
@@ -238616,6 +241759,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTreasuryAccountsInput = {
@@ -238699,6 +241843,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CurrencyUpsertWithoutTreasuryAccountsInput = {
@@ -239128,6 +242273,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutPaymentSchedulesInput = {
@@ -239211,6 +242357,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutPaymentSchedulesInput = {
@@ -239418,6 +242565,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutPaymentSchedulesInput = {
@@ -239501,6 +242649,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TreasuryAccountUpsertWithoutPaymentSchedulesInput = {
@@ -239704,6 +242853,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTransfersInput = {
@@ -239787,6 +242937,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTransfersInput = {
@@ -240102,6 +243253,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutTransfersSubmittedInput = {
@@ -240196,6 +243350,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutTransfersSubmittedInput = {
@@ -240295,6 +243452,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutTransfersApprovedInput = {
@@ -240389,6 +243549,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutTransfersApprovedInput = {
@@ -240488,6 +243651,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutTransfersProcessedInput = {
@@ -240582,6 +243748,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutTransfersProcessedInput = {
@@ -240681,6 +243850,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutTransfersReversedInput = {
@@ -240775,6 +243947,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutTransfersReversedInput = {
@@ -241057,6 +244232,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTransfersInput = {
@@ -241140,6 +244316,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TreasuryAccountUpsertWithoutTransfersAsSourceInput = {
@@ -241485,6 +244662,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransfersSubmittedInput = {
@@ -241579,6 +244759,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutTransfersApprovedInput = {
@@ -241684,6 +244867,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransfersApprovedInput = {
@@ -241778,6 +244964,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutTransfersProcessedInput = {
@@ -241883,6 +245072,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransfersProcessedInput = {
@@ -241977,6 +245169,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutTransfersReversedInput = {
@@ -242082,6 +245277,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransfersReversedInput = {
@@ -242176,6 +245374,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type ReversalReasonCodeUpsertWithoutTransfersInput = {
@@ -243595,6 +246796,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput = {
@@ -243678,6 +246880,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMasterDataChangeRequestsInput = {
@@ -243777,6 +246980,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsRequestedInput = {
@@ -243871,6 +247077,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsRequestedInput = {
@@ -243970,6 +247179,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutChangeRequestsApprovedInput = {
@@ -244064,6 +247276,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutChangeRequestsApprovedInput = {
@@ -244197,6 +247412,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput = {
@@ -244280,6 +247496,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsRequestedInput = {
@@ -244385,6 +247602,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsRequestedInput = {
@@ -244479,6 +247699,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsApprovedInput = {
@@ -244584,6 +247807,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChangeRequestsApprovedInput = {
@@ -244678,6 +247904,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type MasterDataVersionUpsertWithWhereUniqueWithoutChangeRequestInput = {
@@ -244877,6 +248106,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReasonCodesInput = {
@@ -244960,6 +248190,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReasonCodesInput = {
@@ -245109,6 +248340,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReasonCodesInput = {
@@ -245192,6 +248424,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ReconciliationAdjustmentUpsertWithWhereUniqueWithoutReasonCodeInput = {
@@ -245291,6 +248524,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProductsServicesInput = {
@@ -245374,6 +248608,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProductsServicesInput = {
@@ -245556,6 +248791,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProductsServicesInput = {
@@ -245639,6 +248875,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CurrencyUpsertWithoutProductsServicesInput = {
@@ -245812,6 +249049,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutPartiesInput = {
@@ -245895,6 +249133,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutPartiesInput = {
@@ -246220,6 +249459,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutPartiesInput = {
@@ -246303,6 +249543,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutPartyInput = {
@@ -246593,6 +249834,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCustomersInput = {
@@ -246676,6 +249918,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCustomersInput = {
@@ -247144,6 +250387,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCustomersInput = {
@@ -247227,6 +250471,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type PartyUpsertWithoutCustomerInput = {
@@ -247469,6 +250714,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutSuppliersInput = {
@@ -247552,6 +250798,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutSuppliersInput = {
@@ -248024,6 +251271,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutSuppliersInput = {
@@ -248107,6 +251355,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type PartyUpsertWithoutSupplierInput = {
@@ -248620,6 +251869,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCommunicationLogsInput = {
@@ -248703,6 +251953,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCommunicationLogsInput = {
@@ -248859,6 +252110,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -248942,6 +252194,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type PartyUpsertWithoutCommunicationsInput = {
@@ -249200,6 +252453,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutSupplierBankDetailChangeRequestsInput = {
@@ -249283,6 +252537,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutSupplierBankDetailChangeRequestsInput = {
@@ -249435,6 +252690,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutSupplierBankDetailChangeRequestsInput = {
@@ -249518,6 +252774,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type SupplierUpsertWithoutBankDetailChangeRequestsInput = {
@@ -250076,6 +253333,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCustomerReceivablesInput = {
@@ -250159,6 +253417,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCustomerReceivablesInput = {
@@ -250313,6 +253572,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCustomerReceivablesInput = {
@@ -250396,6 +253656,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutReceivablesInput = {
@@ -250540,6 +253801,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutQuotationsInput = {
@@ -250623,6 +253885,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutQuotationsInput = {
@@ -250907,6 +254170,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutQuotationsInput = {
@@ -250990,6 +254254,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutQuotationsInput = {
@@ -251372,6 +254637,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutInvoicesInput = {
@@ -251455,6 +254721,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutInvoicesInput = {
@@ -252124,6 +255391,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
@@ -252207,6 +255475,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutInvoicesInput = {
@@ -252961,6 +256230,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutInvoiceRemindersInput = {
@@ -253044,6 +256314,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutInvoiceRemindersInput = {
@@ -253238,6 +256509,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutInvoiceRemindersInput = {
@@ -253321,6 +256593,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type InvoiceUpsertWithoutRemindersInput = {
@@ -253505,6 +256778,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentSequencesInput = {
@@ -253588,6 +256862,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentSequencesInput = {
@@ -253687,6 +256962,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentSequencesInput = {
@@ -253770,6 +257046,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutPaymentsInput = {
@@ -253853,6 +257130,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutPaymentsInput = {
@@ -253936,6 +257214,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutPaymentsInput = {
@@ -254277,6 +257556,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutPaymentsInput = {
@@ -254360,6 +257640,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutPaymentsInput = {
@@ -255180,6 +258461,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReceiptsInput = {
@@ -255263,6 +258545,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReceiptsInput = {
@@ -255451,6 +258734,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReceiptsInput = {
@@ -255534,6 +258818,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type PaymentUpsertWithoutReceiptInput = {
@@ -255974,6 +259259,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCreditNotesInput = {
@@ -256057,6 +259343,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCreditNotesInput = {
@@ -256251,6 +259538,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCreditNotesInput = {
@@ -256334,6 +259622,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type InvoiceUpsertWithoutCreditNotesInput = {
@@ -256518,6 +259807,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDebitNotesInput = {
@@ -256601,6 +259891,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDebitNotesInput = {
@@ -256795,6 +260086,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDebitNotesInput = {
@@ -256878,6 +260170,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type InvoiceUpsertWithoutDebitNotesInput = {
@@ -257062,6 +260355,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountsInput = {
@@ -257145,6 +260439,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountsInput = {
@@ -257937,6 +261232,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountsInput = {
@@ -258020,6 +261316,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutChildrenInput = {
@@ -258350,6 +261647,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFinancialPeriodsInput = {
@@ -258433,6 +261731,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFinancialPeriodsInput = {
@@ -258805,6 +262104,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFinancialPeriodsInput = {
@@ -258888,6 +262188,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OpeningBalanceUpsertWithWhereUniqueWithoutPeriodInput = {
@@ -259078,6 +262379,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentCreateNestedManyWithoutOrganizationInput
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFinancialClosesInput = {
@@ -259161,6 +262463,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentUncheckedCreateNestedManyWithoutOrganizationInput
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFinancialClosesInput = {
@@ -259307,6 +262610,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutFinancialClosesStartedInput = {
@@ -259401,6 +262707,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutFinancialClosesStartedInput = {
@@ -259500,6 +262809,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutFinancialClosesSubmittedInput = {
@@ -259594,6 +262906,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutFinancialClosesSubmittedInput = {
@@ -259693,6 +263008,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutFinancialClosesSignedOffInput = {
@@ -259787,6 +263105,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutFinancialClosesSignedOffInput = {
@@ -259985,6 +263306,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentUpdateManyWithoutOrganizationNestedInput
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFinancialClosesInput = {
@@ -260068,6 +263390,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type FinancialPeriodUpsertWithoutFinancialCloseInput = {
@@ -260226,6 +263549,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFinancialClosesStartedInput = {
@@ -260320,6 +263646,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutFinancialClosesSubmittedInput = {
@@ -260425,6 +263754,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFinancialClosesSubmittedInput = {
@@ -260519,6 +263851,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutFinancialClosesSignedOffInput = {
@@ -260624,6 +263959,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFinancialClosesSignedOffInput = {
@@ -260718,6 +264056,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type ApprovalRequestUpsertWithoutFinancialClosesInput = {
@@ -260870,6 +264211,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentCreateNestedManyWithoutOrganizationInput
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCloseChecklistItemsInput = {
@@ -260953,6 +264295,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentUncheckedCreateNestedManyWithoutOrganizationInput
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCloseChecklistItemsInput = {
@@ -261089,6 +264432,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseCreateNestedManyWithoutSignedOffByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutCloseChecklistItemsConfirmedInput = {
@@ -261183,6 +264529,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseUncheckedCreateNestedManyWithoutSignedOffByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutCloseChecklistItemsConfirmedInput = {
@@ -261282,6 +264631,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseCreateNestedManyWithoutSignedOffByInput
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutCloseChecklistItemsWaivedInput = {
@@ -261376,6 +264728,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseUncheckedCreateNestedManyWithoutSignedOffByInput
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutCloseChecklistItemsWaivedInput = {
@@ -261475,6 +264830,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseCreateNestedManyWithoutSignedOffByInput
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutCloseChecklistItemsWaiverApprovedInput = {
@@ -261569,6 +264927,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseUncheckedCreateNestedManyWithoutSignedOffByInput
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutCloseChecklistItemsWaiverApprovedInput = {
@@ -261668,6 +265029,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentUpdateManyWithoutOrganizationNestedInput
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCloseChecklistItemsInput = {
@@ -261751,6 +265113,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type FinancialCloseUpsertWithoutChecklistItemsInput = {
@@ -261899,6 +265262,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseUpdateManyWithoutSignedOffByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCloseChecklistItemsConfirmedInput = {
@@ -261993,6 +265359,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseUncheckedUpdateManyWithoutSignedOffByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutCloseChecklistItemsWaivedInput = {
@@ -262098,6 +265467,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseUpdateManyWithoutSignedOffByNestedInput
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCloseChecklistItemsWaivedInput = {
@@ -262192,6 +265564,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseUncheckedUpdateManyWithoutSignedOffByNestedInput
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutCloseChecklistItemsWaiverApprovedInput = {
@@ -262297,6 +265672,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseUpdateManyWithoutSignedOffByNestedInput
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCloseChecklistItemsWaiverApprovedInput = {
@@ -262391,6 +265769,9 @@ export namespace Prisma {
     financialClosesSignedOff?: FinancialCloseUncheckedUpdateManyWithoutSignedOffByNestedInput
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type OrganizationCreateWithoutOpeningBalancesInput = {
@@ -262474,6 +265855,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutOpeningBalancesInput = {
@@ -262557,6 +265939,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutOpeningBalancesInput = {
@@ -262823,6 +266206,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutOpeningBalancesInput = {
@@ -262906,6 +266290,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutOpeningBalancesInput = {
@@ -263174,6 +266559,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountBalanceSnapshotsInput = {
@@ -263257,6 +266643,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountBalanceSnapshotsInput = {
@@ -263523,6 +266910,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountBalanceSnapshotsInput = {
@@ -263606,6 +266994,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutAccountBalanceSnapshotsInput = {
@@ -263874,6 +267263,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalEntriesInput = {
@@ -263957,6 +267347,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalEntriesInput = {
@@ -264529,6 +267920,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesSubmittedInput = {
@@ -264623,6 +268017,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesSubmittedInput = {
@@ -264722,6 +268119,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesApprovedInput = {
@@ -264816,6 +268216,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesApprovedInput = {
@@ -264915,6 +268318,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesPostedInput = {
@@ -265009,6 +268415,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesPostedInput = {
@@ -265108,6 +268517,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutJournalEntriesReversedInput = {
@@ -265202,6 +268614,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutJournalEntriesReversedInput = {
@@ -265639,6 +269054,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalEntriesInput = {
@@ -265722,6 +269138,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type FinancialPeriodUpsertWithoutJournalEntriesInput = {
@@ -266202,6 +269619,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesSubmittedInput = {
@@ -266296,6 +269716,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesApprovedInput = {
@@ -266401,6 +269824,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesApprovedInput = {
@@ -266495,6 +269921,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesPostedInput = {
@@ -266600,6 +270029,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesPostedInput = {
@@ -266694,6 +270126,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutJournalEntriesReversedInput = {
@@ -266799,6 +270234,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJournalEntriesReversedInput = {
@@ -266893,6 +270331,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutEntryInput = {
@@ -267072,6 +270513,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalLinesInput = {
@@ -267155,6 +270597,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalLinesInput = {
@@ -267703,6 +271146,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalLinesInput = {
@@ -267786,6 +271230,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithoutLinesInput = {
@@ -268372,6 +271817,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReversalReasonCodesInput = {
@@ -268455,6 +271901,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReversalReasonCodesInput = {
@@ -268788,6 +272235,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReversalReasonCodesInput = {
@@ -268871,6 +272319,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput = {
@@ -269002,6 +272451,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTransactionsInput = {
@@ -269085,6 +272535,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTransactionsInput = {
@@ -269635,6 +273086,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsCreatedInput = {
@@ -269729,6 +273183,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsCreatedInput = {
@@ -269828,6 +273285,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsSubmittedInput = {
@@ -269922,6 +273382,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsSubmittedInput = {
@@ -270021,6 +273484,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsApprovedInput = {
@@ -270115,6 +273581,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsApprovedInput = {
@@ -270214,6 +273683,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsPostedInput = {
@@ -270308,6 +273780,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsPostedInput = {
@@ -270407,6 +273882,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsReversedInput = {
@@ -270501,6 +273979,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsReversedInput = {
@@ -271000,6 +274481,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTransactionsInput = {
@@ -271083,6 +274565,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutTransactionsInput = {
@@ -271693,6 +275176,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsCreatedInput = {
@@ -271787,6 +275273,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsSubmittedInput = {
@@ -271892,6 +275381,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsSubmittedInput = {
@@ -271986,6 +275478,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsApprovedInput = {
@@ -272091,6 +275586,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsApprovedInput = {
@@ -272185,6 +275683,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsPostedInput = {
@@ -272290,6 +275791,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsPostedInput = {
@@ -272384,6 +275888,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutTransactionsReversedInput = {
@@ -272489,6 +275996,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsReversedInput = {
@@ -272583,6 +276093,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type ReversalReasonCodeUpsertWithoutTransactionsInput = {
@@ -272858,6 +276371,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetsInput = {
@@ -272941,6 +276455,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetsInput = {
@@ -273247,6 +276762,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutBudgetsCreatedInput = {
@@ -273341,6 +276859,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutBudgetsCreatedInput = {
@@ -273440,6 +276961,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutBudgetsApprovedInput = {
@@ -273534,6 +277058,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutBudgetsApprovedInput = {
@@ -273855,6 +277382,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetsInput = {
@@ -273938,6 +277466,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutBudgetsInput = {
@@ -274280,6 +277809,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBudgetsCreatedInput = {
@@ -274374,6 +277906,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutBudgetsApprovedInput = {
@@ -274479,6 +278014,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBudgetsApprovedInput = {
@@ -274573,6 +278111,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type BudgetLineUpsertWithWhereUniqueWithoutBudgetInput = {
@@ -274736,6 +278277,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetLinesInput = {
@@ -274819,6 +278361,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetLinesInput = {
@@ -275232,6 +278775,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetLinesInput = {
@@ -275315,6 +278859,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutLinesInput = {
@@ -275628,6 +279173,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCommitmentsInput = {
@@ -275711,6 +279257,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCommitmentsInput = {
@@ -276167,6 +279714,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutCommitmentsCreatedInput = {
@@ -276261,6 +279811,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutCommitmentsCreatedInput = {
@@ -276360,6 +279913,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCommitmentsInput = {
@@ -276443,6 +279997,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutCommitmentsInput = {
@@ -276947,6 +280502,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommitmentsCreatedInput = {
@@ -277041,6 +280599,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type OrganizationCreateWithoutBudgetRevisionsInput = {
@@ -277124,6 +280685,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetRevisionsInput = {
@@ -277207,6 +280769,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetRevisionsInput = {
@@ -277381,6 +280944,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutBudgetRevisionsCreatedInput = {
@@ -277475,6 +281041,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutBudgetRevisionsCreatedInput = {
@@ -277574,6 +281143,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutBudgetRevisionsApprovedInput = {
@@ -277668,6 +281240,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutBudgetRevisionsApprovedInput = {
@@ -277797,6 +281372,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetRevisionsInput = {
@@ -277880,6 +281456,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutRevisionsInput = {
@@ -278066,6 +281643,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBudgetRevisionsCreatedInput = {
@@ -278160,6 +281740,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutBudgetRevisionsApprovedInput = {
@@ -278265,6 +281848,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBudgetRevisionsApprovedInput = {
@@ -278359,6 +281945,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type BudgetRevisionLineUpsertWithWhereUniqueWithoutRevisionInput = {
@@ -278630,6 +282219,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetTransfersInput = {
@@ -278713,6 +282303,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetTransfersInput = {
@@ -278973,6 +282564,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutBudgetTransfersCreatedInput = {
@@ -279067,6 +282661,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutBudgetTransfersCreatedInput = {
@@ -279166,6 +282763,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutBudgetTransfersApprovedInput = {
@@ -279260,6 +282860,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutBudgetTransfersApprovedInput = {
@@ -279359,6 +282962,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetTransfersInput = {
@@ -279442,6 +283046,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutTransfersInput = {
@@ -279726,6 +283331,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBudgetTransfersCreatedInput = {
@@ -279820,6 +283428,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutBudgetTransfersApprovedInput = {
@@ -279925,6 +283536,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBudgetTransfersApprovedInput = {
@@ -280019,6 +283633,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type OrganizationCreateWithoutBudgetScenariosInput = {
@@ -280102,6 +283719,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetScenariosInput = {
@@ -280185,6 +283803,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetScenariosInput = {
@@ -280359,6 +283978,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutBudgetScenariosCreatedInput = {
@@ -280453,6 +284075,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutBudgetScenariosCreatedInput = {
@@ -280552,6 +284177,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetScenariosInput = {
@@ -280635,6 +284261,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutScenariosInput = {
@@ -280821,6 +284448,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBudgetScenariosCreatedInput = {
@@ -280915,6 +284545,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type OrganizationCreateWithoutMembershipsInput = {
@@ -280998,6 +284631,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -281081,6 +284715,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -281180,6 +284815,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutOrganizationMembershipsInput = {
@@ -281274,6 +284912,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutOrganizationMembershipsInput = {
@@ -281373,6 +285014,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -281456,6 +285098,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganizationMembershipsInput = {
@@ -281561,6 +285204,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganizationMembershipsInput = {
@@ -281655,6 +285301,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type SecurityEventCreateWithoutAuditLogInput = {
@@ -281960,6 +285609,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutImportBatchesInput = {
@@ -282043,6 +285693,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutImportBatchesInput = {
@@ -282142,6 +285793,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutImportBatchesUploadedInput = {
@@ -282236,6 +285890,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutImportBatchesUploadedInput = {
@@ -282335,6 +285992,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutImportBatchesMappedInput = {
@@ -282429,6 +286089,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutImportBatchesMappedInput = {
@@ -282528,6 +286191,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutImportBatchesValidatedInput = {
@@ -282622,6 +286288,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutImportBatchesValidatedInput = {
@@ -282721,6 +286390,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutImportBatchesApprovedInput = {
@@ -282815,6 +286487,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutImportBatchesApprovedInput = {
@@ -282914,6 +286589,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutImportBatchesImportedInput = {
@@ -283008,6 +286686,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutImportBatchesImportedInput = {
@@ -283107,6 +286788,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutImportBatchesRolledBackInput = {
@@ -283201,6 +286885,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutImportBatchesRolledBackInput = {
@@ -283516,6 +287203,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutImportBatchesInput = {
@@ -283599,6 +287287,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutImportBatchesUploadedInput = {
@@ -283704,6 +287393,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImportBatchesUploadedInput = {
@@ -283798,6 +287490,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutImportBatchesMappedInput = {
@@ -283903,6 +287598,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImportBatchesMappedInput = {
@@ -283997,6 +287695,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutImportBatchesValidatedInput = {
@@ -284102,6 +287803,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImportBatchesValidatedInput = {
@@ -284196,6 +287900,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutImportBatchesApprovedInput = {
@@ -284301,6 +288008,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImportBatchesApprovedInput = {
@@ -284395,6 +288105,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutImportBatchesImportedInput = {
@@ -284500,6 +288213,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImportBatchesImportedInput = {
@@ -284594,6 +288310,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUpsertWithoutImportBatchesRolledBackInput = {
@@ -284699,6 +288418,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImportBatchesRolledBackInput = {
@@ -284793,6 +288515,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type ImportRowUpsertWithWhereUniqueWithoutBatchInput = {
@@ -285303,6 +289028,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutImportFieldMappingsInput = {
@@ -285386,6 +289112,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutImportFieldMappingsInput = {
@@ -285552,6 +289279,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutImportFieldMappingsCreatedInput = {
@@ -285646,6 +289376,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutImportFieldMappingsCreatedInput = {
@@ -285745,6 +289478,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutImportFieldMappingsInput = {
@@ -285828,6 +289562,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ImportBatchUpsertWithoutFieldMappingsInput = {
@@ -286006,6 +289741,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImportFieldMappingsCreatedInput = {
@@ -286100,6 +289838,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type ImportBatchCreateWithoutErrorsInput = {
@@ -286298,6 +290039,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutImportErrorsResolvedInput = {
@@ -286392,6 +290136,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutImportErrorsResolvedInput = {
@@ -286618,6 +290365,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutImportErrorsResolvedInput = {
@@ -286712,6 +290462,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type OrganizationCreateWithoutMatchingRulesInput = {
@@ -286795,6 +290548,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMatchingRulesInput = {
@@ -286878,6 +290632,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMatchingRulesInput = {
@@ -286977,6 +290732,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMatchingRulesInput = {
@@ -287060,6 +290816,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutReconciliationSessionsInput = {
@@ -287143,6 +290900,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReconciliationSessionsInput = {
@@ -287226,6 +290984,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReconciliationSessionsInput = {
@@ -287658,6 +291417,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReconciliationSessionsInput = {
@@ -287741,6 +291501,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TreasuryAccountUpsertWithoutReconciliationSessionsInput = {
@@ -288057,6 +291818,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReconciliationMatchesInput = {
@@ -288140,6 +291902,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReconciliationMatchesInput = {
@@ -288513,6 +292276,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReconciliationMatchesInput = {
@@ -288596,6 +292360,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ReconciliationSessionUpsertWithoutMatchesInput = {
@@ -288977,6 +292742,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReconciliationExceptionsInput = {
@@ -289060,6 +292826,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReconciliationExceptionsInput = {
@@ -289358,6 +293125,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReconciliationExceptionsInput = {
@@ -289441,6 +293209,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ReconciliationSessionUpsertWithoutExceptionsInput = {
@@ -289741,6 +293510,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReconciliationAdjustmentsInput = {
@@ -289824,6 +293594,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReconciliationAdjustmentsInput = {
@@ -290218,6 +293989,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReconciliationAdjustmentsInput = {
@@ -290301,6 +294073,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ReconciliationSessionUpsertWithoutAdjustmentsInput = {
@@ -290720,6 +294493,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -290814,6 +294590,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -290924,6 +294703,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -291018,6 +294800,1573 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
+  }
+
+  export type OrganizationCreateWithoutAnomaliesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    parties?: PartyCreateNestedManyWithoutOrganizationInput
+    customers?: CustomerCreateNestedManyWithoutOrganizationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganizationInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutOrganizationInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestCreateNestedManyWithoutOrganizationInput
+    customerReceivables?: CustomerReceivableCreateNestedManyWithoutOrganizationInput
+    quotations?: QuotationCreateNestedManyWithoutOrganizationInput
+    invoices?: InvoiceCreateNestedManyWithoutOrganizationInput
+    payments?: PaymentCreateNestedManyWithoutOrganizationInput
+    receipts?: ReceiptCreateNestedManyWithoutOrganizationInput
+    creditNotes?: CreditNoteCreateNestedManyWithoutOrganizationInput
+    debitNotes?: DebitNoteCreateNestedManyWithoutOrganizationInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutOrganizationInput
+    invoiceReminders?: InvoiceReminderCreateNestedManyWithoutOrganizationInput
+    documents?: DocumentCreateNestedManyWithoutOrganizationInput
+    documentTags?: DocumentTagCreateNestedManyWithoutOrganizationInput
+    retentionPolicies?: RetentionPolicyCreateNestedManyWithoutOrganizationInput
+    documentVersions?: DocumentVersionCreateNestedManyWithoutOrganizationInput
+    documentTagLinks?: DocumentTagLinkCreateNestedManyWithoutOrganizationInput
+    documentLinks?: DocumentLinkCreateNestedManyWithoutOrganizationInput
+    legalHolds?: LegalHoldCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
+    matchingRules?: MatchingRuleCreateNestedManyWithoutOrganizationInput
+    reconciliationSessions?: ReconciliationSessionCreateNestedManyWithoutOrganizationInput
+    reconciliationMatches?: ReconciliationMatchCreateNestedManyWithoutOrganizationInput
+    reconciliationExceptions?: ReconciliationExceptionCreateNestedManyWithoutOrganizationInput
+    reconciliationAdjustments?: ReconciliationAdjustmentCreateNestedManyWithoutOrganizationInput
+    commitments?: CommitmentCreateNestedManyWithoutOrganizationInput
+    budgetRevisions?: BudgetRevisionCreateNestedManyWithoutOrganizationInput
+    budgetTransfers?: BudgetTransferCreateNestedManyWithoutOrganizationInput
+    budgetScenarios?: BudgetScenarioCreateNestedManyWithoutOrganizationInput
+    taxRules?: TaxRuleCreateNestedManyWithoutOrganizationInput
+    taxObligations?: TaxObligationCreateNestedManyWithoutOrganizationInput
+    taxPayments?: TaxPaymentCreateNestedManyWithoutOrganizationInput
+    credentials?: CredentialCreateNestedManyWithoutOrganizationInput
+    complianceDocuments?: ComplianceDocumentCreateNestedManyWithoutOrganizationInput
+    taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
+    financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
+    closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutAnomaliesInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    parties?: PartyUncheckedCreateNestedManyWithoutOrganizationInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutOrganizationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganizationInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutOrganizationInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    customerReceivables?: CustomerReceivableUncheckedCreateNestedManyWithoutOrganizationInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutOrganizationInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutOrganizationInput
+    receipts?: ReceiptUncheckedCreateNestedManyWithoutOrganizationInput
+    creditNotes?: CreditNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    debitNotes?: DebitNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+    invoiceReminders?: InvoiceReminderUncheckedCreateNestedManyWithoutOrganizationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganizationInput
+    documentTags?: DocumentTagUncheckedCreateNestedManyWithoutOrganizationInput
+    retentionPolicies?: RetentionPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    documentVersions?: DocumentVersionUncheckedCreateNestedManyWithoutOrganizationInput
+    documentTagLinks?: DocumentTagLinkUncheckedCreateNestedManyWithoutOrganizationInput
+    documentLinks?: DocumentLinkUncheckedCreateNestedManyWithoutOrganizationInput
+    legalHolds?: LegalHoldUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
+    matchingRules?: MatchingRuleUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationSessions?: ReconciliationSessionUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationMatches?: ReconciliationMatchUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationExceptions?: ReconciliationExceptionUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationAdjustments?: ReconciliationAdjustmentUncheckedCreateNestedManyWithoutOrganizationInput
+    commitments?: CommitmentUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetRevisions?: BudgetRevisionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetTransfers?: BudgetTransferUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetScenarios?: BudgetScenarioUncheckedCreateNestedManyWithoutOrganizationInput
+    taxRules?: TaxRuleUncheckedCreateNestedManyWithoutOrganizationInput
+    taxObligations?: TaxObligationUncheckedCreateNestedManyWithoutOrganizationInput
+    taxPayments?: TaxPaymentUncheckedCreateNestedManyWithoutOrganizationInput
+    credentials?: CredentialUncheckedCreateNestedManyWithoutOrganizationInput
+    complianceDocuments?: ComplianceDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+    taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
+    financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
+    closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutAnomaliesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutAnomaliesInput, OrganizationUncheckedCreateWithoutAnomaliesInput>
+  }
+
+  export type UserCreateWithoutAnomaliesAcknowledgedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    responsibleCredentials?: CredentialCreateNestedManyWithoutResponsibleUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
+    budgetsCreated?: BudgetCreateNestedManyWithoutCreatedByInput
+    budgetsApproved?: BudgetCreateNestedManyWithoutApprovedByInput
+    commitmentsCreated?: CommitmentCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsCreated?: BudgetRevisionCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsApproved?: BudgetRevisionCreateNestedManyWithoutApprovedByInput
+    budgetTransfersCreated?: BudgetTransferCreateNestedManyWithoutCreatedByInput
+    budgetTransfersApproved?: BudgetTransferCreateNestedManyWithoutApprovedByInput
+    budgetScenariosCreated?: BudgetScenarioCreateNestedManyWithoutCreatedByInput
+    financialClosesStarted?: FinancialCloseCreateNestedManyWithoutStartedByInput
+    financialClosesSubmitted?: FinancialCloseCreateNestedManyWithoutSubmittedByInput
+    financialClosesSignedOff?: FinancialCloseCreateNestedManyWithoutSignedOffByInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
+    closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
+  }
+
+  export type UserUncheckedCreateWithoutAnomaliesAcknowledgedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    responsibleCredentials?: CredentialUncheckedCreateNestedManyWithoutResponsibleUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
+    budgetsCreated?: BudgetUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetsApproved?: BudgetUncheckedCreateNestedManyWithoutApprovedByInput
+    commitmentsCreated?: CommitmentUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsCreated?: BudgetRevisionUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsApproved?: BudgetRevisionUncheckedCreateNestedManyWithoutApprovedByInput
+    budgetTransfersCreated?: BudgetTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetTransfersApproved?: BudgetTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    budgetScenariosCreated?: BudgetScenarioUncheckedCreateNestedManyWithoutCreatedByInput
+    financialClosesStarted?: FinancialCloseUncheckedCreateNestedManyWithoutStartedByInput
+    financialClosesSubmitted?: FinancialCloseUncheckedCreateNestedManyWithoutSubmittedByInput
+    financialClosesSignedOff?: FinancialCloseUncheckedCreateNestedManyWithoutSignedOffByInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
+    closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
+  }
+
+  export type UserCreateOrConnectWithoutAnomaliesAcknowledgedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAnomaliesAcknowledgedInput, UserUncheckedCreateWithoutAnomaliesAcknowledgedInput>
+  }
+
+  export type UserCreateWithoutAnomaliesDismissedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    responsibleCredentials?: CredentialCreateNestedManyWithoutResponsibleUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
+    budgetsCreated?: BudgetCreateNestedManyWithoutCreatedByInput
+    budgetsApproved?: BudgetCreateNestedManyWithoutApprovedByInput
+    commitmentsCreated?: CommitmentCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsCreated?: BudgetRevisionCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsApproved?: BudgetRevisionCreateNestedManyWithoutApprovedByInput
+    budgetTransfersCreated?: BudgetTransferCreateNestedManyWithoutCreatedByInput
+    budgetTransfersApproved?: BudgetTransferCreateNestedManyWithoutApprovedByInput
+    budgetScenariosCreated?: BudgetScenarioCreateNestedManyWithoutCreatedByInput
+    financialClosesStarted?: FinancialCloseCreateNestedManyWithoutStartedByInput
+    financialClosesSubmitted?: FinancialCloseCreateNestedManyWithoutSubmittedByInput
+    financialClosesSignedOff?: FinancialCloseCreateNestedManyWithoutSignedOffByInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
+    closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
+  }
+
+  export type UserUncheckedCreateWithoutAnomaliesDismissedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    responsibleCredentials?: CredentialUncheckedCreateNestedManyWithoutResponsibleUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
+    budgetsCreated?: BudgetUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetsApproved?: BudgetUncheckedCreateNestedManyWithoutApprovedByInput
+    commitmentsCreated?: CommitmentUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsCreated?: BudgetRevisionUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsApproved?: BudgetRevisionUncheckedCreateNestedManyWithoutApprovedByInput
+    budgetTransfersCreated?: BudgetTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetTransfersApproved?: BudgetTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    budgetScenariosCreated?: BudgetScenarioUncheckedCreateNestedManyWithoutCreatedByInput
+    financialClosesStarted?: FinancialCloseUncheckedCreateNestedManyWithoutStartedByInput
+    financialClosesSubmitted?: FinancialCloseUncheckedCreateNestedManyWithoutSubmittedByInput
+    financialClosesSignedOff?: FinancialCloseUncheckedCreateNestedManyWithoutSignedOffByInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
+    closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
+  }
+
+  export type UserCreateOrConnectWithoutAnomaliesDismissedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAnomaliesDismissedInput, UserUncheckedCreateWithoutAnomaliesDismissedInput>
+  }
+
+  export type UserCreateWithoutAnomaliesConfirmedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    primaryLocation?: LocationCreateNestedOneWithoutUsersInput
+    homeDepartment?: DepartmentCreateNestedOneWithoutUsersInput
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedUsersInput
+    organizationMemberships?: OrganizationMembershipCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    responsibleCredentials?: CredentialCreateNestedManyWithoutResponsibleUserInput
+    notificationPreferences?: NotificationPreferenceCreateNestedManyWithoutUserInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorCreateNestedManyWithoutResolvedByInput
+    budgetsCreated?: BudgetCreateNestedManyWithoutCreatedByInput
+    budgetsApproved?: BudgetCreateNestedManyWithoutApprovedByInput
+    commitmentsCreated?: CommitmentCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsCreated?: BudgetRevisionCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsApproved?: BudgetRevisionCreateNestedManyWithoutApprovedByInput
+    budgetTransfersCreated?: BudgetTransferCreateNestedManyWithoutCreatedByInput
+    budgetTransfersApproved?: BudgetTransferCreateNestedManyWithoutApprovedByInput
+    budgetScenariosCreated?: BudgetScenarioCreateNestedManyWithoutCreatedByInput
+    financialClosesStarted?: FinancialCloseCreateNestedManyWithoutStartedByInput
+    financialClosesSubmitted?: FinancialCloseCreateNestedManyWithoutSubmittedByInput
+    financialClosesSignedOff?: FinancialCloseCreateNestedManyWithoutSignedOffByInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
+    closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+  }
+
+  export type UserUncheckedCreateWithoutAnomaliesConfirmedInput = {
+    id?: string
+    email: string
+    emailNormalized: string
+    fullName: string
+    jobTitle?: string | null
+    phone?: string | null
+    avatarUrl?: string | null
+    status?: $Enums.UserStatus
+    isActive?: boolean
+    deactivatedAt?: Date | string | null
+    deactivationReason?: string | null
+    passwordHash?: string | null
+    passwordAlgorithm?: $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: Date | string | null
+    mustChangePassword?: boolean
+    failedLoginCount?: number
+    lockedUntil?: Date | string | null
+    lastLoginAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    passwordResetToken?: string | null
+    passwordResetExpiresAt?: Date | string | null
+    passwordHistory?: UserCreatepasswordHistoryInput | string[]
+    mfaEnforced?: boolean
+    mfaVerifiedAt?: Date | string | null
+    primaryLocationId?: string | null
+    homeDepartmentId?: string | null
+    dataClassification?: string
+    retentionReviewAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedById?: string | null
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    loginHistory?: LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+    mfaDevices?: MfaDeviceUncheckedCreateNestedManyWithoutUserInput
+    userRoles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    delegationsGranted?: DelegationUncheckedCreateNestedManyWithoutGrantorInput
+    delegationsReceived?: DelegationUncheckedCreateNestedManyWithoutGranteeInput
+    accessReviewItems?: AccessReviewItemUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    responsibleCredentials?: CredentialUncheckedCreateNestedManyWithoutResponsibleUserInput
+    notificationPreferences?: NotificationPreferenceUncheckedCreateNestedManyWithoutUserInput
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    updatedUsers?: UserUncheckedCreateNestedManyWithoutUpdatedByInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesSubmitted?: JournalEntryUncheckedCreateNestedManyWithoutSubmittedByInput
+    journalEntriesApproved?: JournalEntryUncheckedCreateNestedManyWithoutApprovedByInput
+    journalEntriesPosted?: JournalEntryUncheckedCreateNestedManyWithoutPostedByInput
+    journalEntriesReversed?: JournalEntryUncheckedCreateNestedManyWithoutReversedByInput
+    transactionsCreated?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    transactionsSubmitted?: TransactionUncheckedCreateNestedManyWithoutSubmittedByInput
+    transactionsApproved?: TransactionUncheckedCreateNestedManyWithoutApprovedByInput
+    transactionsPosted?: TransactionUncheckedCreateNestedManyWithoutPostedByInput
+    transactionsReversed?: TransactionUncheckedCreateNestedManyWithoutReversedByInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedCreateNestedManyWithoutSubmittedByInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutDecidedByInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedCreateNestedManyWithoutActorInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedCreateNestedManyWithoutAssigneeUserInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedCreateNestedManyWithoutAssigneeUserInput
+    sodWaiversAsUser?: SODWaiverUncheckedCreateNestedManyWithoutUserInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedCreateNestedManyWithoutRecordedByInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedCreateNestedManyWithoutReviewedByInput
+    transfersSubmitted?: TransferUncheckedCreateNestedManyWithoutSubmittedByInput
+    transfersApproved?: TransferUncheckedCreateNestedManyWithoutApprovedByInput
+    transfersProcessed?: TransferUncheckedCreateNestedManyWithoutProcessedByInput
+    transfersReversed?: TransferUncheckedCreateNestedManyWithoutReversedByInput
+    importBatchesUploaded?: ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
+    importBatchesMapped?: ImportBatchUncheckedCreateNestedManyWithoutMappedByInput
+    importBatchesValidated?: ImportBatchUncheckedCreateNestedManyWithoutValidatedByInput
+    importBatchesApproved?: ImportBatchUncheckedCreateNestedManyWithoutApprovedByInput
+    importBatchesImported?: ImportBatchUncheckedCreateNestedManyWithoutImportedByInput
+    importBatchesRolledBack?: ImportBatchUncheckedCreateNestedManyWithoutRolledBackByInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedCreateNestedManyWithoutCreatedByInput
+    importErrorsResolved?: ImportErrorUncheckedCreateNestedManyWithoutResolvedByInput
+    budgetsCreated?: BudgetUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetsApproved?: BudgetUncheckedCreateNestedManyWithoutApprovedByInput
+    commitmentsCreated?: CommitmentUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsCreated?: BudgetRevisionUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetRevisionsApproved?: BudgetRevisionUncheckedCreateNestedManyWithoutApprovedByInput
+    budgetTransfersCreated?: BudgetTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    budgetTransfersApproved?: BudgetTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    budgetScenariosCreated?: BudgetScenarioUncheckedCreateNestedManyWithoutCreatedByInput
+    financialClosesStarted?: FinancialCloseUncheckedCreateNestedManyWithoutStartedByInput
+    financialClosesSubmitted?: FinancialCloseUncheckedCreateNestedManyWithoutSubmittedByInput
+    financialClosesSignedOff?: FinancialCloseUncheckedCreateNestedManyWithoutSignedOffByInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
+    closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+  }
+
+  export type UserCreateOrConnectWithoutAnomaliesConfirmedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAnomaliesConfirmedInput, UserUncheckedCreateWithoutAnomaliesConfirmedInput>
+  }
+
+  export type OrganizationUpsertWithoutAnomaliesInput = {
+    update: XOR<OrganizationUpdateWithoutAnomaliesInput, OrganizationUncheckedUpdateWithoutAnomaliesInput>
+    create: XOR<OrganizationCreateWithoutAnomaliesInput, OrganizationUncheckedCreateWithoutAnomaliesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutAnomaliesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutAnomaliesInput, OrganizationUncheckedUpdateWithoutAnomaliesInput>
+  }
+
+  export type OrganizationUpdateWithoutAnomaliesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    parties?: PartyUpdateManyWithoutOrganizationNestedInput
+    customers?: CustomerUpdateManyWithoutOrganizationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganizationNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutOrganizationNestedInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestUpdateManyWithoutOrganizationNestedInput
+    customerReceivables?: CustomerReceivableUpdateManyWithoutOrganizationNestedInput
+    quotations?: QuotationUpdateManyWithoutOrganizationNestedInput
+    invoices?: InvoiceUpdateManyWithoutOrganizationNestedInput
+    payments?: PaymentUpdateManyWithoutOrganizationNestedInput
+    receipts?: ReceiptUpdateManyWithoutOrganizationNestedInput
+    creditNotes?: CreditNoteUpdateManyWithoutOrganizationNestedInput
+    debitNotes?: DebitNoteUpdateManyWithoutOrganizationNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutOrganizationNestedInput
+    invoiceReminders?: InvoiceReminderUpdateManyWithoutOrganizationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganizationNestedInput
+    documentTags?: DocumentTagUpdateManyWithoutOrganizationNestedInput
+    retentionPolicies?: RetentionPolicyUpdateManyWithoutOrganizationNestedInput
+    documentVersions?: DocumentVersionUpdateManyWithoutOrganizationNestedInput
+    documentTagLinks?: DocumentTagLinkUpdateManyWithoutOrganizationNestedInput
+    documentLinks?: DocumentLinkUpdateManyWithoutOrganizationNestedInput
+    legalHolds?: LegalHoldUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
+    matchingRules?: MatchingRuleUpdateManyWithoutOrganizationNestedInput
+    reconciliationSessions?: ReconciliationSessionUpdateManyWithoutOrganizationNestedInput
+    reconciliationMatches?: ReconciliationMatchUpdateManyWithoutOrganizationNestedInput
+    reconciliationExceptions?: ReconciliationExceptionUpdateManyWithoutOrganizationNestedInput
+    reconciliationAdjustments?: ReconciliationAdjustmentUpdateManyWithoutOrganizationNestedInput
+    commitments?: CommitmentUpdateManyWithoutOrganizationNestedInput
+    budgetRevisions?: BudgetRevisionUpdateManyWithoutOrganizationNestedInput
+    budgetTransfers?: BudgetTransferUpdateManyWithoutOrganizationNestedInput
+    budgetScenarios?: BudgetScenarioUpdateManyWithoutOrganizationNestedInput
+    taxRules?: TaxRuleUpdateManyWithoutOrganizationNestedInput
+    taxObligations?: TaxObligationUpdateManyWithoutOrganizationNestedInput
+    taxPayments?: TaxPaymentUpdateManyWithoutOrganizationNestedInput
+    credentials?: CredentialUpdateManyWithoutOrganizationNestedInput
+    complianceDocuments?: ComplianceDocumentUpdateManyWithoutOrganizationNestedInput
+    taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
+    financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
+    closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutAnomaliesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    parties?: PartyUncheckedUpdateManyWithoutOrganizationNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutOrganizationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganizationNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    customerReceivables?: CustomerReceivableUncheckedUpdateManyWithoutOrganizationNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutOrganizationNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+    receipts?: ReceiptUncheckedUpdateManyWithoutOrganizationNestedInput
+    creditNotes?: CreditNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    debitNotes?: DebitNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+    invoiceReminders?: InvoiceReminderUncheckedUpdateManyWithoutOrganizationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentTags?: DocumentTagUncheckedUpdateManyWithoutOrganizationNestedInput
+    retentionPolicies?: RetentionPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentVersions?: DocumentVersionUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentTagLinks?: DocumentTagLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentLinks?: DocumentLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+    legalHolds?: LegalHoldUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
+    matchingRules?: MatchingRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationSessions?: ReconciliationSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationMatches?: ReconciliationMatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationExceptions?: ReconciliationExceptionUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationAdjustments?: ReconciliationAdjustmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    commitments?: CommitmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetRevisions?: BudgetRevisionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetTransfers?: BudgetTransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetScenarios?: BudgetScenarioUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxRules?: TaxRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxObligations?: TaxObligationUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxPayments?: TaxPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+    credentials?: CredentialUncheckedUpdateManyWithoutOrganizationNestedInput
+    complianceDocuments?: ComplianceDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
+    financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
+    closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type UserUpsertWithoutAnomaliesAcknowledgedInput = {
+    update: XOR<UserUpdateWithoutAnomaliesAcknowledgedInput, UserUncheckedUpdateWithoutAnomaliesAcknowledgedInput>
+    create: XOR<UserCreateWithoutAnomaliesAcknowledgedInput, UserUncheckedCreateWithoutAnomaliesAcknowledgedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAnomaliesAcknowledgedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAnomaliesAcknowledgedInput, UserUncheckedUpdateWithoutAnomaliesAcknowledgedInput>
+  }
+
+  export type UserUpdateWithoutAnomaliesAcknowledgedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    responsibleCredentials?: CredentialUpdateManyWithoutResponsibleUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
+    budgetsCreated?: BudgetUpdateManyWithoutCreatedByNestedInput
+    budgetsApproved?: BudgetUpdateManyWithoutApprovedByNestedInput
+    commitmentsCreated?: CommitmentUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsCreated?: BudgetRevisionUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsApproved?: BudgetRevisionUpdateManyWithoutApprovedByNestedInput
+    budgetTransfersCreated?: BudgetTransferUpdateManyWithoutCreatedByNestedInput
+    budgetTransfersApproved?: BudgetTransferUpdateManyWithoutApprovedByNestedInput
+    budgetScenariosCreated?: BudgetScenarioUpdateManyWithoutCreatedByNestedInput
+    financialClosesStarted?: FinancialCloseUpdateManyWithoutStartedByNestedInput
+    financialClosesSubmitted?: FinancialCloseUpdateManyWithoutSubmittedByNestedInput
+    financialClosesSignedOff?: FinancialCloseUpdateManyWithoutSignedOffByNestedInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
+    closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAnomaliesAcknowledgedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    responsibleCredentials?: CredentialUncheckedUpdateManyWithoutResponsibleUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
+    budgetsCreated?: BudgetUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetsApproved?: BudgetUncheckedUpdateManyWithoutApprovedByNestedInput
+    commitmentsCreated?: CommitmentUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsCreated?: BudgetRevisionUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsApproved?: BudgetRevisionUncheckedUpdateManyWithoutApprovedByNestedInput
+    budgetTransfersCreated?: BudgetTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetTransfersApproved?: BudgetTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    budgetScenariosCreated?: BudgetScenarioUncheckedUpdateManyWithoutCreatedByNestedInput
+    financialClosesStarted?: FinancialCloseUncheckedUpdateManyWithoutStartedByNestedInput
+    financialClosesSubmitted?: FinancialCloseUncheckedUpdateManyWithoutSubmittedByNestedInput
+    financialClosesSignedOff?: FinancialCloseUncheckedUpdateManyWithoutSignedOffByNestedInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
+    closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
+  }
+
+  export type UserUpsertWithoutAnomaliesDismissedInput = {
+    update: XOR<UserUpdateWithoutAnomaliesDismissedInput, UserUncheckedUpdateWithoutAnomaliesDismissedInput>
+    create: XOR<UserCreateWithoutAnomaliesDismissedInput, UserUncheckedCreateWithoutAnomaliesDismissedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAnomaliesDismissedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAnomaliesDismissedInput, UserUncheckedUpdateWithoutAnomaliesDismissedInput>
+  }
+
+  export type UserUpdateWithoutAnomaliesDismissedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    responsibleCredentials?: CredentialUpdateManyWithoutResponsibleUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
+    budgetsCreated?: BudgetUpdateManyWithoutCreatedByNestedInput
+    budgetsApproved?: BudgetUpdateManyWithoutApprovedByNestedInput
+    commitmentsCreated?: CommitmentUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsCreated?: BudgetRevisionUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsApproved?: BudgetRevisionUpdateManyWithoutApprovedByNestedInput
+    budgetTransfersCreated?: BudgetTransferUpdateManyWithoutCreatedByNestedInput
+    budgetTransfersApproved?: BudgetTransferUpdateManyWithoutApprovedByNestedInput
+    budgetScenariosCreated?: BudgetScenarioUpdateManyWithoutCreatedByNestedInput
+    financialClosesStarted?: FinancialCloseUpdateManyWithoutStartedByNestedInput
+    financialClosesSubmitted?: FinancialCloseUpdateManyWithoutSubmittedByNestedInput
+    financialClosesSignedOff?: FinancialCloseUpdateManyWithoutSignedOffByNestedInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
+    closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAnomaliesDismissedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    responsibleCredentials?: CredentialUncheckedUpdateManyWithoutResponsibleUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
+    budgetsCreated?: BudgetUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetsApproved?: BudgetUncheckedUpdateManyWithoutApprovedByNestedInput
+    commitmentsCreated?: CommitmentUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsCreated?: BudgetRevisionUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsApproved?: BudgetRevisionUncheckedUpdateManyWithoutApprovedByNestedInput
+    budgetTransfersCreated?: BudgetTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetTransfersApproved?: BudgetTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    budgetScenariosCreated?: BudgetScenarioUncheckedUpdateManyWithoutCreatedByNestedInput
+    financialClosesStarted?: FinancialCloseUncheckedUpdateManyWithoutStartedByNestedInput
+    financialClosesSubmitted?: FinancialCloseUncheckedUpdateManyWithoutSubmittedByNestedInput
+    financialClosesSignedOff?: FinancialCloseUncheckedUpdateManyWithoutSignedOffByNestedInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
+    closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
+  }
+
+  export type UserUpsertWithoutAnomaliesConfirmedInput = {
+    update: XOR<UserUpdateWithoutAnomaliesConfirmedInput, UserUncheckedUpdateWithoutAnomaliesConfirmedInput>
+    create: XOR<UserCreateWithoutAnomaliesConfirmedInput, UserUncheckedCreateWithoutAnomaliesConfirmedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAnomaliesConfirmedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAnomaliesConfirmedInput, UserUncheckedUpdateWithoutAnomaliesConfirmedInput>
+  }
+
+  export type UserUpdateWithoutAnomaliesConfirmedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocation?: LocationUpdateOneWithoutUsersNestedInput
+    homeDepartment?: DepartmentUpdateOneWithoutUsersNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedUsersNestedInput
+    organizationMemberships?: OrganizationMembershipUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    responsibleCredentials?: CredentialUpdateManyWithoutResponsibleUserNestedInput
+    notificationPreferences?: NotificationPreferenceUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUpdateManyWithoutResolvedByNestedInput
+    budgetsCreated?: BudgetUpdateManyWithoutCreatedByNestedInput
+    budgetsApproved?: BudgetUpdateManyWithoutApprovedByNestedInput
+    commitmentsCreated?: CommitmentUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsCreated?: BudgetRevisionUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsApproved?: BudgetRevisionUpdateManyWithoutApprovedByNestedInput
+    budgetTransfersCreated?: BudgetTransferUpdateManyWithoutCreatedByNestedInput
+    budgetTransfersApproved?: BudgetTransferUpdateManyWithoutApprovedByNestedInput
+    budgetScenariosCreated?: BudgetScenarioUpdateManyWithoutCreatedByNestedInput
+    financialClosesStarted?: FinancialCloseUpdateManyWithoutStartedByNestedInput
+    financialClosesSubmitted?: FinancialCloseUpdateManyWithoutSubmittedByNestedInput
+    financialClosesSignedOff?: FinancialCloseUpdateManyWithoutSignedOffByNestedInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
+    closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAnomaliesConfirmedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailNormalized?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deactivationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordAlgorithm?: NullableEnumPasswordHashAlgorithmFieldUpdateOperationsInput | $Enums.PasswordHashAlgorithm | null
+    passwordChangedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    failedLoginCount?: IntFieldUpdateOperationsInput | number
+    lockedUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordResetExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHistory?: UserUpdatepasswordHistoryInput | string[]
+    mfaEnforced?: BoolFieldUpdateOperationsInput | boolean
+    mfaVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    primaryLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    homeDepartmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    dataClassification?: StringFieldUpdateOperationsInput | string
+    retentionReviewAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organizationMemberships?: OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    loginHistory?: LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+    mfaDevices?: MfaDeviceUncheckedUpdateManyWithoutUserNestedInput
+    userRoles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    delegationsGranted?: DelegationUncheckedUpdateManyWithoutGrantorNestedInput
+    delegationsReceived?: DelegationUncheckedUpdateManyWithoutGranteeNestedInput
+    accessReviewItems?: AccessReviewItemUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    responsibleCredentials?: CredentialUncheckedUpdateManyWithoutResponsibleUserNestedInput
+    notificationPreferences?: NotificationPreferenceUncheckedUpdateManyWithoutUserNestedInput
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    updatedUsers?: UserUncheckedUpdateManyWithoutUpdatedByNestedInput
+    changeRequestsRequested?: MasterDataChangeRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    changeRequestsApproved?: MasterDataChangeRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesSubmitted?: JournalEntryUncheckedUpdateManyWithoutSubmittedByNestedInput
+    journalEntriesApproved?: JournalEntryUncheckedUpdateManyWithoutApprovedByNestedInput
+    journalEntriesPosted?: JournalEntryUncheckedUpdateManyWithoutPostedByNestedInput
+    journalEntriesReversed?: JournalEntryUncheckedUpdateManyWithoutReversedByNestedInput
+    transactionsCreated?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    transactionsSubmitted?: TransactionUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transactionsApproved?: TransactionUncheckedUpdateManyWithoutApprovedByNestedInput
+    transactionsPosted?: TransactionUncheckedUpdateManyWithoutPostedByNestedInput
+    transactionsReversed?: TransactionUncheckedUpdateManyWithoutReversedByNestedInput
+    approvalRequestsSubmitted?: ApprovalRequestUncheckedUpdateManyWithoutSubmittedByNestedInput
+    approvalRequestsDecided?: ApprovalRequestUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalStepInstancesDecided?: ApprovalStepInstanceUncheckedUpdateManyWithoutDecidedByNestedInput
+    approvalDecisionRecords?: ApprovalDecisionRecordUncheckedUpdateManyWithoutActorNestedInput
+    approvalPolicyStepAssigneeUser?: ApprovalPolicyStepUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    approvalStepInstanceAssigneeUser?: ApprovalStepInstanceUncheckedUpdateManyWithoutAssigneeUserNestedInput
+    sodWaiversAsUser?: SODWaiverUncheckedUpdateManyWithoutUserNestedInput
+    sodWaiversRecordedBy?: SODWaiverUncheckedUpdateManyWithoutRecordedByNestedInput
+    sodWaiversReviewedBy?: SODWaiverUncheckedUpdateManyWithoutReviewedByNestedInput
+    transfersSubmitted?: TransferUncheckedUpdateManyWithoutSubmittedByNestedInput
+    transfersApproved?: TransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    transfersProcessed?: TransferUncheckedUpdateManyWithoutProcessedByNestedInput
+    transfersReversed?: TransferUncheckedUpdateManyWithoutReversedByNestedInput
+    importBatchesUploaded?: ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+    importBatchesMapped?: ImportBatchUncheckedUpdateManyWithoutMappedByNestedInput
+    importBatchesValidated?: ImportBatchUncheckedUpdateManyWithoutValidatedByNestedInput
+    importBatchesApproved?: ImportBatchUncheckedUpdateManyWithoutApprovedByNestedInput
+    importBatchesImported?: ImportBatchUncheckedUpdateManyWithoutImportedByNestedInput
+    importBatchesRolledBack?: ImportBatchUncheckedUpdateManyWithoutRolledBackByNestedInput
+    importFieldMappingsCreated?: ImportFieldMappingUncheckedUpdateManyWithoutCreatedByNestedInput
+    importErrorsResolved?: ImportErrorUncheckedUpdateManyWithoutResolvedByNestedInput
+    budgetsCreated?: BudgetUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetsApproved?: BudgetUncheckedUpdateManyWithoutApprovedByNestedInput
+    commitmentsCreated?: CommitmentUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsCreated?: BudgetRevisionUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetRevisionsApproved?: BudgetRevisionUncheckedUpdateManyWithoutApprovedByNestedInput
+    budgetTransfersCreated?: BudgetTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    budgetTransfersApproved?: BudgetTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    budgetScenariosCreated?: BudgetScenarioUncheckedUpdateManyWithoutCreatedByNestedInput
+    financialClosesStarted?: FinancialCloseUncheckedUpdateManyWithoutStartedByNestedInput
+    financialClosesSubmitted?: FinancialCloseUncheckedUpdateManyWithoutSubmittedByNestedInput
+    financialClosesSignedOff?: FinancialCloseUncheckedUpdateManyWithoutSignedOffByNestedInput
+    closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
+    closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
+    closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
   }
 
   export type UserCreateWithoutNotificationPreferencesInput = {
@@ -291112,6 +296461,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationPreferencesInput = {
@@ -291206,6 +296558,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationPreferencesInput = {
@@ -291316,6 +296671,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationPreferencesInput = {
@@ -291410,6 +296768,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type OrganizationCreateWithoutDocumentsInput = {
@@ -291493,6 +296854,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentsInput = {
@@ -291576,6 +296938,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentsInput = {
@@ -292140,6 +297503,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentsInput = {
@@ -292223,6 +297587,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentUpsertWithoutRenewalsInput = {
@@ -292517,6 +297882,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentVersionsInput = {
@@ -292600,6 +297966,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentVersionsInput = {
@@ -292776,6 +298143,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentVersionsInput = {
@@ -292859,6 +298227,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentUpsertWithoutVersionsInput = {
@@ -293025,6 +298394,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentTagsInput = {
@@ -293108,6 +298478,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentTagsInput = {
@@ -293233,6 +298604,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentTagsInput = {
@@ -293316,6 +298688,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentTagLinkUpsertWithWhereUniqueWithoutTagInput = {
@@ -293415,6 +298788,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentTagLinksInput = {
@@ -293498,6 +298872,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentTagLinksInput = {
@@ -293697,6 +299072,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentTagLinksInput = {
@@ -293780,6 +299156,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentUpsertWithoutTagsInput = {
@@ -293975,6 +299352,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentLinksInput = {
@@ -294058,6 +299436,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentLinksInput = {
@@ -294234,6 +299613,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentLinksInput = {
@@ -294317,6 +299697,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentUpsertWithoutLinksInput = {
@@ -294483,6 +299864,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutRetentionPoliciesInput = {
@@ -294566,6 +299948,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutRetentionPoliciesInput = {
@@ -294665,6 +300048,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutRetentionPoliciesInput = {
@@ -294748,6 +300132,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutLegalHoldsInput = {
@@ -294831,6 +300216,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLegalHoldsInput = {
@@ -294914,6 +300300,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLegalHoldsInput = {
@@ -295013,6 +300400,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLegalHoldsInput = {
@@ -295096,6 +300484,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutTaxRulesInput = {
@@ -295179,6 +300568,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTaxRulesInput = {
@@ -295262,6 +300652,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTaxRulesInput = {
@@ -295539,6 +300930,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTaxRulesInput = {
@@ -295622,6 +301014,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutPayableTaxRulesInput = {
@@ -295863,6 +301256,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTaxObligationsInput = {
@@ -295946,6 +301340,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTaxObligationsInput = {
@@ -296176,6 +301571,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTaxObligationsInput = {
@@ -296259,6 +301655,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TaxRuleUpsertWithoutObligationsInput = {
@@ -296443,6 +301840,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTaxPaymentsInput = {
@@ -296526,6 +301924,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTaxPaymentsInput = {
@@ -296820,6 +302219,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTaxPaymentsInput = {
@@ -296903,6 +302303,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TaxObligationUpsertWithoutPaymentsInput = {
@@ -297199,6 +302600,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCredentialsInput = {
@@ -297282,6 +302684,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCredentialsInput = {
@@ -297381,6 +302784,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserUncheckedCreateWithoutResponsibleCredentialsInput = {
@@ -297475,6 +302881,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedCreateNestedManyWithoutConfirmedByInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaivedByInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedCreateNestedManyWithoutWaiverApproverInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedCreateNestedManyWithoutAcknowledgedByInput
+    anomaliesDismissed?: AnomalyFlagUncheckedCreateNestedManyWithoutDismissedByInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedCreateNestedManyWithoutConfirmedByInput
   }
 
   export type UserCreateOrConnectWithoutResponsibleCredentialsInput = {
@@ -297681,6 +303090,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCredentialsInput = {
@@ -297764,6 +303174,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutResponsibleCredentialsInput = {
@@ -297869,6 +303280,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutResponsibleCredentialsInput = {
@@ -297963,6 +303377,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type DocumentUpsertWithoutCredentialDocumentsInput = {
@@ -298145,6 +303562,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutComplianceDocumentsInput = {
@@ -298228,6 +303646,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutComplianceDocumentsInput = {
@@ -298494,6 +303913,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutComplianceDocumentsInput = {
@@ -298577,6 +303997,7 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentUpsertWithoutComplianceLinksInput = {
@@ -298845,6 +304266,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentCreateNestedManyWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTaxInvoiceSequenceInput = {
@@ -298928,6 +304350,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentUncheckedCreateNestedManyWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTaxInvoiceSequenceInput = {
@@ -299027,6 +304450,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentUpdateManyWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTaxInvoiceSequenceInput = {
@@ -299110,6 +304534,7 @@ export namespace Prisma {
     complianceDocuments?: ComplianceDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationMembershipCreateManyUserInput = {
@@ -299264,6 +304689,8 @@ export namespace Prisma {
     category: $Enums.NotificationCategory
     channel: $Enums.NotificationChannel
     enabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
     updatedAt?: Date | string
   }
 
@@ -300362,6 +305789,75 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type AnomalyFlagCreateManyAcknowledgedByInput = {
+    id?: string
+    organizationId: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    dismissedAt?: Date | string | null
+    dismissedById?: string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnomalyFlagCreateManyDismissedByInput = {
+    id?: string
+    organizationId: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    acknowledgedById?: string | null
+    dismissedAt?: Date | string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnomalyFlagCreateManyConfirmedByInput = {
+    id?: string
+    organizationId: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    acknowledgedById?: string | null
+    dismissedAt?: Date | string | null
+    dismissedById?: string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrganizationMembershipUpdateWithoutUserInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -300810,6 +306306,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryFieldUpdateOperationsInput | $Enums.NotificationCategory
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     enabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -300818,6 +306316,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryFieldUpdateOperationsInput | $Enums.NotificationCategory
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     enabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -300826,6 +306326,8 @@ export namespace Prisma {
     category?: EnumNotificationCategoryFieldUpdateOperationsInput | $Enums.NotificationCategory
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     enabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -300921,6 +306423,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedByInput = {
@@ -301015,6 +306520,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCreatedByInput = {
@@ -301144,6 +306652,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUpdatedByInput = {
@@ -301238,6 +306749,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutUpdatedByInput = {
@@ -304560,6 +310074,213 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AnomalyFlagUpdateWithoutAcknowledgedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAnomaliesNestedInput
+    dismissedBy?: UserUpdateOneWithoutAnomaliesDismissedNestedInput
+    confirmedBy?: UserUpdateOneWithoutAnomaliesConfirmedNestedInput
+  }
+
+  export type AnomalyFlagUncheckedUpdateWithoutAcknowledgedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyFlagUpdateWithoutDismissedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAnomaliesNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAnomaliesAcknowledgedNestedInput
+    confirmedBy?: UserUpdateOneWithoutAnomaliesConfirmedNestedInput
+  }
+
+  export type AnomalyFlagUncheckedUpdateWithoutDismissedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyFlagUncheckedUpdateManyWithoutDismissedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyFlagUpdateWithoutConfirmedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutAnomaliesNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAnomaliesAcknowledgedNestedInput
+    dismissedBy?: UserUpdateOneWithoutAnomaliesDismissedNestedInput
+  }
+
+  export type AnomalyFlagUncheckedUpdateWithoutConfirmedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyFlagUncheckedUpdateManyWithoutConfirmedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type RolePermissionCreateManyRoleInput = {
     permissionId: string
     conditions?: NullableJsonNullValueInput | InputJsonValue
@@ -306645,6 +312366,29 @@ export namespace Prisma {
     waiverApproverId?: string | null
     waiverApprovedAt?: Date | string | null
     notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AnomalyFlagCreateManyOrganizationInput = {
+    id?: string
+    anomalyType: $Enums.AnomalyType
+    severity?: $Enums.AnomalySeverity
+    status?: $Enums.AnomalyStatus
+    entityType: $Enums.AuditEntityType
+    entityId: string
+    entityLabel?: string | null
+    description: string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: string | null
+    acknowledgedAt?: Date | string | null
+    acknowledgedById?: string | null
+    dismissedAt?: Date | string | null
+    dismissedById?: string | null
+    dismissReason?: string | null
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -310264,6 +316008,75 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AnomalyFlagUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    acknowledgedBy?: UserUpdateOneWithoutAnomaliesAcknowledgedNestedInput
+    dismissedBy?: UserUpdateOneWithoutAnomaliesDismissedNestedInput
+    confirmedBy?: UserUpdateOneWithoutAnomaliesConfirmedNestedInput
+  }
+
+  export type AnomalyFlagUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyFlagUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    anomalyType?: EnumAnomalyTypeFieldUpdateOperationsInput | $Enums.AnomalyType
+    severity?: EnumAnomalySeverityFieldUpdateOperationsInput | $Enums.AnomalySeverity
+    status?: EnumAnomalyStatusFieldUpdateOperationsInput | $Enums.AnomalyStatus
+    entityType?: EnumAuditEntityTypeFieldUpdateOperationsInput | $Enums.AuditEntityType
+    entityId?: StringFieldUpdateOperationsInput | string
+    entityLabel?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    evidence?: NullableJsonNullValueInput | InputJsonValue
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dismissedById?: NullableStringFieldUpdateOperationsInput | string | null
+    dismissReason?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LocationCreateManyParentInput = {
     id?: string
     organizationId: string
@@ -310541,6 +316354,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPrimaryLocationInput = {
@@ -310635,6 +316451,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutPrimaryLocationInput = {
@@ -311210,6 +317029,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHomeDepartmentInput = {
@@ -311304,6 +317126,9 @@ export namespace Prisma {
     closeChecklistItemsConfirmed?: CloseChecklistItemUncheckedUpdateManyWithoutConfirmedByNestedInput
     closeChecklistItemsWaived?: CloseChecklistItemUncheckedUpdateManyWithoutWaivedByNestedInput
     closeChecklistItemsWaiverApproved?: CloseChecklistItemUncheckedUpdateManyWithoutWaiverApproverNestedInput
+    anomaliesAcknowledged?: AnomalyFlagUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    anomaliesDismissed?: AnomalyFlagUncheckedUpdateManyWithoutDismissedByNestedInput
+    anomaliesConfirmed?: AnomalyFlagUncheckedUpdateManyWithoutConfirmedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutHomeDepartmentInput = {

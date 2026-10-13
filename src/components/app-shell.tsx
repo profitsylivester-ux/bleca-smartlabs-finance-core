@@ -7,6 +7,7 @@ import { Badge, Button } from '@/components/ui';
 import { cn } from '@/lib/format';
 import { logoutAction } from '@/modules/auth/server/actions';
 import type { ModuleDefinition } from '@/modules/module-registry';
+import { SearchPalette } from '@/components/SearchPalette';
 
 interface Group {
   key: string;
@@ -195,7 +196,11 @@ export function AppShell({
 
       <div className="min-w-0 flex-1">
         <header className="border-border-subtle flex items-center justify-end gap-3 border-b bg-white px-6 py-2.5">
-          <span className="text-muted-foreground relative inline-flex items-center gap-1.5 text-[13px]">
+          <Link
+            href="/notifications"
+            className="text-muted-foreground relative inline-flex items-center gap-1.5 text-[13px] hover:text-foreground"
+            aria-label="Notifications"
+          >
             <NavIcon name="bell" />
             Notifications
             {unreadNotifications > 0 ? (
@@ -203,10 +208,11 @@ export function AppShell({
             ) : (
               <span className="text-muted-foreground text-[11px]">(M16)</span>
             )}
-          </span>
+          </Link>
         </header>
         <main className="px-6 py-6">{children}</main>
       </div>
+      <SearchPalette />
     </div>
   );
 }

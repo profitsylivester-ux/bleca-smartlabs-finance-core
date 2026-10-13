@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
+import React from 'react';
 import { PageHeader } from '@/components/ui';
 import { PlannedPanel, StatTile } from '@/components/planned';
 import { requireContext, requirePageActor } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { prisma } from '@/lib/db/prisma';
-import { formatDateTime } from '@/lib/format';
+import { formatDateTime, formatAmount, formatInteger } from '@/lib/format';
+import { getFinanceDashboard } from '@/lib/dashboards/finance';
 
 export const metadata: Metadata = { title: 'Finance dashboard' };
 
@@ -19,7 +21,8 @@ export default async function FinanceDashboardPage() {
   const ctx = await requireContext();
   await authorize(ctx, { module: 'DASHBOARD_FINANCE', action: 'VIEW' });
 
-  const [failedLogins, openSecurityEvents, unverifiedUsers] = await Promise.all([
+  const [dashboard, failedLogins, openSecurityEvents, unverifiedUsers] = await Promise.all([
+    getFinanceDashboard(ctx),
     prisma.loginHistory.findMany({
       where: { outcome: { not: 'SUCCESS' } },
       orderBy: { occurredAt: 'desc' },
@@ -44,13 +47,106 @@ export default async function FinanceDashboardPage() {
       />
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile label="Transactions awaiting action" unavailable="Not available" hint="M5" />
-        <StatTile label="Reconciliation status" unavailable="Not available" hint="M8" />
-        <StatTile label="Unpaid supplier bills" unavailable="Not available" hint="M10" />
-        <StatTile label="Budget alerts" unavailable="Not available" hint="M9" />
+        <StatTile
+          label="Cash position"
+          value={formatAmount(dashboard.cashPosition.amount, dashboard.currency)}
+          hint="M7"
+        />
+        <StatTile
+          label="Pending approvals"
+          value={formatInteger(dashboard.pendingApprovals)}
+          hint={dashboard.pendingApprovals > 0 ? 'Action required' : 'All clear'}
+        />
+        <StatTile
+          label="Unreconciled sessions"
+          value={formatInteger(dashboard.unreconciledSessions)}
+          hint={dashboard.unreconciledSessions > 0 ? 'Needs attention' : 'All clear'}
+        />
+        <StatTile
+          label="Overdue invoices"
+          value={formatInteger(dashboard.overdueInvoices.receivables + dashboard.overdueInvoices.payables)}
+          hint={`AR: ${dashboard.overdueInvoices.receivables} · AP: ${dashboard.overdueInvoices.payables}`}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="border-border-subtle rounded-lg border bg-white p-4 space-y-3">
+          <h2 className="text-sm font-semibold">Transaction status breakdown</h2>
+          <dl className="grid grid-cols-2 gap-2 text-sm">
+            {dashboard.transactionsByStatus.map((t) => (
+              <React.Fragment key={t.status}>
+                <dt className="text-muted-foreground">{t.status}</dt>
+                <dd className="tabular text-foreground font-medium">{formatInteger(t.count)}</dd>
+              </React.Fragment>
+            ))}
+          </dl>
+        </div>
+
+        <div className="border-border-subtle rounded-lg border bg-white p-4 space-y-3">
+          <h2 className="text-sm font-semibold">Budget & anomaly alerts</h2>
+          <dl className="grid grid-cols-2 gap-2 text-sm">
+            <dt className="text-muted-foreground">Over-budget count</dt>
+            <dd className="tabular text-foreground font-medium">{formatInteger(dashboard.overBudgetCount)}</dd>
+            <dt className="text-muted-foreground">Open anomalies</dt>
+            <dd className="tabular text-foreground font-medium">{formatInteger(dashboard.openAnomalies)}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="border-border-subtle rounded-lg border bg-white p-4">
+          <h2 className="text-sm font-semibold mb-3">Recent anomalies</h2>
+          {dashboard.recentAnomalies.length === 0 ? (
+            <p className="text-muted-foreground text-sm">No anomalies recorded.</p>
+          ) : (
+            <ul className="divide-border-subtle divide-y">
+              {dashboard.recentAnomalies.map((a) => (
+                <li key={a.id} className="py-2 flex flex-wrap items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium truncate">{a.anomalyType}</span>
+                      <span className="text-muted-foreground mono text-xs">{a.id.slice(0, 8)}</span>
+                      <span
+                        className={`badge-xs ${
+                          a.severity === 'CRITICAL'
+                            ? 'bg-negative/10 text-negative'
+                            : a.severity === 'HIGH'
+                            ? 'bg-warning/10 text-warning'
+                            : a.severity === 'MEDIUM'
+                            ? 'bg-navy-300/10 text-navy-600'
+                            : 'bg-muted-foreground/10 text-muted-foreground'
+                        }`}
+                      >
+                        {a.severity}
+                      </span>
+                      <span
+                        className={`badge-xs ${
+                          a.status === 'OPEN'
+                            ? 'bg-warning/10 text-warning'
+                            : a.status === 'ACKNOWLEDGED'
+                            ? 'bg-navy-300/10 text-navy-600'
+                            : a.status === 'CONFIRMED'
+                            ? 'bg-negative/10 text-negative'
+                            : 'bg-success/10 text-success'
+                        }`}
+                      >
+                        {a.status}
+                      </span>
+                    </div>
+                    <p className="text-muted-foreground text-xs mt-1 truncate max-w-xs">{a.description}</p>
+                  </div>
+                  <a
+                    href={`/admin/anomalies/${a.id}`}
+                    className="text-navy-600 hover:text-navy-800 underline underline-offset-2 text-xs shrink-0"
+                  >
+                    View
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <div className="border-border-subtle rounded-lg border bg-white">
           <div className="border-border-subtle border-b px-5 py-4">
             <h2 className="text-sm font-semibold">Recent failed sign-ins</h2>
@@ -81,25 +177,25 @@ export default async function FinanceDashboardPage() {
             </ul>
           )}
         </div>
-
-        <PlannedPanel
-          milestone="M5-M15"
-          title="Your work queues"
-          description="Each of these is a real workflow in the Phase 1 scope; none exists yet because the module behind it has not been built."
-          items={[
-            'Transactions to prepare, submit and post',
-            'Bank and mobile money reconciliation sessions',
-            'Invoices to raise and payments to record',
-            'Documents to classify and match to transactions',
-            'Budget preparation and revisions',
-            'Month-end close checklist',
-          ]}
-        />
       </div>
 
+      <PlannedPanel
+        milestone="M5-M15"
+        title="Your work queues"
+        description="Each of these is a real workflow in the Phase 1 scope; none exists yet because the module behind it has not been built."
+        items={[
+          'Transactions to prepare, submit and post',
+          'Bank and mobile money reconciliation sessions',
+          'Invoices to raise and payments to record',
+          'Documents to classify and match to transactions',
+          'Budget preparation and revisions',
+          'Month-end close checklist',
+        ]}
+      />
+
       <p className="text-muted-foreground text-xs">
-        {unverifiedUsers} active account(s) in this organisation
-        {openSecurityEvents > 0 ? `, ${openSecurityEvents} unacknowledged security event(s)` : ''}.
+        {formatInteger(unverifiedUsers)} active account(s) in this organisation
+        {openSecurityEvents > 0 ? `, ${formatInteger(openSecurityEvents)} unacknowledged security event(s)` : ''}.
       </p>
     </div>
   );

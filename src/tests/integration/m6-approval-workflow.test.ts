@@ -132,7 +132,7 @@ beforeAll(async () => {
   };
 
   const assetAccount = await prisma.account.findFirst({
-    where: { organizationId: await getOrgId(), type: 'ASSET', isPostable: true },
+    where: { organizationId: await getOrgId(), type: 'ASSET', isPostable: true, requiresDocument: false },
     select: { id: true },
   });
   assetAccountId = assetAccount!.id;
