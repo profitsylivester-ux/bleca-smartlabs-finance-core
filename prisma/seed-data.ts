@@ -167,7 +167,7 @@ export const PERMISSIONS: PermissionSeed[] = [
   { module: 'DOCUMENTS', action: 'ADMINISTER', description: 'Manage legal holds and document security' },
   { module: 'MASTER_DATA', action: 'APPROVE', description: 'Approve master data changes' },
   ...(
-    ['TAX_COMPLIANCE', 'REPORTS', 'NOTIFICATIONS', 'SEARCH', 'ANOMALY_DETECTION'] as ModuleKey[]
+    ['TAX_COMPLIANCE', 'REPORTS', 'EXPORTS', 'NOTIFICATIONS', 'SEARCH', 'ANOMALY_DETECTION'] as ModuleKey[]
   ).flatMap((module): PermissionSeed[] =>
     READ_EXPORT.map((action) => ({ module, action, description: `${action} ${module}` })),
   ),

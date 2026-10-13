@@ -2297,7 +2297,9 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   TAX_PAYMENT: 'TAX_PAYMENT',
   TAX_INVOICE: 'TAX_INVOICE',
   CREDENTIAL: 'CREDENTIAL',
-  COMPLIANCE_DOCUMENT: 'COMPLIANCE_DOCUMENT'
+  COMPLIANCE_DOCUMENT: 'COMPLIANCE_DOCUMENT',
+  REPORT: 'REPORT',
+  EXPORT: 'EXPORT'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {

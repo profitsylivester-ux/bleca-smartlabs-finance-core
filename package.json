@@ -31,8 +31,9 @@
     "verify:import-graph": "vitest run --project unit src/tests/unit/import-graph.test.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.2",
+    "@hookform/resolvers": "^5.2.2",
     "@node-rs/argon2": "^2.0.2",
+    "@prisma/client": "^6.16.2",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-label": "^2.1.7",
@@ -48,14 +49,15 @@
     "next": "16.4.0",
     "next-auth": "5.0.0-beta.32",
     "otplib": "^12.0.1",
+    "pdf-lib": "^1.17.1",
     "qrcode": "^1.5.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-hook-form": "^7.64.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
-    "zod": "^4.1.12",
-    "@hookform/resolvers": "^5.2.2"
+    "xlsx": "^0.18.5",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0",

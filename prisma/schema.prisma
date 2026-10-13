@@ -1033,6 +1033,10 @@ enum AuditEntityType {
   TAX_INVOICE
   CREDENTIAL
   COMPLIANCE_DOCUMENT
+  /// Reporting & Exports (M14, PDF 47/49). REPORT is the computed report;
+  /// EXPORT is the event of taking a copy of one in a given format.
+  REPORT
+  EXPORT
 }
 
 enum AuditResult {
