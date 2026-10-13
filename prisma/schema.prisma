@@ -992,6 +992,9 @@ enum AuditAction {
   ANOMALY_FLAG_DISMISSED
   ANOMALY_FLAG_CONFIRMED
   ANOMALY_SCAN_COMPLETED
+  /// Backup & Restore (M17)
+  BACKUP_VERIFIED
+  RESTORE_TEST
 }
 
 enum AuditEntityType {
@@ -1085,6 +1088,8 @@ enum AuditEntityType {
   CLOSE_CHECKLIST_ITEM
   /// Anomaly detection (M16, PDF §65). Flag only — no accused person.
   ANOMALY_FLAG
+  /// Backup & Restore (M17)
+  BACKUP_RUN
 }
 
 enum AuditResult {
@@ -1141,6 +1146,24 @@ enum ChainVerificationStatus {
   BROKEN
 }
 
+/// ---- Backup (M17) ----------------------------------------------------------
+
+enum BackupType {
+  FULL
+  INCREMENTAL
+  POINT_IN_TIME
+}
+
+enum BackupStatus {
+  SCHEDULED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  VERIFIED
+  VERIFICATION_FAILED
+  EXPIRED
+}
+
 // ---- Notifications ----------------------------------------------------------
 
 enum NotificationChannel {
@@ -1193,6 +1216,30 @@ enum IdempotencyKeyStatus {
   IN_PROGRESS
   COMPLETED
   FAILED
+}
+
+/// ---- PWA sync (PDF §58) --------------------------------------------------
+
+enum SyncActionType {
+  RECEIPT_CAPTURE   // offline-allowed
+  DRAFT_SAVE        // offline-allowed
+  CONTACT_CARD_SAVE // offline-allowed, non-financial
+  // Everything below MUST be online-only.
+  SUBMIT
+  APPROVE
+  REJECT
+  POST
+  REVERSE
+  PERIOD_CLOSE
+  PERIOD_REOPEN
+}
+enum SyncStatus {
+  QUEUED
+  SYNCING
+  SYNCED
+  CONFLICT
+  FAILED
+  DISCARDED
 }
 
 /// Approval Workflow enums (M6) --------------------------------------------------
@@ -1971,6 +2018,8 @@ model Organization {
   financialCloses                  FinancialClose[]
   closeChecklistItems              CloseChecklistItem[]
   anomalies                        AnomalyFlag[]
+  backupRuns                       BackupRun[]
+  syncQueueItems                   SyncQueueItem[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -4646,4 +4695,55 @@ model TaxInvoiceSequence {
   updatedAt      DateTime     @updatedAt @map("updated_at")
 
   @@map("tax_invoice_sequences")
+}
+
+/// BackupRun — records every backup execution (M17).
+model BackupRun {
+  id                String       @id @default(cuid())
+  organizationId    String       @map("organization_id")
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  type              BackupType
+  status            BackupStatus @default(SCHEDULED)
+  storageKey        String       @map("storage_key")
+  checksum          String       @db.Char(64)
+  sizeBytes         BigInt       @map("size_bytes")
+  rowCounts         Json?        @map("row_counts")
+  auditChainHead    String?      @map("audit_chain_head")
+  startedAt         DateTime?    @map("started_at")
+  completedAt       DateTime?    @map("completed_at")
+  verifiedAt        DateTime?    @map("verified_at")
+  verificationChecksum String?   @map("verification_checksum")
+  restoreTestedAt   DateTime?    @map("restore_tested_at")
+  restoreTestResult Json?        @map("restore_test_result")
+  errorMessage      String?      @map("error_message")
+  createdById       String       @map("created_by_id")
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+
+  @@index([organizationId, status])
+  @@index([organizationId, createdAt])
+  @@map("backup_runs")
+}
+
+/// SyncQueueItem — offline actions queued for sync (M17, PDF §58).
+model SyncQueueItem {
+  id                String       @id @default(cuid())
+  organizationId    String       @map("organization_id")
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId            String       @map("user_id")
+  actionType        SyncActionType
+  payload           Json
+  idempotencyKey    String       @unique @map("idempotency_key")
+  status            SyncStatus   @default(QUEUED)
+  conflictDetail    Json?        @map("conflict_detail")
+  retryCount        Int          @default(0) @map("retry_count")
+  lastAttemptAt     DateTime?    @map("last_attempt_at")
+  syncedAt          DateTime?    @map("synced_at")
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+
+  @@index([organizationId, status])
+  @@index([userId, status])
+  @@index([idempotencyKey])
+  @@map("sync_queue_items")
 }

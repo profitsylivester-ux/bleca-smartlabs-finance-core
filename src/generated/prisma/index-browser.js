@@ -1954,6 +1954,44 @@ exports.Prisma.TaxInvoiceSequenceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.BackupRunScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  type: 'type',
+  status: 'status',
+  storageKey: 'storageKey',
+  checksum: 'checksum',
+  sizeBytes: 'sizeBytes',
+  rowCounts: 'rowCounts',
+  auditChainHead: 'auditChainHead',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  verifiedAt: 'verifiedAt',
+  verificationChecksum: 'verificationChecksum',
+  restoreTestedAt: 'restoreTestedAt',
+  restoreTestResult: 'restoreTestResult',
+  errorMessage: 'errorMessage',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SyncQueueItemScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  userId: 'userId',
+  actionType: 'actionType',
+  payload: 'payload',
+  idempotencyKey: 'idempotencyKey',
+  status: 'status',
+  conflictDetail: 'conflictDetail',
+  retryCount: 'retryCount',
+  lastAttemptAt: 'lastAttemptAt',
+  syncedAt: 'syncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2366,7 +2404,8 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   EXPORT: 'EXPORT',
   FINANCIAL_CLOSE: 'FINANCIAL_CLOSE',
   CLOSE_CHECKLIST_ITEM: 'CLOSE_CHECKLIST_ITEM',
-  ANOMALY_FLAG: 'ANOMALY_FLAG'
+  ANOMALY_FLAG: 'ANOMALY_FLAG',
+  BACKUP_RUN: 'BACKUP_RUN'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -2960,7 +2999,9 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   ANOMALY_FLAG_ACKNOWLEDGED: 'ANOMALY_FLAG_ACKNOWLEDGED',
   ANOMALY_FLAG_DISMISSED: 'ANOMALY_FLAG_DISMISSED',
   ANOMALY_FLAG_CONFIRMED: 'ANOMALY_FLAG_CONFIRMED',
-  ANOMALY_SCAN_COMPLETED: 'ANOMALY_SCAN_COMPLETED'
+  ANOMALY_SCAN_COMPLETED: 'ANOMALY_SCAN_COMPLETED',
+  BACKUP_VERIFIED: 'BACKUP_VERIFIED',
+  RESTORE_TEST: 'RESTORE_TEST'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -3293,6 +3334,44 @@ exports.CredentialStatus = exports.$Enums.CredentialStatus = {
   NOT_APPLICABLE: 'NOT_APPLICABLE'
 };
 
+exports.BackupType = exports.$Enums.BackupType = {
+  FULL: 'FULL',
+  INCREMENTAL: 'INCREMENTAL',
+  POINT_IN_TIME: 'POINT_IN_TIME'
+};
+
+exports.BackupStatus = exports.$Enums.BackupStatus = {
+  SCHEDULED: 'SCHEDULED',
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  VERIFIED: 'VERIFIED',
+  VERIFICATION_FAILED: 'VERIFICATION_FAILED',
+  EXPIRED: 'EXPIRED'
+};
+
+exports.SyncActionType = exports.$Enums.SyncActionType = {
+  RECEIPT_CAPTURE: 'RECEIPT_CAPTURE',
+  DRAFT_SAVE: 'DRAFT_SAVE',
+  CONTACT_CARD_SAVE: 'CONTACT_CARD_SAVE',
+  SUBMIT: 'SUBMIT',
+  APPROVE: 'APPROVE',
+  REJECT: 'REJECT',
+  POST: 'POST',
+  REVERSE: 'REVERSE',
+  PERIOD_CLOSE: 'PERIOD_CLOSE',
+  PERIOD_REOPEN: 'PERIOD_REOPEN'
+};
+
+exports.SyncStatus = exports.$Enums.SyncStatus = {
+  QUEUED: 'QUEUED',
+  SYNCING: 'SYNCING',
+  SYNCED: 'SYNCED',
+  CONFLICT: 'CONFLICT',
+  FAILED: 'FAILED',
+  DISCARDED: 'DISCARDED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   MfaDevice: 'MfaDevice',
@@ -3400,7 +3479,9 @@ exports.Prisma.ModelName = {
   TaxPayment: 'TaxPayment',
   Credential: 'Credential',
   ComplianceDocument: 'ComplianceDocument',
-  TaxInvoiceSequence: 'TaxInvoiceSequence'
+  TaxInvoiceSequence: 'TaxInvoiceSequence',
+  BackupRun: 'BackupRun',
+  SyncQueueItem: 'SyncQueueItem'
 };
 
 /**

@@ -1,0 +1,665 @@
+openapi: 3.0.3
+info:
+  title: BLECA SmartLabs Finance API
+  version: 1.0.0
+  description: |
+    Finance management and accounting API for BLECA SmartLabs.
+    Double-entry core, controlled approvals, tamper-evident audit trail.
+    All mutations require Idempotency-Key header.
+  contact:
+    name: BLECA SmartLabs
+    email: finance@bleca.smartlabs
+  license:
+    name: Proprietary
+servers:
+  - url: https://api.bleca.finance/api/v1
+    description: Production
+  - url: http://localhost:3000/api/v1
+    description: Development
+security:
+  - BearerAuth: []
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Unique key for idempotency (required on all POST/PATCH/DELETE)
+    RequestId:
+      name: x-request-id
+      in: header
+      schema:
+        type: string
+      description: Request correlation ID
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        fullName:
+          type: string
+        jobTitle:
+          type: string
+        status:
+          type: string
+          enum: [INVITED, ACTIVE, SUSPENDED, DEACTIVATED]
+        mfaEnforced:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        registrationStatus:
+          type: string
+          enum: [NOT_REGISTERED, PENDING, REGISTERED]
+        baseCurrency:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [DRAFT, SUBMITTED, APPROVED, REJECTED, POSTED, LOCKED, ADJUSTED, REVERSED, CANCELLED]
+        date:
+          type: string
+          format: date
+        description:
+          type: string
+        amount:
+          type: string
+          format: decimal
+        currencyCode:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        postedAt:
+          type: string
+          format: date-time
+    JournalEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        number:
+          type: string
+        status:
+          type: string
+          enum: [DRAFT, SUBMITTED, APPROVED, REJECTED, POSTED, LOCKED, REVERSED, VOIDED]
+        type:
+          type: string
+        description:
+          type: string
+        postedAt:
+          type: string
+          format: date-time
+    JournalLine:
+      type: object
+      properties:
+        id:
+          type: string
+        entryId:
+          type: string
+        accountId:
+          type: string
+        lineNumber:
+          type: integer
+        debit:
+          type: string
+          format: decimal
+        credit:
+          type: string
+          format: decimal
+        currencyCode:
+          type: string
+    Account:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [ASSET, LIABILITY, EQUITY, REVENUE, EXPENSE]
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE, LOCKED, PENDING_ARCHIVE]
+    FinancialPeriod:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [MONTHLY, QUARTERLY, ANNUAL]
+        status:
+          type: string
+          enum: [OPEN, CLOSING, CLOSED, LOCKED, REOPEN_PENDING, REOPENED]
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+    BackupRun:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [FULL, INCREMENTAL, POINT_IN_TIME]
+        status:
+          type: string
+          enum: [SCHEDULED, RUNNING, SUCCEEDED, FAILED, VERIFIED, VERIFICATION_FAILED, EXPIRED]
+        storageKey:
+          type: string
+        checksum:
+          type: string
+        sizeBytes:
+          type: string
+          format: int64
+        rowCounts:
+          type: object
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        verifiedAt:
+          type: string
+          format: date-time
+    SyncQueueItem:
+      type: object
+      properties:
+        id:
+          type: string
+        actionType:
+          type: string
+          enum: [RECEIPT_CAPTURE, DRAFT_SAVE, CONTACT_CARD_SAVE, SUBMIT, APPROVE, REJECT, POST, REVERSE, PERIOD_CLOSE, PERIOD_REOPEN]
+        payload:
+          type: object
+        idempotencyKey:
+          type: string
+        status:
+          type: string
+          enum: [QUEUED, SYNCING, SYNCED, CONFLICT, FAILED, DISCARDED]
+        createdAt:
+          type: string
+          format: date-time
+        syncedAt:
+          type: string
+          format: date-time
+    SecurityEvent:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        severity:
+          type: string
+          enum: [INFO, LOW, MEDIUM, HIGH, CRITICAL]
+        subjectType:
+          type: string
+        subjectId:
+          type: string
+        subjectLabel:
+          type: string
+        description:
+          type: string
+        acknowledgedAt:
+          type: string
+          format: date-time
+        resolvedAt:
+          type: string
+          format: date-time
+        occurredAt:
+          type: string
+          format: date-time
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+        uptime:
+          type: integer
+        uptimeHuman:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        database:
+          type: object
+          properties:
+            connected:
+              type: boolean
+            latencyMs:
+              type: integer
+        lastBackup:
+          type: object
+          properties:
+            completedAt:
+              type: string
+              format: date-time
+            type:
+              type: string
+paths:
+  /health:
+    get:
+      summary: System health check
+      description: Returns uptime, DB connectivity, and last backup timestamp
+      operationId: getHealth
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: Unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+      security:
+        - BearerAuth: []
+
+  /backups:
+    get:
+      summary: List backup runs
+      operationId: listBackups
+      responses:
+        '200':
+          description: List of backups
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BackupRun'
+                  count:
+                    type: integer
+      security:
+        - BearerAuth: []
+
+  /backups/run:
+    post:
+      summary: Run a backup
+      operationId: runBackup
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [FULL, INCREMENTAL, POINT_IN_TIME]
+                  default: FULL
+      responses:
+        '201':
+          description: Backup started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BackupRun'
+      security:
+        - BearerAuth: []
+
+  /backups/{id}/verify:
+    post:
+      summary: Verify a backup
+      operationId: verifyBackup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      verified:
+                        type: boolean
+                      checksum:
+                        type: string
+                      rowCounts:
+                        type: object
+      security:
+        - BearerAuth: []
+
+  /backups/{id}/restore-test:
+    post:
+      summary: Test restore a backup (non-destructive comparison only)
+      operationId: testRestore
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Restore test result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      tableCountsMatch:
+                        type: boolean
+                      auditChainMatches:
+                        type: boolean
+                      tableCountDiffs:
+                        type: object
+                      auditChainHeadMatch:
+                        type: boolean
+      security:
+        - BearerAuth: []
+
+  /sync/batch:
+    post:
+      summary: Sync offline queue batch
+      operationId: syncBatch
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      actionType:
+                        type: string
+                        enum: [RECEIPT_CAPTURE, DRAFT_SAVE, CONTACT_CARD_SAVE]
+                      payload:
+                        type: object
+                      idempotencyKey:
+                        type: string
+      responses:
+        '200':
+          description: Sync results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  syncedCount:
+                    type: integer
+                  failedCount:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        idempotencyKey:
+                          type: string
+                        status:
+                          type: string
+                        result:
+                          type: object
+                        error:
+                          type: string
+      security:
+        - BearerAuth: []
+
+  /security-events:
+    get:
+      summary: List security events
+      operationId: listSecurityEvents
+      parameters:
+        - name: severity
+          in: query
+          schema:
+            type: string
+            enum: [INFO, LOW, MEDIUM, HIGH, CRITICAL]
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: acknowledged
+          in: query
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of security events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SecurityEvent'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+      security:
+        - BearerAuth: []
+
+  /security-events/{id}/acknowledge:
+    post:
+      summary: Acknowledge a security event
+      operationId: acknowledgeSecurityEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+      responses:
+        '200':
+          description: Event acknowledged
+      security:
+        - BearerAuth: []
+
+  /security-events/{id}/resolve:
+    post:
+      summary: Resolve a security event
+      operationId: resolveSecurityEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Event resolved
+      security:
+        - BearerAuth: []
+
+  /transactions:
+    get:
+      summary: List transactions
+      operationId: listTransactions
+      responses:
+        '200':
+          description: List of transactions
+      security:
+        - BearerAuth: []
+
+  /journal-entries:
+    get:
+      summary: List journal entries
+      operationId: listJournalEntries
+      responses:
+        '200':
+          description: List of journal entries
+      security:
+        - BearerAuth: []
+
+  /accounts:
+    get:
+      summary: List chart of accounts
+      operationId: listAccounts
+      responses:
+        '200':
+          description: List of accounts
+      security:
+        - BearerAuth: []
+
+  /periods:
+    get:
+      summary: List financial periods
+      operationId: listPeriods
+      responses:
+        '200':
+          description: List of periods
+      security:
+        - BearerAuth: []
+
+  /trial-balance:
+    get:
+      summary: Generate trial balance report
+      operationId: getTrialBalance
+      parameters:
+        - name: periodId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Trial balance report
+      security:
+        - BearerAuth: []
+
+  /approval-requests:
+    get:
+      summary: List approval requests
+      operationId: listApprovalRequests
+      responses:
+        '200':
+          description: List of approval requests
+      security:
+        - BearerAuth: []
+
+  /users:
+    get:
+      summary: List users
+      operationId: listUsers
+      responses:
+        '200':
+          description: List of users
+      security:
+        - BearerAuth: []

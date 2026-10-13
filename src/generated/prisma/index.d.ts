@@ -600,6 +600,16 @@ export type ComplianceDocument = $Result.DefaultSelection<Prisma.$ComplianceDocu
  * imply that a tax invoice is valid until a configured rule has been checked.
  */
 export type TaxInvoiceSequence = $Result.DefaultSelection<Prisma.$TaxInvoiceSequencePayload>
+/**
+ * Model BackupRun
+ * BackupRun — records every backup execution (M17).
+ */
+export type BackupRun = $Result.DefaultSelection<Prisma.$BackupRunPayload>
+/**
+ * Model SyncQueueItem
+ * SyncQueueItem — offline actions queued for sync (M17, PDF §58).
+ */
+export type SyncQueueItem = $Result.DefaultSelection<Prisma.$SyncQueueItemPayload>
 
 /**
  * Enums
@@ -1736,7 +1746,9 @@ export const AuditAction: {
   ANOMALY_FLAG_ACKNOWLEDGED: 'ANOMALY_FLAG_ACKNOWLEDGED',
   ANOMALY_FLAG_DISMISSED: 'ANOMALY_FLAG_DISMISSED',
   ANOMALY_FLAG_CONFIRMED: 'ANOMALY_FLAG_CONFIRMED',
-  ANOMALY_SCAN_COMPLETED: 'ANOMALY_SCAN_COMPLETED'
+  ANOMALY_SCAN_COMPLETED: 'ANOMALY_SCAN_COMPLETED',
+  BACKUP_VERIFIED: 'BACKUP_VERIFIED',
+  RESTORE_TEST: 'RESTORE_TEST'
 };
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
@@ -1827,7 +1839,8 @@ export const AuditEntityType: {
   EXPORT: 'EXPORT',
   FINANCIAL_CLOSE: 'FINANCIAL_CLOSE',
   CLOSE_CHECKLIST_ITEM: 'CLOSE_CHECKLIST_ITEM',
-  ANOMALY_FLAG: 'ANOMALY_FLAG'
+  ANOMALY_FLAG: 'ANOMALY_FLAG',
+  BACKUP_RUN: 'BACKUP_RUN'
 };
 
 export type AuditEntityType = (typeof AuditEntityType)[keyof typeof AuditEntityType]
@@ -1900,6 +1913,28 @@ export const ChainVerificationStatus: {
 export type ChainVerificationStatus = (typeof ChainVerificationStatus)[keyof typeof ChainVerificationStatus]
 
 
+export const BackupType: {
+  FULL: 'FULL',
+  INCREMENTAL: 'INCREMENTAL',
+  POINT_IN_TIME: 'POINT_IN_TIME'
+};
+
+export type BackupType = (typeof BackupType)[keyof typeof BackupType]
+
+
+export const BackupStatus: {
+  SCHEDULED: 'SCHEDULED',
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  VERIFIED: 'VERIFIED',
+  VERIFICATION_FAILED: 'VERIFICATION_FAILED',
+  EXPIRED: 'EXPIRED'
+};
+
+export type BackupStatus = (typeof BackupStatus)[keyof typeof BackupStatus]
+
+
 export const NotificationChannel: {
   IN_APP: 'IN_APP',
   EMAIL: 'EMAIL',
@@ -1962,6 +1997,34 @@ export const IdempotencyKeyStatus: {
 };
 
 export type IdempotencyKeyStatus = (typeof IdempotencyKeyStatus)[keyof typeof IdempotencyKeyStatus]
+
+
+export const SyncActionType: {
+  RECEIPT_CAPTURE: 'RECEIPT_CAPTURE',
+  DRAFT_SAVE: 'DRAFT_SAVE',
+  CONTACT_CARD_SAVE: 'CONTACT_CARD_SAVE',
+  SUBMIT: 'SUBMIT',
+  APPROVE: 'APPROVE',
+  REJECT: 'REJECT',
+  POST: 'POST',
+  REVERSE: 'REVERSE',
+  PERIOD_CLOSE: 'PERIOD_CLOSE',
+  PERIOD_REOPEN: 'PERIOD_REOPEN'
+};
+
+export type SyncActionType = (typeof SyncActionType)[keyof typeof SyncActionType]
+
+
+export const SyncStatus: {
+  QUEUED: 'QUEUED',
+  SYNCING: 'SYNCING',
+  SYNCED: 'SYNCED',
+  CONFLICT: 'CONFLICT',
+  FAILED: 'FAILED',
+  DISCARDED: 'DISCARDED'
+};
+
+export type SyncStatus = (typeof SyncStatus)[keyof typeof SyncStatus]
 
 
 export const ApprovalEntityType: {
@@ -2601,6 +2664,14 @@ export type ChainVerificationStatus = $Enums.ChainVerificationStatus
 
 export const ChainVerificationStatus: typeof $Enums.ChainVerificationStatus
 
+export type BackupType = $Enums.BackupType
+
+export const BackupType: typeof $Enums.BackupType
+
+export type BackupStatus = $Enums.BackupStatus
+
+export const BackupStatus: typeof $Enums.BackupStatus
+
 export type NotificationChannel = $Enums.NotificationChannel
 
 export const NotificationChannel: typeof $Enums.NotificationChannel
@@ -2620,6 +2691,14 @@ export const NotificationSeverity: typeof $Enums.NotificationSeverity
 export type IdempotencyKeyStatus = $Enums.IdempotencyKeyStatus
 
 export const IdempotencyKeyStatus: typeof $Enums.IdempotencyKeyStatus
+
+export type SyncActionType = $Enums.SyncActionType
+
+export const SyncActionType: typeof $Enums.SyncActionType
+
+export type SyncStatus = $Enums.SyncStatus
+
+export const SyncStatus: typeof $Enums.SyncStatus
 
 export type ApprovalEntityType = $Enums.ApprovalEntityType
 
@@ -3900,6 +3979,26 @@ export class PrismaClient<
     * ```
     */
   get taxInvoiceSequence(): Prisma.TaxInvoiceSequenceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.backupRun`: Exposes CRUD operations for the **BackupRun** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BackupRuns
+    * const backupRuns = await prisma.backupRun.findMany()
+    * ```
+    */
+  get backupRun(): Prisma.BackupRunDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.syncQueueItem`: Exposes CRUD operations for the **SyncQueueItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SyncQueueItems
+    * const syncQueueItems = await prisma.syncQueueItem.findMany()
+    * ```
+    */
+  get syncQueueItem(): Prisma.SyncQueueItemDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -4447,7 +4546,9 @@ export namespace Prisma {
     TaxPayment: 'TaxPayment',
     Credential: 'Credential',
     ComplianceDocument: 'ComplianceDocument',
-    TaxInvoiceSequence: 'TaxInvoiceSequence'
+    TaxInvoiceSequence: 'TaxInvoiceSequence',
+    BackupRun: 'BackupRun',
+    SyncQueueItem: 'SyncQueueItem'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -4466,7 +4567,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "treasuryAccount" | "paymentSchedule" | "transfer" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "party" | "customer" | "supplier" | "contact" | "partyAddress" | "communicationLog" | "supplierBankDetail" | "supplierBankDetailChangeRequest" | "supplierProductService" | "supplierTaxObligationLink" | "customerCreditHold" | "customerReceivable" | "quotation" | "quotationLine" | "invoice" | "invoiceLine" | "invoiceReminder" | "documentSequence" | "payment" | "paymentMethodLine" | "paymentAllocation" | "receipt" | "receiptLine" | "creditNote" | "debitNote" | "account" | "financialPeriod" | "financialClose" | "closeChecklistItem" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "commitment" | "budgetRevision" | "budgetRevisionLine" | "budgetTransfer" | "budgetScenario" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "importBatch" | "importRow" | "importFieldMapping" | "importError" | "matchingRule" | "reconciliationSession" | "reconciliationMatch" | "reconciliationException" | "reconciliationAdjustment" | "idempotencyKey" | "notification" | "anomalyFlag" | "notificationPreference" | "document" | "documentVersion" | "documentTag" | "documentTagLink" | "documentLink" | "retentionPolicy" | "legalHold" | "taxRule" | "taxObligation" | "taxPayment" | "credential" | "complianceDocument" | "taxInvoiceSequence"
+      modelProps: "user" | "mfaDevice" | "session" | "loginHistory" | "authPolicy" | "role" | "permission" | "rolePermission" | "userRole" | "roleScopeGrant" | "delegation" | "accessReview" | "accessReviewItem" | "approvalPolicy" | "approvalPolicyStep" | "approvalRequest" | "approvalStepInstance" | "approvalDecisionRecord" | "sODWaiver" | "organization" | "location" | "department" | "costCentre" | "project" | "fundingSource" | "treasuryAccount" | "paymentSchedule" | "transfer" | "currency" | "exchangeRate" | "masterDataChangeRequest" | "masterDataVersion" | "reasonCode" | "productService" | "party" | "customer" | "supplier" | "contact" | "partyAddress" | "communicationLog" | "supplierBankDetail" | "supplierBankDetailChangeRequest" | "supplierProductService" | "supplierTaxObligationLink" | "customerCreditHold" | "customerReceivable" | "quotation" | "quotationLine" | "invoice" | "invoiceLine" | "invoiceReminder" | "documentSequence" | "payment" | "paymentMethodLine" | "paymentAllocation" | "receipt" | "receiptLine" | "creditNote" | "debitNote" | "account" | "financialPeriod" | "financialClose" | "closeChecklistItem" | "openingBalance" | "accountBalanceSnapshot" | "journalEntry" | "journalLine" | "reversalReasonCode" | "transaction" | "budget" | "budgetLine" | "commitment" | "budgetRevision" | "budgetRevisionLine" | "budgetTransfer" | "budgetScenario" | "organizationMembership" | "auditLog" | "auditChainHead" | "auditChainCheckpoint" | "securityEvent" | "importBatch" | "importRow" | "importFieldMapping" | "importError" | "matchingRule" | "reconciliationSession" | "reconciliationMatch" | "reconciliationException" | "reconciliationAdjustment" | "idempotencyKey" | "notification" | "anomalyFlag" | "notificationPreference" | "document" | "documentVersion" | "documentTag" | "documentTagLink" | "documentLink" | "retentionPolicy" | "legalHold" | "taxRule" | "taxObligation" | "taxPayment" | "credential" | "complianceDocument" | "taxInvoiceSequence" | "backupRun" | "syncQueueItem"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -12388,6 +12489,154 @@ export namespace Prisma {
           }
         }
       }
+      BackupRun: {
+        payload: Prisma.$BackupRunPayload<ExtArgs>
+        fields: Prisma.BackupRunFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BackupRunFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BackupRunFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload>
+          }
+          findFirst: {
+            args: Prisma.BackupRunFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BackupRunFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload>
+          }
+          findMany: {
+            args: Prisma.BackupRunFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload>[]
+          }
+          create: {
+            args: Prisma.BackupRunCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload>
+          }
+          createMany: {
+            args: Prisma.BackupRunCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BackupRunCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload>[]
+          }
+          delete: {
+            args: Prisma.BackupRunDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload>
+          }
+          update: {
+            args: Prisma.BackupRunUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload>
+          }
+          deleteMany: {
+            args: Prisma.BackupRunDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BackupRunUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BackupRunUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload>[]
+          }
+          upsert: {
+            args: Prisma.BackupRunUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BackupRunPayload>
+          }
+          aggregate: {
+            args: Prisma.BackupRunAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBackupRun>
+          }
+          groupBy: {
+            args: Prisma.BackupRunGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BackupRunGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BackupRunCountArgs<ExtArgs>
+            result: $Utils.Optional<BackupRunCountAggregateOutputType> | number
+          }
+        }
+      }
+      SyncQueueItem: {
+        payload: Prisma.$SyncQueueItemPayload<ExtArgs>
+        fields: Prisma.SyncQueueItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SyncQueueItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SyncQueueItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload>
+          }
+          findFirst: {
+            args: Prisma.SyncQueueItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SyncQueueItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload>
+          }
+          findMany: {
+            args: Prisma.SyncQueueItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload>[]
+          }
+          create: {
+            args: Prisma.SyncQueueItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload>
+          }
+          createMany: {
+            args: Prisma.SyncQueueItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SyncQueueItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload>[]
+          }
+          delete: {
+            args: Prisma.SyncQueueItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload>
+          }
+          update: {
+            args: Prisma.SyncQueueItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.SyncQueueItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SyncQueueItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SyncQueueItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.SyncQueueItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SyncQueueItemPayload>
+          }
+          aggregate: {
+            args: Prisma.SyncQueueItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSyncQueueItem>
+          }
+          groupBy: {
+            args: Prisma.SyncQueueItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SyncQueueItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SyncQueueItemCountArgs<ExtArgs>
+            result: $Utils.Optional<SyncQueueItemCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -12591,6 +12840,8 @@ export namespace Prisma {
     credential?: CredentialOmit
     complianceDocument?: ComplianceDocumentOmit
     taxInvoiceSequence?: TaxInvoiceSequenceOmit
+    backupRun?: BackupRunOmit
+    syncQueueItem?: SyncQueueItemOmit
   }
 
   /* Types for Logging */
@@ -13609,6 +13860,8 @@ export namespace Prisma {
     financialCloses: number
     closeChecklistItems: number
     anomalies: number
+    backupRuns: number
+    syncQueueItems: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13676,6 +13929,8 @@ export namespace Prisma {
     financialCloses?: boolean | OrganizationCountOutputTypeCountFinancialClosesArgs
     closeChecklistItems?: boolean | OrganizationCountOutputTypeCountCloseChecklistItemsArgs
     anomalies?: boolean | OrganizationCountOutputTypeCountAnomaliesArgs
+    backupRuns?: boolean | OrganizationCountOutputTypeCountBackupRunsArgs
+    syncQueueItems?: boolean | OrganizationCountOutputTypeCountSyncQueueItemsArgs
   }
 
   // Custom InputTypes
@@ -14135,6 +14390,20 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountAnomaliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AnomalyFlagWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountBackupRunsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BackupRunWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountSyncQueueItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SyncQueueItemWhereInput
   }
 
 
@@ -41588,6 +41857,8 @@ export namespace Prisma {
     financialCloses?: boolean | Organization$financialClosesArgs<ExtArgs>
     closeChecklistItems?: boolean | Organization$closeChecklistItemsArgs<ExtArgs>
     anomalies?: boolean | Organization$anomaliesArgs<ExtArgs>
+    backupRuns?: boolean | Organization$backupRunsArgs<ExtArgs>
+    syncQueueItems?: boolean | Organization$syncQueueItemsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -41718,6 +41989,8 @@ export namespace Prisma {
     financialCloses?: boolean | Organization$financialClosesArgs<ExtArgs>
     closeChecklistItems?: boolean | Organization$closeChecklistItemsArgs<ExtArgs>
     anomalies?: boolean | Organization$anomaliesArgs<ExtArgs>
+    backupRuns?: boolean | Organization$backupRunsArgs<ExtArgs>
+    syncQueueItems?: boolean | Organization$syncQueueItemsArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -41791,6 +42064,8 @@ export namespace Prisma {
       financialCloses: Prisma.$FinancialClosePayload<ExtArgs>[]
       closeChecklistItems: Prisma.$CloseChecklistItemPayload<ExtArgs>[]
       anomalies: Prisma.$AnomalyFlagPayload<ExtArgs>[]
+      backupRuns: Prisma.$BackupRunPayload<ExtArgs>[]
+      syncQueueItems: Prisma.$SyncQueueItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -42275,6 +42550,8 @@ export namespace Prisma {
     financialCloses<T extends Organization$financialClosesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$financialClosesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancialClosePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     closeChecklistItems<T extends Organization$closeChecklistItemsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$closeChecklistItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CloseChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     anomalies<T extends Organization$anomaliesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$anomaliesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyFlagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    backupRuns<T extends Organization$backupRunsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$backupRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    syncQueueItems<T extends Organization$syncQueueItemsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$syncQueueItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -44261,6 +44538,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AnomalyFlagScalarFieldEnum | AnomalyFlagScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.backupRuns
+   */
+  export type Organization$backupRunsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+    where?: BackupRunWhereInput
+    orderBy?: BackupRunOrderByWithRelationInput | BackupRunOrderByWithRelationInput[]
+    cursor?: BackupRunWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BackupRunScalarFieldEnum | BackupRunScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.syncQueueItems
+   */
+  export type Organization$syncQueueItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+    where?: SyncQueueItemWhereInput
+    orderBy?: SyncQueueItemOrderByWithRelationInput | SyncQueueItemOrderByWithRelationInput[]
+    cursor?: SyncQueueItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SyncQueueItemScalarFieldEnum | SyncQueueItemScalarFieldEnum[]
   }
 
   /**
@@ -156158,6 +156483,2460 @@ export namespace Prisma {
 
 
   /**
+   * Model BackupRun
+   */
+
+  export type AggregateBackupRun = {
+    _count: BackupRunCountAggregateOutputType | null
+    _avg: BackupRunAvgAggregateOutputType | null
+    _sum: BackupRunSumAggregateOutputType | null
+    _min: BackupRunMinAggregateOutputType | null
+    _max: BackupRunMaxAggregateOutputType | null
+  }
+
+  export type BackupRunAvgAggregateOutputType = {
+    sizeBytes: number | null
+  }
+
+  export type BackupRunSumAggregateOutputType = {
+    sizeBytes: bigint | null
+  }
+
+  export type BackupRunMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    type: $Enums.BackupType | null
+    status: $Enums.BackupStatus | null
+    storageKey: string | null
+    checksum: string | null
+    sizeBytes: bigint | null
+    auditChainHead: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    verifiedAt: Date | null
+    verificationChecksum: string | null
+    restoreTestedAt: Date | null
+    errorMessage: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BackupRunMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    type: $Enums.BackupType | null
+    status: $Enums.BackupStatus | null
+    storageKey: string | null
+    checksum: string | null
+    sizeBytes: bigint | null
+    auditChainHead: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    verifiedAt: Date | null
+    verificationChecksum: string | null
+    restoreTestedAt: Date | null
+    errorMessage: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BackupRunCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    type: number
+    status: number
+    storageKey: number
+    checksum: number
+    sizeBytes: number
+    rowCounts: number
+    auditChainHead: number
+    startedAt: number
+    completedAt: number
+    verifiedAt: number
+    verificationChecksum: number
+    restoreTestedAt: number
+    restoreTestResult: number
+    errorMessage: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BackupRunAvgAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type BackupRunSumAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type BackupRunMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    type?: true
+    status?: true
+    storageKey?: true
+    checksum?: true
+    sizeBytes?: true
+    auditChainHead?: true
+    startedAt?: true
+    completedAt?: true
+    verifiedAt?: true
+    verificationChecksum?: true
+    restoreTestedAt?: true
+    errorMessage?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BackupRunMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    type?: true
+    status?: true
+    storageKey?: true
+    checksum?: true
+    sizeBytes?: true
+    auditChainHead?: true
+    startedAt?: true
+    completedAt?: true
+    verifiedAt?: true
+    verificationChecksum?: true
+    restoreTestedAt?: true
+    errorMessage?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BackupRunCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    type?: true
+    status?: true
+    storageKey?: true
+    checksum?: true
+    sizeBytes?: true
+    rowCounts?: true
+    auditChainHead?: true
+    startedAt?: true
+    completedAt?: true
+    verifiedAt?: true
+    verificationChecksum?: true
+    restoreTestedAt?: true
+    restoreTestResult?: true
+    errorMessage?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BackupRunAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BackupRun to aggregate.
+     */
+    where?: BackupRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BackupRuns to fetch.
+     */
+    orderBy?: BackupRunOrderByWithRelationInput | BackupRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BackupRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BackupRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BackupRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BackupRuns
+    **/
+    _count?: true | BackupRunCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BackupRunAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BackupRunSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BackupRunMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BackupRunMaxAggregateInputType
+  }
+
+  export type GetBackupRunAggregateType<T extends BackupRunAggregateArgs> = {
+        [P in keyof T & keyof AggregateBackupRun]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBackupRun[P]>
+      : GetScalarType<T[P], AggregateBackupRun[P]>
+  }
+
+
+
+
+  export type BackupRunGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BackupRunWhereInput
+    orderBy?: BackupRunOrderByWithAggregationInput | BackupRunOrderByWithAggregationInput[]
+    by: BackupRunScalarFieldEnum[] | BackupRunScalarFieldEnum
+    having?: BackupRunScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BackupRunCountAggregateInputType | true
+    _avg?: BackupRunAvgAggregateInputType
+    _sum?: BackupRunSumAggregateInputType
+    _min?: BackupRunMinAggregateInputType
+    _max?: BackupRunMaxAggregateInputType
+  }
+
+  export type BackupRunGroupByOutputType = {
+    id: string
+    organizationId: string
+    type: $Enums.BackupType
+    status: $Enums.BackupStatus
+    storageKey: string
+    checksum: string
+    sizeBytes: bigint
+    rowCounts: JsonValue | null
+    auditChainHead: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    verifiedAt: Date | null
+    verificationChecksum: string | null
+    restoreTestedAt: Date | null
+    restoreTestResult: JsonValue | null
+    errorMessage: string | null
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: BackupRunCountAggregateOutputType | null
+    _avg: BackupRunAvgAggregateOutputType | null
+    _sum: BackupRunSumAggregateOutputType | null
+    _min: BackupRunMinAggregateOutputType | null
+    _max: BackupRunMaxAggregateOutputType | null
+  }
+
+  type GetBackupRunGroupByPayload<T extends BackupRunGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BackupRunGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BackupRunGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BackupRunGroupByOutputType[P]>
+            : GetScalarType<T[P], BackupRunGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BackupRunSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    type?: boolean
+    status?: boolean
+    storageKey?: boolean
+    checksum?: boolean
+    sizeBytes?: boolean
+    rowCounts?: boolean
+    auditChainHead?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    verifiedAt?: boolean
+    verificationChecksum?: boolean
+    restoreTestedAt?: boolean
+    restoreTestResult?: boolean
+    errorMessage?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backupRun"]>
+
+  export type BackupRunSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    type?: boolean
+    status?: boolean
+    storageKey?: boolean
+    checksum?: boolean
+    sizeBytes?: boolean
+    rowCounts?: boolean
+    auditChainHead?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    verifiedAt?: boolean
+    verificationChecksum?: boolean
+    restoreTestedAt?: boolean
+    restoreTestResult?: boolean
+    errorMessage?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backupRun"]>
+
+  export type BackupRunSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    type?: boolean
+    status?: boolean
+    storageKey?: boolean
+    checksum?: boolean
+    sizeBytes?: boolean
+    rowCounts?: boolean
+    auditChainHead?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    verifiedAt?: boolean
+    verificationChecksum?: boolean
+    restoreTestedAt?: boolean
+    restoreTestResult?: boolean
+    errorMessage?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backupRun"]>
+
+  export type BackupRunSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    type?: boolean
+    status?: boolean
+    storageKey?: boolean
+    checksum?: boolean
+    sizeBytes?: boolean
+    rowCounts?: boolean
+    auditChainHead?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    verifiedAt?: boolean
+    verificationChecksum?: boolean
+    restoreTestedAt?: boolean
+    restoreTestResult?: boolean
+    errorMessage?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BackupRunOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "type" | "status" | "storageKey" | "checksum" | "sizeBytes" | "rowCounts" | "auditChainHead" | "startedAt" | "completedAt" | "verifiedAt" | "verificationChecksum" | "restoreTestedAt" | "restoreTestResult" | "errorMessage" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["backupRun"]>
+  export type BackupRunInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type BackupRunIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type BackupRunIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+
+  export type $BackupRunPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BackupRun"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      type: $Enums.BackupType
+      status: $Enums.BackupStatus
+      storageKey: string
+      checksum: string
+      sizeBytes: bigint
+      rowCounts: Prisma.JsonValue | null
+      auditChainHead: string | null
+      startedAt: Date | null
+      completedAt: Date | null
+      verifiedAt: Date | null
+      verificationChecksum: string | null
+      restoreTestedAt: Date | null
+      restoreTestResult: Prisma.JsonValue | null
+      errorMessage: string | null
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["backupRun"]>
+    composites: {}
+  }
+
+  type BackupRunGetPayload<S extends boolean | null | undefined | BackupRunDefaultArgs> = $Result.GetResult<Prisma.$BackupRunPayload, S>
+
+  type BackupRunCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BackupRunFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BackupRunCountAggregateInputType | true
+    }
+
+  export interface BackupRunDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BackupRun'], meta: { name: 'BackupRun' } }
+    /**
+     * Find zero or one BackupRun that matches the filter.
+     * @param {BackupRunFindUniqueArgs} args - Arguments to find a BackupRun
+     * @example
+     * // Get one BackupRun
+     * const backupRun = await prisma.backupRun.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BackupRunFindUniqueArgs>(args: SelectSubset<T, BackupRunFindUniqueArgs<ExtArgs>>): Prisma__BackupRunClient<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BackupRun that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BackupRunFindUniqueOrThrowArgs} args - Arguments to find a BackupRun
+     * @example
+     * // Get one BackupRun
+     * const backupRun = await prisma.backupRun.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BackupRunFindUniqueOrThrowArgs>(args: SelectSubset<T, BackupRunFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BackupRunClient<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BackupRun that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BackupRunFindFirstArgs} args - Arguments to find a BackupRun
+     * @example
+     * // Get one BackupRun
+     * const backupRun = await prisma.backupRun.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BackupRunFindFirstArgs>(args?: SelectSubset<T, BackupRunFindFirstArgs<ExtArgs>>): Prisma__BackupRunClient<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BackupRun that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BackupRunFindFirstOrThrowArgs} args - Arguments to find a BackupRun
+     * @example
+     * // Get one BackupRun
+     * const backupRun = await prisma.backupRun.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BackupRunFindFirstOrThrowArgs>(args?: SelectSubset<T, BackupRunFindFirstOrThrowArgs<ExtArgs>>): Prisma__BackupRunClient<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BackupRuns that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BackupRunFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BackupRuns
+     * const backupRuns = await prisma.backupRun.findMany()
+     * 
+     * // Get first 10 BackupRuns
+     * const backupRuns = await prisma.backupRun.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const backupRunWithIdOnly = await prisma.backupRun.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BackupRunFindManyArgs>(args?: SelectSubset<T, BackupRunFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BackupRun.
+     * @param {BackupRunCreateArgs} args - Arguments to create a BackupRun.
+     * @example
+     * // Create one BackupRun
+     * const BackupRun = await prisma.backupRun.create({
+     *   data: {
+     *     // ... data to create a BackupRun
+     *   }
+     * })
+     * 
+     */
+    create<T extends BackupRunCreateArgs>(args: SelectSubset<T, BackupRunCreateArgs<ExtArgs>>): Prisma__BackupRunClient<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BackupRuns.
+     * @param {BackupRunCreateManyArgs} args - Arguments to create many BackupRuns.
+     * @example
+     * // Create many BackupRuns
+     * const backupRun = await prisma.backupRun.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BackupRunCreateManyArgs>(args?: SelectSubset<T, BackupRunCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BackupRuns and returns the data saved in the database.
+     * @param {BackupRunCreateManyAndReturnArgs} args - Arguments to create many BackupRuns.
+     * @example
+     * // Create many BackupRuns
+     * const backupRun = await prisma.backupRun.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BackupRuns and only return the `id`
+     * const backupRunWithIdOnly = await prisma.backupRun.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BackupRunCreateManyAndReturnArgs>(args?: SelectSubset<T, BackupRunCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BackupRun.
+     * @param {BackupRunDeleteArgs} args - Arguments to delete one BackupRun.
+     * @example
+     * // Delete one BackupRun
+     * const BackupRun = await prisma.backupRun.delete({
+     *   where: {
+     *     // ... filter to delete one BackupRun
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BackupRunDeleteArgs>(args: SelectSubset<T, BackupRunDeleteArgs<ExtArgs>>): Prisma__BackupRunClient<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BackupRun.
+     * @param {BackupRunUpdateArgs} args - Arguments to update one BackupRun.
+     * @example
+     * // Update one BackupRun
+     * const backupRun = await prisma.backupRun.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BackupRunUpdateArgs>(args: SelectSubset<T, BackupRunUpdateArgs<ExtArgs>>): Prisma__BackupRunClient<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BackupRuns.
+     * @param {BackupRunDeleteManyArgs} args - Arguments to filter BackupRuns to delete.
+     * @example
+     * // Delete a few BackupRuns
+     * const { count } = await prisma.backupRun.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BackupRunDeleteManyArgs>(args?: SelectSubset<T, BackupRunDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BackupRuns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BackupRunUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BackupRuns
+     * const backupRun = await prisma.backupRun.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BackupRunUpdateManyArgs>(args: SelectSubset<T, BackupRunUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BackupRuns and returns the data updated in the database.
+     * @param {BackupRunUpdateManyAndReturnArgs} args - Arguments to update many BackupRuns.
+     * @example
+     * // Update many BackupRuns
+     * const backupRun = await prisma.backupRun.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BackupRuns and only return the `id`
+     * const backupRunWithIdOnly = await prisma.backupRun.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BackupRunUpdateManyAndReturnArgs>(args: SelectSubset<T, BackupRunUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BackupRun.
+     * @param {BackupRunUpsertArgs} args - Arguments to update or create a BackupRun.
+     * @example
+     * // Update or create a BackupRun
+     * const backupRun = await prisma.backupRun.upsert({
+     *   create: {
+     *     // ... data to create a BackupRun
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BackupRun we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BackupRunUpsertArgs>(args: SelectSubset<T, BackupRunUpsertArgs<ExtArgs>>): Prisma__BackupRunClient<$Result.GetResult<Prisma.$BackupRunPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BackupRuns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BackupRunCountArgs} args - Arguments to filter BackupRuns to count.
+     * @example
+     * // Count the number of BackupRuns
+     * const count = await prisma.backupRun.count({
+     *   where: {
+     *     // ... the filter for the BackupRuns we want to count
+     *   }
+     * })
+    **/
+    count<T extends BackupRunCountArgs>(
+      args?: Subset<T, BackupRunCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BackupRunCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BackupRun.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BackupRunAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BackupRunAggregateArgs>(args: Subset<T, BackupRunAggregateArgs>): Prisma.PrismaPromise<GetBackupRunAggregateType<T>>
+
+    /**
+     * Group by BackupRun.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BackupRunGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BackupRunGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BackupRunGroupByArgs['orderBy'] }
+        : { orderBy?: BackupRunGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BackupRunGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBackupRunGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BackupRun model
+   */
+  readonly fields: BackupRunFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BackupRun.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BackupRunClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BackupRun model
+   */
+  interface BackupRunFieldRefs {
+    readonly id: FieldRef<"BackupRun", 'String'>
+    readonly organizationId: FieldRef<"BackupRun", 'String'>
+    readonly type: FieldRef<"BackupRun", 'BackupType'>
+    readonly status: FieldRef<"BackupRun", 'BackupStatus'>
+    readonly storageKey: FieldRef<"BackupRun", 'String'>
+    readonly checksum: FieldRef<"BackupRun", 'String'>
+    readonly sizeBytes: FieldRef<"BackupRun", 'BigInt'>
+    readonly rowCounts: FieldRef<"BackupRun", 'Json'>
+    readonly auditChainHead: FieldRef<"BackupRun", 'String'>
+    readonly startedAt: FieldRef<"BackupRun", 'DateTime'>
+    readonly completedAt: FieldRef<"BackupRun", 'DateTime'>
+    readonly verifiedAt: FieldRef<"BackupRun", 'DateTime'>
+    readonly verificationChecksum: FieldRef<"BackupRun", 'String'>
+    readonly restoreTestedAt: FieldRef<"BackupRun", 'DateTime'>
+    readonly restoreTestResult: FieldRef<"BackupRun", 'Json'>
+    readonly errorMessage: FieldRef<"BackupRun", 'String'>
+    readonly createdById: FieldRef<"BackupRun", 'String'>
+    readonly createdAt: FieldRef<"BackupRun", 'DateTime'>
+    readonly updatedAt: FieldRef<"BackupRun", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BackupRun findUnique
+   */
+  export type BackupRunFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+    /**
+     * Filter, which BackupRun to fetch.
+     */
+    where: BackupRunWhereUniqueInput
+  }
+
+  /**
+   * BackupRun findUniqueOrThrow
+   */
+  export type BackupRunFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+    /**
+     * Filter, which BackupRun to fetch.
+     */
+    where: BackupRunWhereUniqueInput
+  }
+
+  /**
+   * BackupRun findFirst
+   */
+  export type BackupRunFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+    /**
+     * Filter, which BackupRun to fetch.
+     */
+    where?: BackupRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BackupRuns to fetch.
+     */
+    orderBy?: BackupRunOrderByWithRelationInput | BackupRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BackupRuns.
+     */
+    cursor?: BackupRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BackupRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BackupRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BackupRuns.
+     */
+    distinct?: BackupRunScalarFieldEnum | BackupRunScalarFieldEnum[]
+  }
+
+  /**
+   * BackupRun findFirstOrThrow
+   */
+  export type BackupRunFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+    /**
+     * Filter, which BackupRun to fetch.
+     */
+    where?: BackupRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BackupRuns to fetch.
+     */
+    orderBy?: BackupRunOrderByWithRelationInput | BackupRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BackupRuns.
+     */
+    cursor?: BackupRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BackupRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BackupRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BackupRuns.
+     */
+    distinct?: BackupRunScalarFieldEnum | BackupRunScalarFieldEnum[]
+  }
+
+  /**
+   * BackupRun findMany
+   */
+  export type BackupRunFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+    /**
+     * Filter, which BackupRuns to fetch.
+     */
+    where?: BackupRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BackupRuns to fetch.
+     */
+    orderBy?: BackupRunOrderByWithRelationInput | BackupRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BackupRuns.
+     */
+    cursor?: BackupRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BackupRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BackupRuns.
+     */
+    skip?: number
+    distinct?: BackupRunScalarFieldEnum | BackupRunScalarFieldEnum[]
+  }
+
+  /**
+   * BackupRun create
+   */
+  export type BackupRunCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BackupRun.
+     */
+    data: XOR<BackupRunCreateInput, BackupRunUncheckedCreateInput>
+  }
+
+  /**
+   * BackupRun createMany
+   */
+  export type BackupRunCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BackupRuns.
+     */
+    data: BackupRunCreateManyInput | BackupRunCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BackupRun createManyAndReturn
+   */
+  export type BackupRunCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * The data used to create many BackupRuns.
+     */
+    data: BackupRunCreateManyInput | BackupRunCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BackupRun update
+   */
+  export type BackupRunUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BackupRun.
+     */
+    data: XOR<BackupRunUpdateInput, BackupRunUncheckedUpdateInput>
+    /**
+     * Choose, which BackupRun to update.
+     */
+    where: BackupRunWhereUniqueInput
+  }
+
+  /**
+   * BackupRun updateMany
+   */
+  export type BackupRunUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BackupRuns.
+     */
+    data: XOR<BackupRunUpdateManyMutationInput, BackupRunUncheckedUpdateManyInput>
+    /**
+     * Filter which BackupRuns to update
+     */
+    where?: BackupRunWhereInput
+    /**
+     * Limit how many BackupRuns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BackupRun updateManyAndReturn
+   */
+  export type BackupRunUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * The data used to update BackupRuns.
+     */
+    data: XOR<BackupRunUpdateManyMutationInput, BackupRunUncheckedUpdateManyInput>
+    /**
+     * Filter which BackupRuns to update
+     */
+    where?: BackupRunWhereInput
+    /**
+     * Limit how many BackupRuns to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BackupRun upsert
+   */
+  export type BackupRunUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BackupRun to update in case it exists.
+     */
+    where: BackupRunWhereUniqueInput
+    /**
+     * In case the BackupRun found by the `where` argument doesn't exist, create a new BackupRun with this data.
+     */
+    create: XOR<BackupRunCreateInput, BackupRunUncheckedCreateInput>
+    /**
+     * In case the BackupRun was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BackupRunUpdateInput, BackupRunUncheckedUpdateInput>
+  }
+
+  /**
+   * BackupRun delete
+   */
+  export type BackupRunDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+    /**
+     * Filter which BackupRun to delete.
+     */
+    where: BackupRunWhereUniqueInput
+  }
+
+  /**
+   * BackupRun deleteMany
+   */
+  export type BackupRunDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BackupRuns to delete
+     */
+    where?: BackupRunWhereInput
+    /**
+     * Limit how many BackupRuns to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BackupRun without action
+   */
+  export type BackupRunDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BackupRun
+     */
+    select?: BackupRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BackupRun
+     */
+    omit?: BackupRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BackupRunInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SyncQueueItem
+   */
+
+  export type AggregateSyncQueueItem = {
+    _count: SyncQueueItemCountAggregateOutputType | null
+    _avg: SyncQueueItemAvgAggregateOutputType | null
+    _sum: SyncQueueItemSumAggregateOutputType | null
+    _min: SyncQueueItemMinAggregateOutputType | null
+    _max: SyncQueueItemMaxAggregateOutputType | null
+  }
+
+  export type SyncQueueItemAvgAggregateOutputType = {
+    retryCount: number | null
+  }
+
+  export type SyncQueueItemSumAggregateOutputType = {
+    retryCount: number | null
+  }
+
+  export type SyncQueueItemMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    userId: string | null
+    actionType: $Enums.SyncActionType | null
+    idempotencyKey: string | null
+    status: $Enums.SyncStatus | null
+    retryCount: number | null
+    lastAttemptAt: Date | null
+    syncedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SyncQueueItemMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    userId: string | null
+    actionType: $Enums.SyncActionType | null
+    idempotencyKey: string | null
+    status: $Enums.SyncStatus | null
+    retryCount: number | null
+    lastAttemptAt: Date | null
+    syncedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SyncQueueItemCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    userId: number
+    actionType: number
+    payload: number
+    idempotencyKey: number
+    status: number
+    conflictDetail: number
+    retryCount: number
+    lastAttemptAt: number
+    syncedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SyncQueueItemAvgAggregateInputType = {
+    retryCount?: true
+  }
+
+  export type SyncQueueItemSumAggregateInputType = {
+    retryCount?: true
+  }
+
+  export type SyncQueueItemMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    userId?: true
+    actionType?: true
+    idempotencyKey?: true
+    status?: true
+    retryCount?: true
+    lastAttemptAt?: true
+    syncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SyncQueueItemMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    userId?: true
+    actionType?: true
+    idempotencyKey?: true
+    status?: true
+    retryCount?: true
+    lastAttemptAt?: true
+    syncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SyncQueueItemCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    userId?: true
+    actionType?: true
+    payload?: true
+    idempotencyKey?: true
+    status?: true
+    conflictDetail?: true
+    retryCount?: true
+    lastAttemptAt?: true
+    syncedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SyncQueueItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SyncQueueItem to aggregate.
+     */
+    where?: SyncQueueItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SyncQueueItems to fetch.
+     */
+    orderBy?: SyncQueueItemOrderByWithRelationInput | SyncQueueItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SyncQueueItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SyncQueueItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SyncQueueItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SyncQueueItems
+    **/
+    _count?: true | SyncQueueItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SyncQueueItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SyncQueueItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SyncQueueItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SyncQueueItemMaxAggregateInputType
+  }
+
+  export type GetSyncQueueItemAggregateType<T extends SyncQueueItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateSyncQueueItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSyncQueueItem[P]>
+      : GetScalarType<T[P], AggregateSyncQueueItem[P]>
+  }
+
+
+
+
+  export type SyncQueueItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SyncQueueItemWhereInput
+    orderBy?: SyncQueueItemOrderByWithAggregationInput | SyncQueueItemOrderByWithAggregationInput[]
+    by: SyncQueueItemScalarFieldEnum[] | SyncQueueItemScalarFieldEnum
+    having?: SyncQueueItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SyncQueueItemCountAggregateInputType | true
+    _avg?: SyncQueueItemAvgAggregateInputType
+    _sum?: SyncQueueItemSumAggregateInputType
+    _min?: SyncQueueItemMinAggregateInputType
+    _max?: SyncQueueItemMaxAggregateInputType
+  }
+
+  export type SyncQueueItemGroupByOutputType = {
+    id: string
+    organizationId: string
+    userId: string
+    actionType: $Enums.SyncActionType
+    payload: JsonValue
+    idempotencyKey: string
+    status: $Enums.SyncStatus
+    conflictDetail: JsonValue | null
+    retryCount: number
+    lastAttemptAt: Date | null
+    syncedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SyncQueueItemCountAggregateOutputType | null
+    _avg: SyncQueueItemAvgAggregateOutputType | null
+    _sum: SyncQueueItemSumAggregateOutputType | null
+    _min: SyncQueueItemMinAggregateOutputType | null
+    _max: SyncQueueItemMaxAggregateOutputType | null
+  }
+
+  type GetSyncQueueItemGroupByPayload<T extends SyncQueueItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SyncQueueItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SyncQueueItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SyncQueueItemGroupByOutputType[P]>
+            : GetScalarType<T[P], SyncQueueItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SyncQueueItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    userId?: boolean
+    actionType?: boolean
+    payload?: boolean
+    idempotencyKey?: boolean
+    status?: boolean
+    conflictDetail?: boolean
+    retryCount?: boolean
+    lastAttemptAt?: boolean
+    syncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["syncQueueItem"]>
+
+  export type SyncQueueItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    userId?: boolean
+    actionType?: boolean
+    payload?: boolean
+    idempotencyKey?: boolean
+    status?: boolean
+    conflictDetail?: boolean
+    retryCount?: boolean
+    lastAttemptAt?: boolean
+    syncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["syncQueueItem"]>
+
+  export type SyncQueueItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    userId?: boolean
+    actionType?: boolean
+    payload?: boolean
+    idempotencyKey?: boolean
+    status?: boolean
+    conflictDetail?: boolean
+    retryCount?: boolean
+    lastAttemptAt?: boolean
+    syncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["syncQueueItem"]>
+
+  export type SyncQueueItemSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    userId?: boolean
+    actionType?: boolean
+    payload?: boolean
+    idempotencyKey?: boolean
+    status?: boolean
+    conflictDetail?: boolean
+    retryCount?: boolean
+    lastAttemptAt?: boolean
+    syncedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SyncQueueItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "userId" | "actionType" | "payload" | "idempotencyKey" | "status" | "conflictDetail" | "retryCount" | "lastAttemptAt" | "syncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["syncQueueItem"]>
+  export type SyncQueueItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type SyncQueueItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+  export type SyncQueueItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+  }
+
+  export type $SyncQueueItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SyncQueueItem"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      userId: string
+      actionType: $Enums.SyncActionType
+      payload: Prisma.JsonValue
+      idempotencyKey: string
+      status: $Enums.SyncStatus
+      conflictDetail: Prisma.JsonValue | null
+      retryCount: number
+      lastAttemptAt: Date | null
+      syncedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["syncQueueItem"]>
+    composites: {}
+  }
+
+  type SyncQueueItemGetPayload<S extends boolean | null | undefined | SyncQueueItemDefaultArgs> = $Result.GetResult<Prisma.$SyncQueueItemPayload, S>
+
+  type SyncQueueItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SyncQueueItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SyncQueueItemCountAggregateInputType | true
+    }
+
+  export interface SyncQueueItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SyncQueueItem'], meta: { name: 'SyncQueueItem' } }
+    /**
+     * Find zero or one SyncQueueItem that matches the filter.
+     * @param {SyncQueueItemFindUniqueArgs} args - Arguments to find a SyncQueueItem
+     * @example
+     * // Get one SyncQueueItem
+     * const syncQueueItem = await prisma.syncQueueItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SyncQueueItemFindUniqueArgs>(args: SelectSubset<T, SyncQueueItemFindUniqueArgs<ExtArgs>>): Prisma__SyncQueueItemClient<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SyncQueueItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SyncQueueItemFindUniqueOrThrowArgs} args - Arguments to find a SyncQueueItem
+     * @example
+     * // Get one SyncQueueItem
+     * const syncQueueItem = await prisma.syncQueueItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SyncQueueItemFindUniqueOrThrowArgs>(args: SelectSubset<T, SyncQueueItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SyncQueueItemClient<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SyncQueueItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncQueueItemFindFirstArgs} args - Arguments to find a SyncQueueItem
+     * @example
+     * // Get one SyncQueueItem
+     * const syncQueueItem = await prisma.syncQueueItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SyncQueueItemFindFirstArgs>(args?: SelectSubset<T, SyncQueueItemFindFirstArgs<ExtArgs>>): Prisma__SyncQueueItemClient<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SyncQueueItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncQueueItemFindFirstOrThrowArgs} args - Arguments to find a SyncQueueItem
+     * @example
+     * // Get one SyncQueueItem
+     * const syncQueueItem = await prisma.syncQueueItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SyncQueueItemFindFirstOrThrowArgs>(args?: SelectSubset<T, SyncQueueItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__SyncQueueItemClient<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SyncQueueItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncQueueItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SyncQueueItems
+     * const syncQueueItems = await prisma.syncQueueItem.findMany()
+     * 
+     * // Get first 10 SyncQueueItems
+     * const syncQueueItems = await prisma.syncQueueItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const syncQueueItemWithIdOnly = await prisma.syncQueueItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SyncQueueItemFindManyArgs>(args?: SelectSubset<T, SyncQueueItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SyncQueueItem.
+     * @param {SyncQueueItemCreateArgs} args - Arguments to create a SyncQueueItem.
+     * @example
+     * // Create one SyncQueueItem
+     * const SyncQueueItem = await prisma.syncQueueItem.create({
+     *   data: {
+     *     // ... data to create a SyncQueueItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends SyncQueueItemCreateArgs>(args: SelectSubset<T, SyncQueueItemCreateArgs<ExtArgs>>): Prisma__SyncQueueItemClient<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SyncQueueItems.
+     * @param {SyncQueueItemCreateManyArgs} args - Arguments to create many SyncQueueItems.
+     * @example
+     * // Create many SyncQueueItems
+     * const syncQueueItem = await prisma.syncQueueItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SyncQueueItemCreateManyArgs>(args?: SelectSubset<T, SyncQueueItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SyncQueueItems and returns the data saved in the database.
+     * @param {SyncQueueItemCreateManyAndReturnArgs} args - Arguments to create many SyncQueueItems.
+     * @example
+     * // Create many SyncQueueItems
+     * const syncQueueItem = await prisma.syncQueueItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SyncQueueItems and only return the `id`
+     * const syncQueueItemWithIdOnly = await prisma.syncQueueItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SyncQueueItemCreateManyAndReturnArgs>(args?: SelectSubset<T, SyncQueueItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SyncQueueItem.
+     * @param {SyncQueueItemDeleteArgs} args - Arguments to delete one SyncQueueItem.
+     * @example
+     * // Delete one SyncQueueItem
+     * const SyncQueueItem = await prisma.syncQueueItem.delete({
+     *   where: {
+     *     // ... filter to delete one SyncQueueItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SyncQueueItemDeleteArgs>(args: SelectSubset<T, SyncQueueItemDeleteArgs<ExtArgs>>): Prisma__SyncQueueItemClient<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SyncQueueItem.
+     * @param {SyncQueueItemUpdateArgs} args - Arguments to update one SyncQueueItem.
+     * @example
+     * // Update one SyncQueueItem
+     * const syncQueueItem = await prisma.syncQueueItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SyncQueueItemUpdateArgs>(args: SelectSubset<T, SyncQueueItemUpdateArgs<ExtArgs>>): Prisma__SyncQueueItemClient<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SyncQueueItems.
+     * @param {SyncQueueItemDeleteManyArgs} args - Arguments to filter SyncQueueItems to delete.
+     * @example
+     * // Delete a few SyncQueueItems
+     * const { count } = await prisma.syncQueueItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SyncQueueItemDeleteManyArgs>(args?: SelectSubset<T, SyncQueueItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SyncQueueItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncQueueItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SyncQueueItems
+     * const syncQueueItem = await prisma.syncQueueItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SyncQueueItemUpdateManyArgs>(args: SelectSubset<T, SyncQueueItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SyncQueueItems and returns the data updated in the database.
+     * @param {SyncQueueItemUpdateManyAndReturnArgs} args - Arguments to update many SyncQueueItems.
+     * @example
+     * // Update many SyncQueueItems
+     * const syncQueueItem = await prisma.syncQueueItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SyncQueueItems and only return the `id`
+     * const syncQueueItemWithIdOnly = await prisma.syncQueueItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SyncQueueItemUpdateManyAndReturnArgs>(args: SelectSubset<T, SyncQueueItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SyncQueueItem.
+     * @param {SyncQueueItemUpsertArgs} args - Arguments to update or create a SyncQueueItem.
+     * @example
+     * // Update or create a SyncQueueItem
+     * const syncQueueItem = await prisma.syncQueueItem.upsert({
+     *   create: {
+     *     // ... data to create a SyncQueueItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SyncQueueItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SyncQueueItemUpsertArgs>(args: SelectSubset<T, SyncQueueItemUpsertArgs<ExtArgs>>): Prisma__SyncQueueItemClient<$Result.GetResult<Prisma.$SyncQueueItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SyncQueueItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncQueueItemCountArgs} args - Arguments to filter SyncQueueItems to count.
+     * @example
+     * // Count the number of SyncQueueItems
+     * const count = await prisma.syncQueueItem.count({
+     *   where: {
+     *     // ... the filter for the SyncQueueItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends SyncQueueItemCountArgs>(
+      args?: Subset<T, SyncQueueItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SyncQueueItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SyncQueueItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncQueueItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SyncQueueItemAggregateArgs>(args: Subset<T, SyncQueueItemAggregateArgs>): Prisma.PrismaPromise<GetSyncQueueItemAggregateType<T>>
+
+    /**
+     * Group by SyncQueueItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SyncQueueItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SyncQueueItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SyncQueueItemGroupByArgs['orderBy'] }
+        : { orderBy?: SyncQueueItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SyncQueueItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSyncQueueItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SyncQueueItem model
+   */
+  readonly fields: SyncQueueItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SyncQueueItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SyncQueueItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SyncQueueItem model
+   */
+  interface SyncQueueItemFieldRefs {
+    readonly id: FieldRef<"SyncQueueItem", 'String'>
+    readonly organizationId: FieldRef<"SyncQueueItem", 'String'>
+    readonly userId: FieldRef<"SyncQueueItem", 'String'>
+    readonly actionType: FieldRef<"SyncQueueItem", 'SyncActionType'>
+    readonly payload: FieldRef<"SyncQueueItem", 'Json'>
+    readonly idempotencyKey: FieldRef<"SyncQueueItem", 'String'>
+    readonly status: FieldRef<"SyncQueueItem", 'SyncStatus'>
+    readonly conflictDetail: FieldRef<"SyncQueueItem", 'Json'>
+    readonly retryCount: FieldRef<"SyncQueueItem", 'Int'>
+    readonly lastAttemptAt: FieldRef<"SyncQueueItem", 'DateTime'>
+    readonly syncedAt: FieldRef<"SyncQueueItem", 'DateTime'>
+    readonly createdAt: FieldRef<"SyncQueueItem", 'DateTime'>
+    readonly updatedAt: FieldRef<"SyncQueueItem", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SyncQueueItem findUnique
+   */
+  export type SyncQueueItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SyncQueueItem to fetch.
+     */
+    where: SyncQueueItemWhereUniqueInput
+  }
+
+  /**
+   * SyncQueueItem findUniqueOrThrow
+   */
+  export type SyncQueueItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SyncQueueItem to fetch.
+     */
+    where: SyncQueueItemWhereUniqueInput
+  }
+
+  /**
+   * SyncQueueItem findFirst
+   */
+  export type SyncQueueItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SyncQueueItem to fetch.
+     */
+    where?: SyncQueueItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SyncQueueItems to fetch.
+     */
+    orderBy?: SyncQueueItemOrderByWithRelationInput | SyncQueueItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SyncQueueItems.
+     */
+    cursor?: SyncQueueItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SyncQueueItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SyncQueueItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SyncQueueItems.
+     */
+    distinct?: SyncQueueItemScalarFieldEnum | SyncQueueItemScalarFieldEnum[]
+  }
+
+  /**
+   * SyncQueueItem findFirstOrThrow
+   */
+  export type SyncQueueItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SyncQueueItem to fetch.
+     */
+    where?: SyncQueueItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SyncQueueItems to fetch.
+     */
+    orderBy?: SyncQueueItemOrderByWithRelationInput | SyncQueueItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SyncQueueItems.
+     */
+    cursor?: SyncQueueItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SyncQueueItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SyncQueueItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SyncQueueItems.
+     */
+    distinct?: SyncQueueItemScalarFieldEnum | SyncQueueItemScalarFieldEnum[]
+  }
+
+  /**
+   * SyncQueueItem findMany
+   */
+  export type SyncQueueItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SyncQueueItems to fetch.
+     */
+    where?: SyncQueueItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SyncQueueItems to fetch.
+     */
+    orderBy?: SyncQueueItemOrderByWithRelationInput | SyncQueueItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SyncQueueItems.
+     */
+    cursor?: SyncQueueItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SyncQueueItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SyncQueueItems.
+     */
+    skip?: number
+    distinct?: SyncQueueItemScalarFieldEnum | SyncQueueItemScalarFieldEnum[]
+  }
+
+  /**
+   * SyncQueueItem create
+   */
+  export type SyncQueueItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SyncQueueItem.
+     */
+    data: XOR<SyncQueueItemCreateInput, SyncQueueItemUncheckedCreateInput>
+  }
+
+  /**
+   * SyncQueueItem createMany
+   */
+  export type SyncQueueItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SyncQueueItems.
+     */
+    data: SyncQueueItemCreateManyInput | SyncQueueItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SyncQueueItem createManyAndReturn
+   */
+  export type SyncQueueItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many SyncQueueItems.
+     */
+    data: SyncQueueItemCreateManyInput | SyncQueueItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SyncQueueItem update
+   */
+  export type SyncQueueItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SyncQueueItem.
+     */
+    data: XOR<SyncQueueItemUpdateInput, SyncQueueItemUncheckedUpdateInput>
+    /**
+     * Choose, which SyncQueueItem to update.
+     */
+    where: SyncQueueItemWhereUniqueInput
+  }
+
+  /**
+   * SyncQueueItem updateMany
+   */
+  export type SyncQueueItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SyncQueueItems.
+     */
+    data: XOR<SyncQueueItemUpdateManyMutationInput, SyncQueueItemUncheckedUpdateManyInput>
+    /**
+     * Filter which SyncQueueItems to update
+     */
+    where?: SyncQueueItemWhereInput
+    /**
+     * Limit how many SyncQueueItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SyncQueueItem updateManyAndReturn
+   */
+  export type SyncQueueItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * The data used to update SyncQueueItems.
+     */
+    data: XOR<SyncQueueItemUpdateManyMutationInput, SyncQueueItemUncheckedUpdateManyInput>
+    /**
+     * Filter which SyncQueueItems to update
+     */
+    where?: SyncQueueItemWhereInput
+    /**
+     * Limit how many SyncQueueItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SyncQueueItem upsert
+   */
+  export type SyncQueueItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SyncQueueItem to update in case it exists.
+     */
+    where: SyncQueueItemWhereUniqueInput
+    /**
+     * In case the SyncQueueItem found by the `where` argument doesn't exist, create a new SyncQueueItem with this data.
+     */
+    create: XOR<SyncQueueItemCreateInput, SyncQueueItemUncheckedCreateInput>
+    /**
+     * In case the SyncQueueItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SyncQueueItemUpdateInput, SyncQueueItemUncheckedUpdateInput>
+  }
+
+  /**
+   * SyncQueueItem delete
+   */
+  export type SyncQueueItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+    /**
+     * Filter which SyncQueueItem to delete.
+     */
+    where: SyncQueueItemWhereUniqueInput
+  }
+
+  /**
+   * SyncQueueItem deleteMany
+   */
+  export type SyncQueueItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SyncQueueItems to delete
+     */
+    where?: SyncQueueItemWhereInput
+    /**
+     * Limit how many SyncQueueItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SyncQueueItem without action
+   */
+  export type SyncQueueItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SyncQueueItem
+     */
+    select?: SyncQueueItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SyncQueueItem
+     */
+    omit?: SyncQueueItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SyncQueueItemInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -158325,6 +161104,50 @@ export namespace Prisma {
   export type TaxInvoiceSequenceScalarFieldEnum = (typeof TaxInvoiceSequenceScalarFieldEnum)[keyof typeof TaxInvoiceSequenceScalarFieldEnum]
 
 
+  export const BackupRunScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    type: 'type',
+    status: 'status',
+    storageKey: 'storageKey',
+    checksum: 'checksum',
+    sizeBytes: 'sizeBytes',
+    rowCounts: 'rowCounts',
+    auditChainHead: 'auditChainHead',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    verifiedAt: 'verifiedAt',
+    verificationChecksum: 'verificationChecksum',
+    restoreTestedAt: 'restoreTestedAt',
+    restoreTestResult: 'restoreTestResult',
+    errorMessage: 'errorMessage',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BackupRunScalarFieldEnum = (typeof BackupRunScalarFieldEnum)[keyof typeof BackupRunScalarFieldEnum]
+
+
+  export const SyncQueueItemScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    userId: 'userId',
+    actionType: 'actionType',
+    payload: 'payload',
+    idempotencyKey: 'idempotencyKey',
+    status: 'status',
+    conflictDetail: 'conflictDetail',
+    retryCount: 'retryCount',
+    lastAttemptAt: 'lastAttemptAt',
+    syncedAt: 'syncedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SyncQueueItemScalarFieldEnum = (typeof SyncQueueItemScalarFieldEnum)[keyof typeof SyncQueueItemScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -160034,6 +162857,62 @@ export namespace Prisma {
    * Reference to a field of type 'CredentialStatus[]'
    */
   export type ListEnumCredentialStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CredentialStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BackupType'
+   */
+  export type EnumBackupTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BackupType'>
+    
+
+
+  /**
+   * Reference to a field of type 'BackupType[]'
+   */
+  export type ListEnumBackupTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BackupType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BackupStatus'
+   */
+  export type EnumBackupStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BackupStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'BackupStatus[]'
+   */
+  export type ListEnumBackupStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BackupStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SyncActionType'
+   */
+  export type EnumSyncActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SyncActionType'>
+    
+
+
+  /**
+   * Reference to a field of type 'SyncActionType[]'
+   */
+  export type ListEnumSyncActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SyncActionType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SyncStatus'
+   */
+  export type EnumSyncStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SyncStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SyncStatus[]'
+   */
+  export type ListEnumSyncStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SyncStatus[]'>
     
 
 
@@ -162268,6 +165147,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseListRelationFilter
     closeChecklistItems?: CloseChecklistItemListRelationFilter
     anomalies?: AnomalyFlagListRelationFilter
+    backupRuns?: BackupRunListRelationFilter
+    syncQueueItems?: SyncQueueItemListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -162353,6 +165234,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseOrderByRelationAggregateInput
     closeChecklistItems?: CloseChecklistItemOrderByRelationAggregateInput
     anomalies?: AnomalyFlagOrderByRelationAggregateInput
+    backupRuns?: BackupRunOrderByRelationAggregateInput
+    syncQueueItems?: SyncQueueItemOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -162441,6 +165324,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseListRelationFilter
     closeChecklistItems?: CloseChecklistItemListRelationFilter
     anomalies?: AnomalyFlagListRelationFilter
+    backupRuns?: BackupRunListRelationFilter
+    syncQueueItems?: SyncQueueItemListRelationFilter
   }, "id" | "code">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -172418,6 +175303,230 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"TaxInvoiceSequence"> | Date | string
   }
 
+  export type BackupRunWhereInput = {
+    AND?: BackupRunWhereInput | BackupRunWhereInput[]
+    OR?: BackupRunWhereInput[]
+    NOT?: BackupRunWhereInput | BackupRunWhereInput[]
+    id?: StringFilter<"BackupRun"> | string
+    organizationId?: StringFilter<"BackupRun"> | string
+    type?: EnumBackupTypeFilter<"BackupRun"> | $Enums.BackupType
+    status?: EnumBackupStatusFilter<"BackupRun"> | $Enums.BackupStatus
+    storageKey?: StringFilter<"BackupRun"> | string
+    checksum?: StringFilter<"BackupRun"> | string
+    sizeBytes?: BigIntFilter<"BackupRun"> | bigint | number
+    rowCounts?: JsonNullableFilter<"BackupRun">
+    auditChainHead?: StringNullableFilter<"BackupRun"> | string | null
+    startedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    verifiedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    verificationChecksum?: StringNullableFilter<"BackupRun"> | string | null
+    restoreTestedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    restoreTestResult?: JsonNullableFilter<"BackupRun">
+    errorMessage?: StringNullableFilter<"BackupRun"> | string | null
+    createdById?: StringFilter<"BackupRun"> | string
+    createdAt?: DateTimeFilter<"BackupRun"> | Date | string
+    updatedAt?: DateTimeFilter<"BackupRun"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }
+
+  export type BackupRunOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    storageKey?: SortOrder
+    checksum?: SortOrder
+    sizeBytes?: SortOrder
+    rowCounts?: SortOrderInput | SortOrder
+    auditChainHead?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    verificationChecksum?: SortOrderInput | SortOrder
+    restoreTestedAt?: SortOrderInput | SortOrder
+    restoreTestResult?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+  }
+
+  export type BackupRunWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BackupRunWhereInput | BackupRunWhereInput[]
+    OR?: BackupRunWhereInput[]
+    NOT?: BackupRunWhereInput | BackupRunWhereInput[]
+    organizationId?: StringFilter<"BackupRun"> | string
+    type?: EnumBackupTypeFilter<"BackupRun"> | $Enums.BackupType
+    status?: EnumBackupStatusFilter<"BackupRun"> | $Enums.BackupStatus
+    storageKey?: StringFilter<"BackupRun"> | string
+    checksum?: StringFilter<"BackupRun"> | string
+    sizeBytes?: BigIntFilter<"BackupRun"> | bigint | number
+    rowCounts?: JsonNullableFilter<"BackupRun">
+    auditChainHead?: StringNullableFilter<"BackupRun"> | string | null
+    startedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    verifiedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    verificationChecksum?: StringNullableFilter<"BackupRun"> | string | null
+    restoreTestedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    restoreTestResult?: JsonNullableFilter<"BackupRun">
+    errorMessage?: StringNullableFilter<"BackupRun"> | string | null
+    createdById?: StringFilter<"BackupRun"> | string
+    createdAt?: DateTimeFilter<"BackupRun"> | Date | string
+    updatedAt?: DateTimeFilter<"BackupRun"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }, "id">
+
+  export type BackupRunOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    storageKey?: SortOrder
+    checksum?: SortOrder
+    sizeBytes?: SortOrder
+    rowCounts?: SortOrderInput | SortOrder
+    auditChainHead?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    verificationChecksum?: SortOrderInput | SortOrder
+    restoreTestedAt?: SortOrderInput | SortOrder
+    restoreTestResult?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BackupRunCountOrderByAggregateInput
+    _avg?: BackupRunAvgOrderByAggregateInput
+    _max?: BackupRunMaxOrderByAggregateInput
+    _min?: BackupRunMinOrderByAggregateInput
+    _sum?: BackupRunSumOrderByAggregateInput
+  }
+
+  export type BackupRunScalarWhereWithAggregatesInput = {
+    AND?: BackupRunScalarWhereWithAggregatesInput | BackupRunScalarWhereWithAggregatesInput[]
+    OR?: BackupRunScalarWhereWithAggregatesInput[]
+    NOT?: BackupRunScalarWhereWithAggregatesInput | BackupRunScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BackupRun"> | string
+    organizationId?: StringWithAggregatesFilter<"BackupRun"> | string
+    type?: EnumBackupTypeWithAggregatesFilter<"BackupRun"> | $Enums.BackupType
+    status?: EnumBackupStatusWithAggregatesFilter<"BackupRun"> | $Enums.BackupStatus
+    storageKey?: StringWithAggregatesFilter<"BackupRun"> | string
+    checksum?: StringWithAggregatesFilter<"BackupRun"> | string
+    sizeBytes?: BigIntWithAggregatesFilter<"BackupRun"> | bigint | number
+    rowCounts?: JsonNullableWithAggregatesFilter<"BackupRun">
+    auditChainHead?: StringNullableWithAggregatesFilter<"BackupRun"> | string | null
+    startedAt?: DateTimeNullableWithAggregatesFilter<"BackupRun"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"BackupRun"> | Date | string | null
+    verifiedAt?: DateTimeNullableWithAggregatesFilter<"BackupRun"> | Date | string | null
+    verificationChecksum?: StringNullableWithAggregatesFilter<"BackupRun"> | string | null
+    restoreTestedAt?: DateTimeNullableWithAggregatesFilter<"BackupRun"> | Date | string | null
+    restoreTestResult?: JsonNullableWithAggregatesFilter<"BackupRun">
+    errorMessage?: StringNullableWithAggregatesFilter<"BackupRun"> | string | null
+    createdById?: StringWithAggregatesFilter<"BackupRun"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"BackupRun"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BackupRun"> | Date | string
+  }
+
+  export type SyncQueueItemWhereInput = {
+    AND?: SyncQueueItemWhereInput | SyncQueueItemWhereInput[]
+    OR?: SyncQueueItemWhereInput[]
+    NOT?: SyncQueueItemWhereInput | SyncQueueItemWhereInput[]
+    id?: StringFilter<"SyncQueueItem"> | string
+    organizationId?: StringFilter<"SyncQueueItem"> | string
+    userId?: StringFilter<"SyncQueueItem"> | string
+    actionType?: EnumSyncActionTypeFilter<"SyncQueueItem"> | $Enums.SyncActionType
+    payload?: JsonFilter<"SyncQueueItem">
+    idempotencyKey?: StringFilter<"SyncQueueItem"> | string
+    status?: EnumSyncStatusFilter<"SyncQueueItem"> | $Enums.SyncStatus
+    conflictDetail?: JsonNullableFilter<"SyncQueueItem">
+    retryCount?: IntFilter<"SyncQueueItem"> | number
+    lastAttemptAt?: DateTimeNullableFilter<"SyncQueueItem"> | Date | string | null
+    syncedAt?: DateTimeNullableFilter<"SyncQueueItem"> | Date | string | null
+    createdAt?: DateTimeFilter<"SyncQueueItem"> | Date | string
+    updatedAt?: DateTimeFilter<"SyncQueueItem"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }
+
+  export type SyncQueueItemOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    userId?: SortOrder
+    actionType?: SortOrder
+    payload?: SortOrder
+    idempotencyKey?: SortOrder
+    status?: SortOrder
+    conflictDetail?: SortOrderInput | SortOrder
+    retryCount?: SortOrder
+    lastAttemptAt?: SortOrderInput | SortOrder
+    syncedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+  }
+
+  export type SyncQueueItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    idempotencyKey?: string
+    AND?: SyncQueueItemWhereInput | SyncQueueItemWhereInput[]
+    OR?: SyncQueueItemWhereInput[]
+    NOT?: SyncQueueItemWhereInput | SyncQueueItemWhereInput[]
+    organizationId?: StringFilter<"SyncQueueItem"> | string
+    userId?: StringFilter<"SyncQueueItem"> | string
+    actionType?: EnumSyncActionTypeFilter<"SyncQueueItem"> | $Enums.SyncActionType
+    payload?: JsonFilter<"SyncQueueItem">
+    status?: EnumSyncStatusFilter<"SyncQueueItem"> | $Enums.SyncStatus
+    conflictDetail?: JsonNullableFilter<"SyncQueueItem">
+    retryCount?: IntFilter<"SyncQueueItem"> | number
+    lastAttemptAt?: DateTimeNullableFilter<"SyncQueueItem"> | Date | string | null
+    syncedAt?: DateTimeNullableFilter<"SyncQueueItem"> | Date | string | null
+    createdAt?: DateTimeFilter<"SyncQueueItem"> | Date | string
+    updatedAt?: DateTimeFilter<"SyncQueueItem"> | Date | string
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+  }, "id" | "idempotencyKey">
+
+  export type SyncQueueItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    userId?: SortOrder
+    actionType?: SortOrder
+    payload?: SortOrder
+    idempotencyKey?: SortOrder
+    status?: SortOrder
+    conflictDetail?: SortOrderInput | SortOrder
+    retryCount?: SortOrder
+    lastAttemptAt?: SortOrderInput | SortOrder
+    syncedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SyncQueueItemCountOrderByAggregateInput
+    _avg?: SyncQueueItemAvgOrderByAggregateInput
+    _max?: SyncQueueItemMaxOrderByAggregateInput
+    _min?: SyncQueueItemMinOrderByAggregateInput
+    _sum?: SyncQueueItemSumOrderByAggregateInput
+  }
+
+  export type SyncQueueItemScalarWhereWithAggregatesInput = {
+    AND?: SyncQueueItemScalarWhereWithAggregatesInput | SyncQueueItemScalarWhereWithAggregatesInput[]
+    OR?: SyncQueueItemScalarWhereWithAggregatesInput[]
+    NOT?: SyncQueueItemScalarWhereWithAggregatesInput | SyncQueueItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SyncQueueItem"> | string
+    organizationId?: StringWithAggregatesFilter<"SyncQueueItem"> | string
+    userId?: StringWithAggregatesFilter<"SyncQueueItem"> | string
+    actionType?: EnumSyncActionTypeWithAggregatesFilter<"SyncQueueItem"> | $Enums.SyncActionType
+    payload?: JsonWithAggregatesFilter<"SyncQueueItem">
+    idempotencyKey?: StringWithAggregatesFilter<"SyncQueueItem"> | string
+    status?: EnumSyncStatusWithAggregatesFilter<"SyncQueueItem"> | $Enums.SyncStatus
+    conflictDetail?: JsonNullableWithAggregatesFilter<"SyncQueueItem">
+    retryCount?: IntWithAggregatesFilter<"SyncQueueItem"> | number
+    lastAttemptAt?: DateTimeNullableWithAggregatesFilter<"SyncQueueItem"> | Date | string | null
+    syncedAt?: DateTimeNullableWithAggregatesFilter<"SyncQueueItem"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SyncQueueItem"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SyncQueueItem"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -174918,6 +178027,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -175003,6 +178114,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -175088,6 +178201,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -175173,6 +178288,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -186113,6 +189230,270 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BackupRunCreateInput = {
+    id?: string
+    type: $Enums.BackupType
+    status?: $Enums.BackupStatus
+    storageKey: string
+    checksum: string
+    sizeBytes: bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    verificationChecksum?: string | null
+    restoreTestedAt?: Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutBackupRunsInput
+  }
+
+  export type BackupRunUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    type: $Enums.BackupType
+    status?: $Enums.BackupStatus
+    storageKey: string
+    checksum: string
+    sizeBytes: bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    verificationChecksum?: string | null
+    restoreTestedAt?: Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BackupRunUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumBackupTypeFieldUpdateOperationsInput | $Enums.BackupType
+    status?: EnumBackupStatusFieldUpdateOperationsInput | $Enums.BackupStatus
+    storageKey?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verificationChecksum?: NullableStringFieldUpdateOperationsInput | string | null
+    restoreTestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutBackupRunsNestedInput
+  }
+
+  export type BackupRunUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    type?: EnumBackupTypeFieldUpdateOperationsInput | $Enums.BackupType
+    status?: EnumBackupStatusFieldUpdateOperationsInput | $Enums.BackupStatus
+    storageKey?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verificationChecksum?: NullableStringFieldUpdateOperationsInput | string | null
+    restoreTestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BackupRunCreateManyInput = {
+    id?: string
+    organizationId: string
+    type: $Enums.BackupType
+    status?: $Enums.BackupStatus
+    storageKey: string
+    checksum: string
+    sizeBytes: bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    verificationChecksum?: string | null
+    restoreTestedAt?: Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BackupRunUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumBackupTypeFieldUpdateOperationsInput | $Enums.BackupType
+    status?: EnumBackupStatusFieldUpdateOperationsInput | $Enums.BackupStatus
+    storageKey?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verificationChecksum?: NullableStringFieldUpdateOperationsInput | string | null
+    restoreTestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BackupRunUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    type?: EnumBackupTypeFieldUpdateOperationsInput | $Enums.BackupType
+    status?: EnumBackupStatusFieldUpdateOperationsInput | $Enums.BackupStatus
+    storageKey?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verificationChecksum?: NullableStringFieldUpdateOperationsInput | string | null
+    restoreTestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncQueueItemCreateInput = {
+    id?: string
+    userId: string
+    actionType: $Enums.SyncActionType
+    payload: JsonNullValueInput | InputJsonValue
+    idempotencyKey: string
+    status?: $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: number
+    lastAttemptAt?: Date | string | null
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization: OrganizationCreateNestedOneWithoutSyncQueueItemsInput
+  }
+
+  export type SyncQueueItemUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    userId: string
+    actionType: $Enums.SyncActionType
+    payload: JsonNullValueInput | InputJsonValue
+    idempotencyKey: string
+    status?: $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: number
+    lastAttemptAt?: Date | string | null
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SyncQueueItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    actionType?: EnumSyncActionTypeFieldUpdateOperationsInput | $Enums.SyncActionType
+    payload?: JsonNullValueInput | InputJsonValue
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumSyncStatusFieldUpdateOperationsInput | $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneRequiredWithoutSyncQueueItemsNestedInput
+  }
+
+  export type SyncQueueItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    actionType?: EnumSyncActionTypeFieldUpdateOperationsInput | $Enums.SyncActionType
+    payload?: JsonNullValueInput | InputJsonValue
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumSyncStatusFieldUpdateOperationsInput | $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncQueueItemCreateManyInput = {
+    id?: string
+    organizationId: string
+    userId: string
+    actionType: $Enums.SyncActionType
+    payload: JsonNullValueInput | InputJsonValue
+    idempotencyKey: string
+    status?: $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: number
+    lastAttemptAt?: Date | string | null
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SyncQueueItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    actionType?: EnumSyncActionTypeFieldUpdateOperationsInput | $Enums.SyncActionType
+    payload?: JsonNullValueInput | InputJsonValue
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumSyncStatusFieldUpdateOperationsInput | $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncQueueItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    actionType?: EnumSyncActionTypeFieldUpdateOperationsInput | $Enums.SyncActionType
+    payload?: JsonNullValueInput | InputJsonValue
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumSyncStatusFieldUpdateOperationsInput | $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -188492,6 +191873,18 @@ export namespace Prisma {
     isNot?: TaxInvoiceSequenceWhereInput | null
   }
 
+  export type BackupRunListRelationFilter = {
+    every?: BackupRunWhereInput
+    some?: BackupRunWhereInput
+    none?: BackupRunWhereInput
+  }
+
+  export type SyncQueueItemListRelationFilter = {
+    every?: SyncQueueItemWhereInput
+    some?: SyncQueueItemWhereInput
+    none?: SyncQueueItemWhereInput
+  }
+
   export type LocationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -188673,6 +192066,14 @@ export namespace Prisma {
   }
 
   export type ComplianceDocumentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BackupRunOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SyncQueueItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -196143,6 +199544,196 @@ export namespace Prisma {
     nextNumber?: SortOrder
   }
 
+  export type EnumBackupTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.BackupType | EnumBackupTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.BackupType[] | ListEnumBackupTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BackupType[] | ListEnumBackupTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumBackupTypeFilter<$PrismaModel> | $Enums.BackupType
+  }
+
+  export type EnumBackupStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.BackupStatus | EnumBackupStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BackupStatus[] | ListEnumBackupStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BackupStatus[] | ListEnumBackupStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBackupStatusFilter<$PrismaModel> | $Enums.BackupStatus
+  }
+
+  export type BackupRunCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    storageKey?: SortOrder
+    checksum?: SortOrder
+    sizeBytes?: SortOrder
+    rowCounts?: SortOrder
+    auditChainHead?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    verifiedAt?: SortOrder
+    verificationChecksum?: SortOrder
+    restoreTestedAt?: SortOrder
+    restoreTestResult?: SortOrder
+    errorMessage?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BackupRunAvgOrderByAggregateInput = {
+    sizeBytes?: SortOrder
+  }
+
+  export type BackupRunMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    storageKey?: SortOrder
+    checksum?: SortOrder
+    sizeBytes?: SortOrder
+    auditChainHead?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    verifiedAt?: SortOrder
+    verificationChecksum?: SortOrder
+    restoreTestedAt?: SortOrder
+    errorMessage?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BackupRunMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    storageKey?: SortOrder
+    checksum?: SortOrder
+    sizeBytes?: SortOrder
+    auditChainHead?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    verifiedAt?: SortOrder
+    verificationChecksum?: SortOrder
+    restoreTestedAt?: SortOrder
+    errorMessage?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BackupRunSumOrderByAggregateInput = {
+    sizeBytes?: SortOrder
+  }
+
+  export type EnumBackupTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BackupType | EnumBackupTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.BackupType[] | ListEnumBackupTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BackupType[] | ListEnumBackupTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumBackupTypeWithAggregatesFilter<$PrismaModel> | $Enums.BackupType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBackupTypeFilter<$PrismaModel>
+    _max?: NestedEnumBackupTypeFilter<$PrismaModel>
+  }
+
+  export type EnumBackupStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BackupStatus | EnumBackupStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BackupStatus[] | ListEnumBackupStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BackupStatus[] | ListEnumBackupStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBackupStatusWithAggregatesFilter<$PrismaModel> | $Enums.BackupStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBackupStatusFilter<$PrismaModel>
+    _max?: NestedEnumBackupStatusFilter<$PrismaModel>
+  }
+
+  export type EnumSyncActionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.SyncActionType | EnumSyncActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SyncActionType[] | ListEnumSyncActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SyncActionType[] | ListEnumSyncActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSyncActionTypeFilter<$PrismaModel> | $Enums.SyncActionType
+  }
+
+  export type EnumSyncStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SyncStatus | EnumSyncStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SyncStatus[] | ListEnumSyncStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SyncStatus[] | ListEnumSyncStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSyncStatusFilter<$PrismaModel> | $Enums.SyncStatus
+  }
+
+  export type SyncQueueItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    userId?: SortOrder
+    actionType?: SortOrder
+    payload?: SortOrder
+    idempotencyKey?: SortOrder
+    status?: SortOrder
+    conflictDetail?: SortOrder
+    retryCount?: SortOrder
+    lastAttemptAt?: SortOrder
+    syncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SyncQueueItemAvgOrderByAggregateInput = {
+    retryCount?: SortOrder
+  }
+
+  export type SyncQueueItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    userId?: SortOrder
+    actionType?: SortOrder
+    idempotencyKey?: SortOrder
+    status?: SortOrder
+    retryCount?: SortOrder
+    lastAttemptAt?: SortOrder
+    syncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SyncQueueItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    userId?: SortOrder
+    actionType?: SortOrder
+    idempotencyKey?: SortOrder
+    status?: SortOrder
+    retryCount?: SortOrder
+    lastAttemptAt?: SortOrder
+    syncedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SyncQueueItemSumOrderByAggregateInput = {
+    retryCount?: SortOrder
+  }
+
+  export type EnumSyncActionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SyncActionType | EnumSyncActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SyncActionType[] | ListEnumSyncActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SyncActionType[] | ListEnumSyncActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSyncActionTypeWithAggregatesFilter<$PrismaModel> | $Enums.SyncActionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSyncActionTypeFilter<$PrismaModel>
+    _max?: NestedEnumSyncActionTypeFilter<$PrismaModel>
+  }
+
+  export type EnumSyncStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SyncStatus | EnumSyncStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SyncStatus[] | ListEnumSyncStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SyncStatus[] | ListEnumSyncStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSyncStatusWithAggregatesFilter<$PrismaModel> | $Enums.SyncStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSyncStatusFilter<$PrismaModel>
+    _max?: NestedEnumSyncStatusFilter<$PrismaModel>
+  }
+
   export type UserCreatepasswordHistoryInput = {
     set: string[]
   }
@@ -200659,6 +204250,20 @@ export namespace Prisma {
     connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
   }
 
+  export type BackupRunCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<BackupRunCreateWithoutOrganizationInput, BackupRunUncheckedCreateWithoutOrganizationInput> | BackupRunCreateWithoutOrganizationInput[] | BackupRunUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: BackupRunCreateOrConnectWithoutOrganizationInput | BackupRunCreateOrConnectWithoutOrganizationInput[]
+    createMany?: BackupRunCreateManyOrganizationInputEnvelope
+    connect?: BackupRunWhereUniqueInput | BackupRunWhereUniqueInput[]
+  }
+
+  export type SyncQueueItemCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<SyncQueueItemCreateWithoutOrganizationInput, SyncQueueItemUncheckedCreateWithoutOrganizationInput> | SyncQueueItemCreateWithoutOrganizationInput[] | SyncQueueItemUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SyncQueueItemCreateOrConnectWithoutOrganizationInput | SyncQueueItemCreateOrConnectWithoutOrganizationInput[]
+    createMany?: SyncQueueItemCreateManyOrganizationInputEnvelope
+    connect?: SyncQueueItemWhereUniqueInput | SyncQueueItemWhereUniqueInput[]
+  }
+
   export type OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -201111,6 +204716,20 @@ export namespace Prisma {
     connectOrCreate?: AnomalyFlagCreateOrConnectWithoutOrganizationInput | AnomalyFlagCreateOrConnectWithoutOrganizationInput[]
     createMany?: AnomalyFlagCreateManyOrganizationInputEnvelope
     connect?: AnomalyFlagWhereUniqueInput | AnomalyFlagWhereUniqueInput[]
+  }
+
+  export type BackupRunUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<BackupRunCreateWithoutOrganizationInput, BackupRunUncheckedCreateWithoutOrganizationInput> | BackupRunCreateWithoutOrganizationInput[] | BackupRunUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: BackupRunCreateOrConnectWithoutOrganizationInput | BackupRunCreateOrConnectWithoutOrganizationInput[]
+    createMany?: BackupRunCreateManyOrganizationInputEnvelope
+    connect?: BackupRunWhereUniqueInput | BackupRunWhereUniqueInput[]
+  }
+
+  export type SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<SyncQueueItemCreateWithoutOrganizationInput, SyncQueueItemUncheckedCreateWithoutOrganizationInput> | SyncQueueItemCreateWithoutOrganizationInput[] | SyncQueueItemUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SyncQueueItemCreateOrConnectWithoutOrganizationInput | SyncQueueItemCreateOrConnectWithoutOrganizationInput[]
+    createMany?: SyncQueueItemCreateManyOrganizationInputEnvelope
+    connect?: SyncQueueItemWhereUniqueInput | SyncQueueItemWhereUniqueInput[]
   }
 
   export type EnumOrganizationTypeFieldUpdateOperationsInput = {
@@ -202027,6 +205646,34 @@ export namespace Prisma {
     deleteMany?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
   }
 
+  export type BackupRunUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<BackupRunCreateWithoutOrganizationInput, BackupRunUncheckedCreateWithoutOrganizationInput> | BackupRunCreateWithoutOrganizationInput[] | BackupRunUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: BackupRunCreateOrConnectWithoutOrganizationInput | BackupRunCreateOrConnectWithoutOrganizationInput[]
+    upsert?: BackupRunUpsertWithWhereUniqueWithoutOrganizationInput | BackupRunUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: BackupRunCreateManyOrganizationInputEnvelope
+    set?: BackupRunWhereUniqueInput | BackupRunWhereUniqueInput[]
+    disconnect?: BackupRunWhereUniqueInput | BackupRunWhereUniqueInput[]
+    delete?: BackupRunWhereUniqueInput | BackupRunWhereUniqueInput[]
+    connect?: BackupRunWhereUniqueInput | BackupRunWhereUniqueInput[]
+    update?: BackupRunUpdateWithWhereUniqueWithoutOrganizationInput | BackupRunUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: BackupRunUpdateManyWithWhereWithoutOrganizationInput | BackupRunUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: BackupRunScalarWhereInput | BackupRunScalarWhereInput[]
+  }
+
+  export type SyncQueueItemUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<SyncQueueItemCreateWithoutOrganizationInput, SyncQueueItemUncheckedCreateWithoutOrganizationInput> | SyncQueueItemCreateWithoutOrganizationInput[] | SyncQueueItemUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SyncQueueItemCreateOrConnectWithoutOrganizationInput | SyncQueueItemCreateOrConnectWithoutOrganizationInput[]
+    upsert?: SyncQueueItemUpsertWithWhereUniqueWithoutOrganizationInput | SyncQueueItemUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: SyncQueueItemCreateManyOrganizationInputEnvelope
+    set?: SyncQueueItemWhereUniqueInput | SyncQueueItemWhereUniqueInput[]
+    disconnect?: SyncQueueItemWhereUniqueInput | SyncQueueItemWhereUniqueInput[]
+    delete?: SyncQueueItemWhereUniqueInput | SyncQueueItemWhereUniqueInput[]
+    connect?: SyncQueueItemWhereUniqueInput | SyncQueueItemWhereUniqueInput[]
+    update?: SyncQueueItemUpdateWithWhereUniqueWithoutOrganizationInput | SyncQueueItemUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: SyncQueueItemUpdateManyWithWhereWithoutOrganizationInput | SyncQueueItemUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: SyncQueueItemScalarWhereInput | SyncQueueItemScalarWhereInput[]
+  }
+
   export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<OrganizationMembershipCreateWithoutOrganizationInput, OrganizationMembershipUncheckedCreateWithoutOrganizationInput> | OrganizationMembershipCreateWithoutOrganizationInput[] | OrganizationMembershipUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: OrganizationMembershipCreateOrConnectWithoutOrganizationInput | OrganizationMembershipCreateOrConnectWithoutOrganizationInput[]
@@ -202931,6 +206578,34 @@ export namespace Prisma {
     update?: AnomalyFlagUpdateWithWhereUniqueWithoutOrganizationInput | AnomalyFlagUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: AnomalyFlagUpdateManyWithWhereWithoutOrganizationInput | AnomalyFlagUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: AnomalyFlagScalarWhereInput | AnomalyFlagScalarWhereInput[]
+  }
+
+  export type BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<BackupRunCreateWithoutOrganizationInput, BackupRunUncheckedCreateWithoutOrganizationInput> | BackupRunCreateWithoutOrganizationInput[] | BackupRunUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: BackupRunCreateOrConnectWithoutOrganizationInput | BackupRunCreateOrConnectWithoutOrganizationInput[]
+    upsert?: BackupRunUpsertWithWhereUniqueWithoutOrganizationInput | BackupRunUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: BackupRunCreateManyOrganizationInputEnvelope
+    set?: BackupRunWhereUniqueInput | BackupRunWhereUniqueInput[]
+    disconnect?: BackupRunWhereUniqueInput | BackupRunWhereUniqueInput[]
+    delete?: BackupRunWhereUniqueInput | BackupRunWhereUniqueInput[]
+    connect?: BackupRunWhereUniqueInput | BackupRunWhereUniqueInput[]
+    update?: BackupRunUpdateWithWhereUniqueWithoutOrganizationInput | BackupRunUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: BackupRunUpdateManyWithWhereWithoutOrganizationInput | BackupRunUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: BackupRunScalarWhereInput | BackupRunScalarWhereInput[]
+  }
+
+  export type SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<SyncQueueItemCreateWithoutOrganizationInput, SyncQueueItemUncheckedCreateWithoutOrganizationInput> | SyncQueueItemCreateWithoutOrganizationInput[] | SyncQueueItemUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: SyncQueueItemCreateOrConnectWithoutOrganizationInput | SyncQueueItemCreateOrConnectWithoutOrganizationInput[]
+    upsert?: SyncQueueItemUpsertWithWhereUniqueWithoutOrganizationInput | SyncQueueItemUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: SyncQueueItemCreateManyOrganizationInputEnvelope
+    set?: SyncQueueItemWhereUniqueInput | SyncQueueItemWhereUniqueInput[]
+    disconnect?: SyncQueueItemWhereUniqueInput | SyncQueueItemWhereUniqueInput[]
+    delete?: SyncQueueItemWhereUniqueInput | SyncQueueItemWhereUniqueInput[]
+    connect?: SyncQueueItemWhereUniqueInput | SyncQueueItemWhereUniqueInput[]
+    update?: SyncQueueItemUpdateWithWhereUniqueWithoutOrganizationInput | SyncQueueItemUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: SyncQueueItemUpdateManyWithWhereWithoutOrganizationInput | SyncQueueItemUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: SyncQueueItemScalarWhereInput | SyncQueueItemScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutLocationsInput = {
@@ -213006,6 +216681,50 @@ export namespace Prisma {
     update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutTaxInvoiceSequenceInput, OrganizationUpdateWithoutTaxInvoiceSequenceInput>, OrganizationUncheckedUpdateWithoutTaxInvoiceSequenceInput>
   }
 
+  export type OrganizationCreateNestedOneWithoutBackupRunsInput = {
+    create?: XOR<OrganizationCreateWithoutBackupRunsInput, OrganizationUncheckedCreateWithoutBackupRunsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutBackupRunsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type EnumBackupTypeFieldUpdateOperationsInput = {
+    set?: $Enums.BackupType
+  }
+
+  export type EnumBackupStatusFieldUpdateOperationsInput = {
+    set?: $Enums.BackupStatus
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutBackupRunsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutBackupRunsInput, OrganizationUncheckedCreateWithoutBackupRunsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutBackupRunsInput
+    upsert?: OrganizationUpsertWithoutBackupRunsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutBackupRunsInput, OrganizationUpdateWithoutBackupRunsInput>, OrganizationUncheckedUpdateWithoutBackupRunsInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutSyncQueueItemsInput = {
+    create?: XOR<OrganizationCreateWithoutSyncQueueItemsInput, OrganizationUncheckedCreateWithoutSyncQueueItemsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutSyncQueueItemsInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type EnumSyncActionTypeFieldUpdateOperationsInput = {
+    set?: $Enums.SyncActionType
+  }
+
+  export type EnumSyncStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SyncStatus
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutSyncQueueItemsNestedInput = {
+    create?: XOR<OrganizationCreateWithoutSyncQueueItemsInput, OrganizationUncheckedCreateWithoutSyncQueueItemsInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutSyncQueueItemsInput
+    upsert?: OrganizationUpsertWithoutSyncQueueItemsInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutSyncQueueItemsInput, OrganizationUpdateWithoutSyncQueueItemsInput>, OrganizationUncheckedUpdateWithoutSyncQueueItemsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -215280,6 +218999,74 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumCredentialStatusFilter<$PrismaModel>
     _max?: NestedEnumCredentialStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBackupTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.BackupType | EnumBackupTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.BackupType[] | ListEnumBackupTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BackupType[] | ListEnumBackupTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumBackupTypeFilter<$PrismaModel> | $Enums.BackupType
+  }
+
+  export type NestedEnumBackupStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.BackupStatus | EnumBackupStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BackupStatus[] | ListEnumBackupStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BackupStatus[] | ListEnumBackupStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBackupStatusFilter<$PrismaModel> | $Enums.BackupStatus
+  }
+
+  export type NestedEnumBackupTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BackupType | EnumBackupTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.BackupType[] | ListEnumBackupTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BackupType[] | ListEnumBackupTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumBackupTypeWithAggregatesFilter<$PrismaModel> | $Enums.BackupType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBackupTypeFilter<$PrismaModel>
+    _max?: NestedEnumBackupTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBackupStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BackupStatus | EnumBackupStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BackupStatus[] | ListEnumBackupStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BackupStatus[] | ListEnumBackupStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBackupStatusWithAggregatesFilter<$PrismaModel> | $Enums.BackupStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBackupStatusFilter<$PrismaModel>
+    _max?: NestedEnumBackupStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSyncActionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.SyncActionType | EnumSyncActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SyncActionType[] | ListEnumSyncActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SyncActionType[] | ListEnumSyncActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSyncActionTypeFilter<$PrismaModel> | $Enums.SyncActionType
+  }
+
+  export type NestedEnumSyncStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SyncStatus | EnumSyncStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SyncStatus[] | ListEnumSyncStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SyncStatus[] | ListEnumSyncStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSyncStatusFilter<$PrismaModel> | $Enums.SyncStatus
+  }
+
+  export type NestedEnumSyncActionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SyncActionType | EnumSyncActionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SyncActionType[] | ListEnumSyncActionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SyncActionType[] | ListEnumSyncActionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSyncActionTypeWithAggregatesFilter<$PrismaModel> | $Enums.SyncActionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSyncActionTypeFilter<$PrismaModel>
+    _max?: NestedEnumSyncActionTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSyncStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SyncStatus | EnumSyncStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SyncStatus[] | ListEnumSyncStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SyncStatus[] | ListEnumSyncStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSyncStatusWithAggregatesFilter<$PrismaModel> | $Enums.SyncStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSyncStatusFilter<$PrismaModel>
+    _max?: NestedEnumSyncStatusFilter<$PrismaModel>
   }
 
   export type LocationCreateWithoutUsersInput = {
@@ -225843,6 +229630,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutApprovalPoliciesInput = {
@@ -225927,6 +229716,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutApprovalPoliciesInput = {
@@ -226125,6 +229916,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutApprovalPoliciesInput = {
@@ -226209,6 +230002,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ApprovalPolicyStepUpsertWithWhereUniqueWithoutPolicyInput = {
@@ -226913,6 +230708,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutApprovalRequestsInput = {
@@ -226997,6 +230794,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutApprovalRequestsInput = {
@@ -227738,6 +231537,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutApprovalRequestsInput = {
@@ -227822,6 +231623,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ApprovalPolicyUpsertWithoutRequestsInput = {
@@ -234556,6 +238359,98 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BackupRunCreateWithoutOrganizationInput = {
+    id?: string
+    type: $Enums.BackupType
+    status?: $Enums.BackupStatus
+    storageKey: string
+    checksum: string
+    sizeBytes: bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    verificationChecksum?: string | null
+    restoreTestedAt?: Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BackupRunUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    type: $Enums.BackupType
+    status?: $Enums.BackupStatus
+    storageKey: string
+    checksum: string
+    sizeBytes: bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    verificationChecksum?: string | null
+    restoreTestedAt?: Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BackupRunCreateOrConnectWithoutOrganizationInput = {
+    where: BackupRunWhereUniqueInput
+    create: XOR<BackupRunCreateWithoutOrganizationInput, BackupRunUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type BackupRunCreateManyOrganizationInputEnvelope = {
+    data: BackupRunCreateManyOrganizationInput | BackupRunCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SyncQueueItemCreateWithoutOrganizationInput = {
+    id?: string
+    userId: string
+    actionType: $Enums.SyncActionType
+    payload: JsonNullValueInput | InputJsonValue
+    idempotencyKey: string
+    status?: $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: number
+    lastAttemptAt?: Date | string | null
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SyncQueueItemUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    userId: string
+    actionType: $Enums.SyncActionType
+    payload: JsonNullValueInput | InputJsonValue
+    idempotencyKey: string
+    status?: $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: number
+    lastAttemptAt?: Date | string | null
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SyncQueueItemCreateOrConnectWithoutOrganizationInput = {
+    where: SyncQueueItemWhereUniqueInput
+    create: XOR<SyncQueueItemCreateWithoutOrganizationInput, SyncQueueItemUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type SyncQueueItemCreateManyOrganizationInputEnvelope = {
+    data: SyncQueueItemCreateManyOrganizationInput | SyncQueueItemCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganizationMembershipUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: OrganizationMembershipWhereUniqueInput
     update: XOR<OrganizationMembershipUpdateWithoutOrganizationInput, OrganizationMembershipUncheckedUpdateWithoutOrganizationInput>
@@ -236564,6 +240459,82 @@ export namespace Prisma {
     data: XOR<AnomalyFlagUpdateManyMutationInput, AnomalyFlagUncheckedUpdateManyWithoutOrganizationInput>
   }
 
+  export type BackupRunUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: BackupRunWhereUniqueInput
+    update: XOR<BackupRunUpdateWithoutOrganizationInput, BackupRunUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<BackupRunCreateWithoutOrganizationInput, BackupRunUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type BackupRunUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: BackupRunWhereUniqueInput
+    data: XOR<BackupRunUpdateWithoutOrganizationInput, BackupRunUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type BackupRunUpdateManyWithWhereWithoutOrganizationInput = {
+    where: BackupRunScalarWhereInput
+    data: XOR<BackupRunUpdateManyMutationInput, BackupRunUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type BackupRunScalarWhereInput = {
+    AND?: BackupRunScalarWhereInput | BackupRunScalarWhereInput[]
+    OR?: BackupRunScalarWhereInput[]
+    NOT?: BackupRunScalarWhereInput | BackupRunScalarWhereInput[]
+    id?: StringFilter<"BackupRun"> | string
+    organizationId?: StringFilter<"BackupRun"> | string
+    type?: EnumBackupTypeFilter<"BackupRun"> | $Enums.BackupType
+    status?: EnumBackupStatusFilter<"BackupRun"> | $Enums.BackupStatus
+    storageKey?: StringFilter<"BackupRun"> | string
+    checksum?: StringFilter<"BackupRun"> | string
+    sizeBytes?: BigIntFilter<"BackupRun"> | bigint | number
+    rowCounts?: JsonNullableFilter<"BackupRun">
+    auditChainHead?: StringNullableFilter<"BackupRun"> | string | null
+    startedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    verifiedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    verificationChecksum?: StringNullableFilter<"BackupRun"> | string | null
+    restoreTestedAt?: DateTimeNullableFilter<"BackupRun"> | Date | string | null
+    restoreTestResult?: JsonNullableFilter<"BackupRun">
+    errorMessage?: StringNullableFilter<"BackupRun"> | string | null
+    createdById?: StringFilter<"BackupRun"> | string
+    createdAt?: DateTimeFilter<"BackupRun"> | Date | string
+    updatedAt?: DateTimeFilter<"BackupRun"> | Date | string
+  }
+
+  export type SyncQueueItemUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: SyncQueueItemWhereUniqueInput
+    update: XOR<SyncQueueItemUpdateWithoutOrganizationInput, SyncQueueItemUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<SyncQueueItemCreateWithoutOrganizationInput, SyncQueueItemUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type SyncQueueItemUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: SyncQueueItemWhereUniqueInput
+    data: XOR<SyncQueueItemUpdateWithoutOrganizationInput, SyncQueueItemUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type SyncQueueItemUpdateManyWithWhereWithoutOrganizationInput = {
+    where: SyncQueueItemScalarWhereInput
+    data: XOR<SyncQueueItemUpdateManyMutationInput, SyncQueueItemUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
+  export type SyncQueueItemScalarWhereInput = {
+    AND?: SyncQueueItemScalarWhereInput | SyncQueueItemScalarWhereInput[]
+    OR?: SyncQueueItemScalarWhereInput[]
+    NOT?: SyncQueueItemScalarWhereInput | SyncQueueItemScalarWhereInput[]
+    id?: StringFilter<"SyncQueueItem"> | string
+    organizationId?: StringFilter<"SyncQueueItem"> | string
+    userId?: StringFilter<"SyncQueueItem"> | string
+    actionType?: EnumSyncActionTypeFilter<"SyncQueueItem"> | $Enums.SyncActionType
+    payload?: JsonFilter<"SyncQueueItem">
+    idempotencyKey?: StringFilter<"SyncQueueItem"> | string
+    status?: EnumSyncStatusFilter<"SyncQueueItem"> | $Enums.SyncStatus
+    conflictDetail?: JsonNullableFilter<"SyncQueueItem">
+    retryCount?: IntFilter<"SyncQueueItem"> | number
+    lastAttemptAt?: DateTimeNullableFilter<"SyncQueueItem"> | Date | string | null
+    syncedAt?: DateTimeNullableFilter<"SyncQueueItem"> | Date | string | null
+    createdAt?: DateTimeFilter<"SyncQueueItem"> | Date | string
+    updatedAt?: DateTimeFilter<"SyncQueueItem"> | Date | string
+  }
+
   export type OrganizationCreateWithoutLocationsInput = {
     id?: string
     code: string
@@ -236646,6 +240617,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -236730,6 +240703,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -237333,6 +241308,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -237417,6 +241394,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type LocationUpsertWithoutChildrenInput = {
@@ -237636,6 +241615,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -237720,6 +241701,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -238419,6 +242402,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -238503,6 +242488,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutChildrenInput = {
@@ -238744,6 +242731,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCostCentresInput = {
@@ -238828,6 +242817,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCostCentresInput = {
@@ -239185,6 +243176,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCostCentresInput = {
@@ -239269,6 +243262,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutCostCentresInput = {
@@ -239446,6 +243441,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProjectsInput = {
@@ -239530,6 +243527,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProjectsInput = {
@@ -239904,6 +243903,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProjectsInput = {
@@ -239988,6 +243989,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutProjectInput = {
@@ -240136,6 +244139,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFundingSourcesInput = {
@@ -240220,6 +244225,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFundingSourcesInput = {
@@ -240652,6 +244659,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFundingSourcesInput = {
@@ -240736,6 +244745,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalLineUpsertWithWhereUniqueWithoutFundingSourceInput = {
@@ -240900,6 +244911,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTreasuryAccountsInput = {
@@ -240984,6 +244997,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTreasuryAccountsInput = {
@@ -241760,6 +245775,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTreasuryAccountsInput = {
@@ -241844,6 +245861,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CurrencyUpsertWithoutTreasuryAccountsInput = {
@@ -242274,6 +246293,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutPaymentSchedulesInput = {
@@ -242358,6 +246379,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutPaymentSchedulesInput = {
@@ -242566,6 +246589,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutPaymentSchedulesInput = {
@@ -242650,6 +246675,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TreasuryAccountUpsertWithoutPaymentSchedulesInput = {
@@ -242854,6 +246881,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTransfersInput = {
@@ -242938,6 +246967,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTransfersInput = {
@@ -244233,6 +248264,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTransfersInput = {
@@ -244317,6 +248350,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TreasuryAccountUpsertWithoutTransfersAsSourceInput = {
@@ -246797,6 +250832,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMasterDataChangeRequestsInput = {
@@ -246881,6 +250918,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMasterDataChangeRequestsInput = {
@@ -247413,6 +251452,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMasterDataChangeRequestsInput = {
@@ -247497,6 +251538,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutChangeRequestsRequestedInput = {
@@ -248107,6 +252150,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReasonCodesInput = {
@@ -248191,6 +252236,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReasonCodesInput = {
@@ -248341,6 +252388,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReasonCodesInput = {
@@ -248425,6 +252474,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ReconciliationAdjustmentUpsertWithWhereUniqueWithoutReasonCodeInput = {
@@ -248525,6 +252576,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutProductsServicesInput = {
@@ -248609,6 +252662,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutProductsServicesInput = {
@@ -248792,6 +252847,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutProductsServicesInput = {
@@ -248876,6 +252933,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CurrencyUpsertWithoutProductsServicesInput = {
@@ -249050,6 +253109,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutPartiesInput = {
@@ -249134,6 +253195,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutPartiesInput = {
@@ -249460,6 +253523,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutPartiesInput = {
@@ -249544,6 +253609,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutPartyInput = {
@@ -249835,6 +253902,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCustomersInput = {
@@ -249919,6 +253988,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCustomersInput = {
@@ -250388,6 +254459,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCustomersInput = {
@@ -250472,6 +254545,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type PartyUpsertWithoutCustomerInput = {
@@ -250715,6 +254790,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutSuppliersInput = {
@@ -250799,6 +254876,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutSuppliersInput = {
@@ -251272,6 +255351,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutSuppliersInput = {
@@ -251356,6 +255437,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type PartyUpsertWithoutSupplierInput = {
@@ -251870,6 +255953,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCommunicationLogsInput = {
@@ -251954,6 +256039,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCommunicationLogsInput = {
@@ -252111,6 +256198,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCommunicationLogsInput = {
@@ -252195,6 +256284,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type PartyUpsertWithoutCommunicationsInput = {
@@ -252454,6 +256545,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutSupplierBankDetailChangeRequestsInput = {
@@ -252538,6 +256631,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutSupplierBankDetailChangeRequestsInput = {
@@ -252691,6 +256786,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutSupplierBankDetailChangeRequestsInput = {
@@ -252775,6 +256872,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type SupplierUpsertWithoutBankDetailChangeRequestsInput = {
@@ -253334,6 +257433,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCustomerReceivablesInput = {
@@ -253418,6 +257519,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCustomerReceivablesInput = {
@@ -253573,6 +257676,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCustomerReceivablesInput = {
@@ -253657,6 +257762,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutReceivablesInput = {
@@ -253802,6 +257909,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutQuotationsInput = {
@@ -253886,6 +257995,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutQuotationsInput = {
@@ -254171,6 +258282,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutQuotationsInput = {
@@ -254255,6 +258368,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutQuotationsInput = {
@@ -254638,6 +258753,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutInvoicesInput = {
@@ -254722,6 +258839,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutInvoicesInput = {
@@ -255392,6 +259511,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
@@ -255476,6 +259597,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutInvoicesInput = {
@@ -256231,6 +260354,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutInvoiceRemindersInput = {
@@ -256315,6 +260440,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutInvoiceRemindersInput = {
@@ -256510,6 +260637,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutInvoiceRemindersInput = {
@@ -256594,6 +260723,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type InvoiceUpsertWithoutRemindersInput = {
@@ -256779,6 +260910,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentSequencesInput = {
@@ -256863,6 +260996,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentSequencesInput = {
@@ -256963,6 +261098,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentSequencesInput = {
@@ -257047,6 +261184,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutPaymentsInput = {
@@ -257131,6 +261270,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutPaymentsInput = {
@@ -257215,6 +261356,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutPaymentsInput = {
@@ -257557,6 +261700,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutPaymentsInput = {
@@ -257641,6 +261786,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type CustomerUpsertWithoutPaymentsInput = {
@@ -258462,6 +262609,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReceiptsInput = {
@@ -258546,6 +262695,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReceiptsInput = {
@@ -258735,6 +262886,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReceiptsInput = {
@@ -258819,6 +262972,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type PaymentUpsertWithoutReceiptInput = {
@@ -259260,6 +263415,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCreditNotesInput = {
@@ -259344,6 +263501,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCreditNotesInput = {
@@ -259539,6 +263698,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCreditNotesInput = {
@@ -259623,6 +263784,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type InvoiceUpsertWithoutCreditNotesInput = {
@@ -259808,6 +263971,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDebitNotesInput = {
@@ -259892,6 +264057,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDebitNotesInput = {
@@ -260087,6 +264254,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDebitNotesInput = {
@@ -260171,6 +264340,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type InvoiceUpsertWithoutDebitNotesInput = {
@@ -260356,6 +264527,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountsInput = {
@@ -260440,6 +264613,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountsInput = {
@@ -261233,6 +265408,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountsInput = {
@@ -261317,6 +265494,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutChildrenInput = {
@@ -261648,6 +265827,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFinancialPeriodsInput = {
@@ -261732,6 +265913,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFinancialPeriodsInput = {
@@ -262105,6 +266288,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFinancialPeriodsInput = {
@@ -262189,6 +266374,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OpeningBalanceUpsertWithWhereUniqueWithoutPeriodInput = {
@@ -262380,6 +266567,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutFinancialClosesInput = {
@@ -262464,6 +266653,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutFinancialClosesInput = {
@@ -263307,6 +267498,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutFinancialClosesInput = {
@@ -263391,6 +267584,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type FinancialPeriodUpsertWithoutFinancialCloseInput = {
@@ -264212,6 +268407,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCloseChecklistItemsInput = {
@@ -264296,6 +268493,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCloseChecklistItemsInput = {
@@ -265030,6 +269229,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCloseChecklistItemsInput = {
@@ -265114,6 +269315,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type FinancialCloseUpsertWithoutChecklistItemsInput = {
@@ -265856,6 +270059,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutOpeningBalancesInput = {
@@ -265940,6 +270145,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutOpeningBalancesInput = {
@@ -266207,6 +270414,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutOpeningBalancesInput = {
@@ -266291,6 +270500,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutOpeningBalancesInput = {
@@ -266560,6 +270771,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAccountBalanceSnapshotsInput = {
@@ -266644,6 +270857,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAccountBalanceSnapshotsInput = {
@@ -266911,6 +271126,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAccountBalanceSnapshotsInput = {
@@ -266995,6 +271212,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutAccountBalanceSnapshotsInput = {
@@ -267264,6 +271483,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalEntriesInput = {
@@ -267348,6 +271569,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalEntriesInput = {
@@ -269055,6 +273278,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalEntriesInput = {
@@ -269139,6 +273364,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type FinancialPeriodUpsertWithoutJournalEntriesInput = {
@@ -270514,6 +274741,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutJournalLinesInput = {
@@ -270598,6 +274827,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutJournalLinesInput = {
@@ -271147,6 +275378,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutJournalLinesInput = {
@@ -271231,6 +275464,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithoutLinesInput = {
@@ -271818,6 +276053,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReversalReasonCodesInput = {
@@ -271902,6 +276139,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReversalReasonCodesInput = {
@@ -272236,6 +276475,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReversalReasonCodesInput = {
@@ -272320,6 +276561,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type JournalEntryUpsertWithWhereUniqueWithoutReversalReasonInput = {
@@ -272452,6 +276695,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTransactionsInput = {
@@ -272536,6 +276781,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTransactionsInput = {
@@ -274482,6 +278729,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTransactionsInput = {
@@ -274566,6 +278815,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutTransactionsInput = {
@@ -276372,6 +280623,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetsInput = {
@@ -276456,6 +280709,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetsInput = {
@@ -277383,6 +281638,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetsInput = {
@@ -277467,6 +281724,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DepartmentUpsertWithoutBudgetsInput = {
@@ -278278,6 +282537,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetLinesInput = {
@@ -278362,6 +282623,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetLinesInput = {
@@ -278776,6 +283039,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetLinesInput = {
@@ -278860,6 +283125,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutLinesInput = {
@@ -279174,6 +283441,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCommitmentsInput = {
@@ -279258,6 +283527,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCommitmentsInput = {
@@ -279914,6 +284185,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCommitmentsInput = {
@@ -279998,6 +284271,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutCommitmentsInput = {
@@ -280686,6 +284961,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetRevisionsInput = {
@@ -280770,6 +285047,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetRevisionsInput = {
@@ -281373,6 +285652,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetRevisionsInput = {
@@ -281457,6 +285738,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutRevisionsInput = {
@@ -282220,6 +286503,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetTransfersInput = {
@@ -282304,6 +286589,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetTransfersInput = {
@@ -282963,6 +287250,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetTransfersInput = {
@@ -283047,6 +287336,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutTransfersInput = {
@@ -283720,6 +288011,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutBudgetScenariosInput = {
@@ -283804,6 +288097,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutBudgetScenariosInput = {
@@ -284178,6 +288473,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutBudgetScenariosInput = {
@@ -284262,6 +288559,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type BudgetUpsertWithoutScenariosInput = {
@@ -284632,6 +288931,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -284716,6 +289017,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -285015,6 +289318,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -285099,6 +289404,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutOrganizationMembershipsInput = {
@@ -285610,6 +289917,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutImportBatchesInput = {
@@ -285694,6 +290003,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutImportBatchesInput = {
@@ -287204,6 +291515,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutImportBatchesInput = {
@@ -287288,6 +291601,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutImportBatchesUploadedInput = {
@@ -289029,6 +293344,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutImportFieldMappingsInput = {
@@ -289113,6 +293430,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutImportFieldMappingsInput = {
@@ -289479,6 +293798,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutImportFieldMappingsInput = {
@@ -289563,6 +293884,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ImportBatchUpsertWithoutFieldMappingsInput = {
@@ -290549,6 +294872,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutMatchingRulesInput = {
@@ -290633,6 +294958,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutMatchingRulesInput = {
@@ -290733,6 +295060,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutMatchingRulesInput = {
@@ -290817,6 +295146,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutReconciliationSessionsInput = {
@@ -290901,6 +295232,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReconciliationSessionsInput = {
@@ -290985,6 +295318,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReconciliationSessionsInput = {
@@ -291418,6 +295753,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReconciliationSessionsInput = {
@@ -291502,6 +295839,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TreasuryAccountUpsertWithoutReconciliationSessionsInput = {
@@ -291819,6 +296158,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReconciliationMatchesInput = {
@@ -291903,6 +296244,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReconciliationMatchesInput = {
@@ -292277,6 +296620,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReconciliationMatchesInput = {
@@ -292361,6 +296706,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ReconciliationSessionUpsertWithoutMatchesInput = {
@@ -292743,6 +297090,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReconciliationExceptionsInput = {
@@ -292827,6 +297176,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReconciliationExceptionsInput = {
@@ -293126,6 +297477,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReconciliationExceptionsInput = {
@@ -293210,6 +297563,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ReconciliationSessionUpsertWithoutExceptionsInput = {
@@ -293511,6 +297866,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutReconciliationAdjustmentsInput = {
@@ -293595,6 +297952,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutReconciliationAdjustmentsInput = {
@@ -293990,6 +298349,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutReconciliationAdjustmentsInput = {
@@ -294074,6 +298435,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type ReconciliationSessionUpsertWithoutAdjustmentsInput = {
@@ -294887,6 +299250,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutAnomaliesInput = {
@@ -294971,6 +299336,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutAnomaliesInput = {
@@ -295668,6 +300035,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutAnomaliesInput = {
@@ -295752,6 +300121,8 @@ export namespace Prisma {
     taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutAnomaliesAcknowledgedInput = {
@@ -296855,6 +301226,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentsInput = {
@@ -296939,6 +301312,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentsInput = {
@@ -297504,6 +301879,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentsInput = {
@@ -297588,6 +301965,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentUpsertWithoutRenewalsInput = {
@@ -297883,6 +302262,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentVersionsInput = {
@@ -297967,6 +302348,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentVersionsInput = {
@@ -298144,6 +302527,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentVersionsInput = {
@@ -298228,6 +302613,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentUpsertWithoutVersionsInput = {
@@ -298395,6 +302782,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentTagsInput = {
@@ -298479,6 +302868,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentTagsInput = {
@@ -298605,6 +302996,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentTagsInput = {
@@ -298689,6 +303082,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentTagLinkUpsertWithWhereUniqueWithoutTagInput = {
@@ -298789,6 +303184,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentTagLinksInput = {
@@ -298873,6 +303270,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentTagLinksInput = {
@@ -299073,6 +303472,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentTagLinksInput = {
@@ -299157,6 +303558,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentUpsertWithoutTagsInput = {
@@ -299353,6 +303756,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutDocumentLinksInput = {
@@ -299437,6 +303842,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutDocumentLinksInput = {
@@ -299614,6 +304021,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutDocumentLinksInput = {
@@ -299698,6 +304107,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentUpsertWithoutLinksInput = {
@@ -299865,6 +304276,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutRetentionPoliciesInput = {
@@ -299949,6 +304362,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutRetentionPoliciesInput = {
@@ -300049,6 +304464,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutRetentionPoliciesInput = {
@@ -300133,6 +304550,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutLegalHoldsInput = {
@@ -300217,6 +304636,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutLegalHoldsInput = {
@@ -300301,6 +304722,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutLegalHoldsInput = {
@@ -300401,6 +304824,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutLegalHoldsInput = {
@@ -300485,6 +304910,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateWithoutTaxRulesInput = {
@@ -300569,6 +304996,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTaxRulesInput = {
@@ -300653,6 +305082,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTaxRulesInput = {
@@ -300931,6 +305362,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTaxRulesInput = {
@@ -301015,6 +305448,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithoutPayableTaxRulesInput = {
@@ -301257,6 +305692,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTaxObligationsInput = {
@@ -301341,6 +305778,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTaxObligationsInput = {
@@ -301572,6 +306011,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTaxObligationsInput = {
@@ -301656,6 +306097,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TaxRuleUpsertWithoutObligationsInput = {
@@ -301841,6 +306284,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTaxPaymentsInput = {
@@ -301925,6 +306370,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTaxPaymentsInput = {
@@ -302220,6 +306667,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTaxPaymentsInput = {
@@ -302304,6 +306753,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type TaxObligationUpsertWithoutPaymentsInput = {
@@ -302601,6 +307052,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutCredentialsInput = {
@@ -302685,6 +307138,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutCredentialsInput = {
@@ -303091,6 +307546,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutCredentialsInput = {
@@ -303175,6 +307632,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type UserUpsertWithoutResponsibleCredentialsInput = {
@@ -303563,6 +308022,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutComplianceDocumentsInput = {
@@ -303647,6 +308108,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutComplianceDocumentsInput = {
@@ -303914,6 +308377,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutComplianceDocumentsInput = {
@@ -303998,6 +308463,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type DocumentUpsertWithoutComplianceLinksInput = {
@@ -304267,6 +308734,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutTaxInvoiceSequenceInput = {
@@ -304351,6 +308820,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
     closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
     anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutTaxInvoiceSequenceInput = {
@@ -304451,6 +308922,8 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutTaxInvoiceSequenceInput = {
@@ -304535,6 +309008,728 @@ export namespace Prisma {
     financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
     closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
     anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationCreateWithoutBackupRunsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    parties?: PartyCreateNestedManyWithoutOrganizationInput
+    customers?: CustomerCreateNestedManyWithoutOrganizationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganizationInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutOrganizationInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestCreateNestedManyWithoutOrganizationInput
+    customerReceivables?: CustomerReceivableCreateNestedManyWithoutOrganizationInput
+    quotations?: QuotationCreateNestedManyWithoutOrganizationInput
+    invoices?: InvoiceCreateNestedManyWithoutOrganizationInput
+    payments?: PaymentCreateNestedManyWithoutOrganizationInput
+    receipts?: ReceiptCreateNestedManyWithoutOrganizationInput
+    creditNotes?: CreditNoteCreateNestedManyWithoutOrganizationInput
+    debitNotes?: DebitNoteCreateNestedManyWithoutOrganizationInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutOrganizationInput
+    invoiceReminders?: InvoiceReminderCreateNestedManyWithoutOrganizationInput
+    documents?: DocumentCreateNestedManyWithoutOrganizationInput
+    documentTags?: DocumentTagCreateNestedManyWithoutOrganizationInput
+    retentionPolicies?: RetentionPolicyCreateNestedManyWithoutOrganizationInput
+    documentVersions?: DocumentVersionCreateNestedManyWithoutOrganizationInput
+    documentTagLinks?: DocumentTagLinkCreateNestedManyWithoutOrganizationInput
+    documentLinks?: DocumentLinkCreateNestedManyWithoutOrganizationInput
+    legalHolds?: LegalHoldCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
+    matchingRules?: MatchingRuleCreateNestedManyWithoutOrganizationInput
+    reconciliationSessions?: ReconciliationSessionCreateNestedManyWithoutOrganizationInput
+    reconciliationMatches?: ReconciliationMatchCreateNestedManyWithoutOrganizationInput
+    reconciliationExceptions?: ReconciliationExceptionCreateNestedManyWithoutOrganizationInput
+    reconciliationAdjustments?: ReconciliationAdjustmentCreateNestedManyWithoutOrganizationInput
+    commitments?: CommitmentCreateNestedManyWithoutOrganizationInput
+    budgetRevisions?: BudgetRevisionCreateNestedManyWithoutOrganizationInput
+    budgetTransfers?: BudgetTransferCreateNestedManyWithoutOrganizationInput
+    budgetScenarios?: BudgetScenarioCreateNestedManyWithoutOrganizationInput
+    taxRules?: TaxRuleCreateNestedManyWithoutOrganizationInput
+    taxObligations?: TaxObligationCreateNestedManyWithoutOrganizationInput
+    taxPayments?: TaxPaymentCreateNestedManyWithoutOrganizationInput
+    credentials?: CredentialCreateNestedManyWithoutOrganizationInput
+    complianceDocuments?: ComplianceDocumentCreateNestedManyWithoutOrganizationInput
+    taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
+    financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
+    closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutBackupRunsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    parties?: PartyUncheckedCreateNestedManyWithoutOrganizationInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutOrganizationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganizationInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutOrganizationInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    customerReceivables?: CustomerReceivableUncheckedCreateNestedManyWithoutOrganizationInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutOrganizationInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutOrganizationInput
+    receipts?: ReceiptUncheckedCreateNestedManyWithoutOrganizationInput
+    creditNotes?: CreditNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    debitNotes?: DebitNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+    invoiceReminders?: InvoiceReminderUncheckedCreateNestedManyWithoutOrganizationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganizationInput
+    documentTags?: DocumentTagUncheckedCreateNestedManyWithoutOrganizationInput
+    retentionPolicies?: RetentionPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    documentVersions?: DocumentVersionUncheckedCreateNestedManyWithoutOrganizationInput
+    documentTagLinks?: DocumentTagLinkUncheckedCreateNestedManyWithoutOrganizationInput
+    documentLinks?: DocumentLinkUncheckedCreateNestedManyWithoutOrganizationInput
+    legalHolds?: LegalHoldUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
+    matchingRules?: MatchingRuleUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationSessions?: ReconciliationSessionUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationMatches?: ReconciliationMatchUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationExceptions?: ReconciliationExceptionUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationAdjustments?: ReconciliationAdjustmentUncheckedCreateNestedManyWithoutOrganizationInput
+    commitments?: CommitmentUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetRevisions?: BudgetRevisionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetTransfers?: BudgetTransferUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetScenarios?: BudgetScenarioUncheckedCreateNestedManyWithoutOrganizationInput
+    taxRules?: TaxRuleUncheckedCreateNestedManyWithoutOrganizationInput
+    taxObligations?: TaxObligationUncheckedCreateNestedManyWithoutOrganizationInput
+    taxPayments?: TaxPaymentUncheckedCreateNestedManyWithoutOrganizationInput
+    credentials?: CredentialUncheckedCreateNestedManyWithoutOrganizationInput
+    complianceDocuments?: ComplianceDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+    taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
+    financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
+    closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    syncQueueItems?: SyncQueueItemUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutBackupRunsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutBackupRunsInput, OrganizationUncheckedCreateWithoutBackupRunsInput>
+  }
+
+  export type OrganizationUpsertWithoutBackupRunsInput = {
+    update: XOR<OrganizationUpdateWithoutBackupRunsInput, OrganizationUncheckedUpdateWithoutBackupRunsInput>
+    create: XOR<OrganizationCreateWithoutBackupRunsInput, OrganizationUncheckedCreateWithoutBackupRunsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutBackupRunsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutBackupRunsInput, OrganizationUncheckedUpdateWithoutBackupRunsInput>
+  }
+
+  export type OrganizationUpdateWithoutBackupRunsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    parties?: PartyUpdateManyWithoutOrganizationNestedInput
+    customers?: CustomerUpdateManyWithoutOrganizationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganizationNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutOrganizationNestedInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestUpdateManyWithoutOrganizationNestedInput
+    customerReceivables?: CustomerReceivableUpdateManyWithoutOrganizationNestedInput
+    quotations?: QuotationUpdateManyWithoutOrganizationNestedInput
+    invoices?: InvoiceUpdateManyWithoutOrganizationNestedInput
+    payments?: PaymentUpdateManyWithoutOrganizationNestedInput
+    receipts?: ReceiptUpdateManyWithoutOrganizationNestedInput
+    creditNotes?: CreditNoteUpdateManyWithoutOrganizationNestedInput
+    debitNotes?: DebitNoteUpdateManyWithoutOrganizationNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutOrganizationNestedInput
+    invoiceReminders?: InvoiceReminderUpdateManyWithoutOrganizationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganizationNestedInput
+    documentTags?: DocumentTagUpdateManyWithoutOrganizationNestedInput
+    retentionPolicies?: RetentionPolicyUpdateManyWithoutOrganizationNestedInput
+    documentVersions?: DocumentVersionUpdateManyWithoutOrganizationNestedInput
+    documentTagLinks?: DocumentTagLinkUpdateManyWithoutOrganizationNestedInput
+    documentLinks?: DocumentLinkUpdateManyWithoutOrganizationNestedInput
+    legalHolds?: LegalHoldUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
+    matchingRules?: MatchingRuleUpdateManyWithoutOrganizationNestedInput
+    reconciliationSessions?: ReconciliationSessionUpdateManyWithoutOrganizationNestedInput
+    reconciliationMatches?: ReconciliationMatchUpdateManyWithoutOrganizationNestedInput
+    reconciliationExceptions?: ReconciliationExceptionUpdateManyWithoutOrganizationNestedInput
+    reconciliationAdjustments?: ReconciliationAdjustmentUpdateManyWithoutOrganizationNestedInput
+    commitments?: CommitmentUpdateManyWithoutOrganizationNestedInput
+    budgetRevisions?: BudgetRevisionUpdateManyWithoutOrganizationNestedInput
+    budgetTransfers?: BudgetTransferUpdateManyWithoutOrganizationNestedInput
+    budgetScenarios?: BudgetScenarioUpdateManyWithoutOrganizationNestedInput
+    taxRules?: TaxRuleUpdateManyWithoutOrganizationNestedInput
+    taxObligations?: TaxObligationUpdateManyWithoutOrganizationNestedInput
+    taxPayments?: TaxPaymentUpdateManyWithoutOrganizationNestedInput
+    credentials?: CredentialUpdateManyWithoutOrganizationNestedInput
+    complianceDocuments?: ComplianceDocumentUpdateManyWithoutOrganizationNestedInput
+    taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
+    financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
+    closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutBackupRunsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    parties?: PartyUncheckedUpdateManyWithoutOrganizationNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutOrganizationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganizationNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    customerReceivables?: CustomerReceivableUncheckedUpdateManyWithoutOrganizationNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutOrganizationNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+    receipts?: ReceiptUncheckedUpdateManyWithoutOrganizationNestedInput
+    creditNotes?: CreditNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    debitNotes?: DebitNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+    invoiceReminders?: InvoiceReminderUncheckedUpdateManyWithoutOrganizationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentTags?: DocumentTagUncheckedUpdateManyWithoutOrganizationNestedInput
+    retentionPolicies?: RetentionPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentVersions?: DocumentVersionUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentTagLinks?: DocumentTagLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentLinks?: DocumentLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+    legalHolds?: LegalHoldUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
+    matchingRules?: MatchingRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationSessions?: ReconciliationSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationMatches?: ReconciliationMatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationExceptions?: ReconciliationExceptionUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationAdjustments?: ReconciliationAdjustmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    commitments?: CommitmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetRevisions?: BudgetRevisionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetTransfers?: BudgetTransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetScenarios?: BudgetScenarioUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxRules?: TaxRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxObligations?: TaxObligationUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxPayments?: TaxPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+    credentials?: CredentialUncheckedUpdateManyWithoutOrganizationNestedInput
+    complianceDocuments?: ComplianceDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
+    financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
+    closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    syncQueueItems?: SyncQueueItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationCreateWithoutSyncQueueItemsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+    locations?: LocationCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceCreateNestedManyWithoutOrganizationInput
+    parties?: PartyCreateNestedManyWithoutOrganizationInput
+    customers?: CustomerCreateNestedManyWithoutOrganizationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganizationInput
+    communicationLogs?: CommunicationLogCreateNestedManyWithoutOrganizationInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestCreateNestedManyWithoutOrganizationInput
+    customerReceivables?: CustomerReceivableCreateNestedManyWithoutOrganizationInput
+    quotations?: QuotationCreateNestedManyWithoutOrganizationInput
+    invoices?: InvoiceCreateNestedManyWithoutOrganizationInput
+    payments?: PaymentCreateNestedManyWithoutOrganizationInput
+    receipts?: ReceiptCreateNestedManyWithoutOrganizationInput
+    creditNotes?: CreditNoteCreateNestedManyWithoutOrganizationInput
+    debitNotes?: DebitNoteCreateNestedManyWithoutOrganizationInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutOrganizationInput
+    invoiceReminders?: InvoiceReminderCreateNestedManyWithoutOrganizationInput
+    documents?: DocumentCreateNestedManyWithoutOrganizationInput
+    documentTags?: DocumentTagCreateNestedManyWithoutOrganizationInput
+    retentionPolicies?: RetentionPolicyCreateNestedManyWithoutOrganizationInput
+    documentVersions?: DocumentVersionCreateNestedManyWithoutOrganizationInput
+    documentTagLinks?: DocumentTagLinkCreateNestedManyWithoutOrganizationInput
+    documentLinks?: DocumentLinkCreateNestedManyWithoutOrganizationInput
+    legalHolds?: LegalHoldCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingCreateNestedManyWithoutOrganizationInput
+    matchingRules?: MatchingRuleCreateNestedManyWithoutOrganizationInput
+    reconciliationSessions?: ReconciliationSessionCreateNestedManyWithoutOrganizationInput
+    reconciliationMatches?: ReconciliationMatchCreateNestedManyWithoutOrganizationInput
+    reconciliationExceptions?: ReconciliationExceptionCreateNestedManyWithoutOrganizationInput
+    reconciliationAdjustments?: ReconciliationAdjustmentCreateNestedManyWithoutOrganizationInput
+    commitments?: CommitmentCreateNestedManyWithoutOrganizationInput
+    budgetRevisions?: BudgetRevisionCreateNestedManyWithoutOrganizationInput
+    budgetTransfers?: BudgetTransferCreateNestedManyWithoutOrganizationInput
+    budgetScenarios?: BudgetScenarioCreateNestedManyWithoutOrganizationInput
+    taxRules?: TaxRuleCreateNestedManyWithoutOrganizationInput
+    taxObligations?: TaxObligationCreateNestedManyWithoutOrganizationInput
+    taxPayments?: TaxPaymentCreateNestedManyWithoutOrganizationInput
+    credentials?: CredentialCreateNestedManyWithoutOrganizationInput
+    complianceDocuments?: ComplianceDocumentCreateNestedManyWithoutOrganizationInput
+    taxInvoiceSequence?: TaxInvoiceSequenceCreateNestedOneWithoutOrganizationInput
+    financialCloses?: FinancialCloseCreateNestedManyWithoutOrganizationInput
+    closeChecklistItems?: CloseChecklistItemCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutSyncQueueItemsInput = {
+    id?: string
+    code: string
+    name: string
+    legalName?: string | null
+    type?: $Enums.OrganizationType
+    registrationStatus?: $Enums.RegistrationStatus
+    registrationNumber?: string | null
+    tin?: string | null
+    baseCurrency?: string
+    fiscalYearStartMonth?: number
+    fiscalYearEndDay?: number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: string | null
+    isActive?: boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    memberships?: OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+    locations?: LocationUncheckedCreateNestedManyWithoutOrganizationInput
+    departments?: DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+    costCentres?: CostCentreUncheckedCreateNestedManyWithoutOrganizationInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutOrganizationInput
+    fundingSources?: FundingSourceUncheckedCreateNestedManyWithoutOrganizationInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    reasonCodes?: ReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedCreateNestedManyWithoutOrganizationInput
+    productsServices?: ProductServiceUncheckedCreateNestedManyWithoutOrganizationInput
+    parties?: PartyUncheckedCreateNestedManyWithoutOrganizationInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutOrganizationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganizationInput
+    communicationLogs?: CommunicationLogUncheckedCreateNestedManyWithoutOrganizationInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    customerReceivables?: CustomerReceivableUncheckedCreateNestedManyWithoutOrganizationInput
+    quotations?: QuotationUncheckedCreateNestedManyWithoutOrganizationInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutOrganizationInput
+    receipts?: ReceiptUncheckedCreateNestedManyWithoutOrganizationInput
+    creditNotes?: CreditNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    debitNotes?: DebitNoteUncheckedCreateNestedManyWithoutOrganizationInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+    invoiceReminders?: InvoiceReminderUncheckedCreateNestedManyWithoutOrganizationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganizationInput
+    documentTags?: DocumentTagUncheckedCreateNestedManyWithoutOrganizationInput
+    retentionPolicies?: RetentionPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    documentVersions?: DocumentVersionUncheckedCreateNestedManyWithoutOrganizationInput
+    documentTagLinks?: DocumentTagLinkUncheckedCreateNestedManyWithoutOrganizationInput
+    documentLinks?: DocumentLinkUncheckedCreateNestedManyWithoutOrganizationInput
+    legalHolds?: LegalHoldUncheckedCreateNestedManyWithoutOrganizationInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutOrganizationInput
+    financialPeriods?: FinancialPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+    openingBalances?: OpeningBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedCreateNestedManyWithoutOrganizationInput
+    journalEntries?: JournalEntryUncheckedCreateNestedManyWithoutOrganizationInput
+    journalLines?: JournalLineUncheckedCreateNestedManyWithoutOrganizationInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetLines?: BudgetLineUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalPolicies?: ApprovalPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+    approvalRequests?: ApprovalRequestUncheckedCreateNestedManyWithoutOrganizationInput
+    treasuryAccounts?: TreasuryAccountUncheckedCreateNestedManyWithoutOrganizationInput
+    paymentSchedules?: PaymentScheduleUncheckedCreateNestedManyWithoutOrganizationInput
+    transfers?: TransferUncheckedCreateNestedManyWithoutOrganizationInput
+    importBatches?: ImportBatchUncheckedCreateNestedManyWithoutOrganizationInput
+    importFieldMappings?: ImportFieldMappingUncheckedCreateNestedManyWithoutOrganizationInput
+    matchingRules?: MatchingRuleUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationSessions?: ReconciliationSessionUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationMatches?: ReconciliationMatchUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationExceptions?: ReconciliationExceptionUncheckedCreateNestedManyWithoutOrganizationInput
+    reconciliationAdjustments?: ReconciliationAdjustmentUncheckedCreateNestedManyWithoutOrganizationInput
+    commitments?: CommitmentUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetRevisions?: BudgetRevisionUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetTransfers?: BudgetTransferUncheckedCreateNestedManyWithoutOrganizationInput
+    budgetScenarios?: BudgetScenarioUncheckedCreateNestedManyWithoutOrganizationInput
+    taxRules?: TaxRuleUncheckedCreateNestedManyWithoutOrganizationInput
+    taxObligations?: TaxObligationUncheckedCreateNestedManyWithoutOrganizationInput
+    taxPayments?: TaxPaymentUncheckedCreateNestedManyWithoutOrganizationInput
+    credentials?: CredentialUncheckedCreateNestedManyWithoutOrganizationInput
+    complianceDocuments?: ComplianceDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+    taxInvoiceSequence?: TaxInvoiceSequenceUncheckedCreateNestedOneWithoutOrganizationInput
+    financialCloses?: FinancialCloseUncheckedCreateNestedManyWithoutOrganizationInput
+    closeChecklistItems?: CloseChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+    anomalies?: AnomalyFlagUncheckedCreateNestedManyWithoutOrganizationInput
+    backupRuns?: BackupRunUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutSyncQueueItemsInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutSyncQueueItemsInput, OrganizationUncheckedCreateWithoutSyncQueueItemsInput>
+  }
+
+  export type OrganizationUpsertWithoutSyncQueueItemsInput = {
+    update: XOR<OrganizationUpdateWithoutSyncQueueItemsInput, OrganizationUncheckedUpdateWithoutSyncQueueItemsInput>
+    create: XOR<OrganizationCreateWithoutSyncQueueItemsInput, OrganizationUncheckedCreateWithoutSyncQueueItemsInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutSyncQueueItemsInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutSyncQueueItemsInput, OrganizationUncheckedUpdateWithoutSyncQueueItemsInput>
+  }
+
+  export type OrganizationUpdateWithoutSyncQueueItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUpdateManyWithoutOrganizationNestedInput
+    parties?: PartyUpdateManyWithoutOrganizationNestedInput
+    customers?: CustomerUpdateManyWithoutOrganizationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganizationNestedInput
+    communicationLogs?: CommunicationLogUpdateManyWithoutOrganizationNestedInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestUpdateManyWithoutOrganizationNestedInput
+    customerReceivables?: CustomerReceivableUpdateManyWithoutOrganizationNestedInput
+    quotations?: QuotationUpdateManyWithoutOrganizationNestedInput
+    invoices?: InvoiceUpdateManyWithoutOrganizationNestedInput
+    payments?: PaymentUpdateManyWithoutOrganizationNestedInput
+    receipts?: ReceiptUpdateManyWithoutOrganizationNestedInput
+    creditNotes?: CreditNoteUpdateManyWithoutOrganizationNestedInput
+    debitNotes?: DebitNoteUpdateManyWithoutOrganizationNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutOrganizationNestedInput
+    invoiceReminders?: InvoiceReminderUpdateManyWithoutOrganizationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganizationNestedInput
+    documentTags?: DocumentTagUpdateManyWithoutOrganizationNestedInput
+    retentionPolicies?: RetentionPolicyUpdateManyWithoutOrganizationNestedInput
+    documentVersions?: DocumentVersionUpdateManyWithoutOrganizationNestedInput
+    documentTagLinks?: DocumentTagLinkUpdateManyWithoutOrganizationNestedInput
+    documentLinks?: DocumentLinkUpdateManyWithoutOrganizationNestedInput
+    legalHolds?: LegalHoldUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUpdateManyWithoutOrganizationNestedInput
+    matchingRules?: MatchingRuleUpdateManyWithoutOrganizationNestedInput
+    reconciliationSessions?: ReconciliationSessionUpdateManyWithoutOrganizationNestedInput
+    reconciliationMatches?: ReconciliationMatchUpdateManyWithoutOrganizationNestedInput
+    reconciliationExceptions?: ReconciliationExceptionUpdateManyWithoutOrganizationNestedInput
+    reconciliationAdjustments?: ReconciliationAdjustmentUpdateManyWithoutOrganizationNestedInput
+    commitments?: CommitmentUpdateManyWithoutOrganizationNestedInput
+    budgetRevisions?: BudgetRevisionUpdateManyWithoutOrganizationNestedInput
+    budgetTransfers?: BudgetTransferUpdateManyWithoutOrganizationNestedInput
+    budgetScenarios?: BudgetScenarioUpdateManyWithoutOrganizationNestedInput
+    taxRules?: TaxRuleUpdateManyWithoutOrganizationNestedInput
+    taxObligations?: TaxObligationUpdateManyWithoutOrganizationNestedInput
+    taxPayments?: TaxPaymentUpdateManyWithoutOrganizationNestedInput
+    credentials?: CredentialUpdateManyWithoutOrganizationNestedInput
+    complianceDocuments?: ComplianceDocumentUpdateManyWithoutOrganizationNestedInput
+    taxInvoiceSequence?: TaxInvoiceSequenceUpdateOneWithoutOrganizationNestedInput
+    financialCloses?: FinancialCloseUpdateManyWithoutOrganizationNestedInput
+    closeChecklistItems?: CloseChecklistItemUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutSyncQueueItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    legalName?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumOrganizationTypeFieldUpdateOperationsInput | $Enums.OrganizationType
+    registrationStatus?: EnumRegistrationStatusFieldUpdateOperationsInput | $Enums.RegistrationStatus
+    registrationNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    tin?: NullableStringFieldUpdateOperationsInput | string | null
+    baseCurrency?: StringFieldUpdateOperationsInput | string
+    fiscalYearStartMonth?: IntFieldUpdateOperationsInput | number
+    fiscalYearEndDay?: IntFieldUpdateOperationsInput | number
+    taxJurisdictions?: NullableJsonNullValueInput | InputJsonValue
+    defaultLocationId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberships?: OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+    locations?: LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+    departments?: DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    costCentres?: CostCentreUncheckedUpdateManyWithoutOrganizationNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutOrganizationNestedInput
+    fundingSources?: FundingSourceUncheckedUpdateManyWithoutOrganizationNestedInput
+    masterDataChangeRequests?: MasterDataChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    reasonCodes?: ReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    reversalReasonCodes?: ReversalReasonCodeUncheckedUpdateManyWithoutOrganizationNestedInput
+    productsServices?: ProductServiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    parties?: PartyUncheckedUpdateManyWithoutOrganizationNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutOrganizationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganizationNestedInput
+    communicationLogs?: CommunicationLogUncheckedUpdateManyWithoutOrganizationNestedInput
+    supplierBankDetailChangeRequests?: SupplierBankDetailChangeRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    customerReceivables?: CustomerReceivableUncheckedUpdateManyWithoutOrganizationNestedInput
+    quotations?: QuotationUncheckedUpdateManyWithoutOrganizationNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+    receipts?: ReceiptUncheckedUpdateManyWithoutOrganizationNestedInput
+    creditNotes?: CreditNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    debitNotes?: DebitNoteUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+    invoiceReminders?: InvoiceReminderUncheckedUpdateManyWithoutOrganizationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentTags?: DocumentTagUncheckedUpdateManyWithoutOrganizationNestedInput
+    retentionPolicies?: RetentionPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentVersions?: DocumentVersionUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentTagLinks?: DocumentTagLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+    documentLinks?: DocumentLinkUncheckedUpdateManyWithoutOrganizationNestedInput
+    legalHolds?: LegalHoldUncheckedUpdateManyWithoutOrganizationNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    financialPeriods?: FinancialPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+    openingBalances?: OpeningBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+    accountBalanceSnapshots?: AccountBalanceSnapshotUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalEntries?: JournalEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+    journalLines?: JournalLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetLines?: BudgetLineUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalPolicies?: ApprovalPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+    approvalRequests?: ApprovalRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+    treasuryAccounts?: TreasuryAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+    paymentSchedules?: PaymentScheduleUncheckedUpdateManyWithoutOrganizationNestedInput
+    transfers?: TransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    importBatches?: ImportBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    importFieldMappings?: ImportFieldMappingUncheckedUpdateManyWithoutOrganizationNestedInput
+    matchingRules?: MatchingRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationSessions?: ReconciliationSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationMatches?: ReconciliationMatchUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationExceptions?: ReconciliationExceptionUncheckedUpdateManyWithoutOrganizationNestedInput
+    reconciliationAdjustments?: ReconciliationAdjustmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    commitments?: CommitmentUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetRevisions?: BudgetRevisionUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetTransfers?: BudgetTransferUncheckedUpdateManyWithoutOrganizationNestedInput
+    budgetScenarios?: BudgetScenarioUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxRules?: TaxRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxObligations?: TaxObligationUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxPayments?: TaxPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+    credentials?: CredentialUncheckedUpdateManyWithoutOrganizationNestedInput
+    complianceDocuments?: ComplianceDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+    taxInvoiceSequence?: TaxInvoiceSequenceUncheckedUpdateOneWithoutOrganizationNestedInput
+    financialCloses?: FinancialCloseUncheckedUpdateManyWithoutOrganizationNestedInput
+    closeChecklistItems?: CloseChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+    anomalies?: AnomalyFlagUncheckedUpdateManyWithoutOrganizationNestedInput
+    backupRuns?: BackupRunUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationMembershipCreateManyUserInput = {
@@ -312393,6 +317588,42 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type BackupRunCreateManyOrganizationInput = {
+    id?: string
+    type: $Enums.BackupType
+    status?: $Enums.BackupStatus
+    storageKey: string
+    checksum: string
+    sizeBytes: bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    verificationChecksum?: string | null
+    restoreTestedAt?: Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SyncQueueItemCreateManyOrganizationInput = {
+    id?: string
+    userId: string
+    actionType: $Enums.SyncActionType
+    payload: JsonNullValueInput | InputJsonValue
+    idempotencyKey: string
+    status?: $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: number
+    lastAttemptAt?: Date | string | null
+    syncedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OrganizationMembershipUpdateWithoutOrganizationInput = {
     isDefault?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -316073,6 +321304,114 @@ export namespace Prisma {
     confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BackupRunUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumBackupTypeFieldUpdateOperationsInput | $Enums.BackupType
+    status?: EnumBackupStatusFieldUpdateOperationsInput | $Enums.BackupStatus
+    storageKey?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verificationChecksum?: NullableStringFieldUpdateOperationsInput | string | null
+    restoreTestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BackupRunUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumBackupTypeFieldUpdateOperationsInput | $Enums.BackupType
+    status?: EnumBackupStatusFieldUpdateOperationsInput | $Enums.BackupStatus
+    storageKey?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verificationChecksum?: NullableStringFieldUpdateOperationsInput | string | null
+    restoreTestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BackupRunUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumBackupTypeFieldUpdateOperationsInput | $Enums.BackupType
+    status?: EnumBackupStatusFieldUpdateOperationsInput | $Enums.BackupStatus
+    storageKey?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    sizeBytes?: BigIntFieldUpdateOperationsInput | bigint | number
+    rowCounts?: NullableJsonNullValueInput | InputJsonValue
+    auditChainHead?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verificationChecksum?: NullableStringFieldUpdateOperationsInput | string | null
+    restoreTestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    restoreTestResult?: NullableJsonNullValueInput | InputJsonValue
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncQueueItemUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    actionType?: EnumSyncActionTypeFieldUpdateOperationsInput | $Enums.SyncActionType
+    payload?: JsonNullValueInput | InputJsonValue
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumSyncStatusFieldUpdateOperationsInput | $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncQueueItemUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    actionType?: EnumSyncActionTypeFieldUpdateOperationsInput | $Enums.SyncActionType
+    payload?: JsonNullValueInput | InputJsonValue
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumSyncStatusFieldUpdateOperationsInput | $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SyncQueueItemUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    actionType?: EnumSyncActionTypeFieldUpdateOperationsInput | $Enums.SyncActionType
+    payload?: JsonNullValueInput | InputJsonValue
+    idempotencyKey?: StringFieldUpdateOperationsInput | string
+    status?: EnumSyncStatusFieldUpdateOperationsInput | $Enums.SyncStatus
+    conflictDetail?: NullableJsonNullValueInput | InputJsonValue
+    retryCount?: IntFieldUpdateOperationsInput | number
+    lastAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    syncedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

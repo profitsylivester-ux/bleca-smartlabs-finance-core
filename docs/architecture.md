@@ -1,241 +1,230 @@
-# Architecture
+# Architecture Overview
 
-How BLECA SmartLabs Finance is put together, and why. Written for someone who has to make a change
-safely six months from now.
-
----
-
-## 1. The one rule everything else serves
+## High-Level Architecture
 
 ```
-presentation (app/)  →  modules/<module>/  →  lib/ (kernel)  →  infrastructure
-                              ↓                    ↑
-                              └──── never ─────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                        PRESENTATION LAYER                       │
+│  Next.js App Router (Server Components + Client Components)    │
+│  ├── app/** — Route segments, layouts, pages                   │
+│  ├── components/** — Shared UI components                      │
+│  └── lib/** — Client-side utilities, hooks                     │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        MODULE LAYER                             │
+│  modules/<module>/ — Self-contained business modules           │
+│  ├── server actions — Mutations (called by UI)                 │
+│  ├── queries — Read operations (called by UI)                  │
+│   ├── schemas — Zod validation schemas                         │
+│  └── services — Business logic (called by actions/queries)     │
+│                                                                 │
+│  RULES:                                                         │
+│  - MAY import from kernel (lib/)                                │
+│  - NEVER imported BY kernel                                     │
+│  - NEVER import another module's internals                     │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │  One-way dependency
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   ACCOUNTING & PLATFORM KERNEL                  │
+│  lib/ — Shared platform services (single source of truth)      │
+│                                                                 │
+│  ├── accounting/   — Posting engine, balances, GL, trial bal   │
+│  ├── periods/      — Open/close/lock/reopen                    │
+│  ├── approvals/    — Generic workflow engine                   │
+│  ├── rbac/         — Server-side authorization                 │
+│  ├── audit/        — Append-only tamper-evident log            │
+│  ├── documents/    — Pluggable storage abstraction             │
+│  ├── fx/           — Currency + historical rates               │
+│  ├── dimensions/   — Project/dept/cost centre/location         │
+│  ├── notifications/— In-app + email delivery                   │
+│  ├── tax/          — Configurable tax engine                   │
+│  ├── money/        — Decimal arithmetic, formatting            │
+│  ├── workflow/     — State machines, transitions               │
+│  ├── import/       — 7-stage import pipeline                   │
+│  ├── search/       — Full-text + faceted search                │
+│  ├── backup/       — Backup, verify, restore-test              │
+│  ├── sync/         — Offline queue, batch sync                 │
+│  └── kernel/index.ts — Single sanctioned kernel surface        │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      INFRASTRUCTURE LAYER                       │
+│                                                                 │
+│  ├── Prisma ORM + PostgreSQL (Neon/Supabase)                   │
+│  ├── Storage: Local filesystem / S3-compatible                 │
+│  ├── Email: Nodemailer (SMTP) / Resend                         │
+│  ├── Queue: In-process (Phase 1) → Redis/Bull (Phase 2)        │
+│  ├── Cache: Next.js cache + in-memory                          │
+│  ├── Rate limiting: In-memory (Phase 1) → Redis (Phase 2)      │
+│  ├── Structured logging: Pino → stdout (Vercel)                │
+│  └── Auth: NextAuth.js (Auth.js) with custom adapter           │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-Dependencies point one way. The kernel never imports a module or a page; a module never imports
-another module's internals.
+## Kernel / Module Separation
 
-This exists because of one requirement: *"future modules plug into the accounting core without
-rebuild"* (PDF §17.17, §74). If the posting engine ever imports an invoice type, it stops being
-reusable, and Phase 2 would require rebuilding the core.
-
-**It is enforced twice**, because one mechanism is always bypassable:
-
-| Mechanism | File | Catches |
-|---|---|---|
-| ESLint import zones | `eslint.config.mjs` | direct and aliased imports, at lint time |
-| Import-graph test | `src/tests/unit/import-graph.test.ts` | anything, including dynamic imports, by walking the real graph |
-
-The graph test has already caught one real violation: the `audit-trail` module reaching into
-`users-roles` to call its own chain-verification action.
-
----
-
-## 2. Directory layout
-
+### The One-Way Rule
 ```
-prisma/
-  schema.prisma              models, enums, indexes, relations
-  migrations/                versioned; the *_audit_guards one is hand-written SQL
-  seed.ts                    idempotent seed
-  seed-data.ts               the permission and role catalogue (data, not code)
-src/
-  app/
-    (auth)/                  login, mfa-verify, forgot/reset password
-    (app)/                   authenticated shell + admin screens
-    api/v1/                  external API surface
-  lib/                       ===== KERNEL =====
-    kernel/index.ts          the ONLY sanctioned kernel entry point
-    kernel/authorize.ts      the single enforcement point
-    kernel/context.ts        RequestContext, Dimensions
-    kernel/errors.ts         typed errors
-    db/                      prisma client, tenant extension, withAudit
-    audit/                   hash chain, writer, verifier
-    rbac/                    permission resolution, scope resolution
-    auth/                    password, TOTP, sessions, policy, rate limit, Auth.js
-    crypto/                  AES-GCM, canonical JSON, hashing
-    api/                     idempotency, response mapping
-  modules/
-    module-registry.ts       one source of truth for navigation and gating
-    auth/ users-roles/ audit-trail/
-  components/                shared UI only
-  tests/
-    unit/ integration/ setup/
-e2e/specs/                   Playwright
-docs/
+Modules → Kernel  ✓
+Kernel  → Modules ✗
+Modules → Modules ✗
 ```
 
----
+### Enforcement Mechanisms
+1. **ESLint `no-restricted-imports`**: `lib/**` cannot import from `modules/**` or `app/**`
+2. **Import graph test**: Unit test asserts no upward edges
+3. **Kernel surface**: `lib/kernel/index.ts` is the only sanctioned export
+4. **Module registry**: Each module declares `MODULE_KEY` and registers routes
 
-## 3. The kernel
+### Why This Matters
+The accounting core (posting engine, period management, approvals) must be callable by **any future module**. When Phase 2 Procurement lands, it calls `lib/accounting` exactly like Invoicing does. If the posting engine ever imports an Invoice type, it stops being reusable and Phase 2 would require rebuilding the core — precisely what PDF §17.17 and §74 forbid.
 
-`src/lib/kernel/index.ts` is the sanctioned surface. Modules import from `@/lib/kernel`, not from
-`@/lib/accounting/posting` or any other deep path. The indirection is what makes the dependency rule
-auditable.
+## API-First Design
 
-### 3.1 `authorize()` — the enforcement point
+Every mutation is reachable through:
+1. **Server Action** (for UI, co-located with component)
+2. **Route Handler** `app/api/v1/**` (for external integrations)
 
-Called as the **first statement** of every service function. It **throws**, never returns a boolean,
-because a boolean can be ignored by a caller who forgets to check it.
-
-It checks three things in order:
-
-1. **Permission** — `(module, action, resource)` against the actor's live grants.
-2. **Scope** — dimension grants, if the entity carries dimensions. DENY always wins.
-3. **Step-up** — re-authentication for sensitive actions.
-
-A denial is audited in its own committed transaction, so the record of the attempt survives even
-though the request was refused.
-
-### 3.2 `RequestContext`
-
-Service functions take an explicit context rather than reading a module-level "current user". That is
-what stops the API path from becoming a way around a check: Server Actions and route handlers both
-go through the same kernel call.
-
-### 3.3 `withAudit()`
-
-Wraps every mutating service function. The audit write happens in the **same database transaction**
-as the business mutation, so an audit failure rolls the mutation back. An unaudited mutation is
-unreachable, not merely discouraged.
-
----
-
-## 4. The audit chain
-
-The guarantee is tamper-**evidence**, layered so that each layer catches what the one above cannot.
-
-```
-┌─ application ─────────────────────────────────────────────────────┐
-│ lib/audit/writer.ts exposes write() and read(). There is no        │
-│ update() and no delete().                                          │
-└────────────────────────────────────────────────────────────────────┘
-┌─ database ────────────────────────────────────────────────────────┐
-│ BEFORE UPDATE / DELETE / TRUNCATE on audit_logs → raise.           │
-│ These hold even against direct SQL with a leaked credential.       │
-└────────────────────────────────────────────────────────────────────┘
-┌─ chain linkage ───────────────────────────────────────────────────┐
-│ An inserted row must chain from the current head and carry the     │
-│ next sequence. A forged or gap-filled row cannot be written at all.│
-└────────────────────────────────────────────────────────────────────┘
-┌─ hash chain ──────────────────────────────────────────────────────┐
-│ entry_hash = sha256(previous_hash, sequence, actor, action,        │
-│                     entity, description, changes, occurred_at)     │
-│ signature  = HMAC-SHA256(entry_hash, period key)                   │
-│ Recomputed and re-derived on demand, or nightly from the last seal.│
-└────────────────────────────────────────────────────────────────────┘
+Both call the same underlying service function which takes an explicit `RequestContext`:
+```typescript
+interface RequestContext {
+  actor: { userId, fullName, roleCodes, organizationId, sessionId };
+  permissions: ResolvedPermission[];
+  requestId: string;
+  idempotencyKey: string;
+  ip: string;
+  userAgent: string;
+  channel: 'WEB' | 'API' | 'CLI' | 'SYSTEM' | 'SYNC';
+}
 ```
 
-### 4.1 Two deliberate deviations from PHASE_1_PLAN.md §3.8.5
+This ensures authorization, audit, and idempotency **cannot be bypassed** by taking the internal path instead of the API.
 
-**`description` is in the hash.** The plan lists eight fields; those describe *who did what to which
-record*. The description is the human-readable statement of the same event, and leaving it mutable
-would let someone rewrite an entry's narrative — "approved invoice" into "denied invoice" — without
-breaking anything. Including it is a strengthening.
+## Ledger Invariants (Kernel-Level, Non-Negotiable)
 
-**`description` and the null/empty distinction are enforced by JSON array serialisation.** A joined
-string collapses `null` and `''` to the same field. `JSON.stringify([...])` does not, so swapping a
-null actor id for an empty one breaks the chain.
+1. **Decimal(20,6)** for money. Never Float.
+2. **Per-currency + base-currency** amounts. Base = TZS.
+3. **Journal entry postable only if ALL hold:**
+   - Σ(debits) = Σ(credits) across lines
+   - All lines share one currency (multi-currency → split + FX entry)
+   - Period is `OPEN` or `REOPENED`
+   - Posting user ≠ submitting user (segregation of duties)
+   - Completed `ApprovalRequest` where policy requires
+   - Every line's account is `POSTABLE` and `ACTIVE` or `LOCKED`-but-approved
+4. **JournalEntry/JournalLine** are the **only** writer of ledger balances.
+5. **Balances are derived** from `JournalLine` by query. `AccountBalanceSnapshot` is a rebuildable cache.
+6. **Immutability**: DB triggers reject UPDATE/DELETE on posted/locked entries.
 
-### 4.2 Concurrency
-
-A single mutable row, `audit_chain_head`, is locked with `SELECT ... FOR UPDATE` before each append.
-That serialises concurrent writers, which is what makes the chain gap-free: an aborted transaction
-rolls back the audit row **and** the head update together, so a sequence number can never be
-consumed by a lost write.
-
----
-
-## 5. Authentication
-
-Auth.js owns the cookie and the JWT. It does **not** own authorisation.
+## PWA / Offline Architecture
 
 ```
-Password check (attemptLogin)          ONE implementation of credential checking
-        ↓
-Session row created, unsatisfied       mfa_satisfied_at = NULL if MFA is required
-        ↓
-Auth.js "session-exchange" provider    exchanges the open session for the cookie
-        ↓
-JWT carries only the session id
-        ↓
-Every request re-validates that row    revocation is immediate, not token-expiry
+┌─────────────────┐     Offline      ┌──────────────────┐
+│   Browser       │ ◄──────────────► │  IndexedDB       │
+│   (SW + App)    │   Queue writes   │  (offlineReceipts│
+└────────┬────────┘                  │   syncQueue)     │
+         │                           └────────┬─────────┘
+         │ Online                          │
+         ▼                                 ▼
+┌─────────────────────────────────────────────────────┐
+│                  Sync API                           │
+│  POST /api/v1/sync/batch                            │
+│  - Validates idempotency keys                       │
+│  - Enforces offline allowlist (server-side)         │
+│  - Returns per-item conflict descriptors            │
+└─────────────────────────────────────────────────────┘
 ```
 
-Two providers exist on purpose. Verifying through both `credentials` and `attemptLogin` would check
-the password twice, double-count the failed-attempt counter, and open two session rows per login.
+### Offline Allowlist (Client + Server Enforced)
+| Action | Allowed Offline? |
+|--------|-----------------|
+| `RECEIPT_CAPTURE` | ✓ |
+| `DRAFT_SAVE` | ✓ |
+| `CONTACT_CARD_SAVE` | ✓ |
+| `SUBMIT` | ✗ |
+| `APPROVE` | ✗ |
+| `REJECT` | ✗ |
+| `POST` | ✗ |
+| `REVERSE` | ✗ |
+| `PERIOD_CLOSE` | ✗ |
+| `PERIOD_REOPEN` | ✗ |
 
-**Timeouts are absolute instants resolved at issue time.** A later policy change cannot silently
-extend a session that was issued with a shorter one.
+**Server returns distinct error code** `OFFLINE_ACTION_NOT_ALLOWED` for high-risk actions attempted without connectivity.
 
-**The MFA challenge creates a real session that grants nothing.** Every guarded route requires
-`mfa_satisfied_at`, so an abandoned challenge has no access.
-
-### 5.1 Authentication reveals nothing
-
-Unknown address, wrong password, deactivated account and locked account all surface as one message.
-Otherwise the login form is an account enumeration oracle with a rate limit attached.
-
----
-
-## 6. RBAC
-
-`Permission { module, action, resource }` is the Cartesian product, created as **data**. Adding a
-role is an insert, not a deploy.
-
-**Actions are a closed enum.** Adding one requires a migration — deliberately, because an action
-that appears by typo is an action nobody reviewed.
-
-**Scope resolution:**
+## Security Architecture
 
 ```
-1. collect grants for the actor's live roles
-2. partition ALLOW / DENY per dimension
-3. DENY always wins, in every combination
-4. a dimension with NO grants is unrestricted   ← this is how the CEO is unrestricted
-5. a dimension WITH grants requires the value in ALLOW
-6. a record with no value for a dimension is not constrained by it
+┌────────────────────────────────────────────────────────────┐
+│                    DEFENSE IN DEPTH                        │
+├────────────────────────────────────────────────────────────┤
+│ Network: Vercel Edge (DDoS, WAF, TLS 1.3)                 │
+│ Application: Next.js (CSP, HSTS, X-Frame-Options)         │
+│ Authentication: NextAuth.js + Argon2id + TOTP MFA         │
+│ Authorization: Kernel RBAC (every service function)        │
+│ Session: Short-lived JWT + server-side revocation          │
+│ Data: Encryption at rest (Postgres TDE + app-level)        │
+│ Audit: Append-only hash chain + daily checkpoints          │
+│ Rate Limiting: Auth routes (strict), Financial (moderate)  │
+│ File Upload: Type validation, size limits, virus scan      │
+│ Secrets: Vercel env vars, never in code                    │
+│ Monitoring: Security events dashboard + alerting           │
+└────────────────────────────────────────────────────────────┘
 ```
 
-Rule 6 matters: treating "no project" as "outside every project" would hide every unprojected
-transaction from a scoped user.
+## Multi-Tenant Isolation
 
-**Expiry is evaluated on every request**, not only by the nightly cleanup job. A grant that expired an
-hour ago is inert now.
+Every table carries `organizationId`. Prisma client extensions inject the filter:
+```typescript
+// lib/db/prisma.ts
+export const prisma = new PrismaClient().$extends({
+  query: {
+    $allModels: {
+      async $allOperations({ args, query }) {
+        if (args.where) {
+          args.where = { ...args.where, organizationId: getCurrentOrgId() };
+        }
+        return query(args);
+      },
+    },
+  },
+});
+```
 
----
+## Deployment Topology
 
-## 7. Data conventions
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Vercel    │────►│  PostgreSQL │◄───►│   Storage   │
+│  (App +     │     │  (Neon/     │     │  (Local/    │
+│   API)      │     │   Supabase) │     │   S3)       │
+└─────────────┘     └─────────────┘     └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│  Email      │
+│  (SMTP/     │
+│   Resend)   │
+└─────────────┘
+```
 
-- **snake_case columns** via `@map`/`@@map`. Prisma's camelCase default is fine until you write raw
-  SQL — and from M1 onward every guarantee Prisma cannot express is raw SQL. Settled now, with no
-  data, rather than after go-live.
-- **`Decimal(20,6)`** for money. Never `Float`.
-- **Soft delete everywhere.** Hard delete is allowed only for session, login telemetry, notification
-  and idempotency rows, and only after retention expiry. A database trigger refuses to delete a
-  *live* session.
-- **`organization_id` on every business table**, with a Prisma client extension that injects the
-  filter and rejects a cross-tenant `where`.
-- **No Tanzanian tax value and no bank file format in code.** Everything is configuration.
+- Single Next.js deployment on Vercel
+- Database: Neon (serverless Postgres) or Supabase
+- Storage: Local (dev) / S3-compatible (prod)
+- Email: SMTP via Nodemailer or Resend API
+- No separate worker processes in Phase 1 (in-process queue)
 
----
+## Phase 2+ Extensibility Points
 
-## 8. Deliberate substitutions
-
-| Planned | Shipped | Why |
-|---|---|---|
-| MinIO for local S3 | `adobe/s3mock` | MinIO removed its Docker Hub images; `minio/minio` now fails to pull. Application code only ever sees the S3 driver. |
-
-Both are documented at the point of substitution. Neither changes application behaviour.
-
----
-
-## 9. What arrives next
-
-M2 (organisation dimensions, currency and FX), M3 (chart of accounts, periods, opening balances),
-M4 (double-entry core, general ledger, trial balance). M5 and M6 bring the transaction lifecycle and
-the approval engine that Q2 and Q3 already constrain.
-
-The kernel was built for those. If a M3–M6 module needs something the kernel does not expose, the
-kernel is what should change — not the rule.
+| Area | Current | Phase 2+ Extension |
+|------|---------|-------------------|
+| Modules | Kernel-only imports | New modules under `modules/` |
+| Queue | In-process | Redis + BullMQ |
+| Cache | Next.js cache | Redis Cluster |
+| Rate Limit | In-memory | Redis sliding window |
+| Notifications | In-app + Email | SMS, Push, Webhook |
+| Auth | TOTP | WebAuthn, SSO (SAML/OIDC) |
+| Storage | Local/S3 | Azure Blob, GCS |
+| Multi-entity | Single entity flag | Full multi-entity hierarchy |
