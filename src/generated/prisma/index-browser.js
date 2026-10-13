@@ -1106,6 +1106,44 @@ exports.Prisma.FinancialPeriodScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FinancialCloseScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  periodId: 'periodId',
+  status: 'status',
+  startedById: 'startedById',
+  startedAt: 'startedAt',
+  submittedById: 'submittedById',
+  submittedAt: 'submittedAt',
+  signedOffById: 'signedOffById',
+  signedOffAt: 'signedOffAt',
+  approvalRequestId: 'approvalRequestId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CloseChecklistItemScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  closeId: 'closeId',
+  itemKey: 'itemKey',
+  label: 'label',
+  isBlocking: 'isBlocking',
+  isAutomated: 'isAutomated',
+  status: 'status',
+  computedValue: 'computedValue',
+  confirmedById: 'confirmedById',
+  confirmedAt: 'confirmedAt',
+  waivedById: 'waivedById',
+  waivedAt: 'waivedAt',
+  waiverReason: 'waiverReason',
+  waiverApproverId: 'waiverApproverId',
+  waiverApprovedAt: 'waiverApprovedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.OpeningBalanceScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -2299,7 +2337,9 @@ exports.AuditEntityType = exports.$Enums.AuditEntityType = {
   CREDENTIAL: 'CREDENTIAL',
   COMPLIANCE_DOCUMENT: 'COMPLIANCE_DOCUMENT',
   REPORT: 'REPORT',
-  EXPORT: 'EXPORT'
+  EXPORT: 'EXPORT',
+  FINANCIAL_CLOSE: 'FINANCIAL_CLOSE',
+  CLOSE_CHECKLIST_ITEM: 'CLOSE_CHECKLIST_ITEM'
 };
 
 exports.MasterDataChangeStatus = exports.$Enums.MasterDataChangeStatus = {
@@ -2573,6 +2613,29 @@ exports.PeriodStatus = exports.$Enums.PeriodStatus = {
   LOCKED: 'LOCKED',
   REOPEN_PENDING: 'REOPEN_PENDING',
   REOPENED: 'REOPENED'
+};
+
+exports.CloseItemKey = exports.$Enums.CloseItemKey = {
+  BANK_RECONCILIATION: 'BANK_RECONCILIATION',
+  CASH_RECONCILIATION: 'CASH_RECONCILIATION',
+  RECEIVABLES: 'RECEIVABLES',
+  PAYABLES: 'PAYABLES',
+  MISSING_DOCUMENTS: 'MISSING_DOCUMENTS',
+  UNAPPROVED_TRANSACTIONS: 'UNAPPROVED_TRANSACTIONS',
+  BUDGET_VARIANCES: 'BUDGET_VARIANCES',
+  ADJUSTMENTS: 'ADJUSTMENTS',
+  FINANCIAL_STATEMENTS: 'FINANCIAL_STATEMENTS',
+  OPEN_ITEMS_DISCLOSED: 'OPEN_ITEMS_DISCLOSED',
+  GO_LIVE_CLEANUP: 'GO_LIVE_CLEANUP'
+};
+
+exports.CloseItemStatus = exports.$Enums.CloseItemStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  PASSED: 'PASSED',
+  FAILED: 'FAILED',
+  WAIVED: 'WAIVED',
+  NOT_APPLICABLE: 'NOT_APPLICABLE'
 };
 
 exports.VerificationStatus = exports.$Enums.VerificationStatus = {
@@ -2854,7 +2917,16 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   CREDENTIAL_UPDATED: 'CREDENTIAL_UPDATED',
   CREDENTIAL_DELETED: 'CREDENTIAL_DELETED',
   COMPLIANCE_DOCUMENT_LINKED: 'COMPLIANCE_DOCUMENT_LINKED',
-  COMPLIANCE_DOCUMENT_UNLINKED: 'COMPLIANCE_DOCUMENT_UNLINKED'
+  COMPLIANCE_DOCUMENT_UNLINKED: 'COMPLIANCE_DOCUMENT_UNLINKED',
+  FINANCIAL_CLOSE_STARTED: 'FINANCIAL_CLOSE_STARTED',
+  FINANCIAL_CLOSE_ITEM_CHECKED: 'FINANCIAL_CLOSE_ITEM_CHECKED',
+  FINANCIAL_CLOSE_ITEM_WAIVED: 'FINANCIAL_CLOSE_ITEM_WAIVED',
+  FINANCIAL_CLOSE_SUBMITTED: 'FINANCIAL_CLOSE_SUBMITTED',
+  FINANCIAL_CLOSE_SIGNED_OFF: 'FINANCIAL_CLOSE_SIGNED_OFF',
+  FINANCIAL_CLOSE_REOPEN_REQUESTED: 'FINANCIAL_CLOSE_REOPEN_REQUESTED',
+  FINANCIAL_CLOSE_REOPEN_APPROVED: 'FINANCIAL_CLOSE_REOPEN_APPROVED',
+  YEAR_END_PROCEDURE_RUN: 'YEAR_END_PROCEDURE_RUN',
+  ADJUSTMENT_PERIOD_CREATED: 'ADJUSTMENT_PERIOD_CREATED'
 };
 
 exports.AuditChannel = exports.$Enums.AuditChannel = {
@@ -3212,6 +3284,8 @@ exports.Prisma.ModelName = {
   DebitNote: 'DebitNote',
   Account: 'Account',
   FinancialPeriod: 'FinancialPeriod',
+  FinancialClose: 'FinancialClose',
+  CloseChecklistItem: 'CloseChecklistItem',
   OpeningBalance: 'OpeningBalance',
   AccountBalanceSnapshot: 'AccountBalanceSnapshot',
   JournalEntry: 'JournalEntry',

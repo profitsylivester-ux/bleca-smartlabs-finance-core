@@ -6,8 +6,9 @@ import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
 import { runIdempotent } from '@/lib/api/idempotency';
 import { withAudit } from '@/lib/db/with-audit';
-import { writeAuditEntry } from '@/lib/audit/writer';
 import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
+import { getCloseState } from '@/lib/close/service';
+import { runAllAutomatedChecks } from '@/lib/close/checks';
 
 async function getAuditOptions(reqId: string, h: Headers) {
   return {
@@ -17,53 +18,27 @@ async function getAuditOptions(reqId: string, h: Headers) {
   };
 }
 
-async function getPeriod(id: string, orgId: string) {
-  return prisma.financialPeriod.findFirst({
-    where: { id, organizationId: orgId },
-    select: {
-      id: true,
-      type: true,
-      status: true,
-      code: true,
-      name: true,
-      startDate: true,
-      endDate: true,
-      isAdjustment: true,
-      reopenCount: true,
-      closedAt: true,
-      lockedAt: true,
-    },
-  });
-}
-
-export async function POST(
+export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'MASTER_DATA', action: 'EDIT' });
+    await authorize(ctx, { module: 'FINANCIAL_CLOSE', action: 'VIEW' });
 
     if (!ctx.actor.organizationId) {
       return apiError(new ValidationError('No organization context'), reqId);
-    }
-
-    const key = request.headers.get('idempotency-key');
-    if (!key) {
-      return apiError(
-        new ValidationError('An Idempotency-Key header is required on this endpoint.'),
-        reqId,
-      );
     }
 
     const { id } = await params;
     const h = await headers();
     const net = await getAuditOptions(reqId, h);
 
+    // For GET, we don't need idempotency, but we still use withAudit for audit trail
     const outcome = await runIdempotent({
-      key,
-      scope: `POST /api/v1/periods/${id}/close`,
+      key: `get-close-${id}-${ctx.actor.userId}-${Date.now()}`,
+      scope: `GET /api/v1/periods/${id}/close`,
       actorId: ctx.actor.userId,
       body: {},
       handler: async () =>
@@ -81,54 +56,37 @@ export async function POST(
             sessionId: ctx.actor.sessionId,
           },
           async (tx) => {
-            const existing = await getPeriod(id, ctx.actor.organizationId!);
-            if (!existing) throw new NotFoundError('Financial period', id);
-
-            if (existing.status !== 'OPEN') {
-              throw new ValidationError(`Cannot close period with status ${existing.status}. Only OPEN periods can be closed.`);
-            }
-
-            const updated = await tx.financialPeriod.update({
-              where: { id },
-              data: { status: 'CLOSED', closedAt: new Date() },
-              select: {
-                id: true,
-                type: true,
-                status: true,
-                code: true,
-                name: true,
-                reopenCount: true,
-                closedAt: true,
-                lockedAt: true,
-              },
+            const period = await tx.financialPeriod.findFirst({
+              where: { id, organizationId: ctx.actor.organizationId! },
+              select: { id: true, code: true, name: true, status: true, type: true },
             });
 
-            await writeAuditEntry(
-              tx,
-              { id: ctx.actor.userId, name: ctx.actor.fullName, roleCodes: ctx.actor.roleCodes },
-              {
-                action: 'CONFIGURATION_CHANGES',
-                entityType: 'FINANCIAL_PERIOD',
-                entityId: updated.id,
-                entityLabel: updated.code,
-                description: `Closed period ${updated.code} (${updated.name})`,
-                changes: {
-                  status: { from: existing.status, to: updated.status },
-                  reopenCount: { from: existing.reopenCount, to: updated.reopenCount },
-                  closedAt: { from: null, to: updated.closedAt?.toISOString() ?? null },
-                  lockedAt: { from: existing.lockedAt?.toISOString() ?? null, to: updated.lockedAt?.toISOString() ?? null },
+            if (!period) throw new NotFoundError('Financial period', id);
+
+            const closeState = await getCloseState(id, ctx.actor.organizationId!);
+
+            // If close exists, also run automated checks to get fresh results
+            let automatedResults: Record<string, { passed: boolean; value: string; detail: string }> = {};
+            if (closeState) {
+              automatedResults = await runAllAutomatedChecks(ctx.actor.organizationId!, id);
+            }
+
+            return {
+              status: 200,
+              body: {
+                data: {
+                  period: {
+                    id: period.id,
+                    code: period.code,
+                    name: period.name,
+                    status: period.status,
+                    type: period.type,
+                  },
+                  close: closeState,
+                  automatedChecks: automatedResults,
                 },
               },
-              {
-                organizationId: ctx.actor.organizationId,
-                ipAddress: net.ipAddress,
-                userAgent: net.userAgent,
-                requestId: reqId,
-                sessionId: ctx.actor.sessionId,
-              },
-            );
-
-            return { status: 200, body: { data: updated } };
+            };
           },
         ),
     });

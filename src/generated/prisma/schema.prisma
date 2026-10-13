@@ -485,6 +485,31 @@ enum PeriodStatus {
   REOPENED
 }
 
+/// Financial Close checklist item status.
+enum CloseItemStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  PASSED
+  FAILED
+  WAIVED
+  NOT_APPLICABLE
+}
+
+/// Financial Close checklist item keys — matches PDF §64.
+enum CloseItemKey {
+  BANK_RECONCILIATION
+  CASH_RECONCILIATION
+  RECEIVABLES
+  PAYABLES
+  MISSING_DOCUMENTS
+  UNAPPROVED_TRANSACTIONS
+  BUDGET_VARIANCES
+  ADJUSTMENTS
+  FINANCIAL_STATEMENTS
+  OPEN_ITEMS_DISCLOSED
+  GO_LIVE_CLEANUP
+}
+
 /// Opening Balance verification status.
 enum VerificationStatus {
   UNVERIFIED
@@ -949,6 +974,16 @@ enum AuditAction {
   CREDENTIAL_DELETED
   COMPLIANCE_DOCUMENT_LINKED
   COMPLIANCE_DOCUMENT_UNLINKED
+  /// Financial Close (M15)
+  FINANCIAL_CLOSE_STARTED
+  FINANCIAL_CLOSE_ITEM_CHECKED
+  FINANCIAL_CLOSE_ITEM_WAIVED
+  FINANCIAL_CLOSE_SUBMITTED
+  FINANCIAL_CLOSE_SIGNED_OFF
+  FINANCIAL_CLOSE_REOPEN_REQUESTED
+  FINANCIAL_CLOSE_REOPEN_APPROVED
+  YEAR_END_PROCEDURE_RUN
+  ADJUSTMENT_PERIOD_CREATED
 }
 
 enum AuditEntityType {
@@ -1037,6 +1072,9 @@ enum AuditEntityType {
   /// EXPORT is the event of taking a copy of one in a given format.
   REPORT
   EXPORT
+  /// Financial Close (M15)
+  FINANCIAL_CLOSE
+  CLOSE_CHECKLIST_ITEM
 }
 
 enum AuditResult {
@@ -1340,14 +1378,20 @@ model User {
   importFieldMappingsCreated       ImportFieldMapping[]      @relation("ImportFieldMappingCreatedBy")
   importErrorsResolved             ImportError[]             @relation("ImportErrorResolvedBy")
 
-  budgetsCreated          Budget[]         @relation("BudgetCreatedBy")
-  budgetsApproved         Budget[]         @relation("BudgetApprovedBy")
-  commitmentsCreated      Commitment[]     @relation("CommitmentCreatedBy")
-  budgetRevisionsCreated  BudgetRevision[] @relation("BudgetRevisionCreatedBy")
-  budgetRevisionsApproved BudgetRevision[] @relation("BudgetRevisionApprovedBy")
-  budgetTransfersCreated  BudgetTransfer[] @relation("BudgetTransferCreatedBy")
-  budgetTransfersApproved BudgetTransfer[] @relation("BudgetTransferApprovedBy")
-  budgetScenariosCreated  BudgetScenario[] @relation("BudgetScenarioCreatedBy")
+  budgetsCreated                    Budget[]             @relation("BudgetCreatedBy")
+  budgetsApproved                   Budget[]             @relation("BudgetApprovedBy")
+  commitmentsCreated                Commitment[]         @relation("CommitmentCreatedBy")
+  budgetRevisionsCreated            BudgetRevision[]     @relation("BudgetRevisionCreatedBy")
+  budgetRevisionsApproved           BudgetRevision[]     @relation("BudgetRevisionApprovedBy")
+  budgetTransfersCreated            BudgetTransfer[]     @relation("BudgetTransferCreatedBy")
+  budgetTransfersApproved           BudgetTransfer[]     @relation("BudgetTransferApprovedBy")
+  budgetScenariosCreated            BudgetScenario[]     @relation("BudgetScenarioCreatedBy")
+  financialClosesStarted            FinancialClose[]     @relation("FinancialCloseStartedBy")
+  financialClosesSubmitted          FinancialClose[]     @relation("FinancialCloseSubmittedBy")
+  financialClosesSignedOff          FinancialClose[]     @relation("FinancialCloseSignedOffBy")
+  closeChecklistItemsConfirmed      CloseChecklistItem[] @relation("CloseChecklistItemConfirmedBy")
+  closeChecklistItemsWaived         CloseChecklistItem[] @relation("CloseChecklistItemWaivedBy")
+  closeChecklistItemsWaiverApproved CloseChecklistItem[] @relation("CloseChecklistItemWaiverApprover")
 
   @@index([status, isActive])
   @@index([primaryLocationId])
@@ -1728,6 +1772,7 @@ model ApprovalRequest {
   decisionRecords           ApprovalDecisionRecord[]   @relation("ApprovalRequestDecisionRecords")
   sodWaivers                SODWaiver[]
   reconciliationAdjustments ReconciliationAdjustment[] @relation("ReconciliationAdjustmentApproval")
+  financialCloses           FinancialClose[]           @relation("FinancialCloseApprovalRequest")
 
   @@index([organizationId, entityType, entityId])
   @@index([status])
@@ -1901,6 +1946,8 @@ model Organization {
   credentials                      Credential[]
   complianceDocuments              ComplianceDocument[]
   taxInvoiceSequence               TaxInvoiceSequence?
+  financialCloses                  FinancialClose[]
+  closeChecklistItems              CloseChecklistItem[]
 
   @@index([registrationStatus])
   @@map("organizations")
@@ -2958,11 +3005,73 @@ model FinancialPeriod {
   accountBalanceSnapshots AccountBalanceSnapshot[]
   journalEntries          JournalEntry[]
   reconciliationSessions  ReconciliationSession[]
+  financialClose          FinancialClose?
 
   @@unique([organizationId, code])
   @@index([status, startDate])
   @@index([type, startDate])
   @@map("financial_periods")
+}
+
+/// Financial Close — a close session for a period (PDF §63/§64).
+model FinancialClose {
+  id                String           @id @default(cuid())
+  organizationId    String           @map("organization_id")
+  organization      Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  periodId          String           @map("period_id")
+  period            FinancialPeriod  @relation(fields: [periodId], references: [id])
+  status            String           @default("IN_PROGRESS") // IN_PROGRESS, SUBMITTED, SIGNED_OFF, REOPENED
+  startedById       String           @map("started_by_id")
+  startedBy         User             @relation("FinancialCloseStartedBy", fields: [startedById], references: [id])
+  startedAt         DateTime         @default(now()) @map("started_at")
+  submittedById     String?          @map("submitted_by_id")
+  submittedBy       User?            @relation("FinancialCloseSubmittedBy", fields: [submittedById], references: [id])
+  submittedAt       DateTime?        @map("submitted_at")
+  signedOffById     String?          @map("signed_off_by_id")
+  signedOffBy       User?            @relation("FinancialCloseSignedOffBy", fields: [signedOffById], references: [id])
+  signedOffAt       DateTime?        @map("signed_off_at")
+  approvalRequestId String?          @map("approval_request_id")
+  approvalRequest   ApprovalRequest? @relation("FinancialCloseApprovalRequest", fields: [approvalRequestId], references: [id])
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  checklistItems CloseChecklistItem[]
+
+  @@unique([periodId])
+  @@index([organizationId, status])
+  @@map("financial_closes")
+}
+
+/// Close Checklist Item — one line in the period close checklist (PDF §64).
+model CloseChecklistItem {
+  id               String          @id @default(cuid())
+  organizationId   String          @map("organization_id")
+  organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  closeId          String          @map("close_id")
+  close            FinancialClose  @relation(fields: [closeId], references: [id], onDelete: Cascade)
+  itemKey          CloseItemKey    @map("item_key")
+  label            String
+  isBlocking       Boolean         @default(true) @map("is_blocking")
+  isAutomated      Boolean         @default(false) @map("is_automated")
+  status           CloseItemStatus @default(NOT_STARTED)
+  computedValue    String?         @map("computed_value") // JSON string of automated check result
+  confirmedById    String?         @map("confirmed_by_id")
+  confirmedBy      User?           @relation("CloseChecklistItemConfirmedBy", fields: [confirmedById], references: [id])
+  confirmedAt      DateTime?       @map("confirmed_at")
+  waivedById       String?         @map("waived_by_id")
+  waivedBy         User?           @relation("CloseChecklistItemWaivedBy", fields: [waivedById], references: [id])
+  waivedAt         DateTime?       @map("waived_at")
+  waiverReason     String?         @map("waiver_reason")
+  waiverApproverId String?         @map("waiver_approver_id")
+  waiverApprover   User?           @relation("CloseChecklistItemWaiverApprover", fields: [waiverApproverId], references: [id])
+  waiverApprovedAt DateTime?       @map("waiver_approved_at")
+  notes            String?
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  @@unique([closeId, itemKey])
+  @@index([closeId, status])
+  @@map("close_checklist_items")
 }
 
 /// Opening Balances — one-sided/partial historical entries with verification status (PDF §2).
