@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Badge, Button } from '@/components/ui';
@@ -196,6 +197,7 @@ export function AppShell({
 
       <div className="min-w-0 flex-1">
         <header className="border-border-subtle flex items-center justify-end gap-3 border-b bg-white px-6 py-2.5">
+          <ThemeToggle />
           <Link
             href="/notifications"
             className="text-muted-foreground relative inline-flex items-center gap-1.5 text-[13px] hover:text-foreground"

@@ -110,3 +110,34 @@ table th {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* -------------------------------------------------------------- */
+/* Dark theme overrides. Toggled by [data-theme="dark"] on <html>. */
+/* All colour variables that components consume are redefined here. */
+/* -------------------------------------------------------------- */
+[data-theme='dark'] {
+  --background: #0b1220;
+  --foreground: #e5e9f0;
+  --surface: #121a2b;
+  --surface-muted: #1a2436;
+  --border: #26334a;
+  --border-strong: #3b4a66;
+  --muted-foreground: #94a3b8;
+  --accent: #5d82b8;
+  --accent-foreground: #0b1220;
+  --positive: #4ade80;
+  --warning: #fbbf24;
+  --negative: #f87171;
+  --focus-ring: #93add4;
+}
+
+[data-theme='dark'] .bg-white { background-color: #121a2b !important; }
+[data-theme='dark'] .bg-white\/60 { background-color: rgba(18, 26, 43, 0.6) !important; }
+[data-theme='dark'] .bg-muted\/30 { background-color: rgba(26, 36, 54, 0.3) !important; }
+[data-theme='dark'] .bg-muted\/40 { background-color: rgba(26, 36, 54, 0.4) !important; }
+[data-theme='dark'] .text-navy-700 { color: #93add4 !important; }
+[data-theme='dark'] .text-navy-800 { color: #c3d2e9 !important; }
+[data-theme='dark'] .text-navy-600 { color: #93add4 !important; }
+[data-theme='dark'] body { background: #0b1220; color: #e5e9f0; }
+[data-theme='dark'] .border-border-subtle { border-color: #26334a !important; }
