@@ -4,16 +4,9 @@ import { prisma } from '@/lib/db/prisma';
 
 export async function GET() {
   const ctx = await requireContext();
-  const orgId = ctx.actor.organizationId;
-  if (!orgId) return NextResponse.json({ isCeo: false });
-  const isCeo = Boolean(
-    await prisma.userRole.findFirst({
-      where: {
-        userId: ctx.actor.userId,
-        revokedAt: null,
-        role: { code: 'CEO', organizationId: orgId },
-      },
-    }),
-  );
-  return NextResponse.json({ isCeo });
+  const userRole = await prisma.userRole.findFirst({
+    where: { userId: ctx.actor.userId, revokedAt: null, role: { code: 'CEO' } },
+    select: { id: true },
+  });
+  return NextResponse.json({ isCeo: Boolean(userRole) });
 }

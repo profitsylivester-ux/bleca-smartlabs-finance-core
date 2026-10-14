@@ -75,8 +75,6 @@ export async function POST(request: Request) {
         REASON_CODE: 'reasonCode',
         PRODUCT_SERVICE: 'productService',
         SUPPLIER: 'supplier',
-        REASON_CODE: 'reasonCode',
-        PRODUCT_SERVICE: 'productService',
       };
       const modelName = modelMap[body.entityType];
       if (modelName) {
