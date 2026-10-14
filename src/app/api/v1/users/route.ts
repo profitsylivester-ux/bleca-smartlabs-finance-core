@@ -75,7 +75,7 @@ export async function POST(request: Request) {
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'USERS_ROLES', action: 'CREATE' });
+    await authorize(ctx, { module: 'USERS_ROLES', action: 'CONFIGURE' });
 
     const key = request.headers.get('idempotency-key');
     if (!key) {

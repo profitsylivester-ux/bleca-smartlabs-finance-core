@@ -110,7 +110,7 @@ async function prepareInvoiceLines(
 }
 
 export async function createInvoice(ctx: RequestContext, input: CreateInvoiceInput) {
-  await authorize(ctx, { module: 'INVOICES', action: 'CREATE' });
+  await authorize(ctx, { module: 'INVOICES', action: 'CONFIGURE' });
   const organizationId = organizationIdOf(ctx);
   const invoiceDate = asDate(input.invoiceDate, 'invoiceDate');
   const dueDate = asDate(input.dueDate, 'dueDate');
@@ -521,7 +521,7 @@ export async function cancelDraftInvoice(ctx: RequestContext, invoiceId: string,
 }
 
 export async function generateRecurringInvoice(ctx: RequestContext, templateId: string) {
-  await authorize(ctx, { module: 'INVOICES', action: 'CREATE' });
+  await authorize(ctx, { module: 'INVOICES', action: 'CONFIGURE' });
   const organizationId = organizationIdOf(ctx);
   const outcome = await withSalesAudit(ctx, async (tx) => {
     const template = await tx.invoice.findFirst({

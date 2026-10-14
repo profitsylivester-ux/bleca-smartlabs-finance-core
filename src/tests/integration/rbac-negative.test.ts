@@ -146,7 +146,7 @@ describe('authorize: the direct-call negative path', () => {
     const ctx = contextFor(auditorId, ['AUDITOR']);
 
     await expect(
-      authorize(ctx, { module: 'USERS_ROLES', action: 'CREATE' }),
+      authorize(ctx, { module: 'USERS_ROLES', action: 'CONFIGURE' }),
     ).rejects.toBeInstanceOf(AuthorizationError);
   });
 

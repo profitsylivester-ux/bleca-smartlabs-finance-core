@@ -102,7 +102,7 @@ export async function POST(request: Request) {
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'CUSTOMERS', action: 'CREATE' });
+    await authorize(ctx, { module: 'CUSTOMERS', action: 'CONFIGURE' });
     if (!ctx.actor.organizationId) return apiError(new ValidationError('No organization context'), reqId);
     const key = request.headers.get('idempotency-key');
     if (!key) return apiError(new ValidationError('An Idempotency-Key header is required.'), reqId);

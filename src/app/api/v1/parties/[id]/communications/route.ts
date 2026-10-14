@@ -55,8 +55,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (!ctx.actor.organizationId) return apiError(new ValidationError('No organization context'), reqId);
     const { id } = await params;
     const party = await authorizeParty(ctx, id);
-    if (party.customer) await authorize(ctx, { module: 'CUSTOMERS', action: 'CREATE' });
-    if (party.supplier) await authorize(ctx, { module: 'SUPPLIERS', action: 'CREATE' });
+    if (party.customer) await authorize(ctx, { module: 'CUSTOMERS', action: 'CONFIGURE' });
+    if (party.supplier) await authorize(ctx, { module: 'SUPPLIERS', action: 'CONFIGURE' });
     const key = request.headers.get('idempotency-key');
     if (!key) return apiError(new ValidationError('An Idempotency-Key header is required.'), reqId);
     const body = createSchema.parse(await request.json());

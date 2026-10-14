@@ -131,7 +131,7 @@ export async function POST(request: Request) {
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'DOCUMENTS', action: 'CREATE' }); // Use DOCUMENTS module for offline receipt capture sync
+    await authorize(ctx, { module: 'DOCUMENTS', action: 'CONFIGURE' }); // Use DOCUMENTS module for offline receipt capture sync
 
     if (!ctx.actor.organizationId) {
       return apiError(new ValidationError('No organization context'), reqId);

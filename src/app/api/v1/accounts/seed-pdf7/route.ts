@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'MASTER_DATA', action: 'CREATE' });
+    await authorize(ctx, { module: 'MASTER_DATA', action: 'CONFIGURE' });
 
     const orgId = ctx.actor.organizationId!;
     if (!orgId) {

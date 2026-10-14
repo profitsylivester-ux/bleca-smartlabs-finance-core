@@ -49,7 +49,7 @@ function requireQuotationLines(lines: QuotationLineInput[]) {
 }
 
 export async function createQuotation(ctx: RequestContext, input: CreateQuotationInput) {
-  await authorize(ctx, { module: 'QUOTATIONS', action: 'CREATE' });
+  await authorize(ctx, { module: 'QUOTATIONS', action: 'CONFIGURE' });
   const organizationId = organizationIdOf(ctx);
   const quoteDate = asDate(input.quoteDate, 'quoteDate');
   const validUntil = asDate(input.validUntil, 'validUntil');
@@ -253,7 +253,7 @@ export interface QuotationInvoiceConversion {
 }
 
 export async function convertQuotation(ctx: RequestContext, quotationId: string, input: QuotationInvoiceConversion) {
-  await authorize(ctx, { module: 'INVOICES', action: 'CREATE' });
+  await authorize(ctx, { module: 'INVOICES', action: 'CONFIGURE' });
   const organizationId = organizationIdOf(ctx);
   if (input.invoices.length === 0) throw new ValidationError('Provide at least one invoice to convert the quotation.');
   const outcome = await withSalesAudit(ctx, async (tx) => {

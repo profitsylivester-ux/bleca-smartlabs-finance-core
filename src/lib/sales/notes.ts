@@ -32,7 +32,7 @@ async function loadInvoiceForNote(tx: Tx, organizationId: string, invoiceId: str
 
 async function createNote(ctx: RequestContext, kind: NoteKind, input: CreateAdjustmentNoteInput) {
   const module = kind === 'CREDIT_NOTE' ? 'CREDIT_NOTES' : 'DEBIT_NOTES';
-  await authorize(ctx, { module, action: 'CREATE' });
+  await authorize(ctx, { module, action: 'CONFIGURE' });
   const organizationId = organizationIdOf(ctx);
   const amount = new Prisma.Decimal(input.amount);
   const taxAmount = new Prisma.Decimal(input.taxAmount ?? 0);

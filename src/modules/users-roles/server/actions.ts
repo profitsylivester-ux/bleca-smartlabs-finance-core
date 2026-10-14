@@ -60,7 +60,7 @@ export async function createUserAction(
   formData: FormData,
 ): Promise<ActionResult> {
   const context = await ctx();
-  await authorize(context, { module: 'USERS_ROLES', action: 'CREATE' });
+  await authorize(context, { module: 'USERS_ROLES', action: 'CONFIGURE' });
 
   const parsed = createUserSchema.safeParse({
     email: String(formData.get('email') ?? '').trim(),

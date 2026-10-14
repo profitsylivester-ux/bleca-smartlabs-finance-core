@@ -140,7 +140,7 @@ async function replaceManualAllocations(
 }
 
 export async function createPayment(ctx: RequestContext, input: CreatePaymentInput) {
-  await authorize(ctx, { module: 'PAYMENTS', action: 'CREATE' });
+  await authorize(ctx, { module: 'PAYMENTS', action: 'CONFIGURE' });
   const organizationId = organizationIdOf(ctx);
   const amount = decimal(input.amount);
   const paymentDate = asDate(input.paymentDate, 'paymentDate');
@@ -567,7 +567,7 @@ export async function reversePayment(ctx: RequestContext, paymentId: string, rea
 }
 
 export async function issueReceipt(ctx: RequestContext, paymentId: string, supportingDocumentId?: string) {
-  await authorize(ctx, { module: 'RECEIPTS', action: 'CREATE' });
+  await authorize(ctx, { module: 'RECEIPTS', action: 'CONFIGURE' });
   const organizationId = organizationIdOf(ctx);
   return withSalesAudit(ctx, async (tx) => {
     const payment = await tx.payment.findFirst({

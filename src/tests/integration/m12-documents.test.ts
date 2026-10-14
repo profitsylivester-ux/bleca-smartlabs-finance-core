@@ -213,7 +213,7 @@ describe('M12 Document Management', () => {
     const result = await upload(context(submitterId), 'M12 held retention evidence');
     await saveRetentionPolicy(context(submitterId), {
       name: 'M12 test retention', category: 'OTHER', retentionMonths: 1,
-      action: 'DELETE', legalBasis: 'Integration test policy',
+      action: 'CONFIGURE', legalBasis: 'Integration test policy',
     });
     await prisma.document.update({ where: { id: result.document.id }, data: { createdAt: new Date('2020-01-01T00:00:00.000Z') } });
     await placeLegalHold(context(submitterId), 'DOCUMENT', result.document.id, 'Preserve retained test evidence');

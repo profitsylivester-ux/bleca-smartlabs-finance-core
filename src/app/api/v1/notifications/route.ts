@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'NOTIFICATIONS', action: 'CREATE' });
+    await authorize(ctx, { module: 'NOTIFICATIONS', action: 'CONFIGURE' });
 
     if (!ctx.actor.organizationId) {
       return apiError(new ValidationError('No organization context'), reqId);

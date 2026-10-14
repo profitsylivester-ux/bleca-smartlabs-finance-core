@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'STATEMENT_IMPORT', action: 'CREATE' });
+    await authorize(ctx, { module: 'STATEMENT_IMPORT', action: 'CONFIGURE' });
 
     if (!ctx.actor.organizationId) {
       return apiError(new ValidationError('No organization context'), reqId);

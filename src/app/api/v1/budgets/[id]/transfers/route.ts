@@ -46,7 +46,7 @@ export async function POST(
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'BUDGETS', action: 'CREATE' });
+    await authorize(ctx, { module: 'BUDGETS', action: 'CONFIGURE' });
     const organizationId = requireOrganizationId(ctx);
     const { id } = await params;
     const body = parseBudgetBody(createSchema, await request.json());

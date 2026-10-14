@@ -99,7 +99,7 @@ export async function handleDocumentUpload(request: Request) {
   let ctx: RequestContext | null = null;
   try {
     ctx = await requireContext();
-    await authorize(ctx, { module: 'DOCUMENTS', action: 'CREATE' });
+    await authorize(ctx, { module: 'DOCUMENTS', action: 'CONFIGURE' });
     const contentLength = Number(request.headers.get('content-length') ?? 0);
     const maxBytes = env().DOCUMENT_MAX_FILE_BYTES;
     if (Number.isFinite(contentLength) && contentLength > maxBytes + 65_536) {
