@@ -1,4 +1,4 @@
-import { requireContext } from '@/lib/auth/guard';
+﻿import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
 import { ValidationError } from '@/lib/kernel/errors';
@@ -17,3 +17,4 @@ export async function GET(request: Request) {
     return apiError(error, reqId);
   }
 }
+

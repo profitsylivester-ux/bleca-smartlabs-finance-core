@@ -17,7 +17,7 @@ const adjustSchema = z.object({ reason: z.string(), evidenceDocumentId: z.string
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ organizationId: string; id: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const reqId = await requestId();
   try {

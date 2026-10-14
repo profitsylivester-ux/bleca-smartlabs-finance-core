@@ -164,7 +164,7 @@ const updateSchema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ organizationId: string; id: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const reqId = await requestId();
   try {
@@ -190,7 +190,7 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ organizationId: string; id: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const reqId = await requestId();
   try {

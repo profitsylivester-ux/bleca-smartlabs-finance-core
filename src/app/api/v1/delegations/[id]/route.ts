@@ -19,7 +19,7 @@ const updateDelegationSchema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ organizationId: string; id: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const reqId = await requestId();
   try {
@@ -59,7 +59,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ organizationId: string; id: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const reqId = await requestId();
   try {
@@ -160,7 +160,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ organizationId: string; id: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const reqId = await requestId();
   try {

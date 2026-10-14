@@ -18,7 +18,7 @@ const certifySchema = z.object({
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ organizationId: string; id: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const reqId = await requestId();
   try {

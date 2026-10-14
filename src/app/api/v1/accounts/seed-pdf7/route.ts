@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
@@ -119,7 +119,7 @@ export async function POST(request: Request) {
                 entityType: 'ACCOUNT',
                 entityId: 'seed-pdf7',
                 entityLabel: 'CHART_OF_ACCOUNTS_PDF7',
-                description: `Seeded PDF §7 Chart of Accounts: ${createdCount} created, ${updatedCount} updated`,
+                description: `Seeded PDF Â§7 Chart of Accounts: ${createdCount} created, ${updatedCount} updated`,
                 changes: {
                   totalAccounts: { from: null, to: CHART_OF_ACCOUNTS_PDF7.length },
                   created: { from: null, to: createdCount },

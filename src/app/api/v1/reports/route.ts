@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
@@ -46,4 +46,5 @@ export async function GET() {
     return apiError(error, reqId);
   }
 }
+
 

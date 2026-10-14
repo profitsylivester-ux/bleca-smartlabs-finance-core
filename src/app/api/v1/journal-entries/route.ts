@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { Prisma } from '@/generated/prisma/client';

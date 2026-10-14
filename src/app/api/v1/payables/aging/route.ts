@@ -1,4 +1,4 @@
-import { z } from 'zod';
+﻿import { z } from 'zod';
 import { requireContext } from '@/lib/auth/guard';
 import { apiError, ok, requestId } from '@/lib/api/responses';
 import { getAgingReport } from '@/lib/sales/reports';
@@ -14,3 +14,4 @@ export async function GET(request: Request) {
     return apiError(error, reqId);
   }
 }
+

@@ -1,4 +1,4 @@
-import { requireContext } from '@/lib/auth/guard';
+﻿import { requireContext } from '@/lib/auth/guard';
 import { apiError, ok, requestId } from '@/lib/api/responses';
 import { getNumberingGaps } from '@/lib/sales/reports';
 
@@ -11,3 +11,4 @@ export async function GET() {
     return apiError(error, reqId);
   }
 }
+

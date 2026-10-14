@@ -1,4 +1,4 @@
-import { z } from 'zod';
+﻿import { z } from 'zod';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
@@ -45,3 +45,4 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   return handleDocumentUpload(request);
 }
+

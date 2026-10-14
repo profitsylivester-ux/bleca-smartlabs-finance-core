@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
@@ -11,7 +11,7 @@ import { writeAuditEntry } from '@/lib/audit/writer';
 import { ValidationError } from '@/lib/kernel/errors';
 
 /**
- * Reconciliation sessions — list and create (M8 Task 3, PDF §12).
+ * Reconciliation sessions â€” list and create (M8 Task 3, PDF Â§12).
  */
 
 const targetSchema = z.enum([
@@ -249,4 +249,5 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 
