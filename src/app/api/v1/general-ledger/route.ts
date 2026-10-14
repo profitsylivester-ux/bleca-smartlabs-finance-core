@@ -9,8 +9,8 @@ import { apiError, ok, requestId } from '@/lib/api/responses';
 const querySchema = z.object({
   accountId: z.string().cuid().optional(),
   periodId: z.string().cuid().optional(),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+  startDate: z.string().min(1).optional(),
+  endDate: z.string().min(1).optional(),
   projectId: z.string().cuid().optional(),
   departmentId: z.string().cuid().optional(),
   costCentreId: z.string().cuid().optional(),
@@ -98,3 +98,4 @@ export async function GET(request: Request) {
     return apiError(error, reqId);
   }
 }
+
