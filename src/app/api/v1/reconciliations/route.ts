@@ -28,8 +28,8 @@ const createSchema = z.object({
   target: targetSchema,
   importId: z.string().cuid().optional(),
   periodId: z.string().cuid().optional(),
-  statementStartDate: z.string().datetime(),
-  statementEndDate: z.string().datetime(),
+  statementStartDate: z.string().min(1),
+  statementEndDate: z.string().min(1),
   statementOpeningBalance: z.number().optional(),
   statementClosingBalance: z.number().optional(),
   autoMatchThreshold: z.number().int().min(0).max(100).optional(),
@@ -249,5 +249,6 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 
 

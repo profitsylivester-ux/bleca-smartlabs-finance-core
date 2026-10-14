@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
@@ -13,8 +13,8 @@ import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
 const adjustmentPeriodSchema = z.object({
   code: z.string().min(2).max(50).toUpperCase(),
   name: z.string().min(2).max(120),
-  startDate: z.string().datetime(),
-  endDate: z.string().datetime(),
+  startDate: z.string().min(1),
+  endDate: z.string().min(1),
 });
 
 async function getAuditOptions(reqId: string, h: Headers) {

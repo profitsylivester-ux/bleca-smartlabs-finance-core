@@ -19,8 +19,8 @@ const createSchema = z.object({
   amount: z.number().positive(),
   currencyCode: z.string().length(3).toUpperCase(),
   frequency: frequencySchema,
-  nextDueDate: z.string().datetime(),
-  endDate: z.string().datetime().optional(),
+  nextDueDate: z.string().min(1),
+  endDate: z.string().min(1).optional(),
 });
 
 const updateSchema = z.object({
@@ -28,8 +28,8 @@ const updateSchema = z.object({
   amount: z.number().positive().optional(),
   currencyCode: z.string().length(3).toUpperCase().optional(),
   frequency: frequencySchema.optional(),
-  nextDueDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().nullable().optional(),
+  nextDueDate: z.string().min(1).optional(),
+  endDate: z.string().min(1).nullable().optional(),
   status: z.enum(['SCHEDULED', 'DUE', 'PARTIALLY_PAID', 'PAID', 'OVERDUE', 'CANCELLED']).optional(),
 });
 
@@ -257,3 +257,4 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+

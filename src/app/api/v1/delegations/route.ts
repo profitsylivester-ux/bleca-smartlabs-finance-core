@@ -15,8 +15,8 @@ const createDelegationSchema = z.object({
   roleId: z.string().optional(),
   scope: z.custom<Prisma.InputJsonValue | null>().optional(),
   reason: z.string().min(1),
-  startsAt: z.string().datetime(),
-  expiresAt: z.string().datetime(),
+  startsAt: z.string().min(1),
+  expiresAt: z.string().min(1),
 });
 
 export async function GET(
@@ -171,3 +171,4 @@ scope: body.scope ?? Prisma.JsonNull,
     return apiError(error, reqId);
   }
 }
+

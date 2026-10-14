@@ -20,7 +20,7 @@ const amountSchema = z.union([
   z.string().regex(/^\d+(\.\d{1,6})?$/),
   z.number().finite().nonnegative(),
 ]);
-const dateSchema = z.string().datetime().transform((value) => new Date(value));
+const dateSchema = z.string().min(1).transform((value) => new Date(value));
 
 const lineSchema = z.object({
   accountId: z.string().cuid(),
@@ -101,4 +101,5 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 

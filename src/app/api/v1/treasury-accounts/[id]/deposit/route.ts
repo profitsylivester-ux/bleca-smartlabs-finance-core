@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
@@ -14,7 +14,7 @@ import type { Tx } from '@/lib/db/prisma';
 const depositSchema = z.object({
   amount: z.number().positive(),
   currencyCode: z.string().length(3),
-  date: z.string().datetime().optional(),
+  date: z.string().min(1).optional(),
   description: z.string().optional(),
   reference: z.string().optional(),
   projectId: z.string().cuid().optional(),

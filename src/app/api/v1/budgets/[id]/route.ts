@@ -1,4 +1,4 @@
-import { z } from 'zod';
+﻿import { z } from 'zod';
 import { prisma } from '@/lib/db/prisma';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
@@ -11,7 +11,7 @@ import {
 } from '@/lib/budgets/api';
 import { getBudgetVsActual, updateBudget } from '@/lib/budgets/service';
 
-const dateSchema = z.string().datetime().transform((value) => new Date(value));
+const dateSchema = z.string().min(1).transform((value) => new Date(value));
 const patchSchema = z.object({
   code: z.string().min(2).max(50).optional(),
   name: z.string().min(2).max(200).optional(),
@@ -75,3 +75,4 @@ export async function PATCH(
     return apiError(error, reqId);
   }
 }
+

@@ -28,8 +28,8 @@ const createSchema = z.object({
   entityId: z.string().cuid().nullish(),
   proposedChanges: z.record(z.string(), z.unknown()),
   reason: z.string().min(10).max(500),
-  effectiveDate: z.string().datetime().nullish(),
-  expiresAt: z.string().datetime().nullish(),
+  effectiveDate: z.string().min(1).nullish(),
+  expiresAt: z.string().min(1).nullish(),
 });
 
 async function getAuditOptions(reqId: string, h: Headers) {
@@ -211,4 +211,5 @@ export async function GET() {
     return apiError(error, reqId);
   }
 }
+
 

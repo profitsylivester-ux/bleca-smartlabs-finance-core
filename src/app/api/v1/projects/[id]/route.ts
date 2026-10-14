@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
@@ -17,8 +17,8 @@ const updateSchema = z.object({
   name: z.string().min(2).max(120).optional(),
   description: z.string().max(500).nullish(),
   status: projectStatusSchema.optional(),
-  startDate: z.string().datetime().nullish(),
-  endDate: z.string().datetime().nullish(),
+  startDate: z.string().min(1).nullish(),
+  endDate: z.string().min(1).nullish(),
   isActive: z.boolean().optional(),
 });
 

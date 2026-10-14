@@ -13,7 +13,7 @@ import { createCommitment, listCommitments } from '@/lib/budgets/service';
 
 const sources = ['INVOICE', 'PURCHASE_COMMITMENT', 'CONTRACT', 'PAYMENT_SCHEDULE', 'MANUAL'] as const;
 const statuses = ['OPEN', 'PARTIALLY_SETTLED', 'SETTLED', 'CANCELLED', 'EXPIRED', 'OVERDUE'] as const;
-const dateSchema = z.string().datetime().transform((value) => new Date(value));
+const dateSchema = z.string().min(1).transform((value) => new Date(value));
 const amountSchema = z.union([
   z.string().regex(/^\d+(\.\d{1,6})?$/),
   z.number().finite().nonnegative(),
@@ -79,4 +79,5 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 

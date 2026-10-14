@@ -1,4 +1,4 @@
-import { z } from 'zod';
+﻿import { z } from 'zod';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { apiError, requestId } from '@/lib/api/responses';
@@ -15,7 +15,7 @@ import {
   updateCommitment,
 } from '@/lib/budgets/service';
 
-const dateSchema = z.string().datetime().transform((value) => new Date(value));
+const dateSchema = z.string().min(1).transform((value) => new Date(value));
 const amountSchema = z.union([
   z.string().regex(/^\d+(\.\d{1,6})?$/),
   z.number().finite().nonnegative(),
@@ -98,3 +98,4 @@ export async function DELETE(
     return apiError(error, reqId);
   }
 }
+

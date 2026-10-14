@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
@@ -15,8 +15,8 @@ const createSchema = z.object({
   direction: z.enum(['INBOUND', 'OUTBOUND', 'INTERNAL']).default('OUTBOUND'),
   subject: z.string().max(200).optional(),
   summary: z.string().min(1).max(4000),
-  contactedAt: z.string().datetime().optional(),
-  followUpAt: z.string().datetime().optional(),
+  contactedAt: z.string().min(1).optional(),
+  followUpAt: z.string().min(1).optional(),
 });
 
 async function authorizeParty(ctx: Awaited<ReturnType<typeof requireContext>>, partyId: string) {
@@ -90,3 +90,4 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return apiError(error, reqId);
   }
 }
+

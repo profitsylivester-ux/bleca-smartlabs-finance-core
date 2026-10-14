@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
@@ -15,8 +15,8 @@ const updateSchema = z.object({
   amount: z.number().positive().optional(),
   currencyCode: z.string().length(3).toUpperCase().optional(),
   frequency: z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'QUARTERLY', 'ANNUALLY', 'CUSTOM']).optional(),
-  nextDueDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().nullable().optional(),
+  nextDueDate: z.string().min(1).optional(),
+  endDate: z.string().min(1).nullable().optional(),
   status: z.enum(['SCHEDULED', 'DUE', 'PARTIALLY_PAID', 'PAID', 'OVERDUE', 'CANCELLED']).optional(),
 });
 

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+﻿import { z } from 'zod';
 import { Prisma } from '@/generated/prisma/client';
 import { requireContext } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
@@ -11,8 +11,8 @@ const updateSchema = z.object({
   description: z.string().max(5000).nullable().optional(),
   category: z.enum(DOCUMENT_CATEGORIES).optional(),
   metadata: z.json().nullable().optional(),
-  expiryDate: z.string().datetime().nullable().optional(),
-  renewalDueAt: z.string().datetime().nullable().optional(),
+  expiryDate: z.string().min(1).nullable().optional(),
+  renewalDueAt: z.string().min(1).nullable().optional(),
   renewalOfId: z.string().nullable().optional(),
 });
 
@@ -61,3 +61,4 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     return apiError(error, reqId);
   }
 }
+

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db/prisma';
 import { requireContext } from '@/lib/auth/guard';
@@ -12,8 +12,8 @@ import { Prisma } from '@/generated/prisma/client';
 const updateDelegationSchema = z.object({
   scope: z.custom<Prisma.InputJsonValue | null>().optional(),
   reason: z.string().optional(),
-  expiresAt: z.string().datetime().optional(),
-  revokedAt: z.string().datetime().optional(),
+  expiresAt: z.string().min(1).optional(),
+  revokedAt: z.string().min(1).optional(),
   revocationReason: z.string().optional(),
 });
 

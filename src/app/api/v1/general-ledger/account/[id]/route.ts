@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/db/prisma';
@@ -9,8 +9,8 @@ import { NotFoundError } from '@/lib/kernel/errors';
 
 const querySchema = z.object({
   periodId: z.string().cuid().optional(),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+  startDate: z.string().min(1).optional(),
+  endDate: z.string().min(1).optional(),
   currency: z.string().length(3).optional(),
   page: z.coerce.number().int().positive().default(1),
   pageSize: z.coerce.number().int().positive().max(500).default(50),

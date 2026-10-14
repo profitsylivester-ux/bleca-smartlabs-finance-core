@@ -16,7 +16,7 @@ const fxDifferenceTreatmentSchema = z.enum(['EXPENSE', 'INCOME', 'SUSPENSE']);
 const createSchema = z.object({
   baseCurrencyId: z.string().cuid(),
   quoteCurrencyId: z.string().cuid(),
-  rateDate: z.string().datetime(),
+  rateDate: z.string().min(1),
   rate: z.string().regex(/^\d+(\.\d+)?$/),
   source: z.string().max(50).default('MANUAL'),
   differenceTreatment: fxDifferenceTreatmentSchema.default('EXPENSE'),
@@ -218,3 +218,4 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+

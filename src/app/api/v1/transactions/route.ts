@@ -14,7 +14,7 @@ import { TransactionService } from '@/lib/transactions/service';
 const service = new TransactionService();
 
 const createSchema = z.object({
-  date: z.string().datetime(),
+  date: z.string().min(1),
   description: z.string().optional(),
   reference: z.string().optional(),
   accountId: z.string().optional(),
@@ -250,3 +250,4 @@ export async function POST(
     return apiError(error, reqId);
   }
 }
+

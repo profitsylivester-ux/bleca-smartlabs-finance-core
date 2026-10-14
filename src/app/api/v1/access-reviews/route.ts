@@ -11,8 +11,8 @@ import { Prisma } from '@/generated/prisma/client';
 
 const createAccessReviewSchema = z.object({
   name: z.string().min(1).max(200),
-  periodStart: z.string().datetime(),
-  periodEnd: z.string().datetime(),
+  periodStart: z.string().min(1),
+  periodEnd: z.string().min(1),
   scopeJson: z.custom<Prisma.InputJsonValue | null>().optional(),
   userRoleIds: z.array(z.object({
     userId: z.string(),
@@ -152,3 +152,4 @@ export async function POST(
     return apiError(error, reqId);
   }
 }
+

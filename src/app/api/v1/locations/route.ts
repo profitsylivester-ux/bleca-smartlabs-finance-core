@@ -32,8 +32,8 @@ const createSchema = z.object({
   address: z.record(z.string(), z.unknown()).nullish(),
   timezone: z.string().default('Africa/Dar_es_Salaam'),
   isActive: z.boolean().optional(),
-  effectiveFrom: z.string().datetime().nullish(),
-  effectiveTo: z.string().datetime().nullish(),
+  effectiveFrom: z.string().min(1).nullish(),
+  effectiveTo: z.string().min(1).nullish(),
 });
 
 const updateSchema = createSchema.partial();
@@ -206,3 +206,4 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+

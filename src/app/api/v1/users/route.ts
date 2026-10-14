@@ -25,7 +25,7 @@ const createSchema = z.object({
   jobTitle: z.string().max(120).nullish(),
   roleCode: z.string().min(1),
   temporary: z.boolean().optional(),
-  expiresAt: z.string().datetime().nullish(),
+  expiresAt: z.string().min(1).nullish(),
 });
 
 async function auditOptions(reqId: string) {
@@ -195,4 +195,5 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 

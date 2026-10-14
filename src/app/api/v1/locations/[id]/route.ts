@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
@@ -32,8 +32,8 @@ const updateSchema = z.object({
   address: z.record(z.string(), z.unknown()).nullish(),
   timezone: z.string().optional(),
   isActive: z.boolean().optional(),
-  effectiveFrom: z.string().datetime().nullish(),
-  effectiveTo: z.string().datetime().nullish(),
+  effectiveFrom: z.string().min(1).nullish(),
+  effectiveTo: z.string().min(1).nullish(),
 });
 
 async function getAuditOptions(reqId: string, h: Headers) {

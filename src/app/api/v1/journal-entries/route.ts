@@ -61,8 +61,8 @@ const listQuerySchema = z.object({
   periodId: z.string().cuid().optional(),
   status: journalEntryStatusSchema.optional(),
   type: journalEntryTypeSchema.optional(),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+  startDate: z.string().min(1).optional(),
+  endDate: z.string().min(1).optional(),
   accountId: z.string().cuid().optional(),
   projectId: z.string().cuid().optional(),
   departmentId: z.string().cuid().optional(),
@@ -369,4 +369,5 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 

@@ -23,8 +23,8 @@ const querySchema = z.object({
   actor: z.string().optional(),
   result: z.enum(['SUCCESS', 'FAILURE', 'DENIED', 'PARTIAL']).optional(),
   channel: z.enum(['WEB', 'API', 'CLI', 'SYSTEM', 'SYNC']).optional(),
-  from: z.string().datetime().optional(),
-  to: z.string().datetime().optional(),
+  from: z.string().min(1).optional(),
+  to: z.string().min(1).optional(),
   limit: z.coerce.number().int().min(1).max(500).default(100),
   cursor: z.coerce.number().int().min(1).optional(),
 });
@@ -143,4 +143,5 @@ export async function DELETE() {
     reqId,
   );
 }
+
 

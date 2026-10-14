@@ -18,8 +18,8 @@ const createSchema = z.object({
   name: z.string().min(2).max(120),
   description: z.string().max(500).nullish(),
   status: projectStatusSchema.default('DRAFT'),
-  startDate: z.string().datetime().nullish(),
-  endDate: z.string().datetime().nullish(),
+  startDate: z.string().min(1).nullish(),
+  endDate: z.string().min(1).nullish(),
   isActive: z.boolean().optional(),
 });
 
@@ -191,3 +191,4 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+

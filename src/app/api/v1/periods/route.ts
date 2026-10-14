@@ -17,8 +17,8 @@ const createSchema = z.object({
   type: periodTypeSchema,
   code: z.string().min(2).max(50).toUpperCase(),
   name: z.string().min(2).max(120),
-  startDate: z.string().datetime(),
-  endDate: z.string().datetime(),
+  startDate: z.string().min(1),
+  endDate: z.string().min(1),
   isAdjustment: z.boolean().optional(),
 });
 
@@ -242,3 +242,4 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
