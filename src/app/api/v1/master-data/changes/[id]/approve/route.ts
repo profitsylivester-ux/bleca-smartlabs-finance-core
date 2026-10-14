@@ -8,6 +8,7 @@ import { apiError, ok, requestId } from '@/lib/api/responses';
 import { runIdempotent } from '@/lib/api/idempotency';
 import { withAudit } from '@/lib/db/with-audit';
 import { writeAuditEntry } from '@/lib/audit/writer';
+import { dispatch } from '@/lib/notifications/dispatch';
 import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
 import type { InputJsonValue } from '@/generated/prisma/runtime/library';
 
@@ -228,7 +229,32 @@ export async function POST(
     });
 
     if (outcome.kind === 'REPLAYED') {
-      return NextResponse.json(outcome.responseBody, { status: outcome.responseStatus });
+      if (outcome.responseStatus === 200 && changeRequest.requestedById && changeRequest.requestedById !== ctx.actor.userId) {
+      const isApprove = body.action === 'APPROVE';
+      const label = changeRequest.entityType.replace(/_/g, ' ').toLowerCase();
+      try {
+        await dispatch({
+          organizationId: ctx.actor.organizationId,
+          userId: changeRequest.requestedById,
+          category: 'APPROVAL',
+          severity: isApprove ? 'SUCCESS' : 'WARNING',
+          title: isApprove
+            ? 'Deletion approved: ' + changeRequest.entityType
+            : 'Deletion rejected: ' + changeRequest.entityType,
+          body: isApprove
+            ? 'Your request to delete this ' + label + ' was approved. It is now in Trash, restorable for 90 days.'
+            : 'Your request to delete this ' + label + ' was rejected.' + (body.rejectionReason ? ' Reason: ' + body.rejectionReason : ''),
+          actionUrl: isApprove ? '/trash' : '/master-data',
+          entityType: changeRequest.entityType,
+          entityId: changeRequest.entityId ?? undefined,
+          dedupeKey: 'master-data-' + id + '-' + body.action,
+        });
+      } catch {
+        // Never break the approve/reject flow because a notification failed
+      }
+    }
+
+    return NextResponse.json(outcome.responseBody, { status: outcome.responseStatus });
     }
 
     return ok(outcome.result, 200, reqId);
