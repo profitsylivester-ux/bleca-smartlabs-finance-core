@@ -35,7 +35,6 @@ const createApprovalSchema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ organizationId: string }> },
 ) {
   const reqId = await requestId();
   try {
@@ -122,7 +121,6 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ organizationId: string }> },
 ) {
   const reqId = await requestId();
   try {
