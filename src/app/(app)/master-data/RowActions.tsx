@@ -35,6 +35,11 @@ export default function RowActions({ entityType, entityId, entityLabel, endpoint
   const [error, setError] = useState<string | null>(null);
   const [values, setValues] = useState<Record<string, unknown>>(initial);
   const [reason, setReason] = useState('');
+  const [isCeo, setIsCeo] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/v1/me').then((r) => r.json()).then((d) => setIsCeo(Boolean(d.isCeo))).catch(() => undefined);
+  }, []);
 
   async function saveEdit(e: React.FormEvent) {
     e.preventDefault();
@@ -73,6 +78,15 @@ export default function RowActions({ entityType, entityId, entityLabel, endpoint
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         throw new Error((j && j.error && j.error.message) || `Could not submit (HTTP ${res.status}).`);
+      }
+      const created = await res.json().catch(() => ({}));
+      const changeId = created && (created.id || (created.data && created.data.id));
+      if (isCeo && changeId) {
+        await fetch(`/api/v1/master-data/changes/${changeId}/approve`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'idempotency-key': crypto.randomUUID() },
+          body: JSON.stringify({ action: 'APPROVE' }),
+        });
       }
       setTrashOpen(false);
       setReason('');
@@ -133,10 +147,13 @@ export default function RowActions({ entityType, entityId, entityLabel, endpoint
 
       {trashOpen && (
         <Modal onClose={() => !busy && setTrashOpen(false)}>
-          <h2 className="mb-2 text-base font-semibold">Move to trash</h2>
+          <h2 className="mb-2 text-base font-semibold">{isCeo ? 'Delete' : 'Move to trash'}</h2>
           <p className="text-muted-foreground mb-3 text-sm">
-            Moving <strong>{entityLabel}</strong> to trash requires CEO approval. Once approved, the
-            record is restorable for 90 days.
+            {isCeo ? (
+              <>You are the CEO, so <strong>{entityLabel}</strong> will be deleted immediately. It stays restorable for 90 days.</>
+            ) : (
+              <>Moving <strong>{entityLabel}</strong> to trash requires CEO approval. Once approved, the record is restorable for 90 days.</>
+            )}
           </p>
           <form onSubmit={requestTrash} className="space-y-3">
             <label className="block text-sm font-medium">Reason (min 10 characters)</label>
@@ -147,7 +164,7 @@ export default function RowActions({ entityType, entityId, entityLabel, endpoint
               <button type="button" onClick={() => setTrashOpen(false)} disabled={busy}
                 className="border-border rounded border px-3 py-1.5 text-sm">Cancel</button>
               <button type="submit" disabled={busy}
-                className="rounded bg-red-600 px-3 py-1.5 text-sm text-white">{busy ? 'Submitting…' : 'Send for CEO approval'}</button>
+                className="rounded bg-red-600 px-3 py-1.5 text-sm text-white">{busy ? 'Deleting…' : (isCeo ? 'Delete' : 'Send for CEO approval')}</button>
             </div>
           </form>
         </Modal>

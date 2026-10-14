@@ -70,6 +70,8 @@ export async function POST(request: Request) {
         CURRENCY: 'currency',
         EXCHANGE_RATE: 'exchangeRate',
         CUSTOMER: 'customer',
+        REASON_CODE: 'reasonCode',
+        PRODUCT_SERVICE: 'productService',
         SUPPLIER: 'supplier',
       };
       const modelName = modelMap[body.entityType];
