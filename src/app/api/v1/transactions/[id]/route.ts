@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { Prisma } from '@/generated/prisma/client';
@@ -171,17 +171,17 @@ export async function GET(
     const ctx = await requireContext();
     await authorize(ctx, { module: 'TRANSACTIONS', action: 'VIEW' });
 
-    const { organizationId, id } = await params;
+    const { id } = await params;
 
     const searchParams = request.nextUrl.searchParams;
     const detail = searchParams.get('detail');
 
     if (detail === 'full') {
-      const transaction = await getTransactionDetail(id, organizationId);
+      const transaction = await getTransactionDetail(id, ctx.actor.organizationId!);
       return ok(transaction, 200, reqId);
     }
 
-    const { transaction } = await getTransactionWithValidation(id, organizationId, ctx);
+    const { transaction } = await getTransactionWithValidation(id, ctx.actor.organizationId!, ctx);
     return ok(transaction, 200, reqId);
   } catch (error) {
     return apiError(error, reqId);
@@ -197,10 +197,10 @@ export async function PATCH(
     const ctx = await requireContext();
     await authorize(ctx, { module: 'TRANSACTIONS', action: 'EDIT' });
 
-    const { organizationId, id } = await params;
+    const { id } = await params;
     const body = updateSchema.parse(await request.json());
 
-    const updated = await service.update(id, organizationId, body, ctx.actor);
+    const updated = await service.update(id, ctx.actor.organizationId!, body, ctx.actor);
 
     return ok(updated, 200, reqId);
   } catch (error) {
