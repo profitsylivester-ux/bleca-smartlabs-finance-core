@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+﻿import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import { headers } from 'next/headers';
@@ -49,7 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   cookies: {
     sessionToken: {
-      name: '__Secure-bleca.session',
+      name: env().NODE_ENV === 'production' ? '__Secure-bleca.session' : 'bleca.session',
       options: {
         httpOnly: true,
         sameSite: 'lax',
@@ -289,3 +289,4 @@ function anonymousSession(session: { user: unknown }) {
     mustChangePassword: false,
   } as never;
 }
+
