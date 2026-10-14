@@ -14,22 +14,42 @@ interface Props {
 
 export default function RowActions({ entityType, entityId, entityLabel, endpoint, initial, fields }: Props) {
   const router = useRouter();
+  const btnRef = useRef<HTMLButtonElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const [editOpen, setEditOpen] = useState(false);
   const [trashOpen, setTrashOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [values, setValues] = useState<Record<string, unknown>>(initial);
   const [reason, setReason] = useState('');
-  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function onDoc(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setMenuOpen(false);
+      if (btnRef.current && btnRef.current.contains(e.target as Node)) return;
+      const menu = document.getElementById('row-actions-menu');
+      if (menu && menu.contains(e.target as Node)) return;
+      setMenuOpen(false);
     }
-    if (menuOpen) document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
+    function onScroll() { setMenuOpen(false); }
+    if (menuOpen) {
+      document.addEventListener('mousedown', onDoc);
+      window.addEventListener('scroll', onScroll, true);
+    }
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      window.removeEventListener('scroll', onScroll, true);
+    };
   }, [menuOpen]);
+
+  function openMenu(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      setMenuPos({ top: r.bottom + 4, left: r.right - 160 });
+    }
+    setMenuOpen((v) => !v);
+  }
 
   async function saveEdit(e: React.FormEvent) {
     e.preventDefault();
@@ -78,19 +98,25 @@ export default function RowActions({ entityType, entityId, entityLabel, endpoint
   }
 
   return (
-    <div className="relative inline-block text-left" ref={ref}>
+    <>
       <button
+        ref={btnRef}
         type="button"
         aria-label="More actions"
-        onClick={() => setMenuOpen((v) => !v)}
-        className="text-muted-foreground hover:text-foreground rounded p-1"
+        onClick={openMenu}
+        className="text-muted-foreground hover:bg-muted/40 hover:text-foreground rounded p-1"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <circle cx="12" cy="5" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="12" cy="19" r="2" />
         </svg>
       </button>
-      {menuOpen && (
-        <div className="border-border-subtle absolute right-0 z-20 mt-1 w-40 rounded-md border bg-white py-1 shadow-lg">
+
+      {menuOpen && menuPos && (
+        <div
+          id="row-actions-menu"
+          style={{ position: 'fixed', top: menuPos.top, left: menuPos.left, zIndex: 1000 }}
+          className="border-border-subtle w-40 rounded-md border bg-white py-1 shadow-lg"
+        >
           <button type="button" onClick={() => { setMenuOpen(false); setEditOpen(true); }}
             className="hover:bg-muted/40 block w-full px-3 py-1.5 text-left text-sm">
             Edit
@@ -158,6 +184,6 @@ export default function RowActions({ entityType, entityId, entityLabel, endpoint
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
