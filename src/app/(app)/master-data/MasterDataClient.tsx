@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import RowActions from './RowActions';
 import { Badge, Button, Card, CardBody, CardHeader, PageHeader, Table, Td, Th } from '@/components/ui';
 import { cn } from '@/lib/format';
 import AddLocationButton from './AddLocationButton';
@@ -291,6 +292,28 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                             )}
                           </Td>
                           <Td className="tabular text-right">{loc._count.users}</Td>
+                          <Td><RowActions
+                            entityType="LOCATION"
+                            entityId={loc.id}
+                            entityLabel={loc.name}
+                            endpoint="/api/v1/locations"
+                            initial={{ name: loc.name, type: loc.type, isOwned: loc.isOwned }}
+                            fields={[
+                              { name: "name", label: "Name" },
+                              { name: "type", label: "Type", options: [
+                                { value: "HEAD_OFFICE", label: "Head Office" },
+                                { value: "OFFICE", label: "Office" },
+                                { value: "LAB", label: "Lab" },
+                                { value: "WAREHOUSE", label: "Warehouse" },
+                                { value: "PROJECT_SITE", label: "Project Site" },
+                                { value: "UNIVERSITY_FACILITY", label: "University Facility" },
+                                { value: "PERMITTED_USE", label: "Permitted Use" },
+                                { value: "REMOTE", label: "Remote" },
+                                { value: "OTHER", label: "Other" },
+                              ] },
+                              { name: "isOwned", label: "Owned", type: "checkbox" },
+                            ]}
+                          /></Td>
                         </tr>
                       ))}
                     </tbody>
