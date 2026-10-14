@@ -373,7 +373,14 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                             )}
                           </Td>
                           <Td className="tabular text-right">{dept._count.users}</Td>
-                          <Td className="tabular text-right">{dept._count.costCentres}</Td>
+                          <Td className="tabular text-right">{dept._count.costCentres}</Td>                          <Td><RowActions
+                            entityType="DEPARTMENT"
+                            entityId={dept.id}
+                            entityLabel={dept.name}
+                            endpoint="/api/v1/departments"
+                            initial={{ name: dept.name }}
+                            fields={[{"name":"name","label":"Name"}]}
+                          /></Td>
                         </tr>
                       ))}
                     </tbody>
@@ -424,7 +431,14 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                             ) : (
                               <Badge tone="warning">Inactive</Badge>
                             )}
-                          </Td>
+                          </Td>                          <Td><RowActions
+                            entityType="COST_CENTRE"
+                            entityId={cc.id}
+                            entityLabel={cc.name}
+                            endpoint="/api/v1/cost-centres"
+                            initial={{ name: cc.name, description: cc.description }}
+                            fields={[{"name":"name","label":"Name"},{"name":"description","label":"Description"}]}
+                          /></Td>
                         </tr>
                       ))}
                     </tbody>
@@ -479,7 +493,14 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                             ) : (
                               <Badge tone="warning">Inactive</Badge>
                             )}
-                          </Td>
+                          </Td>                          <Td><RowActions
+                            entityType="PROJECT"
+                            entityId={proj.id}
+                            entityLabel={proj.name}
+                            endpoint="/api/v1/projects"
+                            initial={{ name: proj.name, description: proj.description, status: proj.status }}
+                            fields={[{"name":"name","label":"Name"},{"name":"description","label":"Description"},{"name":"status","label":"Status","options":[{"value":"DRAFT","label":"Draft"},{"value":"ACTIVE","label":"Active"},{"value":"ON_HOLD","label":"On Hold"},{"value":"COMPLETED","label":"Completed"},{"value":"CANCELLED","label":"Cancelled"},{"value":"ARCHIVED","label":"Archived"}]}]}
+                          /></Td>
                         </tr>
                       ))}
                     </tbody>
@@ -540,7 +561,14 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                             ) : (
                               <Badge tone="warning">Inactive</Badge>
                             )}
-                          </Td>
+                          </Td>                          <Td><RowActions
+                            entityType="FUNDING_SOURCE"
+                            entityId={fs.id}
+                            entityLabel={fs.name}
+                            endpoint="/api/v1/funding-sources"
+                            initial={{ name: fs.name, description: fs.description }}
+                            fields={[{"name":"name","label":"Name"},{"name":"description","label":"Description"}]}
+                          /></Td>
                         </tr>
                       ))}
                     </tbody>
@@ -602,7 +630,14 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                             ) : (
                               <Badge tone="warning">Inactive</Badge>
                             )}
-                          </Td>
+                          </Td>                          <Td><RowActions
+                            entityType="CURRENCY"
+                            entityId={cur.id}
+                            entityLabel={cur.name}
+                            endpoint="/api/v1/currencies"
+                            initial={{ name: cur.name, symbol: cur.symbol }}
+                            fields={[{"name":"name","label":"Name"},{"name":"symbol","label":"Symbol"}]}
+                          /></Td>
                         </tr>
                       ))}
                     </tbody>
@@ -660,7 +695,14 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                           </Td>
                           <Td className="text-muted-foreground text-xs">
                             {new Date(er.createdAt).toISOString().split('T')[0]}
-                          </Td>
+                          </Td>                          <Td><RowActions
+                            entityType="EXCHANGE_RATE"
+                            entityId={er.id}
+                            entityLabel={er.name}
+                            endpoint="/api/v1/exchange-rates"
+                            initial={{ rate: er.rate }}
+                            fields={[{"name":"rate","label":"Rate"}]}
+                          /></Td>
                         </tr>
                       ))}
                     </tbody>
@@ -718,7 +760,14 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                             ) : (
                               <Badge tone="warning">Inactive</Badge>
                             )}
-                          </Td>
+                          </Td>                          <Td><RowActions
+                            entityType="REASON_CODE"
+                            entityId={rc.id}
+                            entityLabel={rc.name}
+                            endpoint="/api/v1/reason-codes"
+                            initial={{ name: rc.name, description: rc.description }}
+                            fields={[{"name":"name","label":"Name"},{"name":"description","label":"Description"}]}
+                          /></Td>
                         </tr>
                       ))}
                     </tbody>
@@ -775,7 +824,14 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                             ) : (
                               <Badge tone="warning">Inactive</Badge>
                             )}
-                          </Td>
+                          </Td>                          <Td><RowActions
+                            entityType="PRODUCT_SERVICE"
+                            entityId={ps.id}
+                            entityLabel={ps.name}
+                            endpoint="/api/v1/products-services"
+                            initial={{ name: ps.name, unit: ps.unit, unitPrice: ps.unitPrice }}
+                            fields={[{"name":"name","label":"Name"},{"name":"unit","label":"Unit"},{"name":"unitPrice","label":"Unit price"}]}
+                          /></Td>
                         </tr>
                       ))}
                     </tbody>
