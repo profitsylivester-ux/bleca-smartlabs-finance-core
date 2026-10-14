@@ -106,7 +106,7 @@ export default function TrialBalanceClient() {
 
   const dataArray = Array.isArray(result.data) ? result.data : [];
   const firstItem = dataArray[0];
-  const isGrouped = dataArray.length > 0 && firstItem !== undefined && 'accountType' in firstItem;
+  const isGrouped = dataArray.length > 0 && firstItem !== undefined && 'accounts' in firstItem;
 
   return (
     <div className="space-y-4">
@@ -268,3 +268,4 @@ export default function TrialBalanceClient() {
     </div>
   );
 }
+

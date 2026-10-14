@@ -33,28 +33,33 @@ export async function GET(request: Request) {
       select: { id: true, code: true, name: true, type: true, subCategory: true, normalBalance: true },
     });
 
+    const lineWhere: Record<string, unknown> = {
+      organizationId: ctx.actor.organizationId,
+      entry: { postedAt: { lte: asAtDate }, status: { in: ['POSTED', 'LOCKED'] } },
+    };
+    if (query.currency) lineWhere.currencyCode = query.currency;
+    if (query.periodId) lineWhere.periodId = query.periodId;
+
+    const allLines = await prisma.journalLine.findMany({
+      where: lineWhere,
+      select: { accountId: true, debit: true, credit: true, baseAmount: true },
+    });
+
+    const totalsByAccount = new Map<string, { debit: number; credit: number; baseDebit: number; baseCredit: number }>();
+    for (const line of allLines) {
+      const t = totalsByAccount.get(line.accountId) ?? { debit: 0, credit: 0, baseDebit: 0, baseCredit: 0 };
+      t.debit += Number(line.debit);
+      t.credit += Number(line.credit);
+      t.baseDebit += Number(line.baseAmount ?? line.debit);
+      t.baseCredit += Number(line.baseAmount ?? line.credit);
+      totalsByAccount.set(line.accountId, t);
+    }
+
     const results = [];
 
     for (const account of accounts) {
-      const where: Record<string, unknown> = {
-        organizationId: ctx.actor.organizationId,
-        accountId: account.id,
-        entry: { postedAt: { lte: asAtDate }, status: { in: ['POSTED', 'LOCKED'] } },
-      };
-      if (query.currency) where.currencyCode = query.currency;
-      if (query.periodId) where.periodId = query.periodId;
-
-      const lines = await prisma.journalLine.findMany({
-        where,
-        select: { debit: true, credit: true, baseAmount: true, currencyCode: true },
-      });
-
-      const debit = lines.reduce((sum, l) => sum + Number(l.debit), 0);
-      const credit = lines.reduce((sum, l) => sum + Number(l.credit), 0);
-      const baseDebit = lines.reduce((sum, l) => sum + Number(l.baseAmount ?? l.debit), 0);
-      const baseCredit = lines.reduce((sum, l) => sum + Number(l.baseAmount ?? l.credit), 0);
-
-      if (!query.includeZeroBalances && debit === 0 && credit === 0) continue;
+      const t = totalsByAccount.get(account.id) ?? { debit: 0, credit: 0, baseDebit: 0, baseCredit: 0 };
+      if (!query.includeZeroBalances && t.debit === 0 && t.credit === 0) continue;
 
       results.push({
         accountId: account.id,
@@ -63,12 +68,12 @@ export async function GET(request: Request) {
         accountType: account.type,
         subCategory: account.subCategory,
         normalBalance: account.normalBalance,
-        debit,
-        credit,
-        balance: debit - credit,
-        baseCurrencyDebit: baseDebit,
-        baseCurrencyCredit: baseCredit,
-        baseCurrencyBalance: baseDebit - baseCredit,
+        debit: t.debit,
+        credit: t.credit,
+        balance: t.debit - t.credit,
+        baseCurrencyDebit: t.baseDebit,
+        baseCurrencyCredit: t.baseCredit,
+        baseCurrencyBalance: t.baseDebit - t.baseCredit,
       });
     }
 
