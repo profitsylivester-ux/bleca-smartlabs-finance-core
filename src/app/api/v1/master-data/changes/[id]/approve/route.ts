@@ -147,8 +147,10 @@ export async function POST(
               if (typeof rawChanges.deletedAt === 'string') {
                 rawChanges.deletedAt = new Date(rawChanges.deletedAt);
               }
+              const onlyKeys = Object.keys(rawChanges);
+              const isDeleteOnly = onlyKeys.length === 1 && onlyKeys[0] === 'deletedAt';
               const modelName = modelMap[changeRequest.entityType];
-              if (modelName && changeRequest.entityId) {
+              if (!isDeleteOnly && modelName && changeRequest.entityId) {
                 const modelDelegate = (tx as unknown as Record<string, {
                   findUnique: (args: { where: { id: string }; select: { id: true } }) => Promise<{ id: string } | null>;
                   update: (args: { where: { id: string }; data: Record<string, unknown> }) => Promise<unknown>;
