@@ -86,10 +86,23 @@ export function AppShell({
         </Button>
       </div>
 
+      {open ? (
+
+        <div
+
+          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+
+          onClick={() => setOpen(false)}
+
+        />
+
+      ) : null}
+
       <aside
         className={cn(
-          'border-navy-800 bg-navy-900 shrink-0 border-r lg:flex lg:w-64 lg:flex-col',
-          open ? 'block' : 'hidden',
+          'border-navy-800 bg-navy-900 shrink-0 border-r lg:static lg:flex lg:w-64 lg:flex-col lg:translate-x-0 lg:transition-none',
+          'fixed inset-y-0 left-0 z-40 w-64 overflow-y-auto transform transition-transform duration-200 ease-out',
+          open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >
         <div className="hidden items-center gap-2.5 px-5 py-5 lg:flex">
@@ -197,7 +210,7 @@ export function AppShell({
       </aside>
 
       <div className="min-w-0 flex-1">
-        <header className="border-border-subtle flex items-center justify-end gap-3 border-b bg-white px-6 py-2.5">
+        <header className="border-border-subtle flex items-center justify-end gap-2 border-b bg-white px-3 py-2 sm:gap-3 sm:px-6 sm:py-2.5">
           <ThemeToggle />
           <InstallButton />
           <Link
@@ -206,7 +219,7 @@ export function AppShell({
             aria-label="Notifications"
           >
             <NavIcon name="bell" />
-            Notifications
+            <span className="hidden sm:inline">Notifications</span>
             {unreadNotifications > 0 ? (
               <Badge tone="info">{unreadNotifications}</Badge>
             ) : (
@@ -214,7 +227,7 @@ export function AppShell({
             )}
           </Link>
         </header>
-        <main className="px-6 py-6">{children}</main>
+        <main className="px-3 py-4 sm:px-6 sm:py-6">{children}</main>
       </div>
       <SearchPalette />
     </div>
