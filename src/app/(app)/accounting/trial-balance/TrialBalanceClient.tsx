@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useCallback } from 'react';
@@ -62,7 +62,7 @@ export default function TrialBalanceClient() {
     setError(null);
     const params = new URLSearchParams();
     params.set('asAtDate', filters.asAtDate);
-    if (filters.currency) params.set('currency', filters.currency);
+    if (filters.currency.length === 3) params.set('currency', filters.currency);
     params.set('includeZeroBalances', String(filters.includeZeroBalances));
     if (filters.periodId) params.set('periodId', filters.periodId);
     params.set('groupBy', filters.groupBy);
@@ -90,7 +90,7 @@ export default function TrialBalanceClient() {
     return (
       <Card>
         <CardBody className="py-12">
-          <div className="text-center text-muted-foreground">Loading trial balance…</div>
+          <div className="text-center text-muted-foreground">Loading trial balanceâ€¦</div>
         </CardBody>
       </Card>
     );
