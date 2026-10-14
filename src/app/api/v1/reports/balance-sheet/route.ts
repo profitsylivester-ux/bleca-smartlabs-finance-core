@@ -7,9 +7,9 @@ import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
 
 const querySchema = z.object({
-  asAtDate: z.string().datetime().optional(),
+  asAtDate: z.string().min(1).optional(),
   currency: z.string().length(3).optional(),
-  comparativeDate: z.string().datetime().optional(),
+  comparativeDate: z.string().min(1).optional(),
 });
 
 const ASSET_CATEGORIES = [
@@ -135,3 +135,4 @@ export async function GET(request: Request) {
     return apiError(error, reqId);
   }
 }
+
