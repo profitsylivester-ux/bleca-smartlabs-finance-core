@@ -78,11 +78,16 @@ export default function OfflineReceiptPage() {
     vendor: '',
     amount: '',
     currency: 'TZS',
-    date: new Date().toISOString().split('T')[0],
+    date: '',
     category: '',
     description: '',
     imageFile: null as File | null,
   });
+
+  useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    setFormData((p) => (p.date ? p : { ...p, date: today }));
+  }, []);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -182,7 +187,7 @@ export default function OfflineReceiptPage() {
         vendor: '',
         amount: '',
         currency: 'TZS',
-        date: new Date().toISOString().split('T')[0],
+        date: '',
         category: '',
         description: '',
         imageFile: null,
@@ -312,7 +317,6 @@ export default function OfflineReceiptPage() {
               onChange={handleInputChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
-              max={new Date().toISOString().split('T')[0]}
             />
           </div>
           <div className="md:col-span-2">
@@ -404,6 +408,10 @@ export default function OfflineReceiptPage() {
     </div>
   );
 }
+
+
+
+
 
 
 
