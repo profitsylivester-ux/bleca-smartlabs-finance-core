@@ -11,11 +11,15 @@ export default async function TrashPage() {
   const ctx = await requireContext();
   const orgId = ctx.actor.organizationId!;
 
-  const items = await prisma.masterDataChangeRequest.findMany({
+  const allApproved = await prisma.masterDataChangeRequest.findMany({
     where: { organizationId: orgId, status: 'APPROVED' },
     orderBy: { approvedAt: 'desc' },
     take: 100,
-    select: { id: true, entityType: true, entityId: true, reason: true, approvedAt: true, createdAt: true },
+    select: { id: true, entityType: true, entityId: true, reason: true, approvedAt: true, createdAt: true, proposedChanges: true },
+  });
+  const items = allApproved.filter((it) => {
+    const pc = it.proposedChanges as Record<string, unknown> | null;
+    return pc && typeof pc === 'object' && 'deletedAt' in pc;
   });
 
   return (

@@ -12,9 +12,17 @@ export default async function MasterDataPage() {
     return <div>No organization context</div>;
   }
 
+  const deletedChanges = await prisma.masterDataChangeRequest.findMany({
+    where: { organizationId: ctx.actor.organizationId, status: 'APPROVED' },
+    select: { entityId: true, proposedChanges: true },
+  });
+  const allDeletedIds: string[] = deletedChanges
+    .filter((ch) => ch.entityId && ch.proposedChanges && typeof ch.proposedChanges === 'object' && 'deletedAt' in (ch.proposedChanges as Record<string, unknown>))
+    .map((ch) => ch.entityId as string);
+
   const [locations, departments, costCentres, projects, fundingSources, currencies, exchangeRates, reasonCodes, productsServices] = await Promise.all([
     prisma.location.findMany({
-      where: { organizationId: ctx.actor.organizationId },
+      where: { organizationId: ctx.actor.organizationId, id: { notIn: allDeletedIds } },
       orderBy: [{ type: 'asc' }, { code: 'asc' }],
       select: {
         id: true,
@@ -32,7 +40,7 @@ export default async function MasterDataPage() {
       },
     }),
     prisma.department.findMany({
-      where: { organizationId: ctx.actor.organizationId },
+      where: { organizationId: ctx.actor.organizationId, id: { notIn: allDeletedIds } },
       orderBy: [{ code: 'asc' }],
       select: {
         id: true,
@@ -46,7 +54,7 @@ export default async function MasterDataPage() {
       },
     }),
     prisma.costCentre.findMany({
-      where: { organizationId: ctx.actor.organizationId },
+      where: { organizationId: ctx.actor.organizationId, id: { notIn: allDeletedIds } },
       orderBy: [{ code: 'asc' }],
       select: {
         id: true,
@@ -59,7 +67,7 @@ export default async function MasterDataPage() {
       },
     }),
     prisma.project.findMany({
-      where: { organizationId: ctx.actor.organizationId },
+      where: { organizationId: ctx.actor.organizationId, id: { notIn: allDeletedIds } },
       orderBy: [{ status: 'asc' }, { code: 'asc' }],
       select: {
         id: true,
@@ -73,7 +81,7 @@ export default async function MasterDataPage() {
       },
     }),
     prisma.fundingSource.findMany({
-      where: { organizationId: ctx.actor.organizationId },
+      where: { organizationId: ctx.actor.organizationId, id: { notIn: allDeletedIds } },
       orderBy: [{ type: 'asc' }, { code: 'asc' }],
       select: {
         id: true,
@@ -116,7 +124,7 @@ export default async function MasterDataPage() {
       },
     }),
     prisma.reasonCode.findMany({
-      where: { organizationId: ctx.actor.organizationId },
+      where: { organizationId: ctx.actor.organizationId, id: { notIn: allDeletedIds } },
       orderBy: [{ category: 'asc' }, { code: 'asc' }],
       select: {
         id: true,
@@ -130,7 +138,7 @@ export default async function MasterDataPage() {
       },
     }),
     prisma.productService.findMany({
-      where: { organizationId: ctx.actor.organizationId },
+      where: { organizationId: ctx.actor.organizationId, id: { notIn: allDeletedIds } },
       orderBy: [{ type: 'asc' }, { code: 'asc' }],
       select: {
         id: true,
