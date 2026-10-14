@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
@@ -41,7 +41,7 @@ const config: Record<SalesRegisterKind, { title: string; endpoint: string; newPa
 };
 
 function partyName(row: SalesRow) {
-  return row.customer?.party?.displayName ?? row.supplier?.party?.displayName ?? row.payment?.customer?.party?.displayName ?? row.invoice?.number ?? '—';
+  return row.customer?.party?.displayName ?? row.supplier?.party?.displayName ?? row.payment?.customer?.party?.displayName ?? row.invoice?.number ?? 'â€”';
 }
 
 export default function SalesRegister({ kind }: { kind: SalesRegisterKind }) {
@@ -70,8 +70,8 @@ export default function SalesRegister({ kind }: { kind: SalesRegisterKind }) {
 
   useEffect(() => {
     if (kind !== 'quotations') return;
-    void salesRequest<{ data: AccountOption[] }>('/api/v1/accounts')
-      .then((result) => setRevenueAccounts(flattenAccounts(result.data).filter((account) => account.type === 'REVENUE' && account.status === 'ACTIVE' && account.isPostable)))
+    void salesRequest<AccountOption[]>('/api/v1/accounts')
+      .then((accounts) => setRevenueAccounts(flattenAccounts(accounts).filter((account) => account.type === 'REVENUE' && account.status === 'ACTIVE' && account.isPostable)))
       .catch((cause: unknown) => setError(cause instanceof Error ? cause.message : 'Could not load revenue accounts.'));
   }, [kind]);
 
@@ -135,16 +135,16 @@ export default function SalesRegister({ kind }: { kind: SalesRegisterKind }) {
     <Card>
       <CardHeader title={definition.title} description={definition.description} actions={<Link href={definition.newPath} className="rounded-md bg-navy-800 px-3 py-2 text-sm font-medium text-white hover:bg-navy-700">Create</Link>} />
       <CardBody>
-        {kind === 'quotations' && rows.some((row) => row.status === 'ACCEPTED') && <div className="mb-4 flex max-w-xl items-center gap-3 text-sm"><label htmlFor="revenue-account">Revenue account for conversion</label><select id="revenue-account" className="rounded-md border border-border px-2 py-1" value={revenueAccountId} onChange={(event) => setRevenueAccountId(event.target.value)}><option value="">Choose revenue account</option>{revenueAccounts.map((account) => <option key={account.id} value={account.id}>{account.code} · {account.name}</option>)}</select></div>}
-        {loading ? <p className="text-sm text-muted-foreground">Loading…</p> : rows.length === 0 ? <EmptyState title={`No ${definition.title.toLowerCase()} yet`} body="Create a document to begin the workflow." /> : <Table>
+        {kind === 'quotations' && rows.some((row) => row.status === 'ACCEPTED') && <div className="mb-4 flex max-w-xl items-center gap-3 text-sm"><label htmlFor="revenue-account">Revenue account for conversion</label><select id="revenue-account" className="rounded-md border border-border px-2 py-1" value={revenueAccountId} onChange={(event) => setRevenueAccountId(event.target.value)}><option value="">Choose revenue account</option>{revenueAccounts.map((account) => <option key={account.id} value={account.id}>{account.code} Â· {account.name}</option>)}</select></div>}
+        {loading ? <p className="text-sm text-muted-foreground">Loadingâ€¦</p> : rows.length === 0 ? <EmptyState title={`No ${definition.title.toLowerCase()} yet`} body="Create a document to begin the workflow." /> : <Table>
           <thead><tr><Th>Number</Th><Th>Counterparty / invoice</Th><Th>Date</Th><Th>Due / expiry</Th><Th>Status</Th><Th>Amount</Th><Th>Actions</Th></tr></thead>
           <tbody>{rows.map((row) => <tr key={row.id}>
             <Td><span className="font-medium">{row.number}</span>{row.unappliedAmount ? <div className="text-xs text-muted-foreground">On account: {row.unappliedAmount}</div> : null}</Td>
             <Td>{partyName(row)}</Td>
-            <Td>{(row.quoteDate ?? row.invoiceDate ?? row.paymentDate ?? row.issuedAt ?? '').slice(0, 10) || '—'}</Td>
-            <Td>{(row.validUntil ?? row.dueDate ?? '').slice(0, 10) || '—'}</Td>
+            <Td>{(row.quoteDate ?? row.invoiceDate ?? row.paymentDate ?? row.issuedAt ?? '').slice(0, 10) || 'â€”'}</Td>
+            <Td>{(row.validUntil ?? row.dueDate ?? '').slice(0, 10) || 'â€”'}</Td>
             <Td><Badge tone={row.status === 'PAID' || row.status === 'ACCEPTED' || row.status === 'COMPLETED' || row.status === 'ISSUED' ? 'success' : row.status === 'REJECTED' || row.status === 'CANCELLED' || row.status === 'VOIDED' ? 'danger' : 'warning'}>{row.status.replaceAll('_', ' ')}</Badge></Td>
-            <Td>{row.currencyCode ?? ''} {row.totalAmount ?? row.amount ?? '—'}</Td>
+            <Td>{row.currencyCode ?? ''} {row.totalAmount ?? row.amount ?? 'â€”'}</Td>
             <Td>{actions(row)}</Td>
           </tr>)}</tbody>
         </Table>}
@@ -153,3 +153,4 @@ export default function SalesRegister({ kind }: { kind: SalesRegisterKind }) {
     {kind === 'quotations' && <Card><CardBody className="text-sm text-muted-foreground">Approval decisions are handled in <Link href="/approvals" className="text-navy-700 underline">Approvals</Link>. The conversion account selector will load eligible revenue accounts from the chart of accounts.</CardBody></Card>}
   </div>;
 }
+
