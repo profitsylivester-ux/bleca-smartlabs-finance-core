@@ -1,4 +1,4 @@
-import { PrismaClient, AccountSubCategory } from '@/generated/prisma/client';
+﻿import { PrismaClient, AccountSubCategory } from '@/generated/prisma/client';
 import { env } from '@/lib/env';
 
 const globalForPrisma = globalThis as unknown as { __blecaPrisma?: PrismaClient };
@@ -7,6 +7,7 @@ const prismaInstance: PrismaClient =
   globalForPrisma.__blecaPrisma ??
   new PrismaClient({
     log: env().NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
+    transactionOptions: { timeout: 30000, maxWait: 15000 },
   });
 
 if (env().NODE_ENV !== 'production') {
@@ -19,3 +20,4 @@ export type Tx = Omit<
   PrismaClient,
   '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
 >;
+
