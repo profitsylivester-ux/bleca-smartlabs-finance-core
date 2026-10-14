@@ -4,6 +4,16 @@ import { useState } from 'react';
 import { Badge, Button, Card, CardBody, CardHeader, PageHeader, Table, Td, Th } from '@/components/ui';
 import { cn } from '@/lib/format';
 import AddLocationButton from './AddLocationButton';
+import AddRecordButton, {
+  DEPARTMENTS_CONFIG,
+  COST_CENTRES_CONFIG,
+  PROJECTS_CONFIG,
+  FUNDING_SOURCES_CONFIG,
+  CURRENCIES_CONFIG,
+  EXCHANGE_RATES_CONFIG,
+  REASON_CODES_CONFIG,
+  PRODUCTS_SERVICES_CONFIG,
+} from './AddRecordButton';
 
 type Tab = 'locations' | 'departments' | 'cost-centres' | 'projects' | 'funding-sources' | 'currencies' | 'exchange-rates' | 'reason-codes' | 'products-services';
 
@@ -296,9 +306,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                 title="Departments"
                 description="Organisational units that group users, cost centres and budgets."
                 actions={
-                  <Button size="sm" variant="outline">
-                    Add department
-                  </Button>
+                  <AddRecordButton config={DEPARTMENTS_CONFIG} />
                 }
               />
               <CardBody className="px-0 py-0">
@@ -358,9 +366,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                 title="Cost Centres"
                 description="Granular cost tracking units linked to departments and budgets."
                 actions={
-                  <Button size="sm" variant="outline">
-                    Add cost centre
-                  </Button>
+                  <AddRecordButton config={COST_CENTRES_CONFIG} lookup={{ departmentId: departments.map((d) => ({ value: d.id, label: d.code + " \u00b7 " + d.name })) }} />
                 }
               />
               <CardBody className="px-0 py-0">
@@ -411,9 +417,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                 title="Projects"
                 description="Active projects including Iventika and Uzanite. Projects serve as a dimension for financial tracking."
                 actions={
-                  <Button size="sm" variant="outline">
-                    Add project
-                  </Button>
+                  <AddRecordButton config={PROJECTS_CONFIG} />
                 }
               />
               <CardBody className="px-0 py-0">
@@ -468,9 +472,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                 title="Funding Sources"
                 description="Sources of funding including unrestricted, restricted grants, and internal allocations. Restricted sources enforce scope constraints."
                 actions={
-                  <Button size="sm" variant="outline">
-                    Add funding source
-                  </Button>
+                  <AddRecordButton config={FUNDING_SOURCES_CONFIG} />
                 }
               />
               <CardBody className="px-0 py-0">
@@ -530,9 +532,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                 title="Currencies"
                 description="Currency definitions including base currency (TZS) and supported foreign currencies."
                 actions={
-                  <Button size="sm" variant="outline">
-                    Add currency
-                  </Button>
+                  <AddRecordButton config={CURRENCIES_CONFIG} />
                 }
               />
               <CardBody className="px-0 py-0">
@@ -595,9 +595,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                 title="Exchange Rates"
                 description="Historical exchange rates for currency conversion. Rates are looked up by transaction date."
                 actions={
-                  <Button size="sm" variant="outline">
-                    Add exchange rate
-                  </Button>
+                  <AddRecordButton config={EXCHANGE_RATES_CONFIG} lookup={{ baseCurrencyId: currencies.map((c) => ({ value: c.id, label: c.code + " \u00b7 " + c.name })), quoteCurrencyId: currencies.map((c) => ({ value: c.id, label: c.code + " \u00b7 " + c.name })) }} />
                 }
               />
               <CardBody className="px-0 py-0">
@@ -655,9 +653,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                 title="Reason Codes"
                 description="Standardized reason codes for transaction categorization across revenue, expenses, transfers, and adjustments."
                 actions={
-                  <Button size="sm" variant="outline">
-                    Add reason code
-                  </Button>
+                  <AddRecordButton config={REASON_CODES_CONFIG} />
                 }
               />
               <CardBody className="px-0 py-0">
@@ -715,9 +711,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                 title="Products & Services"
                 description="Product and service catalogue for revenue linkage and invoicing."
                 actions={
-                  <Button size="sm" variant="outline">
-                    Add product/service
-                  </Button>
+                  <AddRecordButton config={PRODUCTS_SERVICES_CONFIG} />
                 }
               />
               <CardBody className="px-0 py-0">
