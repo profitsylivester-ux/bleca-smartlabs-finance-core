@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import RowActions from './RowActions';
@@ -698,7 +698,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                           </Td>                          <Td><RowActions
                             entityType="EXCHANGE_RATE"
                             entityId={er.id}
-                            entityLabel={er.name}
+                            entityLabel={Number(er.rate).toFixed(6)}
                             endpoint="/api/v1/exchange-rates"
                             initial={{ rate: er.rate }}
                             fields={[{"name":"rate","label":"Rate"}]}
