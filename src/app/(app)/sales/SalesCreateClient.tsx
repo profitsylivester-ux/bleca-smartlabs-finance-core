@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
@@ -46,16 +46,16 @@ export default function SalesCreateClient({ kind }: { kind: CreateKind }) {
   useEffect(() => {
     const requests: Promise<void>[] = [];
     if (kind === 'quotation' || kind === 'invoice' || kind === 'payment') {
-      requests.push(salesRequest<{ data: PartyOption[] }>('/api/v1/customers?page=1&pageSize=100').then((result) => setCustomers(result.data)));
+      requests.push(salesRequest<PartyOption[]>('/api/v1/customers?page=1&pageSize=100').then(setCustomers));
     }
     if (kind === 'invoice' || kind === 'payment') {
-      requests.push(salesRequest<{ data: PartyOption[] }>('/api/v1/suppliers?page=1&pageSize=100').then((result) => setSuppliers(result.data)));
+      requests.push(salesRequest<PartyOption[]>('/api/v1/suppliers?page=1&pageSize=100').then(setSuppliers));
     }
     if (kind === 'invoice' || kind === 'payment') {
-      requests.push(salesRequest<{ data: AccountOption[] }>('/api/v1/accounts').then((result) => setAccounts(flattenAccounts(result.data))));
+      requests.push(salesRequest<AccountOption[]>('/api/v1/accounts').then((accounts) => setAccounts(flattenAccounts(accounts))));
     }
     if (kind === 'payment') {
-      requests.push(salesRequest<{ data: TreasuryOption[] }>('/api/v1/treasury-accounts').then((result) => setTreasury(result.data.filter((row) => row.isActive))));
+      requests.push(salesRequest<TreasuryOption[]>('/api/v1/treasury-accounts').then((rows) => setTreasury(rows.filter((row) => row.isActive))));
     }
     if (kind === 'credit-note' || kind === 'debit-note' || kind === 'payment') {
       requests.push(salesRequest<InvoiceOption[]>('/api/v1/invoices').then(setInvoices));
@@ -132,8 +132,8 @@ export default function SalesCreateClient({ kind }: { kind: CreateKind }) {
     <Card><CardHeader title={titles[kind]} description="Numbering and audit records are assigned by the server; submit the draft for approval when it is ready." />
       <CardBody><form onSubmit={submit} className="grid gap-4 md:grid-cols-2">
         {(kind === 'invoice' || kind === 'payment') && <label className="space-y-1 text-sm">Direction<Select value={direction} onChange={(event) => { setDirection(event.target.value as 'RECEIVABLE' | 'PAYABLE'); setPartyId(''); }}><SelectOption value="RECEIVABLE">Customer / receivable</SelectOption><SelectOption value="PAYABLE">Supplier / payable</SelectOption></Select></label>}
-        {kind !== 'credit-note' && kind !== 'debit-note' && <label className="space-y-1 text-sm">{partyLabel}<Select required value={partyId} onChange={(event) => setPartyId(event.target.value)}><SelectOption value="">Choose {partyLabel.toLowerCase()}</SelectOption>{eligibleParties.map((party) => <SelectOption key={party.id} value={party.id}>{party.party.code} · {party.party.displayName}</SelectOption>)}</Select></label>}
-        {(kind === 'credit-note' || kind === 'debit-note') && <label className="space-y-1 text-sm">Invoice<Select required value={invoiceId} onChange={(event) => setInvoiceId(event.target.value)}><SelectOption value="">Choose invoice</SelectOption>{relevantInvoices.map((invoice) => <SelectOption key={invoice.id} value={invoice.id}>{invoice.number} · {invoice.currencyCode} · {invoice.status}</SelectOption>)}</Select></label>}
+        {kind !== 'credit-note' && kind !== 'debit-note' && <label className="space-y-1 text-sm">{partyLabel}<Select required value={partyId} onChange={(event) => setPartyId(event.target.value)}><SelectOption value="">Choose {partyLabel.toLowerCase()}</SelectOption>{eligibleParties.map((party) => <SelectOption key={party.id} value={party.id}>{party.party.code} Â· {party.party.displayName}</SelectOption>)}</Select></label>}
+        {(kind === 'credit-note' || kind === 'debit-note') && <label className="space-y-1 text-sm">Invoice<Select required value={invoiceId} onChange={(event) => setInvoiceId(event.target.value)}><SelectOption value="">Choose invoice</SelectOption>{relevantInvoices.map((invoice) => <SelectOption key={invoice.id} value={invoice.id}>{invoice.number} Â· {invoice.currencyCode} Â· {invoice.status}</SelectOption>)}</Select></label>}
         {kind !== 'payment' && <label className="space-y-1 text-sm">Currency<Input required maxLength={3} value={currencyCode} onChange={(event) => setCurrencyCode(event.target.value.toUpperCase())} /></label>}
         {(kind === 'quotation' || kind === 'invoice') && <>
           <label className="space-y-1 text-sm">Line description<Input required value={description} onChange={(event) => setDescription(event.target.value)} /></label>
@@ -141,9 +141,9 @@ export default function SalesCreateClient({ kind }: { kind: CreateKind }) {
           <label className="space-y-1 text-sm">Unit price<Input required type="number" min="0" step="0.000001" value={unitPrice} onChange={(event) => setUnitPrice(event.target.value)} /></label>
         </>}
         {kind === 'invoice' && <>
-          <label className="space-y-1 text-sm">Posting account<Select required value={accountId} onChange={(event) => setAccountId(event.target.value)}><SelectOption value="">Choose {expectedLineType.toLowerCase()} account</SelectOption>{postableAccounts.filter((account) => account.type === expectedLineType).map((account) => <SelectOption key={account.id} value={account.id}>{account.code} · {account.name}</SelectOption>)}</Select></label>
+          <label className="space-y-1 text-sm">Posting account<Select required value={accountId} onChange={(event) => setAccountId(event.target.value)}><SelectOption value="">Choose {expectedLineType.toLowerCase()} account</SelectOption>{postableAccounts.filter((account) => account.type === expectedLineType).map((account) => <SelectOption key={account.id} value={account.id}>{account.code} Â· {account.name}</SelectOption>)}</Select></label>
           <label className="space-y-1 text-sm">Tax rate % (optional)<Input type="number" min="0" step="0.01" value={taxRate} onChange={(event) => setTaxRate(event.target.value)} /></label>
-          {taxRate && <label className="space-y-1 text-sm">Tax account<Select required value={taxAccountId} onChange={(event) => setTaxAccountId(event.target.value)}><SelectOption value="">Choose tax account</SelectOption>{postableAccounts.filter((account) => account.type === taxType).map((account) => <SelectOption key={account.id} value={account.id}>{account.code} · {account.name}</SelectOption>)}</Select></label>}
+          {taxRate && <label className="space-y-1 text-sm">Tax account<Select required value={taxAccountId} onChange={(event) => setTaxAccountId(event.target.value)}><SelectOption value="">Choose tax account</SelectOption>{postableAccounts.filter((account) => account.type === taxType).map((account) => <SelectOption key={account.id} value={account.id}>{account.code} Â· {account.name}</SelectOption>)}</Select></label>}
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={isTaxInvoice} onChange={(event) => setIsTaxInvoice(event.target.checked)} /> Issue as tax invoice</label>
           {isTaxInvoice && <label className="space-y-1 text-sm">Tax invoice number<Input required value={taxInvoiceNumber} onChange={(event) => setTaxInvoiceNumber(event.target.value)} /></label>}
           <label className="space-y-1 text-sm">Recurring schedule<Select value={recurrenceFrequency} onChange={(event) => setRecurrenceFrequency(event.target.value)}><SelectOption value="">One-off invoice</SelectOption><SelectOption value="MONTHLY">Monthly</SelectOption><SelectOption value="QUARTERLY">Quarterly</SelectOption><SelectOption value="ANNUALLY">Annually</SelectOption></Select></label>
@@ -151,13 +151,13 @@ export default function SalesCreateClient({ kind }: { kind: CreateKind }) {
         {kind === 'payment' && <>
           <label className="space-y-1 text-sm">Amount<Input required type="number" min="0.000001" step="0.000001" value={amount} onChange={(event) => setAmount(event.target.value)} /></label>
           <label className="space-y-1 text-sm">Currency<Input required maxLength={3} value={currencyCode} onChange={(event) => setCurrencyCode(event.target.value.toUpperCase())} /></label>
-          <label className="space-y-1 text-sm">Treasury account<Select required value={treasuryAccountId} onChange={(event) => setTreasuryAccountId(event.target.value)}><SelectOption value="">Choose treasury account</SelectOption>{treasury.filter((row) => row.currencyCode === currencyCode).map((row) => <SelectOption key={row.id} value={row.id}>{row.code} · {row.name}</SelectOption>)}</Select></label>
+          <label className="space-y-1 text-sm">Treasury account<Select required value={treasuryAccountId} onChange={(event) => setTreasuryAccountId(event.target.value)}><SelectOption value="">Choose treasury account</SelectOption>{treasury.filter((row) => row.currencyCode === currencyCode).map((row) => <SelectOption key={row.id} value={row.id}>{row.code} Â· {row.name}</SelectOption>)}</Select></label>
           <div className="space-y-2 md:col-span-2"><div className="flex items-center justify-between"><span className="text-sm font-medium">Payment methods</span><Button type="button" size="sm" variant="outline" onClick={() => setMethodLines((lines) => [...lines, { method: 'BANK_TRANSFER', amount: '' }])}>Add method</Button></div>
             {methodLines.map((line, index) => <div key={`method-${index}`} className="grid gap-2 sm:grid-cols-[2fr_1fr_auto]"><Select aria-label={`Payment method ${index + 1}`} value={line.method} onChange={(event) => setMethodLines((rows) => rows.map((row, rowIndex) => rowIndex === index ? { ...row, method: event.target.value } : row))}>{['BANK_TRANSFER', 'CASH', 'MOBILE_MONEY', 'PAYMENT_GATEWAY', 'CHEQUE', 'CARD', 'OTHER'].map((value) => <SelectOption key={value} value={value}>{value.replaceAll('_', ' ')}</SelectOption>)}</Select><Input aria-label={`Payment method amount ${index + 1}`} required type="number" min="0.000001" step="0.000001" placeholder="Amount" value={line.amount} onChange={(event) => setMethodLines((rows) => rows.map((row, rowIndex) => rowIndex === index ? { ...row, amount: event.target.value } : row))} />{methodLines.length > 1 && <Button type="button" size="sm" variant="outline" onClick={() => setMethodLines((rows) => rows.filter((_, rowIndex) => rowIndex !== index))}>Remove</Button>}</div>)}
           </div>
-          <label className="space-y-1 text-sm">On-account posting account (if no open invoices)<Select value={onAccountAccountId} onChange={(event) => setOnAccountAccountId(event.target.value)}><SelectOption value="">Choose account</SelectOption>{postableAccounts.filter((account) => account.type === unappliedType).map((account) => <SelectOption key={account.id} value={account.id}>{account.code} · {account.name}</SelectOption>)}</Select></label>
+          <label className="space-y-1 text-sm">On-account posting account (if no open invoices)<Select value={onAccountAccountId} onChange={(event) => setOnAccountAccountId(event.target.value)}><SelectOption value="">Choose account</SelectOption>{postableAccounts.filter((account) => account.type === unappliedType).map((account) => <SelectOption key={account.id} value={account.id}>{account.code} Â· {account.name}</SelectOption>)}</Select></label>
           <div className="space-y-2 md:col-span-2"><div className="flex items-center justify-between"><span className="text-sm font-medium">Manual allocation (optional)</span><Button type="button" size="sm" variant="outline" onClick={() => setManualAllocations((lines) => [...lines, { invoiceId: '', amount: '' }])}>Add invoice allocation</Button></div>
-            {manualAllocations.map((line, index) => <div key={`allocation-${index}`} className="grid gap-2 sm:grid-cols-[2fr_1fr_auto]"><Select aria-label={`Invoice allocation ${index + 1}`} value={line.invoiceId} onChange={(event) => setManualAllocations((rows) => rows.map((row, rowIndex) => rowIndex === index ? { ...row, invoiceId: event.target.value } : row))}><SelectOption value="">Choose open invoice</SelectOption>{relevantInvoices.map((invoice) => <SelectOption key={invoice.id} value={invoice.id}>{invoice.number} · {invoice.currencyCode} · {invoice.status}</SelectOption>)}</Select><Input aria-label={`Amount allocation ${index + 1}`} type="number" min="0.000001" step="0.000001" placeholder="Amount" value={line.amount} onChange={(event) => setManualAllocations((rows) => rows.map((row, rowIndex) => rowIndex === index ? { ...row, amount: event.target.value } : row))} /><Button type="button" size="sm" variant="outline" onClick={() => setManualAllocations((rows) => rows.filter((_, rowIndex) => rowIndex !== index))}>Remove</Button></div>)}
+            {manualAllocations.map((line, index) => <div key={`allocation-${index}`} className="grid gap-2 sm:grid-cols-[2fr_1fr_auto]"><Select aria-label={`Invoice allocation ${index + 1}`} value={line.invoiceId} onChange={(event) => setManualAllocations((rows) => rows.map((row, rowIndex) => rowIndex === index ? { ...row, invoiceId: event.target.value } : row))}><SelectOption value="">Choose open invoice</SelectOption>{relevantInvoices.map((invoice) => <SelectOption key={invoice.id} value={invoice.id}>{invoice.number} Â· {invoice.currencyCode} Â· {invoice.status}</SelectOption>)}</Select><Input aria-label={`Amount allocation ${index + 1}`} type="number" min="0.000001" step="0.000001" placeholder="Amount" value={line.amount} onChange={(event) => setManualAllocations((rows) => rows.map((row, rowIndex) => rowIndex === index ? { ...row, amount: event.target.value } : row))} /><Button type="button" size="sm" variant="outline" onClick={() => setManualAllocations((rows) => rows.filter((_, rowIndex) => rowIndex !== index))}>Remove</Button></div>)}
           </div>
         </>}
         {(kind === 'credit-note' || kind === 'debit-note') && <>
@@ -165,8 +165,9 @@ export default function SalesCreateClient({ kind }: { kind: CreateKind }) {
           <label className="space-y-1 text-sm">Reason code<Select value={reasonCode} onChange={(event) => setReasonCode(event.target.value)}>{['RETURN', 'PRICING_ADJUSTMENT', 'DAMAGED_GOODS', 'DUPLICATE_BILLING', 'SERVICE_NOT_RENDERED', 'TAX_ADJUSTMENT', 'OVERCHARGE', 'UNDERCHARGE', 'OTHER'].map((value) => <SelectOption key={value} value={value}>{value.replaceAll('_', ' ')}</SelectOption>)}</Select></label>
           <label className="space-y-1 text-sm md:col-span-2">Reason<Input required minLength={5} value={reason} onChange={(event) => setReason(event.target.value)} /></label>
         </>}
-        <div className="flex gap-3 md:col-span-2"><Button type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save draft'}</Button><Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button></div>
+        <div className="flex gap-3 md:col-span-2"><Button type="submit" disabled={saving}>{saving ? 'Savingâ€¦' : 'Save draft'}</Button><Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button></div>
       </form></CardBody>
     </Card>
   </div>;
 }
+
