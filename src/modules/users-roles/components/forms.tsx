@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
 import { useActionState, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Alert, Button, Input, Label } from '@/components/ui';
@@ -103,6 +106,11 @@ export function AssignRoleForm({
   roles: Array<{ code: string }>;
 }) {
   const [state, action] = useActionState(assignRoleAction, null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state?.ok) router.refresh();
+  }, [state, router]);
 
   return (
     <form action={action} className="space-y-3">
