@@ -1,4 +1,5 @@
-import { PageHeader, Card, CardHeader, CardBody, Button } from '@/components/ui';
+﻿import { PageHeader, Card, CardHeader, CardBody, Button } from '@/components/ui';
+import CancelButton from '@/components/cancel-button';
 import NewJournalEntryClient from './NewJournalEntryClient';
 
 export const metadata = { title: 'New Journal Entry' };
@@ -9,7 +10,7 @@ export default function NewJournalEntryPage() {
       <PageHeader
         title="New Journal Entry"
         description="Create a double-entry journal entry with at least two lines."
-        actions={<Button variant="ghost" onClick={() => window.history.back()}>Cancel</Button>}
+        actions={<CancelButton />}
       />
       <NewJournalEntryClient />
     </div>

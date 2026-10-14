@@ -1,4 +1,5 @@
-import { PageHeader, Button } from '@/components/ui';
+﻿import { PageHeader, Button } from '@/components/ui';
+import CancelButton from '@/components/cancel-button';
 import { Metadata } from 'next';
 import ReverseJournalEntryClient from './ReverseJournalEntryClient';
 
@@ -18,7 +19,7 @@ export default async function ReverseJournalEntryPage({ params }: Props) {
       <PageHeader
         title="Reverse Journal Entry"
         description="Create a reversal entry for a posted or locked journal entry."
-        actions={<Button variant="ghost" onClick={() => window.history.back()}>Cancel</Button>}
+        actions={<CancelButton />}
       />
       <ReverseJournalEntryClient entryId={id} />
     </div>

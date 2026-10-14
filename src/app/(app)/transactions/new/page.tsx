@@ -1,4 +1,5 @@
-import { PageHeader, Button } from '@/components/ui';
+﻿import { PageHeader, Button } from '@/components/ui';
+import CancelButton from '@/components/cancel-button';
 import NewTransactionClient from './NewTransactionClient';
 
 export const metadata = { title: 'New Transaction' };
@@ -9,7 +10,7 @@ export default function NewTransactionPage() {
       <PageHeader
         title="New Transaction"
         description="Create a new transaction with all required fields."
-        actions={<Button variant="ghost" onClick={() => window.history.back()}>Cancel</Button>}
+        actions={<CancelButton />}
       />
       <NewTransactionClient />
     </div>
