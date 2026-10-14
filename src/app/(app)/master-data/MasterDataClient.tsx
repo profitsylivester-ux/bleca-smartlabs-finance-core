@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Badge, Button, Card, CardBody, CardHeader, PageHeader, Table, Td, Th } from '@/components/ui';
 import { cn } from '@/lib/format';
+import AddLocationButton from './AddLocationButton';
 
 type Tab = 'locations' | 'departments' | 'cost-centres' | 'projects' | 'funding-sources' | 'currencies' | 'exchange-rates' | 'reason-codes' | 'products-services';
 
@@ -183,7 +184,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Master Data"
+        title="Business Setup"
         description="Organisational dimensions that every financial record carries. Changes require approval and are audited."
       />
 
@@ -217,9 +218,7 @@ export default function MasterDataPage({ initialData }: { initialData: MasterDat
                 title="Locations"
                 description="Physical and logical sites including university facilities and permitted-use locations."
                 actions={
-                  <Button size="sm" variant="outline">
-                    Add location
-                  </Button>
+                  <AddLocationButton />
                 }
               />
               <CardBody className="px-0 py-0">

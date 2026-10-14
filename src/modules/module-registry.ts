@@ -62,7 +62,7 @@ export const MODULES: ModuleDefinition[] = [
 {
     key: 'MASTER_DATA',
     path: '/master-data',
-    label: 'Master Data',
+    label: 'Business Setup',
     description: 'Locations, departments, cost centres, projects, funding sources, currencies, rates and reason codes.',
     availability: 'AVAILABLE',
     milestone: PHASE_1,
