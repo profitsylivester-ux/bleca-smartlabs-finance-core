@@ -1,7 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface SecurityEvent {
   id: string;
@@ -43,7 +43,7 @@ const severityColors: Record<SecurityEvent['severity'], string> = {
 };
 
 export default function SecurityEventsPage() {
-  const searchParams = useSearchParams();
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
   const router = useRouter();
   const [events, setEvents] = useState<SecurityEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -242,7 +242,7 @@ export default function SecurityEventsPage() {
                         )}
                       </>
                     ) : (
-                      <span className="text-gray-400">—</span>
+                      <span className="text-gray-400">â€”</span>
                     )}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-900 max-w-xs truncate">{event.description}</td>
