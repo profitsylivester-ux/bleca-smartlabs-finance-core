@@ -6,9 +6,9 @@ import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
 
 const querySchema = z.object({
-  asAtDate: z.string().datetime().optional(),
+  asAtDate: z.string().min(1).optional(),
   currency: z.string().length(3).optional(),
-  includeZeroBalances: z.coerce.boolean().default(false),
+  includeZeroBalances: z.enum(['true','false']).optional().transform(v => v === 'true'),
   periodId: z.string().cuid().optional(),
   groupBy: z.enum(['account', 'type', 'subcategory']).default('account'),
 });
@@ -116,3 +116,4 @@ export async function GET(request: Request) {
     return apiError(error, reqId);
   }
 }
+
