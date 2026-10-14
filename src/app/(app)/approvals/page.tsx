@@ -5,6 +5,7 @@ import { authorize } from '@/lib/kernel/authorize';
 import { prisma } from '@/lib/db/prisma';
 import { Badge, Button, Card, CardBody, CardHeader, EmptyState, PageHeader, Select, SelectOption } from '@/components/ui';
 import { formatDateTime, formatRelative } from '@/lib/format';
+import MasterDataChangeList from './MasterDataChangeList';
 
 export const metadata: Metadata = { title: 'Approvals' };
 
@@ -93,6 +94,13 @@ export default async function ApprovalsPage({
       prisma.approvalRequest.count({ where }),
     ]);
   }
+
+  const masterDataChanges = await prisma.masterDataChangeRequest.findMany({
+    where: { organizationId: orgId, status: 'PENDING_APPROVAL' },
+    orderBy: { createdAt: 'desc' },
+    take: 20,
+    select: { id: true, entityType: true, entityId: true, reason: true, createdAt: true },
+  });
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -205,6 +213,15 @@ export default async function ApprovalsPage({
           </form>
         </CardBody>
       </Card>
+
+      {masterDataChanges.length > 0 && (
+        <Card>
+          <CardHeader title="Business Setup requests" description="Pending deletions awaiting your decision" />
+          <CardBody className="px-0 py-0">
+            <MasterDataChangeList changes={masterDataChanges.map((m) => ({ ...m, createdAt: m.createdAt.toISOString() }))} />
+          </CardBody>
+        </Card>
+      )}
 
       <Card>
         <CardHeader
