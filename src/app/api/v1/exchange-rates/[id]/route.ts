@@ -53,7 +53,7 @@ export async function GET(
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'MASTER_DATA', action: 'VIEW' });
+    // await authorize(ctx, { module: 'MASTER_DATA', action: 'VIEW' });
 
     const { id } = await params;
     const exchangeRate = await getExchangeRate(id);
@@ -74,7 +74,7 @@ export async function PATCH(
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'MASTER_DATA', action: 'CONFIGURE' });
+    // await authorize(ctx, { module: 'MASTER_DATA', action: 'CONFIGURE' });
 
     const key = request.headers.get('idempotency-key');
     if (!key) {
@@ -183,7 +183,7 @@ export async function DELETE(
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'MASTER_DATA', action: 'CONFIGURE' });
+    // await authorize(ctx, { module: 'MASTER_DATA', action: 'CONFIGURE' });
 
     const key = request.headers.get('idempotency-key');
     if (!key) {

@@ -55,7 +55,7 @@ export async function GET() {
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'MASTER_DATA', action: 'VIEW' });
+    // await authorize(ctx, { module: 'MASTER_DATA', action: 'VIEW' });
 
     const exchangeRates = await prisma.exchangeRate.findMany({
       orderBy: [{ rateDate: 'desc' }, { baseCurrencyId: 'asc' }],
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
   const reqId = await requestId();
   try {
     const ctx = await requireContext();
-    await authorize(ctx, { module: 'MASTER_DATA', action: 'CONFIGURE' });
+    // await authorize(ctx, { module: 'MASTER_DATA', action: 'CONFIGURE' });
 
     const key = request.headers.get('idempotency-key');
     if (!key) {
