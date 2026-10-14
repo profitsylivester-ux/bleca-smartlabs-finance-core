@@ -1,3 +1,5 @@
+﻿'use client';
+
 import { cn } from '@/lib/format';
 import React, { useState, useEffect } from 'react';
 
@@ -290,3 +292,4 @@ export function TabsContent({ value, children, className, ...props }: {
 
   return <div className={cn('mt-2', className)} {...props}>{children}</div>;
 }
+
