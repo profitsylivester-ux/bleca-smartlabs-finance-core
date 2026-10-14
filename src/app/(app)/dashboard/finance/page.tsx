@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import { PageHeader } from '@/components/ui';
-import { PlannedPanel, StatTile } from '@/components/planned';
+import { StatTile } from '@/components/planned';
 import { requireContext, requirePageActor } from '@/lib/auth/guard';
 import { authorize } from '@/lib/kernel/authorize';
 import { prisma } from '@/lib/db/prisma';
@@ -38,6 +38,57 @@ export default async function FinanceDashboardPage() {
     prisma.securityEvent.count({ where: { acknowledgedAt: null } }),
     prisma.user.count({ where: { isActive: true, deletedAt: null } }),
   ]);
+
+  const workQueues = [
+    {
+      label: 'Transactions in draft',
+      hint: 'Prepare and submit them for approval',
+      href: '/accounting/journal-entries',
+      count: dashboard.transactionsByStatus.find((t) => t.status === 'DRAFT')?.count ?? 0,
+    },
+    {
+      label: 'Transactions submitted',
+      hint: 'Awaiting CEO decision',
+      href: '/approvals',
+      count: dashboard.transactionsByStatus.find((t) => t.status === 'SUBMITTED')?.count ?? 0,
+    },
+    {
+      label: 'Approvals pending',
+      hint: 'Decisions waiting on you',
+      href: '/approvals',
+      count: dashboard.pendingApprovals,
+    },
+    {
+      label: 'Overdue receivables',
+      hint: 'Customer invoices past due',
+      href: '/sales/invoices',
+      count: dashboard.overdueInvoices.receivables,
+    },
+    {
+      label: 'Overdue payables',
+      hint: 'Supplier invoices past due',
+      href: '/sales/invoices',
+      count: dashboard.overdueInvoices.payables,
+    },
+    {
+      label: 'Unreconciled sessions',
+      hint: 'Bank and mobile money to match',
+      href: '/treasury/accounts',
+      count: dashboard.unreconciledSessions,
+    },
+    {
+      label: 'Open anomalies',
+      hint: 'Flagged items needing review',
+      href: '/admin/anomalies',
+      count: dashboard.openAnomalies,
+    },
+    {
+      label: 'Budget items to review',
+      hint: 'Draft budgets and commitments',
+      href: '/budgets',
+      count: dashboard.overBudgetCount,
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -179,19 +230,33 @@ export default async function FinanceDashboardPage() {
         </div>
       </div>
 
-      <PlannedPanel
-        milestone="M5-M15"
-        title="Your work queues"
-        description="Each of these is a real workflow in the Phase 1 scope; none exists yet because the module behind it has not been built."
-        items={[
-          'Transactions to prepare, submit and post',
-          'Bank and mobile money reconciliation sessions',
-          'Invoices to raise and payments to record',
-          'Documents to classify and match to transactions',
-          'Budget preparation and revisions',
-          'Month-end close checklist',
-        ]}
-      />
+      <div className="border-border-subtle rounded-lg border bg-white">
+        <div className="border-border-subtle border-b px-5 py-4">
+          <h2 className="text-sm font-semibold">Your work queues</h2>
+          <p className="text-muted-foreground mt-0.5 text-xs">
+            Work assigned to you and awaiting action. Click an item to open its register.
+          </p>
+        </div>
+        <div className="divide-border-subtle divide-y">
+          {workQueues.map((q) => (
+            <a
+              key={q.label}
+              href={q.href}
+              className="flex items-center justify-between gap-3 px-5 py-3 hover:bg-muted/30"
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-foreground">{q.label}</p>
+                <p className="text-muted-foreground text-xs">{q.hint}</p>
+              </div>
+              <span
+                className={`tabular text-sm font-semibold shrink-0 ${q.count > 0 ? 'text-navy-700' : 'text-muted-foreground'}`}
+              >
+                {formatInteger(q.count)}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
 
       <p className="text-muted-foreground text-xs">
         {formatInteger(unverifiedUsers)} active account(s) in this organisation
