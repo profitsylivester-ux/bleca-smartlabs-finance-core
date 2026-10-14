@@ -94,7 +94,7 @@ export default function AddRecordButton({ config, lookup }: Props) {
             <h2 className="mb-3 text-base font-semibold">{config.modalTitle}</h2>
             <form onSubmit={save} className="space-y-3">
               {config.fields.map((f) => {
-                const opts = (lookup && lookup[f.name]) ? lookup[f.name] : (f.options || []);
+                const opts = ((lookup && lookup[f.name]) ? lookup[f.name] : f.options) ?? [];
                 return (
                   <div key={f.name}>
                     <Label htmlFor={'add-' + f.name}>
@@ -298,3 +298,4 @@ export const PRODUCTS_SERVICES_CONFIG: AddConfig = {
     { name: 'description', label: 'Description (optional)', type: 'text', maxLength: 500 },
   ],
 };
+
