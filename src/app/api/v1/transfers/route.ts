@@ -19,7 +19,7 @@ const createSchema = z.object({
   amount: z.number().positive(),
   currencyCode: z.string().length(3),
   destinationAmount: z.number().positive().optional(),
-  destinationCurrencyCode: z.string().length(3).optional(),
+  destinationCurrencyCode: z.string().optional(),
   fxRate: z.number().positive().optional(),
   description: z.string().optional(),
   reference: z.string().optional(),
@@ -246,3 +246,4 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+

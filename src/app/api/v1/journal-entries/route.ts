@@ -42,7 +42,7 @@ const updateSchema = z.object({
   reference: z.string().max(100).nullish().optional(),
   description: z.string().max(500).nullish().optional(),
   lines: z.array(z.object({
-    id: z.string().cuid().optional(),
+    id: z.string().optional(),
     accountId: z.string().cuid(),
     lineNumber: z.int().positive(),
     description: z.string().max(500).nullish(),
@@ -58,17 +58,17 @@ const updateSchema = z.object({
 });
 
 const listQuerySchema = z.object({
-  periodId: z.string().cuid().optional(),
+  periodId: z.string().optional(),
   status: journalEntryStatusSchema.optional(),
   type: journalEntryTypeSchema.optional(),
   startDate: z.string().min(1).optional(),
   endDate: z.string().min(1).optional(),
-  accountId: z.string().cuid().optional(),
-  projectId: z.string().cuid().optional(),
-  departmentId: z.string().cuid().optional(),
-  costCentreId: z.string().cuid().optional(),
-  locationId: z.string().cuid().optional(),
-  fundingSourceId: z.string().cuid().optional(),
+  accountId: z.string().optional(),
+  projectId: z.string().optional(),
+  departmentId: z.string().optional(),
+  costCentreId: z.string().optional(),
+  locationId: z.string().optional(),
+  fundingSourceId: z.string().optional(),
   page: z.coerce.number().int().positive().default(1),
   pageSize: z.coerce.number().int().positive().max(100).default(20),
 });
@@ -369,5 +369,6 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 
 

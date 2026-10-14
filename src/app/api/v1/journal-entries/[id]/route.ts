@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { Prisma } from '@/generated/prisma/client';
@@ -17,7 +17,7 @@ const updateSchema = z.object({
   reference: z.string().max(100).nullish().optional(),
   description: z.string().max(500).nullish().optional(),
   lines: z.array(z.object({
-    id: z.string().cuid().optional(),
+    id: z.string().optional(),
     accountId: z.string().cuid(),
     lineNumber: z.int().positive(),
     description: z.string().max(500).nullish(),

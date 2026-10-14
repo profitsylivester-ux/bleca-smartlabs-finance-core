@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
@@ -13,7 +13,7 @@ import type { Tx } from '@/lib/db/prisma';
 
 const reverseSchema = z.object({
   reason: z.string().min(1),
-  evidenceDocumentId: z.string().cuid().optional(),
+  evidenceDocumentId: z.string().optional(),
 });
 
 async function getAuditOptions(reqId: string, h: Headers) {

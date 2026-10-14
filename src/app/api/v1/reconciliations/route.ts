@@ -26,8 +26,8 @@ const createSchema = z.object({
   code: z.string().min(2).max(50),
   treasuryAccountId: z.string().cuid(),
   target: targetSchema,
-  importId: z.string().cuid().optional(),
-  periodId: z.string().cuid().optional(),
+  importId: z.string().optional(),
+  periodId: z.string().optional(),
   statementStartDate: z.string().min(1),
   statementEndDate: z.string().min(1),
   statementOpeningBalance: z.number().optional(),
@@ -249,6 +249,7 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 
 
 

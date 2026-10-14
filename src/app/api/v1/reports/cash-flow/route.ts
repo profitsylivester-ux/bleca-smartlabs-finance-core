@@ -7,10 +7,10 @@ import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
 
 const querySchema = z.object({
-  periodId: z.string().cuid().optional(),
+  periodId: z.string().optional(),
   startDate: z.string().min(1).optional(),
   endDate: z.string().min(1).optional(),
-  currency: z.string().length(3).optional(),
+  currency: z.string().optional(),
 });
 
 const CASH_ACCOUNTS = [AccountSubCategory.CASH, AccountSubCategory.BANK, AccountSubCategory.MOBILE_MONEY];
@@ -145,4 +145,5 @@ export async function GET(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 

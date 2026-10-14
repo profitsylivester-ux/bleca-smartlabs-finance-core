@@ -8,10 +8,10 @@ const statuses = ['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'COMPLETED', 'RE
 const amount = z.union([z.string().regex(/^\d+(\.\d{1,6})?$/), z.number().finite()]);
 const allocation = z.object({ invoiceId: z.string().cuid(), amount });
 const createSchema = z.object({
-  direction: z.enum(['INBOUND', 'OUTBOUND']), customerId: z.string().cuid().optional(), supplierId: z.string().cuid().optional(),
+  direction: z.enum(['INBOUND', 'OUTBOUND']), customerId: z.string().optional(), supplierId: z.string().optional(),
   treasuryAccountId: z.string().cuid(), currencyCode: z.string().length(3).toUpperCase(), amount,
   paymentDate: z.string().min(10), allocationMode: z.enum(['MANUAL', 'AUTOMATIC', 'FIFO']).optional(),
-  onAccountAccountId: z.string().cuid().optional(), reference: z.string().max(200).optional(),
+  onAccountAccountId: z.string().optional(), reference: z.string().max(200).optional(),
   description: z.string().max(2000).optional(),
   methods: z.array(z.object({ method: z.enum(['CASH', 'BANK_TRANSFER', 'MOBILE_MONEY', 'PAYMENT_GATEWAY', 'CHEQUE', 'CARD', 'OTHER']), amount, reference: z.string().max(200).optional() })).min(1),
   allocations: z.array(allocation).optional(),
@@ -40,4 +40,5 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 

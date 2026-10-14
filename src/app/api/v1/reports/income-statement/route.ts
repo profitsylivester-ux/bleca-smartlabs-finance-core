@@ -7,15 +7,15 @@ import { authorize } from '@/lib/kernel/authorize';
 import { apiError, ok, requestId } from '@/lib/api/responses';
 
 const querySchema = z.object({
-  periodId: z.string().cuid().optional(),
+  periodId: z.string().optional(),
   startDate: z.string().min(1).optional(),
   endDate: z.string().min(1).optional(),
-  projectId: z.string().cuid().optional(),
-  departmentId: z.string().cuid().optional(),
-  costCentreId: z.string().cuid().optional(),
-  fundingSourceId: z.string().cuid().optional(),
-  currency: z.string().length(3).optional(),
-  comparativePeriodId: z.string().cuid().optional(),
+  projectId: z.string().optional(),
+  departmentId: z.string().optional(),
+  costCentreId: z.string().optional(),
+  fundingSourceId: z.string().optional(),
+  currency: z.string().optional(),
+  comparativePeriodId: z.string().optional(),
 });
 
 const REVENUE_CATEGORIES = [
@@ -174,4 +174,5 @@ export async function GET(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 

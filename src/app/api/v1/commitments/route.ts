@@ -19,8 +19,8 @@ const amountSchema = z.union([
   z.number().finite().nonnegative(),
 ]);
 const createSchema = z.object({
-  budgetId: z.string().cuid().optional(),
-  budgetLineId: z.string().cuid().optional(),
+  budgetId: z.string().optional(),
+  budgetLineId: z.string().optional(),
   accountId: z.string().cuid(),
   source: z.enum(sources),
   sourceId: z.string().max(200).nullable().optional(),
@@ -79,5 +79,6 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 
 

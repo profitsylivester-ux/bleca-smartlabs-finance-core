@@ -17,11 +17,11 @@ const withdrawalSchema = z.object({
   date: z.string().min(1).optional(),
   description: z.string().optional(),
   reference: z.string().optional(),
-  projectId: z.string().cuid().optional(),
-  departmentId: z.string().cuid().optional(),
-  costCentreId: z.string().cuid().optional(),
-  fundingSourceId: z.string().cuid().optional(),
-  supportingDocumentId: z.string().cuid().optional(),
+  projectId: z.string().optional(),
+  departmentId: z.string().optional(),
+  costCentreId: z.string().optional(),
+  fundingSourceId: z.string().optional(),
+  supportingDocumentId: z.string().optional(),
 });
 
 async function getAuditOptions(reqId: string, h: Headers) {
@@ -328,3 +328,4 @@ export async function POST(
     return apiError(error, reqId);
   }
 }
+

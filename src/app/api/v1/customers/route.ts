@@ -47,7 +47,7 @@ const createSchema = z.object({
   paymentTermsDays: z.number().int().min(0).max(365).default(30),
   creditLimit: z.number().min(0).default(0),
   currencyCode: z.string().length(3).toUpperCase().default('TZS'),
-  relationshipOwnerId: z.string().cuid().optional(),
+  relationshipOwnerId: z.string().optional(),
   riskLevel: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']).default('MEDIUM'),
   contacts: z.array(contactSchema).max(30).default([]),
   addresses: z.array(addressSchema).max(30).default([]),
@@ -176,4 +176,5 @@ export async function POST(request: Request) {
     return apiError(error, reqId);
   }
 }
+
 

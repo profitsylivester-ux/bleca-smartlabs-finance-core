@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
@@ -14,12 +14,12 @@ const transferStatusSchema = z.enum(['DRAFT', 'SUBMITTED', 'APPROVED', 'PROCESSE
 
 const updateSchema = z.object({
   code: z.string().min(2).max(50).toUpperCase().optional(),
-  sourceAccountId: z.string().cuid().optional(),
-  destinationAccountId: z.string().cuid().optional(),
+  sourceAccountId: z.string().optional(),
+  destinationAccountId: z.string().optional(),
   amount: z.number().positive().optional(),
-  currencyCode: z.string().length(3).optional(),
+  currencyCode: z.string().optional(),
   destinationAmount: z.number().positive().optional(),
-  destinationCurrencyCode: z.string().length(3).optional(),
+  destinationCurrencyCode: z.string().optional(),
   fxRate: z.number().positive().optional(),
   description: z.string().optional(),
   reference: z.string().optional(),

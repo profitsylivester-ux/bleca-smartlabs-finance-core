@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
 import { requireContext } from '@/lib/auth/guard';
@@ -11,7 +11,7 @@ import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
 
 const submitSchema = z.object({
   reason: z.string().optional(),
-  evidenceDocumentId: z.string().cuid().optional(),
+  evidenceDocumentId: z.string().optional(),
 }).optional();
 
 import { z } from 'zod';

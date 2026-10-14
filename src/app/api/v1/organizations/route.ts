@@ -19,7 +19,7 @@ const updateSchema = z.object({
   registrationStatus: registrationStatusSchema.optional(),
   registrationNumber: z.string().max(50).nullish(),
   tin: z.string().max(30).nullish(),
-  baseCurrency: z.string().length(3).optional(),
+  baseCurrency: z.string().optional(),
   fiscalYearStartMonth: z.number().int().min(1).max(12).optional(),
   fiscalYearEndDay: z.number().int().min(1).max(31).optional(),
   defaultLocationId: z.string().cuid().nullish(),
@@ -238,3 +238,4 @@ export async function PATCH(request: Request) {
     return apiError(error, reqId);
   }
 }
+

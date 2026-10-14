@@ -8,10 +8,10 @@ import { apiError, ok, requestId } from '@/lib/api/responses';
 import { NotFoundError } from '@/lib/kernel/errors';
 
 const querySchema = z.object({
-  periodId: z.string().cuid().optional(),
+  periodId: z.string().optional(),
   startDate: z.string().min(1).optional(),
   endDate: z.string().min(1).optional(),
-  currency: z.string().length(3).optional(),
+  currency: z.string().optional(),
   page: z.coerce.number().int().positive().default(1),
   pageSize: z.coerce.number().int().positive().max(500).default(50),
 });
@@ -144,3 +144,4 @@ export async function GET(
     return apiError(error, reqId);
   }
 }
+

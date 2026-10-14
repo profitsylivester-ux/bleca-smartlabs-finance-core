@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/db/prisma';
@@ -12,7 +12,7 @@ import { ValidationError } from '@/lib/kernel/errors';
 import { createAdjustment } from '@/lib/reconciliation/service';
 
 /**
- * Reconciliation adjustments (M8 Task 4, PDF §12).
+ * Reconciliation adjustments (M8 Task 4, PDF Â§12).
  *
  * An adjustment is how a reconciliation difference is made to disappear from the
  * books, which makes it the most abusable object in this module. Two rules hold
@@ -27,7 +27,7 @@ const createSchema = z.object({
   debit: z.number().nonnegative().optional(),
   credit: z.number().nonnegative().optional(),
   reasonCodeId: z.string().cuid(),
-  documentId: z.string().cuid().optional(),
+  documentId: z.string().optional(),
 });
 
 export async function GET(
@@ -186,4 +186,5 @@ export async function POST(
     return apiError(error, reqId);
   }
 }
+
 
