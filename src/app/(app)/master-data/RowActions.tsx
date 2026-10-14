@@ -71,7 +71,7 @@ export default function RowActions({ entityType, entityId, entityLabel, endpoint
         body: JSON.stringify({
           entityType,
           entityId,
-          proposedChanges: { deleted: true, deletedAt: new Date().toISOString() },
+          proposedChanges: { deletedAt: new Date().toISOString() },
           reason,
         }),
       });

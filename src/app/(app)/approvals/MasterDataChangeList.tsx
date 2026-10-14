@@ -1,5 +1,5 @@
 ﻿'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Change {
@@ -14,6 +14,14 @@ export default function MasterDataChangeList({ changes }: { changes: Change[] })
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isCeo, setIsCeo] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch('/api/v1/me')
+      .then((r) => r.json())
+      .then((d) => setIsCeo(Boolean(d.isCeo)))
+      .catch(() => setIsCeo(false));
+  }, []);
 
   async function decide(id: string, action: 'APPROVE' | 'REJECT') {
     setBusy(id); setError(null);
@@ -21,7 +29,7 @@ export default function MasterDataChangeList({ changes }: { changes: Change[] })
       const res = await fetch(`/api/v1/master-data/changes/${id}/approve`, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'idempotency-key': crypto.randomUUID() },
-        body: JSON.stringify({ action }),
+        body: JSON.stringify({ action, ...(action === 'REJECT' ? { rejectionReason: 'Rejected by CEO' } : {}) }),
       });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
@@ -33,6 +41,8 @@ export default function MasterDataChangeList({ changes }: { changes: Change[] })
     } finally { setBusy(null); }
   }
 
+  if (isCeo === null) return null;
+  if (!isCeo) return null;
   if (changes.length === 0) return <div className="text-muted-foreground px-5 py-6 text-sm">No pending business setup requests.</div>;
 
   return (

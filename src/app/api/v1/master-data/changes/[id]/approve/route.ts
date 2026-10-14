@@ -138,7 +138,15 @@ export async function POST(
                 EXCHANGE_RATE: 'exchangeRate',
                 CUSTOMER: 'customer',
                 SUPPLIER: 'supplier',
+                REASON_CODE: 'reasonCode',
+                PRODUCT_SERVICE: 'productService',
               };
+              // Strip non-schema markers (like "deleted") and normalise dates
+              const rawChanges = { ...(changeRequest.proposedChanges as Record<string, unknown>) };
+              delete rawChanges.deleted;
+              if (typeof rawChanges.deletedAt === 'string') {
+                rawChanges.deletedAt = new Date(rawChanges.deletedAt);
+              }
               const modelName = modelMap[changeRequest.entityType];
               if (modelName && changeRequest.entityId) {
                 const modelDelegate = (tx as unknown as Record<string, {
@@ -154,12 +162,12 @@ export async function POST(
                 if (existing) {
                   await modelDelegate.update({
                     where: { id: changeRequest.entityId },
-                    data: changeRequest.proposedChanges as Record<string, unknown>,
+                    data: rawChanges,
                   });
                 } else {
                   await modelDelegate.create({
                     data: {
-                      ...(changeRequest.proposedChanges as Record<string, unknown>),
+                      ...rawChanges,
                       organizationId: ctx.actor.organizationId,
                     },
                   });
@@ -179,8 +187,8 @@ export async function POST(
                   entityType: changeRequest.entityType,
                   entityId: changeRequest.entityId ?? null,
                   versionNumber,
-                  snapshot: changeRequest.proposedChanges as InputJsonValue,
-                  changedFields: changeRequest.proposedChanges as InputJsonValue,
+                  snapshot: rawChanges as InputJsonValue,
+                  changedFields: rawChanges as InputJsonValue,
                   effectiveFrom: changeRequest.effectiveDate ?? approvedAt,
                   effectiveTo: changeRequest.expiresAt ?? null,
                 },
