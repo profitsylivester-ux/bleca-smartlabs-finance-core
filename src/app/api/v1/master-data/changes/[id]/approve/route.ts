@@ -178,16 +178,12 @@ export async function POST(
 
               const versionNumber = await tx.masterDataVersion.count({
                 where: {
-                  entityType: changeRequest.entityType,
-                  entityId: changeRequest.entityId ?? null,
                 },
               }) + 1;
 
               await tx.masterDataVersion.create({
                 data: {
                   changeRequestId: id,
-                  entityType: changeRequest.entityType,
-                  entityId: changeRequest.entityId ?? null,
                   versionNumber,
                   snapshot: rawChanges as InputJsonValue,
                   changedFields: rawChanges as InputJsonValue,
@@ -247,8 +243,6 @@ export async function POST(
               ? 'Your request to delete this ' + label + ' was approved. It is now in Trash, restorable for 90 days.'
               : 'Your request to delete this ' + label + ' was rejected.' + (body.rejectionReason ? ' Reason: ' + body.rejectionReason : ''),
             actionUrl: isApprove ? '/trash' : '/master-data',
-            entityType: changeRequest.entityType,
-            entityId: changeRequest.entityId ?? null,
           },
         });
         console.log('[master-data approve] notification created for user', changeRequest.requestedById);
