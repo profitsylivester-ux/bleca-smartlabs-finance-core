@@ -184,6 +184,8 @@ export async function POST(
               await tx.masterDataVersion.create({
                 data: {
                   changeRequestId: id,
+                  entityType: changeRequest.entityType,
+                  entityId: changeRequest.entityId ?? null,
                   versionNumber,
                   snapshot: rawChanges as InputJsonValue,
                   changedFields: rawChanges as InputJsonValue,
