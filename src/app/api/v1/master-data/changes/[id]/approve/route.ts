@@ -8,7 +8,6 @@ import { apiError, ok, requestId } from '@/lib/api/responses';
 import { runIdempotent } from '@/lib/api/idempotency';
 import { withAudit } from '@/lib/db/with-audit';
 import { writeAuditEntry } from '@/lib/audit/writer';
-import { dispatch } from '@/lib/notifications/dispatch';
 import { NotFoundError, ValidationError } from '@/lib/kernel/errors';
 import type { InputJsonValue } from '@/generated/prisma/runtime/library';
 
@@ -233,24 +232,28 @@ export async function POST(
       const isApprove = body.action === 'APPROVE';
       const label = changeRequest.entityType.replace(/_/g, ' ').toLowerCase();
       try {
-        await dispatch({
-          organizationId: ctx.actor.organizationId,
-          userId: changeRequest.requestedById,
-          category: 'APPROVAL',
-          severity: isApprove ? 'SUCCESS' : 'WARNING',
-          title: isApprove
-            ? 'Deletion approved: ' + changeRequest.entityType
-            : 'Deletion rejected: ' + changeRequest.entityType,
-          body: isApprove
-            ? 'Your request to delete this ' + label + ' was approved. It is now in Trash, restorable for 90 days.'
-            : 'Your request to delete this ' + label + ' was rejected.' + (body.rejectionReason ? ' Reason: ' + body.rejectionReason : ''),
-          actionUrl: isApprove ? '/trash' : '/master-data',
-          entityType: changeRequest.entityType,
-          entityId: changeRequest.entityId ?? undefined,
-          dedupeKey: 'master-data-' + id + '-' + body.action,
+        await prisma.notification.create({
+          data: {
+            organizationId: ctx.actor.organizationId,
+            userId: changeRequest.requestedById,
+            category: 'APPROVAL',
+            severity: isApprove ? 'SUCCESS' : 'WARNING',
+            channel: 'IN_APP',
+            status: 'SENT',
+            title: isApprove
+              ? 'Deletion approved: ' + changeRequest.entityType
+              : 'Deletion rejected: ' + changeRequest.entityType,
+            body: isApprove
+              ? 'Your request to delete this ' + label + ' was approved. It is now in Trash, restorable for 90 days.'
+              : 'Your request to delete this ' + label + ' was rejected.' + (body.rejectionReason ? ' Reason: ' + body.rejectionReason : ''),
+            actionUrl: isApprove ? '/trash' : '/master-data',
+            entityType: changeRequest.entityType,
+            entityId: changeRequest.entityId ?? null,
+          },
         });
-      } catch {
-        // Never break the approve/reject flow because a notification failed
+        console.log('[master-data approve] notification created for user', changeRequest.requestedById);
+      } catch (e) {
+        console.error('[master-data approve] notification failed:', e);
       }
     }
 
