@@ -55,6 +55,11 @@ export default function RowActions({ entityType, entityId, entityLabel, endpoint
         throw new Error((j && j.error && j.error.message) || `Could not save (HTTP ${res.status}).`);
       }
       setEditOpen(false);
+      fetch('/api/v1/master-data/notify', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'EDIT', entityType })
+      }).catch(() => undefined);
       router.refresh();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not save.');

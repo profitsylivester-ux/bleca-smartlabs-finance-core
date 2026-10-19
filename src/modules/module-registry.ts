@@ -144,6 +144,18 @@ export const MODULES: ModuleDefinition[] = [
     order: 130,
   },
   {
+    key: 'TRASH',
+    path: '/trash',
+    label: 'Trash',
+    description: 'Deleted items restorable for 90 days.',
+    availability: 'AVAILABLE',
+    milestone: 'M6',
+    icon: 'trash-2',
+    group: 'accounting',
+    requires: ['VIEW'],
+    order: 131,
+  },
+  {
     key: 'TREASURY_TRANSFERS',
     path: '/treasury/accounts',
     label: 'Cash, Bank & Mobile Money',

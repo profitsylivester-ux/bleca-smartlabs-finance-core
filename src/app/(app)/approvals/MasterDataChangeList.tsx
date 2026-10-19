@@ -24,12 +24,18 @@ export default function MasterDataChangeList({ changes }: { changes: Change[] })
   }, []);
 
   async function decide(id: string, action: 'APPROVE' | 'REJECT') {
-    setBusy(id); setError(null);
-    try {
-      const res = await fetch(`/api/v1/master-data/changes/${id}/approve`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', 'idempotency-key': crypto.randomUUID() },
-        body: JSON.stringify({ action, ...(action === 'REJECT' ? { rejectionReason: 'Rejected by CEO' } : {}) }),
+      let rejectionReason = '';
+      if (action === 'REJECT') {
+        const input = window.prompt('Please enter the reason for rejection:');
+        if (input === null) return;
+        rejectionReason = input;
+      }
+      setBusy(id); setError(null);
+      try {
+        const res = await fetch(`/api/v1/master-data/changes/${id}/approve`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'idempotency-key': crypto.randomUUID() },
+          body: JSON.stringify({ action, ...(action === 'REJECT' ? { rejectionReason } : {}) }),
       });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));

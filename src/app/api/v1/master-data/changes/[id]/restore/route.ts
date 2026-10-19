@@ -23,7 +23,30 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       data: { status: 'CANCELLED' },
     });
 
-    return ok({ id, status: 'CANCELLED' });
+        // Notify Finance Officers
+    try {
+      const fos = await prisma.userRole.findMany({
+        where: { role: { code: 'FINANCE_OFFICER' }, revokedAt: null },
+        select: { userId: true }
+      });
+      for (const fo of fos) {
+        await prisma.notification.create({
+          data: {
+            organizationId: orgId,
+            userId: fo.userId,
+            category: 'SYSTEM',
+            severity: 'INFO',
+            channel: 'IN_APP',
+            status: 'SENT',
+            title: 'Record restored from Trash',
+            body: 'A ' + change.entityType + ' record was restored from the Trash.',
+            actionUrl: '/master-data'
+          }
+        });
+      }
+    } catch (e) { console.error('notify failed', e); }
+
+return ok({ id, status: 'CANCELLED' });
   } catch (e) {
     return apiError(e, reqId);
   }

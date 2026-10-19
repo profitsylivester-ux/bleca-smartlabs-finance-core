@@ -214,16 +214,6 @@ export function AppShell({
           <ThemeToggle />
           <InstallButton />
           <Link
-            href="/trash"
-            className="text-navy-100 hover:bg-navy-800 hover:text-white rounded-md px-2.5 py-1.5 text-[13px] font-medium inline-flex items-center gap-1.5"
-            title="Trash"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-            </svg>
-            <span>Trash</span>
-          </Link>
-          <Link
             href="/notifications"
             className="text-muted-foreground relative inline-flex items-center gap-1.5 text-[13px] hover:text-foreground"
             aria-label="Notifications"
