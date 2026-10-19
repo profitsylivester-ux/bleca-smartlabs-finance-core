@@ -82,6 +82,28 @@ export async function POST(
         }, { organizationId: orgId, requestId: reqId });
 
         if (result.isComplete) {
+          // Send notification to the person who submitted the request
+          try {
+            if (existingRequest.submittedById) {
+              await tx.notification.create({
+                data: {
+                  organizationId: orgId,
+                  userId: existingRequest.submittedById,
+                  category: 'APPROVAL',
+                  severity: body.decision === 'APPROVED' ? 'SUCCESS' : 'WARNING',
+                  channel: 'IN_APP',
+                  status: 'SENT',
+                  title: 'Request ' + body.decision.toLowerCase() + ': ' + existingRequest.entityType.replace(/_/g, ' '),
+                  body: 'Your approval request for ' + existingRequest.entityType.replace(/_/g, ' ').toLowerCase() + ' was ' + body.decision.toLowerCase() + '.' + (body.reason ? ' Reason: ' + body.reason : ''),
+                  actionUrl: '/approvals',
+                },
+              });
+            }
+          } catch (notifyErr) {
+            console.error('Failed to send approval notification', notifyErr);
+          }
+
+
           await writeAuditEntry(tx, { id: ctx.actor.userId, name: ctx.actor.fullName, roleCodes: ctx.actor.roleCodes }, {
             action: body.decision === 'REJECTED' ? 'APPROVAL_REQUEST_REJECTED' : 'APPROVAL_REQUEST_APPROVED',
             entityType: 'APPROVAL_REQUEST',
