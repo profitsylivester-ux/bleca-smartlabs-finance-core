@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { Alert, Badge, Button, Card, CardBody, CardHeader, Input, Select, SelectOption } from '@/components/ui';
+import { FormFooter } from '@/components/ui/form-footer';
 import { formatAmount, formatDate } from '@/lib/format';
 import { budgetApi, mutationInit } from '../../budget-client-utils';
 
@@ -70,7 +71,8 @@ export default function BudgetScenariosClient({ budgetId, actor }: { budgetId: s
           <label className="text-sm"><span className="mb-1 block font-medium">Actual spend factor</span><Input required type="number" min="0" step="0.000001" value={factor} onChange={(event) => setFactor(event.target.value)} /></label>
           <label className="text-sm"><span className="mb-1 block font-medium">Description</span><Input maxLength={2000} value={description} onChange={(event) => setDescription(event.target.value)} /></label>
           <div className="md:col-span-2"><Button disabled={busy}>Save scenario</Button></div>
-        </form>
+          <FormFooter busy={busy || false} onCancel={() => window.history.back()} onSaveDraft={() => {}} onSubmit={() => {}} submitLabel="Submit Reversal" />
+    </form>
       </CardBody></Card>}
       <Card><CardHeader title="Saved projections" /><CardBody>
         {scenarios.length === 0 ? <p className="text-sm text-muted-foreground">No scenarios have been saved.</p> : <div className="space-y-3">{scenarios.map((scenario) => <div key={scenario.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-4">

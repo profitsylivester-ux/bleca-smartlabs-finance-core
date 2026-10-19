@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardBody, Button, Input, Label, Alert, Select, SelectOption, Table, Th, Td } from '@/components/ui';
+import { FormFooter } from '@/components/ui/form-footer';
 import { useRouter } from 'next/navigation';
 import { formatAmount, formatDate, shortId } from '@/lib/format';
 import { z } from 'zod';
@@ -276,7 +277,8 @@ export default function ReverseTransactionClient({ transactionId }: { transactio
                 {submitting ? 'Reversing…' : 'Reverse Transaction'}
               </Button>
             </div>
-          </form>
+            <FormFooter busy={false} onCancel={() => window.history.back()} onSaveDraft={() => {}} onSubmit={() => {}} submitLabel="Submit Reversal" />
+    </form>
         </CardBody>
       </Card>
 

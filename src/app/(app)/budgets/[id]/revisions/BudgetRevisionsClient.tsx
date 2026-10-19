@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { Alert, Badge, Button, Card, CardBody, CardHeader, Input, Table, Td, Th } from '@/components/ui';
+import { FormFooter } from '@/components/ui/form-footer';
 import { formatAmount, formatDate } from '@/lib/format';
 import { budgetApi, mutationInit } from '../../budget-client-utils';
 
@@ -83,7 +84,8 @@ export default function BudgetRevisionsClient({ budgetId, actor }: { budgetId: s
           <div className="grid gap-3 md:grid-cols-2">{lines.map((line) => <label key={line.lineId} className="text-sm"><span className="mb-1 block font-medium">{line.account.code} · {line.account.name}</span><Input type="number" min="0" step="0.000001" value={amounts[line.lineId] ?? ''} onChange={(event) => setAmounts((previous) => ({ ...previous, [line.lineId]: event.target.value }))} /></label>)}</div>
           <label className="block text-sm"><span className="mb-1 block font-medium">Reason</span><Input required minLength={3} maxLength={2000} value={reason} onChange={(event) => setReason(event.target.value)} /></label>
           <Button disabled={busy}>Submit revision for approval</Button>
-        </form>
+          <FormFooter busy={busy || false} onCancel={() => window.history.back()} onSaveDraft={() => {}} onSubmit={() => {}} submitLabel="Submit Reversal" />
+    </form>
       </CardBody></Card>}
       <Card><CardHeader title="Revision history" /><CardBody>
         {revisions.length === 0 ? <p className="text-sm text-muted-foreground">No revisions have been proposed.</p> : revisions.map((revision) => <div key={revision.id} className="mb-5 rounded-lg border border-border p-4 last:mb-0">

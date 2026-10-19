@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { Alert, Badge, Button, Card, CardBody, CardHeader, Input, Select, SelectOption } from '@/components/ui';
+import { FormFooter } from '@/components/ui/form-footer';
 import { formatAmount, formatDate } from '@/lib/format';
 import { budgetApi, mutationInit } from '../../budget-client-utils';
 
@@ -94,7 +95,8 @@ export default function BudgetTransfersClient({ budgetId, actor }: { budgetId: s
           <label className="text-sm"><span className="mb-1 block font-medium">Amount ({currency})</span><Input required type="number" min="0.000001" step="0.000001" value={amount} onChange={(event) => setAmount(event.target.value)} /></label>
           <label className="text-sm"><span className="mb-1 block font-medium">Reason</span><Input required minLength={3} maxLength={2000} value={reason} onChange={(event) => setReason(event.target.value)} /></label>
           <div className="md:col-span-2"><Button disabled={busy || !fromLineId || !toLineId}>Submit transfer</Button></div>
-        </form>
+          <FormFooter busy={busy || false} onCancel={() => window.history.back()} onSaveDraft={() => {}} onSubmit={() => {}} submitLabel="Submit Reversal" />
+    </form>
       </CardBody></Card>}
       <Card><CardHeader title="Transfer history" /><CardBody>
         {transfers.length === 0 ? <p className="text-sm text-muted-foreground">No transfers have been proposed.</p> : <div className="space-y-3">{transfers.map((transfer) => <div key={transfer.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-4">
