@@ -65,7 +65,7 @@ export default function JournalEntriesClient() {
         <CardHeader 
           title="Search & Filter" 
           description="Click to expand the filters." 
-          action={<Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>{isFilterOpen ? 'Hide Filters' : 'Show Filters'}</Button>}
+          actions={<Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>{isFilterOpen ? 'Hide Filters' : 'Show Filters'}</Button>}
         />
         {isFilterOpen && (
           <CardBody className="border-t border-border-subtle">
