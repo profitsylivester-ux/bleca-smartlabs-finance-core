@@ -45,6 +45,7 @@ type JournalLine = {
 
 export default function GeneralLedgerClient() {
   const [lines, setLines] = useState<JournalLine[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const pageSize = 50;
@@ -104,6 +105,7 @@ export default function GeneralLedgerClient() {
         <CardBody className="py-12">
           <div className="text-center text-muted-foreground">Loading general ledger…</div>
         </CardBody>
+        )}
       </Card>
     );
   }
@@ -117,8 +119,13 @@ export default function GeneralLedgerClient() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader title="Filters" description="Filter by account, period, date range, and dimensions." />
-        <CardBody>
+        <CardHeader 
+          title="Search & Filter" 
+          description="Expand to filter the results." 
+          actions={<Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>{isFilterOpen ? 'Hide Filters' : 'Show Filters'}</Button>}
+        />
+        {isFilterOpen && (
+          <CardBody>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
             <div>
               <Label htmlFor="accountId">Account ID</Label>
