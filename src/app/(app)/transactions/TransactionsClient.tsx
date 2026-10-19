@@ -68,11 +68,11 @@ function canReverse(status: string | null): boolean {
 export default function TransactionsClient({ actor }: { actor: Actor }) {
   const searchParams = useSearchParams();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const pageSize = 20;
   const [loading, setLoading] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: 'date', direction: 'desc' });
 
@@ -191,7 +191,6 @@ export default function TransactionsClient({ actor }: { actor: Actor }) {
         <CardBody className="py-12">
           <div className="text-center text-muted-foreground">Loading transactions…</div>
         </CardBody>
-        )}
       </Card>
     );
   }
@@ -204,18 +203,14 @@ export default function TransactionsClient({ actor }: { actor: Actor }) {
     <div className="space-y-4">
       <Card>
         <CardHeader
-          title="Search & Filter"
-          description="Expand to filter the results."
+          title="Filters"
+          description="Filter transactions by status, date range, dimensions, and amount."
           actions={
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>{isFilterOpen ? 'Hide Filters' : 'Show Filters'}</Button>
-              <Button variant="outline" size="sm" onClick={handleExport} disabled={transactions.length === 0}>
-                Export CSV
-              </Button>
-            </div>
+            <Button variant="outline" size="sm" onClick={handleExport} disabled={transactions.length === 0}>
+              Export CSV
+            </Button>
           }
         />
-        {isFilterOpen && (
         <CardBody>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
             <div>
