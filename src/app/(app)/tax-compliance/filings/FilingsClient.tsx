@@ -54,7 +54,7 @@ export default function FilingsClient() {
   return <div className="space-y-5">
     {error && <Alert tone="danger" title="Filing request failed">{error}</Alert>}
     {notice && <Alert tone="success">{notice}</Alert>}
-    <Card><CardHeader title="Filings and payments" description="Payments are linked to obligations; full cover marks the obligation paid."  actions={<Button onClick={() => setCreating(true)} className="bg-navy-800 text-white">+ New Filing</Button>} /><CardBody>
+    <Card><CardHeader title="Filings and payments" description="Payments are linked to obligations; full cover marks the obligation paid."  /><CardBody>
       <form onSubmit={(event) => void createPayment(event)} className="mb-5 grid gap-3 rounded-lg border border-border p-4 md:grid-cols-[2fr_1fr_auto]">
         <Input aria-label="Obligation ID" placeholder="Obligation ID" value={obligationId} onChange={(event) => setObligationId(event.target.value)} required />
         <Input aria-label="Amount" placeholder="Amount" value={amount} onChange={(event) => setAmount(event.target.value)} required inputMode="decimal" />
