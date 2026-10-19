@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     const { action, entityType } = await req.json();
 
     const fos = await prisma.userRole.findMany({
-      where: { role: { code: 'FINANCE_OFFICER' }, revokedAt: null },
+      where: { role: { code: { contains: 'FINANCE' } }, revokedAt: null },
       select: { userId: true }
     });
 

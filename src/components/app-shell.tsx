@@ -118,7 +118,7 @@ export function AppShell({
         <nav className="flex-1 space-y-5 overflow-y-auto px-3 pb-6">
           {groups.map((group) => {
             const visible = group.modules.filter(
-              (m) => m.availability === 'AVAILABLE' && grantedKeys.has(m.key),
+              (m) => m.availability === 'AVAILABLE' && (m.key === 'TRASH' || grantedKeys.has(m.key)),
             );
             const planned = group.modules.filter((m) => m.availability === 'PLANNED');
 

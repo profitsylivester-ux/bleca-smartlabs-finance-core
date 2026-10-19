@@ -26,7 +26,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         // Notify Finance Officers
     try {
       const fos = await prisma.userRole.findMany({
-        where: { role: { code: 'FINANCE_OFFICER' }, revokedAt: null },
+        where: { role: { code: { contains: 'FINANCE' } }, revokedAt: null },
         select: { userId: true }
       });
       for (const fo of fos) {
