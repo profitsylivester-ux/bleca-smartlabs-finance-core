@@ -15,7 +15,7 @@ export async function GET(req: Request) {
   });
 
   const purged = [];
-  const modelMap: Record<string, any> = {
+  const modelMap: Record<string, { delete: (args: { where: { id: string } }) => Promise<unknown> }> = {
     LOCATION: prisma.location,
     DEPARTMENT: prisma.department,
     COST_CENTRE: prisma.costCentre,
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
     if (pc && pc.deletedAt) {
       const model = modelMap[req.entityType];
       if (model && req.entityId) {
-        try { await model.delete({ where: { id: req.entityId } }); } catch (e) {}
+        try { await model.delete({ where: { id: req.entityId } }); } catch {}
       }
       await prisma.masterDataChangeRequest.delete({ where: { id: req.id } });
       purged.push(req.id);
