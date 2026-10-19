@@ -70,6 +70,8 @@ export default function JournalEntriesClient() {
   const [page, setPage] = useState(1);
   const pageSize = 20;
   const [loading, setLoading] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [periods, setPeriods] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState({
     periodId: searchParams.get('periodId') || '',
@@ -108,6 +110,10 @@ export default function JournalEntriesClient() {
   }, [page, pageSize, filters]);
 
   useEffect(() => {
+    fetch('/api/v1/periods').then(r => r.json()).then(d => setPeriods(d.data || [])).catch(() => {});
+  }, []);
+
+  useEffect(() => {
     fetchEntries();
   }, [fetchEntries]);
 
@@ -138,212 +144,91 @@ export default function JournalEntriesClient() {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Journal Entries</h2>
+        <Link href="/accounting/journal-entries/new" className="bg-navy-800 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-navy-700">
+          + New Journal Entry
+        </Link>
+      </div>
+
       <Card>
-        <CardHeader title="Filters" description="Filter journal entries by period, status, type, date range and dimensions." />
-        <CardBody>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Period</label>
-              <Input
-                type="text"
-                placeholder="Period ID"
-                value={filters.periodId}
-                onChange={(e) => handleFilterChange('periodId', e.target.value)}
-              />
+        <CardHeader 
+          title="Search & Filter" 
+          description="Click to expand the filters." 
+          action={<Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>{isFilterOpen ? 'Hide Filters' : 'Show Filters'}</Button>}
+        />
+        {isFilterOpen && (
+          <CardBody className="border-t border-border-subtle">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-1 block">Period</label>
+                <select className="border-border-strong h-9 w-full rounded-md border bg-white px-3 text-sm" value={filters.periodId} onChange={(e) => handleFilterChange('periodId', e.target.value)}>
+                  <option value="">All Periods</option>
+                  {periods.map((p: any) => <option key={p.id} value={p.id}>{p.code}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-1 block">Status</label>
+                <select className="border-border-strong h-9 w-full rounded-md border bg-white px-3 text-sm" value={filters.status} onChange={(e) => handleFilterChange('status', e.target.value)}>
+                  <option value="">All Statuses</option>
+                  <option value="DRAFT">DRAFT</option>
+                  <option value="SUBMITTED">SUBMITTED</option>
+                  <option value="APPROVED">APPROVED</option>
+                  <option value="POSTED">POSTED</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-1 block">Start Date</label>
+                <Input type="date" value={filters.startDate} onChange={(e) => handleFilterChange('startDate', e.target.value)} />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-1 block">End Date</label>
+                <Input type="date" value={filters.endDate} onChange={(e) => handleFilterChange('endDate', e.target.value)} />
+              </div>
             </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Status</label>
-              <select
-                className="border-border-strong text-foreground h-9 w-full rounded-md border bg-white px-3 text-sm"
-                value={filters.status}
-                onChange={(e) => handleFilterChange('status', e.target.value)}
-              >
-                <option value="">All</option>
-                <option value="DRAFT">DRAFT</option>
-                <option value="SUBMITTED">SUBMITTED</option>
-                <option value="APPROVED">APPROVED</option>
-                <option value="POSTED">POSTED</option>
-                <option value="LOCKED">LOCKED</option>
-                <option value="REVERSED">REVERSED</option>
-                <option value="VOIDED">VOIDED</option>
-                <option value="REJECTED">REJECTED</option>
-              </select>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => { setFilters({ periodId: '', status: '', type: '', startDate: '', endDate: '', accountId: '', projectId: '', departmentId: '', costCentreId: '', locationId: '', fundingSourceId: '' }); setPage(1); }}>Reset</Button>
+              <Button onClick={() => fetchEntries()}>Apply Filters</Button>
             </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Type</label>
-              <select
-                className="border-border-strong text-foreground h-9 w-full rounded-md border bg-white px-3 text-sm"
-                value={filters.type}
-                onChange={(e) => handleFilterChange('type', e.target.value)}
-              >
-                <option value="">All</option>
-                <option value="STANDARD">STANDARD</option>
-                <option value="OPENING_BALANCE">OPENING_BALANCE</option>
-                <option value="ADJUSTMENT">ADJUSTMENT</option>
-                <option value="REVERSAL">REVERSAL</option>
-                <option value="CORRECTION">CORRECTION</option>
-                <option value="CLOSING">CLOSING</option>
-                <option value="SYSTEM">SYSTEM</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Start Date</label>
-              <Input
-                type="date"
-                value={filters.startDate}
-                onChange={(e) => handleFilterChange('startDate', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">End Date</label>
-              <Input
-                type="date"
-                value={filters.endDate}
-                onChange={(e) => handleFilterChange('endDate', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Account ID</label>
-              <Input
-                type="text"
-                placeholder="Account ID"
-                value={filters.accountId}
-                onChange={(e) => handleFilterChange('accountId', e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Project ID</label>
-              <Input
-                type="text"
-                placeholder="Project ID"
-                value={filters.projectId}
-                onChange={(e) => handleFilterChange('projectId', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Department ID</label>
-              <Input
-                type="text"
-                placeholder="Department ID"
-                value={filters.departmentId}
-                onChange={(e) => handleFilterChange('departmentId', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Cost Centre ID</label>
-              <Input
-                type="text"
-                placeholder="Cost Centre ID"
-                value={filters.costCentreId}
-                onChange={(e) => handleFilterChange('costCentreId', e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Location ID</label>
-              <Input
-                type="text"
-                placeholder="Location ID"
-                value={filters.locationId}
-                onChange={(e) => handleFilterChange('locationId', e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="mt-3">
-            <label className="text-xs font-medium text-muted-foreground mb-1 block">Funding Source ID</label>
-            <Input
-              type="text"
-              placeholder="Funding Source ID"
-              value={filters.fundingSourceId}
-              onChange={(e) => handleFilterChange('fundingSourceId', e.target.value)}
-            />
-          </div>
-        </CardBody>
+          </CardBody>
+        )}
       </Card>
 
       <Card>
-        <CardHeader title="Journal Entries" description={`${total} entries found`} />
-        <CardBody>
+        <CardBody className="px-0 py-0">
           {entries.length === 0 ? (
-            <EmptyState title="No journal entries found" body="Adjust your filters or create a new journal entry." />
+            <EmptyState title="No entries found" body="Try adjusting your filters or create a new entry." />
           ) : (
-            <div className="space-y-4">
-              <Table>
-                <thead>
-                  <tr>
-                    <Th>Number</Th>
-                    <Th>Type</Th>
-                    <Th>Status</Th>
-                    <Th>Period</Th>
-                    <Th>Reference</Th>
-                    <Th>Debits</Th>
-                    <Th>Credits</Th>
-                    <Th>Balance</Th>
-                    <Th>Posted At</Th>
-                    <Th>Actions</Th>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>Entry #</Th>
+                  <Th>Date</Th>
+                  <Th>Period</Th>
+                  <Th>Status</Th>
+                  <Th className="text-right">Amount</Th>
+                  <Th></Th>
+                </tr>
+              </thead>
+              <tbody>
+                {entries.map((entry) => (
+                  <tr key={entry.id}>
+                    <Td className="font-medium">{entry.number || shortId(entry.id)}</Td>
+                    <Td>{formatDate(entry.createdAt)}</Td>
+                    <Td>{entry.period?.code || '—'}</Td>
+                    <Td><Badge tone={getStatusTone(entry.status)}>{entry.status}</Badge></Td>
+                    <Td className="tabular text-right font-medium">{formatAmount(entry.balance.debits)}</Td>
+                    <Td className="text-right">
+                      <Link href={`/accounting/journal-entries/${entry.id}`} className="text-navy-600 hover:underline">View</Link>
+                    </Td>
                   </tr>
-                </thead>
-                <tbody>
-                  {entries.map((entry) => (
-                    <tr key={entry.id}>
-                      <Td>
-                        <Link href={`/accounting/journal-entries/${entry.id}`} className="text-navy-600 hover:underline">
-                          {entry.number ?? shortId(entry.id)}
-                        </Link>
-                      </Td>
-                      <Td>{entry.type}</Td>
-                      <Td>
-                        <Badge tone={getStatusTone(entry.status)}>{entry.status}</Badge>
-                      </Td>
-                      <Td>{entry.period?.code ?? '-'}</Td>
-                      <Td>{entry.reference ?? '-'}</Td>
-                      <Td>{formatAmount(entry.balance.debits)}</Td>
-                      <Td>{formatAmount(entry.balance.credits)}</Td>
-                      <Td>
-                        <Badge tone={entry.balance.balanced ? 'success' : 'danger'}>
-                          {entry.balance.balanced ? 'Balanced' : `Diff: ${formatAmount(entry.balance.difference)}`}
-                        </Badge>
-                      </Td>
-                      <Td>{entry.postedAt ? formatDate(entry.postedAt) : '-'}</Td>
-                      <Td>
-                        <Link href={`/accounting/journal-entries/${entry.id}`} className="text-navy-600 hover:underline text-sm">
-                          View
-                        </Link>
-                      </Td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-              {totalPages > 1 && (
-                <div className="mt-4 flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    Page {page} of {totalPages} ({total} total)
-                  </p>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={page === 1}
-                      onClick={() => handlePageChange(page - 1)}
-                    >
-                      Previous
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={page === totalPages}
-                      onClick={() => handlePageChange(page + 1)}
-                    >
-                      Next
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
+                ))}
+              </tbody>
+            </Table>
           )}
         </CardBody>
       </Card>
     </div>
   );
+}
 }

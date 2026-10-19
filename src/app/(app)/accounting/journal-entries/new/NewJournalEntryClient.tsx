@@ -2,6 +2,7 @@
 
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useCallback } from 'react';
+import { FormFooter } from '@/components/ui/form-footer';
 import { Card, CardHeader, CardBody, Button, Input, Label, Badge, Alert, Table, Th, Td } from '@/components/ui';
 import { formatAmount } from '@/lib/format';
 import { useRouter } from 'next/navigation';
@@ -144,10 +145,10 @@ export default function NewJournalEntryClient() {
     setForm({ ...form, lines: newLines });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, isDraft: boolean = false) => {
     e.preventDefault();
-    if (!balance.balanced) {
-      alert('Journal entry is not balanced. Debits must equal credits.');
+    if (!isDraft && !balance.balanced) {
+      setError('Journal entry is not balanced. Debits must equal credits.');
       return;
     }
     if (form.lines.length < 2) {
@@ -172,6 +173,7 @@ export default function NewJournalEntryClient() {
           'Idempotency-Key': crypto.randomUUID(),
         },
         body: JSON.stringify({
+          status: isDraft ? 'DRAFT' : 'SUBMITTED',
           periodId: form.periodId,
           type: form.type,
           source: form.source,
@@ -474,9 +476,7 @@ export default function NewJournalEntryClient() {
 
       <div className="flex justify-end gap-3">
         <Button variant="ghost" onClick={() => router.push('/accounting/journal-entries')}>Cancel</Button>
-        <Button type="submit" disabled={submitting || !balance.balanced || form.lines.length < 2}>
-          {submitting ? 'Creating…' : 'Create Draft'}
-        </Button>
+        <FormFooter busy={submitting} onCancel={() => router.back()} onSaveDraft={() => handleSubmit(new Event('submit') as any, true)} onSubmit={() => handleSubmit(new Event('submit') as any, false)} />
       </div>
     </form>
   );
