@@ -77,7 +77,7 @@ export default function DocumentsClient({ canConfigure = false }: { canConfigure
           title="Document library"
           description="Private evidence files, classification, expiry dates and linked records."
           actions={<div className="flex flex-wrap items-center gap-3"><Link className="text-sm text-navy-700 hover:underline" href="/documents/expiring">Expiring soon</Link>{canConfigure && <Link className="text-sm text-navy-700 hover:underline" href="/documents/retention">Retention settings</Link>}<Link href="/documents/upload"><Button>Upload document</Button></Link></div>}
-        />
+         actions={<Link href="/documents/upload" className="bg-navy-800 text-white rounded-md px-4 py-2 text-sm font-medium hover:bg-navy-700">+ Upload Document</Link>} />
         <CardBody>
           <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Input aria-label="Search documents" placeholder="Search title, description or OCR text" value={query} onChange={(event) => setQuery(event.target.value)} />

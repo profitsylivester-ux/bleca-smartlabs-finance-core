@@ -67,7 +67,7 @@ export default function SuppliersClient() {
   const pages = Math.max(1, Math.ceil(total / 20));
   return <div className="space-y-5">
     {error && <Alert tone="danger" title="Supplier request failed">{error}</Alert>}{notice && <Alert tone="success">{notice}</Alert>}
-    <Card><CardHeader title="Suppliers" description="Business, tax, payment, performance, and risk profiles." /><CardBody>
+    <Card><CardHeader title="Suppliers" description="Business, tax, payment, performance, and risk profiles."  actions={<Button onClick={() => setCreating(true)} className="bg-navy-800 text-white">+ New Supplier</Button>} /><CardBody>
       <form onSubmit={(event) => void createSupplier(event)} className="mb-5 grid gap-3 rounded-lg border border-border p-4 md:grid-cols-[1fr_2fr_auto]">
         <Input aria-label="Supplier code" placeholder="Supplier code" value={code} onChange={(event) => setCode(event.target.value)} required minLength={2} />
         <Input aria-label="Supplier name" placeholder="Supplier business name" value={name} onChange={(event) => setName(event.target.value)} required />

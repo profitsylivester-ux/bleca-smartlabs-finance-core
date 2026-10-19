@@ -95,7 +95,7 @@ export default function CustomersClient() {
       {error && <Alert tone="danger" title="Customer request failed">{error}</Alert>}
       {notice && <Alert tone="success" title="Customer saved">{notice}</Alert>}
       <Card>
-        <CardHeader title="Customers" description="Customer profiles, credit controls, risk, and receivables." />
+        <CardHeader title="Customers" description="Customer profiles, credit controls, risk, and receivables."  actions={<Button onClick={() => setCreating(true)} className="bg-navy-800 text-white">+ New Customer</Button>} />
         <CardBody>
           <form onSubmit={createCustomer} className="mb-5 grid gap-3 rounded-lg border border-border p-4 md:grid-cols-[1fr_2fr_auto]">
             <Input aria-label="Customer code" placeholder="Customer code" value={newCode} onChange={(event) => setNewCode(event.target.value)} required minLength={2} />
