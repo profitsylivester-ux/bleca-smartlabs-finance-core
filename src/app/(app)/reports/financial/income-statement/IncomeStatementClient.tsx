@@ -28,6 +28,7 @@ type IncomeStatementResponse = {
 export default function IncomeStatementClient() {
   const [result, setResult] = useState<IncomeStatementResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState({
     periodId: '',
@@ -91,7 +92,8 @@ export default function IncomeStatementClient() {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader title="Filters" />
+        <CardHeader title="Search & Filter" description="Expand to filter the results." actions={<Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>{isFilterOpen ? 'Hide Filters' : 'Show Filters'}</Button>} />
+        {isFilterOpen && (
         <CardBody>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
             <div>
@@ -134,6 +136,7 @@ export default function IncomeStatementClient() {
             </div>
           </div>
         </CardBody>
+        )}
       </Card>
 
       <Card>
